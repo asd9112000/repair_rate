@@ -13,13 +13,13 @@ g++ -std=c++17 fault_generator.cpp -o fault_generator.o
 struct Config
 {
     int num_logic_units = 4;
-    int stack_height = 1;
+    int stack_height = 2;
     int rows = 1024;
     int cols = 1024;
     double prob_cluster = 0.2;
     double prob_same_line = 0.3;
     int fixed_faults = 0;
-    std::string output_file = "faults.txt";
+    std::string output_file = "faults.faults";
     int seed = rand();
 };
 
@@ -41,8 +41,12 @@ int main(int argc, char* argv[]) {
     std::uniform_int_distribution<> dr(0, cfg.rows - 1), dc(0, cfg.cols - 1), dn(-1, 1);
     std::uniform_real_distribution<> dp(0, 1);
 
-    for (int lu = 0; lu < cfg.num_logic_units; ++lu) {
-        for (int ly = 0; ly < cfg.stack_height; ++ly) {
+    int pat_num = cfg.stack_height * cfg.num_logic_units;
+    ofs << "" << pat_num << "\n";
+
+    for (int ly = 0; ly < cfg.stack_height; ++ly) {
+        for (int lu = 0; lu < cfg.num_logic_units; ++lu) {
+                ofs << cfg.fixed_faults << "\n";
             std::vector<Fault> bank_f;
             if (cfg.fixed_faults <= 0) continue;
 
