@@ -7,7 +7,7 @@
 
 /* ============ running command ==============
 g++ -std=c++17 fault_generator.cpp -o fault_generator.o
-./fault_generator.o --logic_units 2 --fixed_faults 4
+./fault_generator.o --logic_units 4 --fixed_faults 12 --stack_height 2500
 */
 
 struct Config
@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
         std::string arg = argv[i];
         if (arg == "--logic_units") cfg.num_logic_units = std::stoi(argv[++i]);
         else if (arg == "--fixed_faults") cfg.fixed_faults = std::stoi(argv[++i]);
+        else if (arg == "--stack_height") cfg.stack_height = std::stoi(argv[++i]);
         else if (arg == "--seed") cfg.seed = std::stoi(argv[++i]);
     }
 

@@ -44,7 +44,6 @@ public:
     int Rs, Cs;
     int matrixSize;
     vector<AddressCAMEntry> addressCAMEntries;
-    // vector<Fault *> pivotFaults;
 
     RECAM_addressCAM(int r_spare, int c_spare, int buff_num);
 
@@ -52,24 +51,7 @@ public:
     void addAddressCAMEntryFromList(FaultList *fPtr);
     std::tuple<bool, bool, int> updateRowColMust(HybridCAMEntry &hybridCAMEntry);
 
-    void printAddressCAMEntries() {
-        cout << "========= RECAM_addressCAM :: printAddressCAMEntries ==========" << endl;
-        cout << "Address CAM Entries:" << endl;
-        for (const auto& entry : addressCAMEntries) {
-            if (entry.enable && entry.faultPtr != nullptr) {
-                cout << "Pivot Fault - LU: " << entry.faultPtr->LogicUnitID
-                     << " Layer: " << entry.faultPtr->LayerID
-                     << " Bank: " << entry.faultPtr->BankID
-                     << " Row: " << entry.faultPtr->r
-                     << " Col: " << entry.faultPtr->c
-                     << " faultInRow Count: " << entry.faultInRowCnt
-                     << " faultInCol Count: " << entry.faultInColCnt
-                     << " Row Must: " << (entry.rowMust ? "Yes" : "No")
-                     << " Col Must: " << (entry.colMust ? "Yes" : "No")
-                     << endl;
-            }
-        }
-    }
+    void printAddressCAMEntries();
 };
 
 
@@ -87,23 +69,8 @@ public:
 
     void addHybridCAMEntry(Fault &f, RECAM_addressCAM *addressCAM);
     void addHybridCAMEntryFromList(FaultList *fPtr, RECAM_addressCAM *addressCAM);
-    void printHybridCAMEntries() {
-        cout << "========= RECAM_hybridCAM :: printHybridCAMEntries ==========" << endl;
-        cout << "Hybrid CAM Entries:" << endl;
-        for (const auto& entry : hybridCAMEntries) {
-            if (entry.enable && entry.faultPtr != nullptr) {
-                cout << "Non-Pivot Fault - LU: " << entry.faultPtr->LogicUnitID
-                     << " Layer: " << entry.faultPtr->LayerID
-                     << " Bank: " << entry.faultPtr->BankID
-                     << " Row: " << entry.faultPtr->r
-                     << " Col: " << entry.faultPtr->c
-                     << " Related Pivot Fault Pointer: " << entry.pointer
-                     << " halfAddr: " << entry.halfAddr
-                     << " descriptorRowIsDiff: " << (entry.descriptorRowIsDiff ? "True" : "False")
-                     << endl;
-            }
-        }
-    }
+    void printHybridCAMEntries() ;
+
 };
 
 #endif

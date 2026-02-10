@@ -52,7 +52,6 @@ public:
     void addFault(const Fault &f){
         PEFaults.push_back(f);
     }
-
     void classifyFaults();
     void printFaultListPE(){
         cout << "Fault List for a single PE" << endl;
@@ -83,7 +82,6 @@ public:
 
     bool loadFaults(string filename);
     void printFaultLoader();
-    // void writeFaultLoader();
     void writeFaultMap(string filename);
 
 };

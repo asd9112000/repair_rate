@@ -64,7 +64,7 @@ public:
     }
 
     void genFaultAnalyzeMatrix() {
-        cout << "Generating fault analyze matrix for hardware..." << endl;
+        // cout << "Generating fault analyze matrix for hardware..." << endl;
         int addressCAMFullSize = matrixSize;
         int addressCAMEntriesCnt = addressCAM->addressCAMEntries.size();
         bool isAddressCAMEntriesFull = addressCAMEntriesCnt >= addressCAMFullSize;
@@ -90,13 +90,13 @@ public:
                 // bool hasRowPtr = hasRowPtrs[i_row];
                 // bool hasColPtr = hasColPtrs[i_col];
                 bool diagaonal = (i_row == i_col) && (i_row <= addressCAMEntriesCnt - 1);
-                cout << "Processing cell (" << i_row << ", " << i_col << "): Row Must: " << (rowMust ? "Yes" : "No") << " Col Must: " << (colMust ? "Yes" : "No") << " Diagonal: " << (diagaonal ? "Yes" : "No") << endl;
+                // cout << "Processing cell (" << i_row << ", " << i_col << "): Row Must: " << (rowMust ? "Yes" : "No") << " Col Must: " << (colMust ? "Yes" : "No") << " Diagonal: " << (diagaonal ? "Yes" : "No") << endl;
                 faultAnalyzeMatrixHardware[i_row][i_col] = diagaonal || rowMust || colMust; // || hasRowPtr || hasColPtr;
-                printFaultAnalyzeMatrix();
+                // printFaultAnalyzeMatrix();
             }
         }
-        cout << " 1st printFaultAnalyzeMatrix" << endl;
-        printFaultAnalyzeMatrix();
+
+        // printFaultAnalyzeMatrix();
 
         vector <int> rowAddrs, colAddrs;
         for ( auto &entry : addressCAM->addressCAMEntries){
@@ -105,16 +105,16 @@ public:
                 colAddrs.push_back(entry.faultPtr->c);
             }
         }
-        cout << "rowAddrs: ";
-        for ( auto &r : rowAddrs){
-            cout << r << " ";
-        }
-        cout << endl;
-        cout << "colAddrs: ";
-        for ( auto &c : colAddrs){
-            cout << c << " ";
-        }
-        cout << endl;
+        // cout << "rowAddrs: ";
+        // for ( auto &r : rowAddrs){
+        //     cout << r << " ";
+        // }
+        // cout << endl;
+        // cout << "colAddrs: ";
+        // for ( auto &c : colAddrs){
+        //     cout << c << " ";
+        // }
+        // cout << endl;
 
 
         /*
@@ -132,7 +132,7 @@ public:
         */
 
 
-        cout << "Updating fault analyze matrix for hardware based on Hybrid CAM entries..." << endl;
+        // cout << "Updating fault analyze matrix for hardware based on Hybrid CAM entries..." << endl;
         for (auto &hyEntry : hybridCAM->hybridCAMEntries){
             bool rowMatch = false, colMatch = false;
             int rowMatchIndex = -1 , colMatchIndex = -1;
@@ -153,13 +153,13 @@ public:
                 }
             }
 
-            cout <<"  -"  << "Processing Hybrid CAM Entry: Row: " << hyEntry.faultPtr->r << " Col: " << hyEntry.faultPtr->c
-                 << " Related Pivot Fault Pointer: " << hyEntry.pointer
-                 << " descriptorRowIsDiff: " << (hyEntry.descriptorRowIsDiff ? "True" : "False")
-                 << endl;
-            cout << "      - Row Match: " << (rowMatch ? "Yes" : "No") << " (Index: " << rowMatchIndex << ")" << endl
-                 << "      - Col Match: " << (colMatch ? "Yes" : "No") << " (Index: " << colMatchIndex << ")"
-                 << endl;
+            // cout <<"  -"  << "Processing Hybrid CAM Entry: Row: " << hyEntry.faultPtr->r << " Col: " << hyEntry.faultPtr->c
+            //      << " Related Pivot Fault Pointer: " << hyEntry.pointer
+            //      << " descriptorRowIsDiff: " << (hyEntry.descriptorRowIsDiff ? "True" : "False")
+            //      << endl;
+            // cout << "      - Row Match: " << (rowMatch ? "Yes" : "No") << " (Index: " << rowMatchIndex << ")" << endl
+            //      << "      - Col Match: " << (colMatch ? "Yes" : "No") << " (Index: " << colMatchIndex << ")"
+            //      << endl;
 
 
 
@@ -227,43 +227,9 @@ public:
                     // This case should not happen
                 }
             }
-            cout << " 2nd printFaultAnalyzeMatrix" << endl;
-            printFaultAnalyzeMatrix();
+            // printFaultAnalyzeMatrix();
         }
     }
-
-    // void genFaultAnalyzeMatrix_wrongHW()
-    // {
-    //     cout << "Generating fault analyze matrix for hardware..." << endl;
-    //     vector<bool> hasRowPtrs(matrixSize, false), hasColPtrs(matrixSize, false);
-    //     for (auto &hyEntry : hybridCAM->hybridCAMEntries)
-    //     {
-    //         if (hyEntry.enable && hyEntry.faultPtr != nullptr)
-    //         {
-    //             if (hyEntry.descriptor_row)
-    //             {
-    //                 hasRowPtrs[hyEntry.pointer] = true;
-    //             }
-    //             else
-    //             {
-    //                 hasColPtrs[hyEntry.pointer] = true;
-    //             }
-    //         }
-    //     }
-
-    //     for (int i_row = 0; i_row < matrixSize; ++i_row)
-    //     {
-    //         for (int i_col = 0; i_col < matrixSize; ++i_col)
-    //         {
-    //             bool rowMust = addressCAM->addressCAMEntries[i_row].rowMust;
-    //             bool colMust = addressCAM->addressCAMEntries[i_col].colMust;
-    //             bool hasRowPtr = hasRowPtrs[i_row];
-    //             bool hasColPtr = hasColPtrs[i_col];
-    //             faultAnalyzeMatrixHardware[i_row][i_col] = rowMust || colMust || hasRowPtr || hasColPtr;
-    //         }
-    //     }
-    // }
-
 
     void writeFaultAnalyzeMatrixToFile(const string &filename) {
         ofstream outFile(filename);
@@ -312,62 +278,8 @@ public:
         cout << "Fault analyze matrix has been written to " << filename << endl;
     }
 
-    void printFaultAnalyzeMatrix() {
-        cout << "Fault Analyze Matrix for Hardware (1: Faulty Cell, 0: Non-Faulty Cell)" << endl;
-        for (const auto &row : faultAnalyzeMatrixHardware) {
-            for (const auto &cell : row) {
-                cout << (cell ? "1 " : "0 ");
-            }
-            cout << endl;
-        }
-    }
-
-    // void checkSolution(const SolGenerator::solMatrix &solution)
-    bool checkSolution(const solMatrix &solution, int solIndex)
-    {
-        cout << "  -Checking solution: " << solIndex << endl;
-        for ( int i_row = 0; i_row < matrixSize; ++i_row){
-            for ( int i_col = 0; i_col < matrixSize; ++i_col){
-                if (!solution[i_row][i_col] && faultAnalyzeMatrixHardware[i_row][i_col]){
-                    cout << "    -Solution is invalid." << endl;
-                    cout << "    -Cell (" << i_row << ", " << i_col << ") is in fault area." << endl;
-                    return false;
-                }
-            }
-        }
-        cout << "    -Solution: " << solIndex << " is valid." << endl;
-        return true;
-    }
-
-    void genValidSolList(const vector<solMatrix> &allSolutions)
-    {
-        cout << "Generating solution list..." << endl;
-        for (int solIndex = 0; solIndex < allSolutions.size(); ++solIndex)
-        {
-            const auto &solution = allSolutions[solIndex];
-            if (checkSolution(solution, solIndex))
-            {
-                cout << "    -Solution " << solIndex << " is added to valid solution list." << endl;
-                validSolList.push_back(solIndex);
-            }
-        }
-        if (!validSolList.empty()) {
-            RepairSuccess = true;
-        }
-    }
-
-    void printValidSolList() {
-        cout << " ======== RECAM_PE::printValidSolList() ==============" << endl;
-        cout << "Have chance to be repaired: " << (isRepairable ? "Yes" : "No") << endl;
-        if (isRepairable){
-            cout << "Valid Solution List(might be empty): " << endl;
-        }
-        else {
-            cout <<  "Warning: No valid solution due to unrepairable faults." << endl;
-            cout << "Valid Solution List is for reference only. ( ignore  the overflow pivot fault)." << endl;
-        }
-        for (int solIndex : validSolList) {
-            cout << "  - Solution Index: " << solIndex << endl;
-        }
-    }
+    void printFaultAnalyzeMatrix() ;
+    bool checkSolution(const solMatrix &solution, int solIndex);
+    void genValidSolList(const vector<solMatrix> &allSolutions);
+    void printValidSolList() ;
 };
