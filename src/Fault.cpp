@@ -90,6 +90,10 @@ void FaultList::printFaultList()
     }
 }
 
+
+
+
+
 bool FaultLoader :: loadFaults(string filename)
 {
     ifstream fault_file(filename);
@@ -151,6 +155,9 @@ void FaultLoader::printFaultLoader()
     cout << "===== End of Fault Loader Summary ====" << endl << endl;
 }
 
+
+
+
 void FaultLoader::writeFaultMap(string filename)
 {
     ofstream outFile(filename);
@@ -162,8 +169,9 @@ void FaultLoader::writeFaultMap(string filename)
 
     for (int i_faultLists = 0; i_faultLists < faultLists.size(); ++i_faultLists)
     {
-        outFile << "========== Fault Map with buffer CAM =============" << endl;
+        outFile << endl <<"========== Fault Map with buffer CAM =============" << endl;
         outFile << "PE " << i_faultLists << " Fault List:" << endl;
+        outFile << "Pivot fault X, non-pivot fault O, buffer fault B, free ." << endl;
 
         vector<int> rowAddress, colAddress;
         unordered_map<int, int> rowAddressToIndex, colAddressToIndex;
@@ -187,13 +195,25 @@ void FaultLoader::writeFaultMap(string filename)
         }
 
         // assign Fault Map with buffer CAM
-        vector<vector<bool>> faultMap(rowAddress.size(), vector<bool>(colAddress.size(), false));
+        // outFile << "Pivot fault X, non-pivot fault O, buffer fault B, free ." << endl;
+        //           int           1                  2               3       0
+        // vector<vector<bool>> faultMap(rowAddress.size(), vector<bool>(colAddress.size(), false));
+        vector<vector<int>> faultMap(rowAddress.size(), vector<int>(colAddress.size(), 0));
         for (int i_faults = 0; i_faults < faultLists[i_faultLists].PEFaults.size(); ++i_faults)
         {
             const auto &f = faultLists[i_faultLists].PEFaults[i_faults];
             int rowIndex = rowAddressToIndex[f.r];
             int colIndex = colAddressToIndex[f.c];
-            faultMap[rowIndex][colIndex] = true;
+            if (f.isPivot) {
+
+                faultMap[rowIndex][colIndex] = 1;
+            }
+            else if (f.isNonPivot) {
+                faultMap[rowIndex][colIndex] = 2;
+            }
+            else if (f.isBuffer) {
+                faultMap[rowIndex][colIndex] = 3;
+            }
         }
 
         // write Fault Map to file
@@ -210,7 +230,14 @@ void FaultLoader::writeFaultMap(string filename)
             outFile << setw(4) << rowAddress[r];
             for (int c = 0; c < colAddress.size(); ++c)
             {
-                outFile << setw(4) << (faultMap[r][c] ? "X" : ".");
+                char symbol = '.';
+                switch (faultMap[r][c]) {
+                    case 1: symbol = 'X'; break;
+                    case 2: symbol = 'O'; break;
+                    case 3: symbol = 'B'; break;
+                    default: symbol = '.'; break;
+                }
+                outFile << setw(4) << symbol;
             }
             outFile << endl;
         }
@@ -247,7 +274,8 @@ void FaultLoader::writeFaultMap(string filename)
         }
 
         // assign Fault Map with buffer CAM
-        vector<vector<bool>> faultMapWoBuff(rowAddressWoBuff.size(), vector<bool>(colAddressWoBuff.size(), false));
+        // vector<vector<bool>> faultMapWoBuff(rowAddressWoBuff.size(), vector<bool>(colAddressWoBuff.size(), false));
+        vector<vector<int>> faultMapWoBuff(rowAddressWoBuff.size(), vector<int>(colAddressWoBuff.size(), 0));
         for (int i_faults = 0; i_faults < faultLists[i_faultLists].PEFaults.size(); ++i_faults)
         {
             const auto &f = faultLists[i_faultLists].PEFaults[i_faults];
@@ -257,7 +285,15 @@ void FaultLoader::writeFaultMap(string filename)
             }
             int rowIndex = rowAddressToIndexWoBuff[f.r];
             int colIndex = colAddressToIndexWoBuff[f.c];
-            faultMapWoBuff[rowIndex][colIndex] = true;
+            if (f.isPivot)
+            {
+
+                faultMap[rowIndex][colIndex] = 1;
+            }
+            else if (f.isNonPivot)
+            {
+                faultMap[rowIndex][colIndex] = 2;
+            }
         }
 
         // write Fault Map to file
@@ -274,7 +310,14 @@ void FaultLoader::writeFaultMap(string filename)
             outFile << setw(4) << rowAddressWoBuff[r];
             for (int c = 0; c < colAddressWoBuff.size(); ++c)
             {
-                outFile << setw(4) << (faultMapWoBuff[r][c] ? "X" : ".");
+                char symbol = '.';
+                switch (faultMapWoBuff[r][c]) {
+                    case 1: symbol = 'X'; break;
+                    case 2: symbol = 'O'; break;
+                    case 3: symbol = 'B'; break;
+                    default: symbol = '.'; break;
+                }
+                outFile << setw(4) << symbol;
             }
             outFile << endl;
         }

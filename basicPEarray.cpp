@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     int Rs = atoi(argv[1]); // number of spare rows
     int Cs = atoi(argv[2]); // number of spare columns
     int buf_num = 2;
-    std::string reportDir = "./mainReport/";
+    std::string reportDir = "./basicPEarrayReport/";
     std::filesystem::create_directories(reportDir); // Ensure the directory exists
     cout << "Input Rs: " << Rs << ", Cs: " << Cs << endl;
 

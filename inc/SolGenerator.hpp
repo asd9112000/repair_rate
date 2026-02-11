@@ -39,8 +39,8 @@ public:
         initialize_allSolMatrixsType();
         // printAllSolVectors(true);
         // printAllSolMatrixs(true);
-        writeAllSolVectorsToFile(true);
-        writeAllSolMatrixsToFile(true);
+        // writeAllSolVectorsToFile("./mainReport");
+        // writeAllSolMatrixsToFile("./mainReport");
     };
 
 
@@ -81,14 +81,12 @@ public:
         }
     }
 
-    void writeAllSolVectorsToFile(bool writeToFile)
+    void writeAllSolVectorsToFile(string fileName)
     {
-        if (writeToFile)
-        {
-            ofstream outFile("AllSolVectors.txt");
+            ofstream outFile(fileName);
             if (!outFile.is_open())
             {
-                cerr << "Error: Unable to open file AllSolVectors.txt for writing." << endl;
+                cerr << "Error: Unable to open file " << fileName << " for writing." << endl;
                 return;
             }
 
@@ -105,38 +103,36 @@ public:
 
             outFile.close();
             cout << "All solution vectors have been written to AllSolVectors.txt" << endl;
-        }
     }
 
-    void writeAllSolMatrixsToFile(bool writeToFile)
+    void writeAllSolMatrixsToFile(string fileName)
     {
-        if (writeToFile)
-        {
-            ofstream outFile("AllSolMatrixs.txt");
-            if (!outFile.is_open())
-            {
-                cerr << "Error: Unable to open file AllSolMatrixs.txt for writing." << endl;
-                return;
-            }
 
-            outFile << "=========== All Solution Matrixs =============" << endl;
-            for (int i = 0; i < allSolMatrixsType.size(); ++i)
+        ofstream outFile(fileName);
+        if (!outFile.is_open())
+        {
+            cerr << "Error: Unable to open file " << fileName << " for writing." << endl;
+            return;
+        }
+
+        outFile << "=========== All Solution Matrixs =============" << endl;
+        for (int i = 0; i < allSolMatrixsType.size(); ++i)
+        {
+            outFile << "Solution Matrix " << i << ":" << endl;
+            for (int r = 0; r < matrixSize; ++r)
             {
-                outFile << "Solution Matrix " << i << ":" << endl;
-                for (int r = 0; r < matrixSize; ++r)
+                for (int c = 0; c < matrixSize; ++c)
                 {
-                    for (int c = 0; c < matrixSize; ++c)
-                    {
-                        outFile << setw(4) << (allSolMatrixsType[i][r][c] ? " 1 " : " 0 ");
-                    }
-                    outFile << endl;
+                    outFile << setw(4) << (allSolMatrixsType[i][r][c] ? " 1 " : " 0 ");
                 }
                 outFile << endl;
             }
-
-            outFile.close();
-            cout << "All solution matrices have been written to AllSolMatrixs.txt" << endl;
+            outFile << endl;
         }
+
+        outFile.close();
+        cout << "All solution matrices have been written to AllSolMatrixs.txt" << endl;
+
     }
 };
 

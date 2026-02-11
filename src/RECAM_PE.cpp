@@ -280,7 +280,8 @@ void RECAM_PE::genValidSolList(const vector<solMatrix> &allSolutions)
             validSolList.push_back(solIndex);
         }
     }
-    if (!validSolList.empty()) {
+
+    if (!validSolList.empty() && isRepairable){
         RepairSuccess = true;
     }
 }
