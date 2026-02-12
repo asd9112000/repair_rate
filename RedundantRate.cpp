@@ -30,6 +30,15 @@ int main(int argc, char *argv[])
     int CsRuduced = Cs - 1;
     int buf_num = 2;
     std::string reportDir = "./RedundantRate/";
+    string RepairReport = reportDir + "RepairReport.rpt";
+    // const string RepairReport = reportDir + "RepairReport" + " " + to_string(Rs) + " " + to_string(Cs) + ".rpt";
+    for (int i = 1; i < argc; ++i) {
+        if (argv[i] == std::string("--rptName"))
+        {
+            RepairReport = reportDir + "RepairReport" + std::string(argv[++i]) + ".rpt";
+        }
+    }
+
     std::filesystem::create_directories(reportDir); // Ensure the directory exists
     cout << "Input Rs: " << Rs << ", Cs: " << Cs << endl;
 
@@ -211,7 +220,7 @@ int main(int argc, char *argv[])
     }
     outFile.close();
 
-    const string RepairReport = reportDir + "RepairReport.rpt";
+    // const string RepairReport = reportDir + "RepairReport.rpt";
     ofstream reportFile(RepairReport);
     if (!reportFile.is_open())
     {
