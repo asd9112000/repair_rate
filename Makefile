@@ -56,7 +56,8 @@ gen_fault:
 	(cd fault_generator && ./fault_generator.o --logic_units 4 --fixed_faults $(f) --stack_height $(s))
 
 rdr_r:
-	./RedundantRate.o $(s) $(s) --rptName $(rptName) > RedundantRate.log
+	./RedundantRate.o $(s) $(s)  > RedundantRate.log
+# 	./RedundantRate.o $(s) $(s) --rptName $(rptName) > RedundantRate.log
 
 sle_r:
 	./SpareLineEfficiency.o $(s) $(s) > SpareLineEfficiency.log

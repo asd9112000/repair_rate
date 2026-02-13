@@ -19,7 +19,7 @@ void RECAM_bufferCAM::addBufferCAMEntry(Fault &f)
 
 void RECAM_bufferCAM::addBufferCAMEntryFromList(FaultList *fPtr)
 {
-    cout << " =========== Loading faults to buffer CAMs  ===========" << endl;
+    // cout << " =========== Loading faults to buffer CAMs  ===========" << endl;
     for (auto &f : fPtr->bufferFaults)
     {
         addBufferCAMEntry(*f);

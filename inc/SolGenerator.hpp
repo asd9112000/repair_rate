@@ -17,6 +17,8 @@ using namespace std;
 
 using solVector = std::vector<bool>;              // Col (true),  Row (false)
 using solMatrix = std::vector<std::vector<bool>>; // [Row][Col]
+using AllSolVectorsType = std::vector<solVector>; // allSolutions[solIndex][Row][Col]
+using AllSolMatrixsType = std::vector<solMatrix>; // allSolutions[solIndex][Row][Col]
 
 class SolGenerator
 {
@@ -28,8 +30,8 @@ public:
     // 1.generate all combinations of selecting Rs rows from Rs + Cs
     //  - Must generate the first solvector in dictionary order !!!!!
     // 2. for each combination, generate the solution matrix
-    std::vector<solVector> allSolVectorsType;         // Col (true),  Row (false)
-    std::vector<solMatrix> allSolMatrixsType;         // allSolutions[solIndex][Row][Col]
+    AllSolVectorsType allSolVectorsType;              // Col (true),  Row (false)
+    AllSolMatrixsType allSolMatrixsType;         // allSolutions[solIndex][Row][Col]
 
 
     SolGenerator(int r_spare, int c_spare) : Rs(r_spare), Cs(c_spare)

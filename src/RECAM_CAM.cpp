@@ -17,7 +17,7 @@ void RECAM_addressCAM::addAddressCAMEntry(Fault &f)
 
 void RECAM_addressCAM::addAddressCAMEntryFromList(FaultList *fPtr)
 {
-    cout << " =========== Loading faults to address CAMs  ===========" << endl;
+    // cout << " =========== Loading faults to address CAMs  ===========" << endl;
     for (auto &f : fPtr->pivotFaults)
     {
         addAddressCAMEntry(*f);
@@ -189,7 +189,7 @@ void RECAM_hybridCAM::addHybridCAMEntry(Fault &f, RECAM_addressCAM *addressCAM)
 
 void RECAM_hybridCAM::addHybridCAMEntryFromList(FaultList *fPtr, RECAM_addressCAM *addressCAM)
 {
-    cout << " =========== Loading faults to hybrid CAMs  ===========" << endl;
+    // cout << " =========== Loading faults to hybrid CAMs  ===========" << endl;
     for (auto &f : fPtr->nonPivotFaults)
     {
         addHybridCAMEntry(*f, addressCAM);
