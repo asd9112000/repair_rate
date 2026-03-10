@@ -10,7 +10,9 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iomanip> // for std::setw
+#include <unordered_map>
 
+#include "./PairHash.hpp"
 
 using namespace std;
 
@@ -19,6 +21,11 @@ using solVector = std::vector<bool>;              // Col (true),  Row (false)
 using solMatrix = std::vector<std::vector<bool>>; // [Row][Col]
 using AllSolVectorsType = std::vector<solVector>; // allSolutions[solIndex][Row][Col]
 using AllSolMatrixsType = std::vector<solMatrix>; // allSolutions[solIndex][Row][Col]
+using SolVectorsList = std::vector<solVector>; // allSolutions[solIndex][Row][Col]
+using SolMatrixsList = std::vector<solMatrix>; // allSolutions[solIndex][Row][Col]
+
+using SolVecForSpares = std::unordered_map<std::pair<int, int>, SolVectorsList, PairHash>;    // key: ( spare row cnt, spare col cnt ), value: list of solIndex in allSolVectorsType and allSolMatrixsType
+using SolMatForSpares = std::unordered_map<std::pair<int, int>, SolMatrixsList, PairHash>; // key: ( spare row cnt, spare col cnt ), value: list of solIndex in allSolVectorsType and allSolMatrixsType
 
 class SolGenerator
 {
@@ -30,112 +37,34 @@ public:
     // 1.generate all combinations of selecting Rs rows from Rs + Cs
     //  - Must generate the first solvector in dictionary order !!!!!
     // 2. for each combination, generate the solution matrix
-    AllSolVectorsType allSolVectorsType;              // Col (true),  Row (false)
-    AllSolMatrixsType allSolMatrixsType;         // allSolutions[solIndex][Row][Col]
 
+    AllSolVectorsType allSolVectorsType;
+    AllSolMatrixsType allSolMatrixsType;
+
+    SolVecForSpares solVecForSpares;
+    SolMatForSpares solMatForSpares;
 
     SolGenerator(int r_spare, int c_spare) : Rs(r_spare), Cs(c_spare)
     {
         matrixSize = Rs + Cs;
         initialize_allSolVectorsType();
         initialize_allSolMatrixsType();
-        // printAllSolVectors(true);
-        // printAllSolMatrixs(true);
-        // writeAllSolVectorsToFile("./mainReport");
-        // writeAllSolMatrixsToFile("./mainReport");
     };
 
+    void initialize_allSolVectorsType();
+    void initialize_allSolMatrixsType();
 
-    void initialize_allSolVectorsType()
-    {
-        solVector solvector = solVector(Rs + Cs, false);
-        fill(solvector.begin(), solvector.begin() + Cs, true); // 0~Cs-1  are Col (true), the rest are Row (false)
-        do
-        {
-            allSolVectorsType.push_back(solvector);
-        } while (prev_permutation(solvector.begin(), solvector.end())); // gerate all combinations
-    }
+    void writeAllSolVectorsToFile(string fileName) ;
+    void writeAllSolMatrixsToFile(string fileName);
 
-    void initialize_allSolMatrixsType()
-    {
-        for (int i = 0; i < allSolVectorsType.size(); ++i)
-        {
-            solMatrix solmatrix(matrixSize, vector<bool>(matrixSize, false));
-            solVector &solvector = allSolVectorsType[i];
-            for (int j = 0; j < solvector.size(); ++j)
-            {
-                if (solvector[j] == false)
-                { // spare row
-                    for (int c = 0; c < matrixSize; ++c)
-                    {
-                        solmatrix[j][c] = true;
-                    }
-                }
-                else
-                { // spare column
-                    for (int r = 0; r < matrixSize; ++r)
-                    {
-                        solmatrix[r][j] = true;
-                    }
-                }
-            }
-            allSolMatrixsType.push_back(solmatrix);
-        }
-    }
+    void genSolVecForSpares(int r_spare, int c_spare);
+    void genSolMatForSpares(int r_spare, int c_spare);
+    void genSolForSpares(int r_spare, int c_spare);
 
-    void writeAllSolVectorsToFile(string fileName)
-    {
-            ofstream outFile(fileName);
-            if (!outFile.is_open())
-            {
-                cerr << "Error: Unable to open file " << fileName << " for writing." << endl;
-                return;
-            }
-
-            outFile << "=========== All Solution Vectors =============" << endl;
-            for (int i = 0; i < allSolVectorsType.size(); ++i)
-            {
-                outFile << "Solution Vector " << i << ": ";
-                for (bool sel : allSolVectorsType[i])
-                {
-                    outFile << (sel ? "C " : "R "); // true (C)，false (R)
-                }
-                outFile << endl;
-            }
-
-            outFile.close();
-            cout << "All solution vectors have been written to AllSolVectors.txt" << endl;
-    }
-
-    void writeAllSolMatrixsToFile(string fileName)
-    {
-
-        ofstream outFile(fileName);
-        if (!outFile.is_open())
-        {
-            cerr << "Error: Unable to open file " << fileName << " for writing." << endl;
-            return;
-        }
-
-        outFile << "=========== All Solution Matrixs =============" << endl;
-        for (int i = 0; i < allSolMatrixsType.size(); ++i)
-        {
-            outFile << "Solution Matrix " << i << ":" << endl;
-            for (int r = 0; r < matrixSize; ++r)
-            {
-                for (int c = 0; c < matrixSize; ++c)
-                {
-                    outFile << setw(4) << (allSolMatrixsType[i][r][c] ? " 1 " : " 0 ");
-                }
-                outFile << endl;
-            }
-            outFile << endl;
-        }
-
-        outFile.close();
-        cout << "All solution matrices have been written to AllSolMatrixs.txt" << endl;
-
-    }
+    void writeSolVecForSparesToFile(string fileName, int r_spare, int c_spare);
+    void writeSolMatForSparesToFile(string fileName, int r_spare, int c_spare);
+    void writeAllSolMatForSparesToFile(string fileName);
+    void writeAllSolVecForSparesToFile(string fileName);
 };
 
 #endif

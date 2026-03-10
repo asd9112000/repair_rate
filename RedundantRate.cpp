@@ -18,7 +18,8 @@
 // #include "inc/RECAM_addressCAM.hpp"
 #include "inc/RECAM_PE.hpp"
 #include "inc/SolGenerator.hpp"
-#include "inc/fourWayPE.hpp"
+#include "inc/FourWayPE.hpp"
+// #include "inc/RDR_PEs.hpp"
 
 using namespace std;
 
@@ -114,8 +115,9 @@ int main(int argc, char *argv[])
     int patNum = faultLoader_RsCs.faultLists.size();
 
     // statistics
-    int RedundantLineCnt = 0;
-    int fullRepairCount  = 0;
+    int redundantLineCnt = 0;
+    int allWayRepairCount= 0;
+    int PERepairCount    = 0;
     int maxFaultCnt      = 0;
     int minFaultCnt      = 10000;
     vector<int> perPERepairCount = {0, 0, 0, 0};
@@ -137,65 +139,65 @@ int main(int argc, char *argv[])
             minFaultCnt = faultList_RsCs.PEFaults.size();
         }
 
-        FourWayPE fourWayPE(Rs, Cs, buf_num, 0);
-        fourWayPE.loadFaultsToPEs(faultList_RsCs, faultList_RsReduced, faultList_CsReduced, faultList_RsCsReduced);
-        fourWayPE.genFaultAnalyzeMatrix();
-        fourWayPE.genValidSolList(solGenerator_RsCs.allSolMatrixsType,
+        FourWayPE rdrPEs(Rs, Cs, buf_num, 0);
+        rdrPEs.loadFaultsToPEs(faultList_RsCs, faultList_RsReduced, faultList_CsReduced, faultList_RsCsReduced);
+        rdrPEs.genFaultAnalyzeMatrix();
+        rdrPEs.genValidSolList(solGenerator_RsCs.allSolMatrixsType,
                                   solGenerator_RsReduced.allSolMatrixsType,
                                   solGenerator_CsReduced.allSolMatrixsType,
                                   solGenerator_RsCsReduced.allSolMatrixsType);
-        fourWayPE.writeFaultAnalyzeMatrixToFile(reportDir + "FourWayPE_fault_analyze_matrix");
-        fourWayPE.printValidSolList();
+        rdrPEs.writeFaultAnalyzeMatrixToFile(reportDir + "FourWayPE_fault_analyze_matrix");
+        rdrPEs.printValidSolList();
 
 
-        if (fourWayPE.fullRepairSuccess)
+        if (rdrPEs.allWayRepairSuccess)
         {
-            fullRepairCount++;
+            allWayRepairCount++;
         }
 
         // detecting special cases( I think these cases should not happen )
-        if (fourWayPE.PE_RsCsReduced.RepairSuccess){
-            if ( ! (fourWayPE.PE_RsReduced.RepairSuccess && fourWayPE.PE_CsReduced.RepairSuccess && fourWayPE.PE_RsCs.RepairSuccess) ){
-                cout << "Warrning: special case detected, RsCsReduced repair success but some of others don't  success." << endl;
+        if (rdrPEs.PE_RsCsReduced.RepairSuccess){
+            if ( ! (rdrPEs.PE_RsReduced.RepairSuccess && rdrPEs.PE_CsReduced.RepairSuccess && rdrPEs.PE_RsCs.RepairSuccess) ){
+                cout << "Warning: special case detected, RsCsReduced repair success but some of others don't  success." << endl;
             }
         }
-        else if (fourWayPE.PE_RsReduced.RepairSuccess || fourWayPE.PE_CsReduced.RepairSuccess){
-            if ( ! fourWayPE.PE_RsCs.RepairSuccess){
-                cout << "Warrning: special case detected, RsReduced or CsReduced repair success but RsCs doesn't success." << endl;
+        else if (rdrPEs.PE_RsReduced.RepairSuccess || rdrPEs.PE_CsReduced.RepairSuccess){
+            if ( ! rdrPEs.PE_RsCs.RepairSuccess){
+                cout << "Warning: special case detected, RsReduced or CsReduced repair success but RsCs doesn't success." << endl;
             }
         }
 
-        if (fourWayPE.PE_RsCsReduced.RepairSuccess)
+        if (rdrPEs.PE_RsCsReduced.RepairSuccess)
         {
-            if (fourWayPE.PE_RsCs.RepairSuccess)
+            if (rdrPEs.PE_RsCs.RepairSuccess)
             {
-                RedundantLineCnt = RedundantLineCnt + 2;
+                redundantLineCnt = redundantLineCnt + 2;
             }
-            else if (fourWayPE.PE_RsReduced.RepairSuccess || fourWayPE.PE_CsReduced.RepairSuccess  )
+            else if (rdrPEs.PE_RsReduced.RepairSuccess || rdrPEs.PE_CsReduced.RepairSuccess  )
             {
-                RedundantLineCnt++;
+                redundantLineCnt++;
             }
         }
-        else if (fourWayPE.PE_RsReduced.RepairSuccess || fourWayPE.PE_CsReduced.RepairSuccess)
+        else if (rdrPEs.PE_RsReduced.RepairSuccess || rdrPEs.PE_CsReduced.RepairSuccess)
         {
-            if (fourWayPE.PE_RsCs.RepairSuccess)
+            if (rdrPEs.PE_RsCs.RepairSuccess)
             {
-                RedundantLineCnt++;
+                redundantLineCnt++;
             }
         }
 
 
         repairRecordFile << "Pattern " << ii_pattern << ": ";
         repairRecordFile << endl
-                         << "fourWayPE.fullRepairSuccess: "
-                         << (fourWayPE.fullRepairSuccess ? "1" : "0") << endl;
+                         << "rdrPEs.allWayRepairSuccess: "
+                         << (rdrPEs.allWayRepairSuccess ? "1" : "0") << endl;
         for (int i = 0; i < 4; ++i)
         {
             if (i == 0)
             {
-                repairRecordFile << "  -PE_RsCs        Repair Success: " << (fourWayPE.perPERepairSuccessList[i] ? "1" : "0") << endl;
+                repairRecordFile << "  -PE_RsCs Repair Success: " << (rdrPEs.perWayRepairSuccessList[i] ? "1" : "0") << endl;
                 repairRecordFile << "  -validSolution: ";
-                for (int solIndex : fourWayPE.PE_RsCs.validSolList)
+                for (int solIndex : rdrPEs.PE_RsCs.validSolList)
                 {
                     repairRecordFile << solIndex << " ";
                 }
@@ -203,9 +205,9 @@ int main(int argc, char *argv[])
             }
             else if (i == 1)
             {
-                repairRecordFile << "  -PE_RsReduced   Repair Success: " << (fourWayPE.perPERepairSuccessList[i] ? "1" : "0") << endl;
+                repairRecordFile << "  -PE_RsReduced   Repair Success: " << (rdrPEs.perWayRepairSuccessList[i] ? "1" : "0") << endl;
                 repairRecordFile << "  -validSolution: ";
-                for (int solIndex : fourWayPE.PE_RsReduced.validSolList)
+                for (int solIndex : rdrPEs.PE_RsReduced.validSolList)
                 {
                     repairRecordFile << solIndex << " ";
                 }
@@ -213,9 +215,9 @@ int main(int argc, char *argv[])
             }
             else if (i == 2)
             {
-                repairRecordFile << "  -PE_CsReduced   Repair Success: " << (fourWayPE.perPERepairSuccessList[i] ? "1" : "0") << endl;
+                repairRecordFile << "  -PE_CsReduced   Repair Success: " << (rdrPEs.perWayRepairSuccessList[i] ? "1" : "0") << endl;
                 repairRecordFile << "  -validSolution: ";
-                for (int solIndex : fourWayPE.PE_CsReduced.validSolList)
+                for (int solIndex : rdrPEs.PE_CsReduced.validSolList)
                 {
                     repairRecordFile << solIndex << " ";
                 }
@@ -223,16 +225,16 @@ int main(int argc, char *argv[])
             }
             else if (i == 3)
             {
-                repairRecordFile << "  -PE_RsCsReduced Repair Success: " << (fourWayPE.perPERepairSuccessList[i] ? "1" : "0") << endl;
+                repairRecordFile << "  -PE_RsCsReduced Repair Success: " << (rdrPEs.perWayRepairSuccessList[i] ? "1" : "0") << endl;
                 repairRecordFile << "  -validSolution: ";
-                for (int solIndex : fourWayPE.PE_RsCsReduced.validSolList)
+                for (int solIndex : rdrPEs.PE_RsCsReduced.validSolList)
                 {
                     repairRecordFile << solIndex << " ";
                 }
                 repairRecordFile << endl;
             }
             // repairRecordFile << (RepairSuccessList[i] ? "1" : "0") << endl;
-            if (fourWayPE.perPERepairSuccessList[i])
+            if (rdrPEs.perWayRepairSuccessList[i])
             {
                 perPERepairCount[i]++;
             }
@@ -246,16 +248,16 @@ int main(int argc, char *argv[])
         cerr << "Error: Could not open file " << reportFileName << " for writing." << endl;
         return 0;
     }
-    reportFile << "The PE array has been repaired " << fullRepairCount << " times in " << patNum << " times simulation." << endl;
+    reportFile << "The PE array has been repaired " << PERepairCount << " times in " << patNum << " times simulation." << endl;
     reportFile << "  -Max fault count of all patterns: " << maxFaultCnt << endl;
     reportFile << "  -Min fault count of all patterns: " << minFaultCnt << endl;
-    reportFile << "  -Repair rate: " << static_cast<double>(fullRepairCount) / patNum << endl;
+    reportFile << "  -Repair rate: " << static_cast<double>(PERepairCount) / patNum << endl;
     reportFile << "  -PE_RsCs        Repair Success Count: " << perPERepairCount[0] << ", Repair Rate: " << static_cast<double>(perPERepairCount[0]) / patNum << endl;
     reportFile << "  -PE_RsReduced   Repair Success Count: " << perPERepairCount[1] << ", Repair Rate: " << static_cast<double>(perPERepairCount[1]) / patNum << endl;
     reportFile << "  -PE_CsReduced   Repair Success Count: " << perPERepairCount[2] << ", Repair Rate: " << static_cast<double>(perPERepairCount[2]) / patNum << endl;
     reportFile << "  -PE_RsCsReduced Repair Success Count: " << perPERepairCount[3] << ", Repair Rate: " << static_cast<double>(perPERepairCount[3]) / patNum << endl;
 
-    reportFile << "  -Redundant Line Count: " << RedundantLineCnt << ", Average: " << static_cast<double>(RedundantLineCnt) / patNum << endl;
+    reportFile << "  -Redundant Line Count: " << redundantLineCnt << ", Average: " << static_cast<double>(redundantLineCnt) / patNum << endl;
 
     reportFile.close();
 

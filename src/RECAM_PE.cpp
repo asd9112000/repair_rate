@@ -3,16 +3,17 @@
 void RECAM_PE::loadFaultsToCAMs(FaultList &faultList)
 {
     // cout << " =========== Loading faults to CAMs  ===========" << endl;
-    if (!faultList.bufferCAM_overflow)
+    if (faultList.bufferCAM_overflow)
     {
-        cout << "Warning: Unrepairable fault list";
-        cout << "  -Too many pivot faults exceeding both address CAM and buffer CAM capacity." << endl;
+        cout << "RECAM_PE::loadFaultsToCAMs" << endl;
+        cout << "Warning: Unrepairable fault list" << endl;
+        cout << "  - bufferCAM_overflow is true." ;
+        cout << "  - Too many pivot faults, exceeding both address CAM and buffer CAM capacity." << endl;
     }
     isRepairable = !faultList.bufferCAM_overflow;
     addressCAM->addAddressCAMEntryFromList(&faultList);
     hybridCAM->addHybridCAMEntryFromList(&faultList, addressCAM.get());
     bufferCAM->addBufferCAMEntryFromList(&faultList);
-    // cout << " ======= End of Loading faults to CAMs  ========" << endl;
 }
 
 void RECAM_PE::printPE()
@@ -261,7 +262,7 @@ void RECAM_PE::writeFaultAnalyzeMatrixToFile(const string &filename)
     }
 
     outFile.close();
-    cout << "Fault analyze matrix has been written to " << filename << endl;
+    // cout << "Fault analyze matrix has been written to " << filename << endl;
 }
 
 void RECAM_PE::printFaultAnalyzeMatrix()
@@ -319,7 +320,7 @@ void RECAM_PE::printValidSolList()
         cout << "Valid Solution List(might be empty): " << endl;
     }
     else {
-        cout <<  "Warning: No valid solution due to unrepairable faults." << endl;
+        cout << "Warning: No valid solution due to unrepairable faults." << endl;
         cout << "Valid Solution List is for reference only. ( ignore  the overflow pivot fault)." << endl;
     }
 

@@ -20,8 +20,18 @@
 // #include "inc/RECAM_addressCAM.hpp"
 #include "./RECAM_PE.hpp"
 #include "./SolGenerator.hpp"
+#include "./PairHash.hpp"
 
 using namespace std;
+
+
+/*
+    ========== FourWayPE Class ==========
+    set your own spare line for a single PE
+        - PE_RsCs: (Rs, Cs)
+        - This will try to fix the faults by 4 ways
+            (Rs, Cs), (Rs-1, Cs), (Rs, Cs-1), (Rs-1, Cs-1)
+*/
 
 class FourWayPE
 {
@@ -38,9 +48,12 @@ public:
     RECAM_PE PE_CsReduced;
     RECAM_PE PE_RsCsReduced;
 
-    bool fullRepairSuccess = false;
-    vector<bool> perPERepairSuccessList {false, false, false, false};
+    bool allWayRepairSuccess = false;
+    bool PERepairSuccess = false;
 
+
+    vector<bool> perWayRepairSuccessList{false, false, false, false}; // ( RsCs, RsReduced, CsReduced, RsCsReduced )
+    unordered_map<pair<int, int>, bool, PairHash> perWayRepairSuccessListForSparess; // key: (Rs, Cs)
 
     FourWayPE(int r, int c, int buf_num, int peIndex) :
         Rs(r), Cs(c), RsRuduced(r-1), CsRuduced(c-1), buf_num(buf_num), PEIndex(peIndex),
@@ -50,12 +63,11 @@ public:
         PE_RsCsReduced(RsRuduced, CsRuduced, buf_num)
     {};
 
-
-    void printFourPEs(){
-        PE_RsCs.printPE();
-        PE_RsReduced.printPE();
-        PE_CsReduced.printPE();
-        PE_RsCsReduced.printPE();
+    void loadFaultsToPEs(FaultList &faultListRsCs, FaultList &faultListRsReduced, FaultList &faultListCsReduced, FaultList &faultListRsCsReduced){
+        PE_RsCs.loadFaultsToCAMs(faultListRsCs);
+        PE_RsReduced.loadFaultsToCAMs(faultListRsReduced);
+        PE_CsReduced.loadFaultsToCAMs(faultListCsReduced);
+        PE_RsCsReduced.loadFaultsToCAMs(faultListRsCsReduced);
     }
 
     void genValidSolList(
@@ -68,27 +80,21 @@ public:
         PE_CsReduced.genValidSolList(allSolMatrixsTypeCsReduced);
         PE_RsCsReduced.genValidSolList(allSolMatrixsTypeRsCsReduced);
 
-        perPERepairSuccessList = {
+        perWayRepairSuccessList = {
             PE_RsCs.RepairSuccess,
             PE_RsReduced.RepairSuccess,
             PE_CsReduced.RepairSuccess,
-            PE_RsCsReduced.RepairSuccess};
-        fullRepairSuccess = all_of(perPERepairSuccessList.begin(), perPERepairSuccessList.end(), [](bool success) {return success; });
-    }
+            PE_RsCsReduced.RepairSuccess
+        };
 
-    void loadFaultsToPEs(FaultList &faultListRsCs, FaultList &faultListRsReduced, FaultList &faultListCsReduced, FaultList &faultListRsCsReduced){
-        PE_RsCs.loadFaultsToCAMs(faultListRsCs);
-        PE_RsReduced.loadFaultsToCAMs(faultListRsReduced);
-        PE_CsReduced.loadFaultsToCAMs(faultListCsReduced);
-        PE_RsCsReduced.loadFaultsToCAMs(faultListRsCsReduced);
-    }
+        perWayRepairSuccessListForSparess[{Rs, Cs}] = PE_RsCs.RepairSuccess;
+        perWayRepairSuccessListForSparess[{RsRuduced, Cs}] = PE_RsReduced.RepairSuccess;
+        perWayRepairSuccessListForSparess[{Rs, CsRuduced}] = PE_CsReduced.RepairSuccess;
+        perWayRepairSuccessListForSparess[{RsRuduced, CsRuduced}] = PE_RsCsReduced.RepairSuccess;
 
-    // void loadFaultsToCAMs(FaultList &faultListRsCs, FaultList &faultListRsReduced, FaultList &faultListCsReduced, FaultList &faultListRsCsReduced){
-    //     PE_RsCs.loadFaultsToCAMs(faultListRsCs);
-    //     PE_RsReduced.loadFaultsToCAMs(faultListRsReduced);
-    //     PE_CsReduced.loadFaultsToCAMs(faultListCsReduced);
-    //     PE_RsCsReduced.loadFaultsToCAMs(faultListRsCsReduced);
-    // }
+        allWayRepairSuccess = all_of(perWayRepairSuccessList.begin(), perWayRepairSuccessList.end(), [](bool success) {return success; });
+        PERepairSuccess = PE_RsCs.RepairSuccess || PE_RsReduced.RepairSuccess || PE_CsReduced.RepairSuccess || PE_RsCsReduced.RepairSuccess;
+    }
 
     void genFaultAnalyzeMatrix(){
         PE_RsCs.genFaultAnalyzeMatrix();
@@ -97,24 +103,30 @@ public:
         PE_RsCsReduced.genFaultAnalyzeMatrix();
     }
 
+    bool checkSolution(const solMatrix &solution, int solIndex);
+    // void genValidSolList(const vector<solMatrix> &allSolutions);
+
     void printPE();
+    void printFourPEs(){
+        PE_RsCs.printPE();
+        PE_RsReduced.printPE();
+        PE_CsReduced.printPE();
+        PE_RsCsReduced.printPE();
+    }
+    void printFaultAnalyzeMatrix();
+    void printValidSolList(){
+        PE_RsCs.printValidSolList();
+        PE_RsReduced.printValidSolList();
+        PE_CsReduced.printValidSolList();
+        PE_RsCsReduced.printValidSolList();
+    }
+
     void writeFaultAnalyzeMatrixToFile(const string &filename){
         PE_RsCs.writeFaultAnalyzeMatrixToFile(filename + "_PE_RsCs.txt");
         PE_RsReduced.writeFaultAnalyzeMatrixToFile(filename + "_PE_RsReduced.txt");
         PE_CsReduced.writeFaultAnalyzeMatrixToFile(filename + "_PE_CsReduced.txt");
         PE_RsCsReduced.writeFaultAnalyzeMatrixToFile(filename + "_PE_RsCsReduced.txt");
     }
-    void printFaultAnalyzeMatrix();
-    bool checkSolution(const solMatrix &solution, int solIndex);
-    void genValidSolList(const vector<solMatrix> &allSolutions);
-    void printValidSolList(){
-        PE_RsCs.printValidSolList();
-        PE_RsReduced.printValidSolList();
-        PE_CsReduced.printValidSolList();
-        PE_RsCsReduced.printValidSolList();
-
-    }
-
 
 };
 

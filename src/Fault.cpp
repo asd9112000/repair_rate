@@ -54,6 +54,7 @@ void FaultList::classifyFaults()
 void FaultList::printFaultList()
 {
     cout << "Fault List for a single PE" << endl;
+    cout << "Rs: " << Rs << " Cs: " << Cs << " Buffer Num: " << Buff_num << endl;
     cout << "bufferCAM_overflow: " << (bufferCAM_overflow ? "Yes" : "No") << endl;
     if (bufferCAM_overflow)
     {
@@ -113,6 +114,8 @@ bool FaultLoader :: loadFaults(string filename)
     int numFaultArray ;
     int numFaults ;
     file >> numFaultArray;
+    cout << endl
+         << "======== Fault Loader Summary ========" << endl;
     cout << "Number of FaultArray in the file: " << numFaultArray << endl;
 
     for ( int ii_numFaultArray = 0; ii_numFaultArray < numFaultArray; ++ii_numFaultArray) {

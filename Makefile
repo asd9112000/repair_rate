@@ -1,4 +1,4 @@
-.PHONY:  all rdr_b rdr_r gen_fault clean
+.PHONY:  all rdr_b rdr_r sl_r sl_b gen_fault clean
 
 # compiler settings
 CXX = g++
@@ -17,10 +17,10 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
 TARGET = main.o
 RDR_TARGET = RedundantRate.o
-SLE_TARGET = SpareLineEfficiency.o
+SL_TARGET = SharedLine.o
 
 clean:
-	rm -rf $(OBJDIR) $(TARGET) $(RDR_TARGET) $(SLE_TARGET) *.txt
+	rm -rf $(OBJDIR) $(TARGET) $(RDR_TARGET) $(SL_TARGET) *.txt
 all: $(TARGET)
 $(OBJDIR):
 	@mkdir $(OBJDIR)
@@ -43,10 +43,10 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
 
 
-sle_b: $(SLE_TARGET)
+sl_b: $(SL_TARGET)
 $(OBJDIR):
 	@mkdir $(OBJDIR)
-$(SLE_TARGET): SpareLineEfficiency.cpp $(OBJS)
+$(SL_TARGET): SharedLine.cpp $(OBJS)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
@@ -59,5 +59,5 @@ rdr_r:
 	./RedundantRate.o $(s) $(s)  > RedundantRate.log
 # 	./RedundantRate.o $(s) $(s) --rptName $(rptName) > RedundantRate.log
 
-sle_r:
-	./SpareLineEfficiency.o $(s) $(s) > SpareLineEfficiency.log
+sl_r:
+	./SharedLine.o $(s) $(s) > SharedLine.log
