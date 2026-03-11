@@ -27,7 +27,6 @@ using namespace std;
 struct spareLineConfig
 {
     std::pair<int, int> spare [4];
-    // int spare_r[4], spare_c[4];
 };
 
 
@@ -37,18 +36,20 @@ public:
     string reportDir = "./SharedLineReport/";
     string repairReportPath = reportDir + "RepairReport.rpt";
     string repairRecordPath = reportDir + "RepairRecord.txt";
-    ofstream repairRecordFile; // 將 repairRecordFile 定義為類別的成員變數
-    ofstream repairReportFile; // 將 repairReportFile 定義為類別的成員變數
+    ofstream repairRecordFile;
+    ofstream repairReportFile;
 
     // record details for "every" pattern
-    int patNum = 0;
+    double patNum = 0;
     vector<bool> repairRecord;
     vector<spareLineConfig> repairRecordConfig; // pair<patIndex, configIndex>
 
 
     // record for success pattern
     double repairRate = 0.0;
-    vector<int>  repairSuccessPatternList;
+    double repairRate_RECAM = 0.0;
+    vector<int> repairSuccessPatternList;
+    vector<int> repairSuccessPatternList_RECAM;
     unordered_map<int, vector<spareLineConfig>> PERepairSuccConfigMap;
 
 
@@ -76,6 +77,7 @@ public:
         PERepairSuccConfigMap[patIndex].push_back(config);
     }
 
+
     void writeRepairRecord()
     {
         repairRecordFile.open(repairRecordPath);
@@ -94,6 +96,7 @@ public:
     void analyzeRecord()
     {
         repairRate = repairSuccessPatternList.size() / patNum;
+        repairRate_RECAM = repairSuccessPatternList_RECAM.size() / patNum;
     }
 
     void writeRepairReport()
@@ -105,20 +108,31 @@ public:
             return;
         }
 
-        int patCnt = 0;
         repairReportFile << endl;
-        repairReportFile << " =========== Repair Success Patterns: " << repairSuccessPatternList.size() <<" / "<< patNum <<" ===========" << endl;
-        for (auto entry : repairSuccessPatternList)
+        repairReportFile << " =========== Repair Success Patterns: " << repairSuccessPatternList.size() <<" / "<< patNum <<" ( " << repairRate * 100 << "% )"<<" ===========" << endl;
+        // for (auto entry : repairSuccessPatternList)
+        for (int SuccCnt = 0; SuccCnt < repairSuccessPatternList.size(); ++SuccCnt)
         {
-            // 設定數字寬度為6位數，右對齊
-            repairReportFile << std::setw(4) << std::right << entry << " ";
-            if ((patCnt % 32) == 31)
+            repairReportFile << std::setw(4) << std::right << repairSuccessPatternList[SuccCnt] << " ";
+            if ((SuccCnt % 32) == 31)
             {
                 repairReportFile << endl;
             }
-            patCnt++;
         }
         repairReportFile << endl << endl;
+
+        repairReportFile << " =========== RECAM Cconfig Success Patterns: " << repairSuccessPatternList_RECAM.size() << " / " << patNum << " ( " << repairRate_RECAM * 100 << "% )" << " ===========" << endl;
+        for (int SuccCnt = 0; SuccCnt < repairSuccessPatternList_RECAM.size(); ++SuccCnt)
+        {
+            // 設定數字寬度為6位數，右對齊
+            repairReportFile << std::setw(4) << std::right << repairSuccessPatternList_RECAM[SuccCnt] << " ";
+            if ((SuccCnt % 32) == 31)
+            {
+                repairReportFile << endl;
+            }
+        }
+        repairReportFile << endl
+                         << endl;
 
         for ( int i = 0 ; i < repairSuccessPatternList.size(); ++i){
             int patIndex = repairSuccessPatternList[i];
@@ -146,6 +160,13 @@ int main(int argc, char *argv[])
     int CsRuduced = Cs - 1;
     int buf_num = 2;
     int sharedLine_num = 1;
+
+    int faultNum = 0;
+    for(int i = 0; i < argc; ++i){
+        if (argv[i] == string("--faultNum") && i + 1 < argc){
+            faultNum = atoi(argv[i+1]);
+        }
+    }
 
     /*
         +---+---+
@@ -214,7 +235,11 @@ int main(int argc, char *argv[])
     //  Record files
     // ===================================
     PatternRecorder patternRecorder;
-
+    for ( int i = 0; i < argc; ++i){
+        if ( argv[i] == string("--rptName") && i + 1 < argc){
+            patternRecorder.setReportFileName(argv[i+1]);
+        }
+    }
 
     // ===================================
     // Generate all solutions
@@ -224,10 +249,6 @@ int main(int argc, char *argv[])
         int r_spare = config.first;
         int c_spare = config.second;
         solGenerator.genSolForSpares(r_spare, c_spare);
-    }
-    if ( solGenerator.solVecForSpares.empty() || solGenerator.solMatForSpares.empty()){
-        cout << "Error: No solutions generated for spare line configurations." << endl;
-        return 0;
     }
     // solGenerator.writeAllSolVecForSparesToFile(patternRecorder.reportDir + "AllSolVecForSpares");
     // solGenerator.writeAllSolMatForSparesToFile(patternRecorder.reportDir + "AllSolMatForSpares");
@@ -270,17 +291,6 @@ int main(int argc, char *argv[])
 
     for (int ii_pattern = 0; ii_pattern < patNum; ii_pattern ++)
     {
-
-        // if (faultList_RsCs.PEFaults.size() > maxFaultCnt)
-        // {
-        //     maxFaultCnt = faultList_RsCs.PEFaults.size();
-        // }
-        // if (faultList_RsCs.PEFaults.size() < minFaultCnt)
-        // {
-        //     minFaultCnt = faultList_RsCs.PEFaults.size();
-        // }
-
-
         // =======================================================
         // Load faults for pattern ii_pattern
         //     - into 4 PEs
@@ -383,35 +393,45 @@ int main(int argc, char *argv[])
                                     thisConfigRepairSuccess = false;
                                     break;
                                 }
-                                cout << "PE" << i << " can be repaired with config: (" << occupiedRows[i] << ", " << occupiedCols[i] << ")" << endl;
                             }
                             else {
-                                //TODO : end this tern and record
+                                //TODO : record
                                 thisConfigRepairSuccess = false;
                                 break;
                             }
                         }
 
-                        patternRecorder.repairRecord.push_back(thisConfigRepairSuccess);
                         spareLineConfig config = {
-                                {{occupiedRows[0], occupiedCols[0]},
-                                {occupiedRows[1], occupiedCols[1]},
-                                {occupiedRows[2], occupiedCols[2]},
-                                {occupiedRows[3], occupiedCols[3]}}};
+                            {{occupiedRows[0], occupiedCols[0]},
+                            {occupiedRows[1], occupiedCols[1]},
+                            {occupiedRows[2], occupiedCols[2]},
+                            {occupiedRows[3], occupiedCols[3]}}};
                         patternRecorder.repairRecordConfig.push_back(config);
+                        patternRecorder.repairRecord.push_back(thisConfigRepairSuccess);
 
-                        if (!thisConfigRepairSuccess)
+
+                        if (thisConfigRepairSuccess)
                         {
-                            continue; // leave current config combination and check the next one
-                        }
-                        else {
-                            if (   patternRecorder.repairSuccessPatternList.empty()
-                                || patternRecorder.repairSuccessPatternList.back() != ii_pattern)
-                            {
+                            patternRecorder.addPERepairSuccConfigMap((ii_pattern), configIndex, config);
+
+                            // Check if this pattern is a new successful repair pattern
+                            bool isNewPattern = patternRecorder.repairSuccessPatternList.empty() ||
+                                                patternRecorder.repairSuccessPatternList.back()  != ii_pattern;
+                            if (isNewPattern){
                                 patternRecorder.repairSuccessPatternList.push_back(ii_pattern);
                             }
-                            patternRecorder.addPERepairSuccConfigMap((ii_pattern), configIndex, {configLessRow0, configLessCol1, configLessRow2, configLessCol3});
+
+                            // Check if this pattern is also successfully repaired by the RECAM configuration ( Rs, Cs )
+                            // Need not check whether the config is a new one for this pattern.
+                            bool isRECAMConfig = true;
+                            for (int i_c = 0; i_c < 4; i_c++){
+                                isRECAMConfig = isRECAMConfig && (occupiedRows[i_c] == Rs) && (occupiedCols[i_c] == Cs);
+                            }
+                            if (isRECAMConfig){
+                                patternRecorder.repairSuccessPatternList_RECAM.push_back(ii_pattern);
+                            }
                         }
+
 
 
                     }
@@ -423,6 +443,12 @@ int main(int argc, char *argv[])
     patternRecorder.analyzeRecord();
     patternRecorder.writeRepairRecord();
     patternRecorder.writeRepairReport();
+
+    cout << "RepairRate: " << patternRecorder.repairRate  << " ";
+    cout << "RepairRate_RECAM: " << patternRecorder.repairRate_RECAM << " ";
+    cout << "SpareLine: " << Rs << " ";
+    cout << "faultNum: " << faultNum << endl;
+
 
     return 0;
 }

@@ -114,13 +114,13 @@ bool FaultLoader :: loadFaults(string filename)
     int numFaultArray ;
     int numFaults ;
     file >> numFaultArray;
-    cout << endl
-         << "======== Fault Loader Summary ========" << endl;
-    cout << "Number of FaultArray in the file: " << numFaultArray << endl;
+    // cout << endl
+    //      << "======== FaultLoader :: loadFaults ========" << endl;
+    // cout << "Number of FaultArray in the file: " << numFaultArray << endl;
 
     for ( int ii_numFaultArray = 0; ii_numFaultArray < numFaultArray; ++ii_numFaultArray) {
         file >> numFaults;
-        cout << "No." << ii_numFaultArray << " FaultArray ( " << ii_numFaultArray + 1 << "/" << numFaultArray << " ) has " << numFaults << " faults." << endl;
+        // cout << "No." << ii_numFaultArray << " FaultArray ( " << ii_numFaultArray + 1 << "/" << numFaultArray << " ) has " << numFaults << " faults." << endl;
         FaultList faultList(Rs, Cs, Buff_num);
         for ( int ii_numFaults = 0; ii_numFaults < numFaults; ++ii_numFaults) {
             file >> LogicUnitID >> LayerID >> BankID >> r >> c;
@@ -147,7 +147,7 @@ bool FaultLoader :: loadFaults(string filename)
 void FaultLoader::printFaultLoader()
 {
     cout << endl
-         << "======== Fault Loader Summary ========" << endl;
+         << "======== FaultLoader::printFaultLoader ========" << endl;
     cout << "Total Fault Lists for PEs: " << faultLists.size() << endl;
     for (int i = 0; i < faultLists.size(); ++i)
     {

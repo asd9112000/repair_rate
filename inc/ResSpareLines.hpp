@@ -104,7 +104,7 @@ public:
 
     bool occupySpareLines(int PE_index, int usedRow, int usedCol)
     {
-        cout << "Attempting to occupy spare lines for PE" << PE_index << " with usedRow: " << usedRow << " and usedCol: " << usedCol << endl;
+        // cout << "Attempting to occupy spare lines for PE" << PE_index << " with usedRow: " << usedRow << " and usedCol: " << usedCol << endl;
         bool rowEnough, colEnough;
         bool spareEnough = true;
         // ==========================
@@ -117,28 +117,24 @@ public:
         {
             case 0:
             {
-                cout << " occupySpareLines PE0" << endl;
                 rowEnough = handleSparLines(usedRow, resSpareRows[0], resSharedLines[0]);
                 colEnough = handleSparLines(usedCol, resSpareCols[0], resSharedLines[3]);
                 break;
             }
             case 1:
             {
-                cout << " occupySpareLines PE1" << endl;
                 rowEnough = handleSparLines(usedRow, resSpareRows[1], resSharedLines[2]);
                 colEnough = handleSparLines(usedCol, resSpareCols[1], resSharedLines[3]);
                 break;
             }
             case 2:
             {
-                cout << " occupySpareLines PE2" << endl;
                 rowEnough = handleSparLines(usedRow, resSpareRows[2], resSharedLines[0]);
                 colEnough = handleSparLines(usedCol, resSpareCols[2], resSharedLines[1]);
                 break;
             }
             case 3:
             {
-                cout << " occupySpareLines PE3" << endl;
                 rowEnough = handleSparLines(usedRow, resSpareRows[3], resSharedLines[2]);
                 colEnough = handleSparLines(usedCol, resSpareCols[3], resSharedLines[1]);
                 break;
