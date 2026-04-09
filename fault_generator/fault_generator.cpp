@@ -29,10 +29,10 @@ int main(int argc, char* argv[]) {
     Config cfg;
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
-        if (arg == "--logic_units") cfg.num_logic_units = std::stoi(argv[++i]);
-        else if (arg == "--fixed_faults") cfg.fixed_faults = std::stoi(argv[++i]);
-        else if (arg == "--stack_height") cfg.stack_height = std::stoi(argv[++i]);
-        else if (arg == "--seed") cfg.seed = std::stoi(argv[++i]);
+        if      (arg == "--logic_units")    cfg.num_logic_units = std::stoi(argv[++i]);
+        else if (arg == "--fixed_faults")   cfg.fixed_faults = std::stoi(argv[++i]);
+        else if (arg == "--stack_height")   cfg.stack_height = std::stoi(argv[++i]);
+        else if (arg == "--seed")           cfg.seed = std::stoi(argv[++i]);
     }
 
     std::mt19937 rng(cfg.seed);
@@ -47,15 +47,17 @@ int main(int argc, char* argv[]) {
 
     for (int ly = 0; ly < cfg.stack_height; ++ly) {
         for (int lu = 0; lu < cfg.num_logic_units; ++lu) {
-                ofs << cfg.fixed_faults << "\n";
+            // randomize numbers of faults per logic unit per layer
+            int rnd_fixed_faults = std::max(0, cfg.fixed_faults - 2) + (std::uniform_int_distribution<>(0, 4)(rng));
+            ofs << rnd_fixed_faults << "\n";
             std::vector<Fault> bank_f;
-            if (cfg.fixed_faults <= 0) continue;
+            if (rnd_fixed_faults <= 0) continue;
 
 
             bank_f.push_back({dr(rng), dc(rng)});
 
 
-            while (bank_f.size() < (size_t)cfg.fixed_faults) {
+            while (bank_f.size() < (size_t)rnd_fixed_faults) {
                 double p = dp(rng);
                 int nr, nc;
 

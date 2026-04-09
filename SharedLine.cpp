@@ -431,9 +431,6 @@ int main(int argc, char *argv[])
                                 patternRecorder.repairSuccessPatternList_RECAM.push_back(ii_pattern);
                             }
                         }
-
-
-
                     }
                 }
             }
@@ -444,10 +441,10 @@ int main(int argc, char *argv[])
     patternRecorder.writeRepairRecord();
     patternRecorder.writeRepairReport();
 
-    cout << "RepairRate: " << patternRecorder.repairRate  << " ";
-    cout << "RepairRate_RECAM: " << patternRecorder.repairRate_RECAM << " ";
-    cout << "SpareLine: " << Rs << " ";
-    cout << "faultNum: " << faultNum << endl;
+    // cout << "RepairRate: " << patternRecorder.repairRate  << " ";
+    // cout << "RepairRate_RECAM: " << patternRecorder.repairRate_RECAM << " ";
+    // cout << "SpareLine: " << Rs << " ";
+    // cout << "faultNum: " << faultNum << endl;
 
 
     return 0;
