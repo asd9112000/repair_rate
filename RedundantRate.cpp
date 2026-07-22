@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     int buf_num = 2;
 
     // default parameters
-    string reportDir = "./RedundantRate/";
+    string reportDir = "./Report_RedundantRate/";
     string RepairReport = reportDir + "RepairReport.rpt";
     std::filesystem::create_directories(reportDir); // Ensure the directory exists
 

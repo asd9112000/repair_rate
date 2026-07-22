@@ -1,4 +1,8 @@
-.PHONY:  all rdr_b rdr_r sl_r sl_b gen_fault clean
+.PHONY: all gen_fault clean
+.PHONY: sl_r sl_b
+.PHONY: rdr_b rdr_r
+.PHONY: analyze_spareline analyze_redundantrate
+
 
 # compiler settings
 CXX = g++
@@ -20,7 +24,7 @@ RDR_TARGET = RedundantRate.o
 SL_TARGET = SharedLine.o
 
 clean:
-	rm -rf $(OBJDIR) $(TARGET) $(RDR_TARGET) $(SL_TARGET) *.txt
+	rm -rf $(OBJDIR) $(TARGET) $(RDR_TARGET) $(SL_TARGET) *.txt *.log *.o
 all: $(TARGET)
 $(OBJDIR):
 	@mkdir $(OBJDIR)
@@ -61,3 +65,14 @@ rdr_r:
 
 sl_r:
 	./SharedLine.o $(s) $(s) > SharedLine.log
+
+
+
+#================================================
+# Script targets
+# ===============================================
+analyze_spareline:
+	@./scripts/analyze_SpareLine.sh
+
+analyze_redundantrate:
+	@./scripts/analyze_RedundantRate.sh
