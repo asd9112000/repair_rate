@@ -33,7 +33,7 @@ struct spareLineConfig
 class PatternRecorder
 {
 public:
-    string reportDir = "./SharedLineReport/";
+    string reportDir = "./SharedLine_3wayReport/";
     string repairReportPath = reportDir + "RepairReport.rpt";
     string repairRecordPath = reportDir + "RepairRecord.txt";
     ofstream repairRecordFile;
@@ -441,16 +441,10 @@ int main(int argc, char *argv[])
     patternRecorder.writeRepairRecord();
     patternRecorder.writeRepairReport();
 
-
-
-    /**
-     * Important, if you want to do analyze
-     * Print the repair rates and other information.
-     */
-    cout << "RepairRate: " << patternRecorder.repairRate  << " ";
-    cout << "RepairRate_RECAM: " << patternRecorder.repairRate_RECAM << " ";
-    cout << "SpareLine: " << Rs << " ";
-    cout << "faultNum: " << faultNum << endl;
+    // cout << "RepairRate: " << patternRecorder.repairRate  << " ";
+    // cout << "RepairRate_RECAM: " << patternRecorder.repairRate_RECAM << " ";
+    // cout << "SpareLine: " << Rs << " ";
+    // cout << "faultNum: " << faultNum << endl;
 
 
     return 0;

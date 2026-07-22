@@ -53,7 +53,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
 
 
 gen_fault:
-	(cd fault_generator && ./fault_generator.o --logic_units 4 --fixed_faults $(f) --stack_height $(s))
+	(cd fault_generator && ./fault_generator.o --logic_units 4 --fixed_faults $(f) --stack_height $(s) --fault_mode normal)
 
 rdr_r:
 	./RedundantRate.o $(s) $(s)  > RedundantRate.log

@@ -1,0 +1,32 @@
+# repair_rate
+
+用於評估 Processing Element (PE) 陣列在不同冗餘資源配置下的修復率（repair rate）。
+
+## 專案目的
+
+本專案比較多種修復模型，包含：
+
+- 單一 PE 搭配 RE CAM 的修復率
+- 4-PE 群組的冗餘修復成功機率
+- PE 之間可共享冗餘資源時的修復率
+- 以 SRAM 取代 CAM 並考慮 latency 的情境
+
+## 檔案說明
+
+- `basicPEarray.cpp`
+  估算單一 PE 在 RE CAM 架構下的 repair rate。
+
+- `RedundantRate.cpp`
+  以 4 個 PE 為一組，評估整組成功修復的機率，並統計成功案例中未被利用的 source 數量。
+
+- `SharedLine.cpp`
+  以 4 個 PE 為一組，在可共享冗餘資源時評估修復率。
+  考慮 `(Row / Row+1) * (Column / Column-1)` 的四種組合情境。
+
+- `SharedLine_3way.cpp`
+  基於 `SharedLine.cpp`，移除 `(Row+1) * Column` 這個資源需求最高的 case，觀察 3-way 情境下的修復率變化。
+
+- `SharedLine_SRAM.cpp`
+  使用 SRAM 取代 CAM，並納入 latency 進行評估。
+
+## Pattern 分析

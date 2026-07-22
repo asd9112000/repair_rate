@@ -6,7 +6,7 @@ rm -f ./SharedLineReport/repairRates.csv
 # Loop through fault numbers 8 to 14
 for fault_num in {8..16}; do
     # Generate faults with the current fault number and stack height 250
-    make gen_fault f=$fault_num s=250
+    make gen_fault f=$fault_num s=100
 
     # Loop through s_line values 3 to 5
     for s_line in {2..6}; do
