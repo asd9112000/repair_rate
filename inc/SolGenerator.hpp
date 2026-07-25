@@ -18,14 +18,21 @@ using namespace std;
 
 
 using solVector = std::vector<bool>;              // Col (true),  Row (false)
-using solMatrix = std::vector<std::vector<bool>>; // [Row][Col]
+using solMatrix = std::vector<std::vector<bool>>; // [Row idx][Col idx]
 using AllSolVectorsType = std::vector<solVector>; // allSolutions[solIndex][Row][Col]
 using AllSolMatrixsType = std::vector<solMatrix>; // allSolutions[solIndex][Row][Col]
-using SolVectorsList = std::vector<solVector>; // allSolutions[solIndex][Row][Col]
-using SolMatrixsList = std::vector<solMatrix>; // allSolutions[solIndex][Row][Col]
+// Candidate name for backward compatibility
+using SolVectorsList = AllSolVectorsType;
+using SolMatrixsList = AllSolMatrixsType;
 
-using SolVecForSpares = std::unordered_map<std::pair<int, int>, SolVectorsList, PairHash>;    // key: ( spare row cnt, spare col cnt ), value: list of solIndex in allSolVectorsType and allSolMatrixsType
-using SolMatForSpares = std::unordered_map<std::pair<int, int>, SolMatrixsList, PairHash>; // key: ( spare row cnt, spare col cnt ), value: list of solIndex in allSolVectorsType and allSolMatrixsType
+// Generate solutions for different spare line configurations in one SolGenerator.
+//  -key  : ( spare row cnt, spare col cnt )
+//  -value: list of solIndex in allSolVectorsType and allSolMatrixsType
+using SolVecForSpareCfgs = std::unordered_map<std::pair<int, int>, SolVectorsList, PairHash>;
+using SolMatForSpareCfgs = std::unordered_map<std::pair<int, int>, SolMatrixsList, PairHash>;
+// Candidate name for backward compatibility
+using SolVecForSpares = SolVecForSpareCfgs;
+using SolMatForSpares = SolMatForSpareCfgs;
 
 class SolGenerator
 {
@@ -34,15 +41,16 @@ public:
     int matrixSize;
 
     // ======  generate all combinations of solutions =============
-    // 1.generate all combinations of selecting Rs rows from Rs + Cs
-    //  - Must generate the first solvector in dictionary order !!!!!
-    // 2. for each combination, generate the solution matrix
+    // 1.Decide the order of Rs spare rows and Cs spare columns from (Rs + Cs) spare lines.
+    // 2.For each combination, generate the solution matrix
 
+    // All the combinations of solutions for spare lines (Rs + Cs)
     AllSolVectorsType allSolVectorsType;
     AllSolMatrixsType allSolMatrixsType;
 
-    SolVecForSpares solVecForSpares;
-    SolMatForSpares solMatForSpares;
+    //Generate solutions for different spare line configurations in one SolGenerator.
+    SolVecForSpareCfgs solVecForSpares;
+    SolMatForSpareCfgs solMatForSpares;
 
     SolGenerator(int r_spare, int c_spare) : Rs(r_spare), Cs(c_spare)
     {

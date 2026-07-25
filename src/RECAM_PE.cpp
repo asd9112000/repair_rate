@@ -52,16 +52,12 @@ void RECAM_PE::genFaultAnalyzeMatrix()
                 colMust = addressCAM->addressCAMEntries[i_col].colMust;
             }
 
-            // bool hasRowPtr = hasRowPtrs[i_row];
-            // bool hasColPtr = hasColPtrs[i_col];
             bool diagaonal = (i_row == i_col) && (i_row <= addressCAMEntriesCnt - 1);
-            // cout << "Processing cell (" << i_row << ", " << i_col << "): Row Must: " << (rowMust ? "Yes" : "No") << " Col Must: " << (colMust ? "Yes" : "No") << " Diagonal: " << (diagaonal ? "Yes" : "No") << endl;
             faultAnalyzeMatrixHardware[i_row][i_col] = diagaonal || rowMust || colMust; // || hasRowPtr || hasColPtr;
             // printFaultAnalyzeMatrix();
         }
     }
 
-    // printFaultAnalyzeMatrix();
 
     vector<int> rowAddrs, colAddrs;
     for (auto &entry : addressCAM->addressCAMEntries)
@@ -72,16 +68,6 @@ void RECAM_PE::genFaultAnalyzeMatrix()
             colAddrs.push_back(entry.faultPtr->c);
         }
     }
-    // cout << "rowAddrs: ";
-    // for ( auto &r : rowAddrs){
-    //     cout << r << " ";
-    // }
-    // cout << endl;
-    // cout << "colAddrs: ";
-    // for ( auto &c : colAddrs){
-    //     cout << c << " ";
-    // }
-    // cout << endl;
 
     /*
     Case 1: isfaultAnalyzeMatrixExtendable = false
@@ -120,14 +106,6 @@ void RECAM_PE::genFaultAnalyzeMatrix()
                 break;
             }
         }
-
-        // cout <<"  -"  << "Processing Hybrid CAM Entry: Row: " << hyEntry.faultPtr->r << " Col: " << hyEntry.faultPtr->c
-        //      << " Related Pivot Fault Pointer: " << hyEntry.pointer
-        //      << " descriptorRowIsDiff: " << (hyEntry.descriptorRowIsDiff ? "True" : "False")
-        //      << endl;
-        // cout << "      - Row Match: " << (rowMatch ? "Yes" : "No") << " (Index: " << rowMatchIndex << ")" << endl
-        //      << "      - Col Match: " << (colMatch ? "Yes" : "No") << " (Index: " << colMatchIndex << ")"
-        //      << endl;
 
         if (!isfaultAnalyzeMatrixExtendable)
         {
@@ -294,39 +272,104 @@ bool RECAM_PE::checkSolution(const solMatrix &solution, int solIndex)
     return true;
 }
 
+namespace
+{
+solVector deriveSolVectorFromMatrix(const solMatrix &solution, int matrixSize)
+{
+    solVector solutionVector(matrixSize, false);
+    for (int col = 0; col < matrixSize; ++col)
+    {
+        bool isSpareColumn = true;
+        for (int row = 0; row < matrixSize; ++row)
+        {
+            if (!solution[row][col])
+            {
+                isSpareColumn = false;
+                break;
+            }
+        }
+        solutionVector[col] = isSpareColumn;
+    }
+    return solutionVector;
+}
+}
+
+RemapTable::AddressEntry RECAM_PE::buildAddressEntryFromFault(const Fault &fault) const
+{
+    // Fault currently stores LU/layer/bank only.  They are mapped to the
+    // available remap address fields; bankgroup is not represented in Fault.
+    RemapTable::AddressEntry addressEntry;
+    addressEntry.channel = fault.LogicUnitID;
+    addressEntry.pseudochannel = fault.LayerID;
+    addressEntry.bankgroup = 0;
+    addressEntry.bank = fault.BankID;
+    addressEntry.row = fault.r;
+    addressEntry.col = fault.c;
+    return addressEntry;
+}
+
+RemapTable RECAM_PE::buildRemapTable(const solVector &solutionVector) const
+{
+    RemapTable table;
+    int nextSpareRowAddr = 0;
+    int nextSpareColAddr = 0;
+
+    const size_t addressCAMCount = std::min(solutionVector.size(), addressCAM->addressCAMEntries.size());
+    for (size_t index = 0; index < addressCAMCount; ++index)
+    {
+        const AddressCAMEntry &camEntry = addressCAM->addressCAMEntries[index];
+        if (!camEntry.enable || camEntry.faultPtr == nullptr)
+        {
+            continue;
+        }
+
+        const bool isSpareColumn = solutionVector[index];
+        RemapTable::RemapEntry remapEntry;
+        remapEntry.addressEntry = buildAddressEntryFromFault(*camEntry.faultPtr);
+        remapEntry.isSpareRow = !isSpareColumn;
+        remapEntry.newRowColAddr = isSpareColumn ? nextSpareColAddr++ : nextSpareRowAddr++;
+        remapEntry.Latency = RemapTable::kDefaultRemapLatency;
+        table.addRemapEntry(remapEntry);
+    }
+    return table;
+}
+
 void RECAM_PE::genValidSolList(const vector<solMatrix> &allSolutions)
 {
-    // cout << "Generating solution list..." << endl;
-    for (int solIndex = 0; solIndex < allSolutions.size(); ++solIndex)
+    validSolList.clear();
+    remapTableList.clear();
+    RepairSuccess = false;
+
+    for (size_t solIndex = 0; solIndex < allSolutions.size(); ++solIndex)
     {
-        const auto &solution = allSolutions[solIndex];
-        if (checkSolution(solution, solIndex))
+        const solMatrix &solution = allSolutions[solIndex];
+        if (checkSolution(solution, static_cast<int>(solIndex)))
         {
-            // cout << "    -Solution " << solIndex << " is added to valid solution list." << endl;
-            validSolList.push_back(solIndex);
+            validSolList.push_back(static_cast<int>(solIndex));
+            remapTableList.push_back(buildRemapTable(deriveSolVectorFromMatrix(solution, matrixSize)));
         }
     }
 
-    if (!validSolList.empty() && isRepairable){
-        RepairSuccess = true;
-    }
+    RepairSuccess = isRepairable && !validSolList.empty();
 }
 
 void RECAM_PE::printValidSolList()
 {
     cout << " ======== RECAM_PE::printValidSolList() ==============" << endl;
     cout << "Have chance to be repaired: " << (isRepairable ? "Yes" : "No") << endl;
-    if (isRepairable){
+    if (isRepairable)
+    {
         cout << "Valid Solution List(might be empty): " << endl;
     }
-    else {
+    else
+    {
         cout << "Warning: No valid solution due to unrepairable faults." << endl;
         cout << "Valid Solution List is for reference only. ( ignore  the overflow pivot fault)." << endl;
     }
 
     cout << "  - Solution Index: ";
-
-    for (int solIndex : validSolList) {
+    for (int solIndex : validSolList)
+    {
         cout << solIndex << " ";
     }
     cout << endl;

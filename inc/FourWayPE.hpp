@@ -48,8 +48,8 @@ public:
     RECAM_PE PE_CsReduced;
     RECAM_PE PE_RsCsReduced;
 
-    bool allWayRepairSuccess = false;
-    bool PERepairSuccess = false;
+    bool allWayRepairSuccess = false; // whether all 4 ways can repair the PE
+    bool PERepairSuccess     = false; // whether at least one way can repair the PE
 
 
     vector<bool> perWayRepairSuccessList{false, false, false, false}; // ( RsCs, RsReduced, CsReduced, RsCsReduced )

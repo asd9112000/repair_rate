@@ -1,3 +1,11 @@
+## ===================================================
+## This script has been moved to Makefile,
+## You can run the Makefile to execute the analysis.
+##
+## Commend: make analyze_spare_line
+## ===================================================
+
+
 #!/bin/bash
 
 rm -f SharedLine.log
