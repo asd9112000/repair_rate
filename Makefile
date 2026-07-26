@@ -1,7 +1,12 @@
-.PHONY: all gen_fault clean
-.PHONY: sl_r sl_b
-.PHONY: rdr_b rdr_r
-.PHONY: analyze_spareline analyze_redundantrate
+
+.PHONY:  all clean
+.PHONY:  gen_fault
+.PHONY:  rdr_b rdr_r
+.PHONY:  sl_r sl_b
+.PHONY:  sl_3way_r sl_3way_b
+.PHONY:  sl_sram_r sl_sram_b
+.PHONY:  analyze_redundantrate analyze_spareline analyze_spare_line_3way
+
 
 
 # compiler settings
@@ -19,53 +24,72 @@ INCDIR = inc
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
 OBJS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
-TARGET = main.o
+# TARGET = main.o
 RDR_TARGET = RedundantRate.o
 SL_TARGET = SharedLine.o
+SL_SRAM_TARGET = SharedLine_SRAM.o
+SL_3WAY_TARGET = SharedLine_3way.o
 
 clean:
 	rm -rf $(OBJDIR) $(TARGET) $(RDR_TARGET) $(SL_TARGET) *.txt *.log *.o
-all: $(TARGET)
-$(OBJDIR):
-	@mkdir $(OBJDIR)
+# all: $(TARGET)
 
-$(TARGET): main.cpp $(OBJS)
-	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
+
+$(OBJDIR):
+	@mkdir -p $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
 
-
-rdr_b: $(RDR_TARGET)
-$(OBJDIR):
-	@mkdir $(OBJDIR)
+# $(TARGET): main.cpp $(OBJS)
+# 	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
 
 $(RDR_TARGET): RedundantRate.cpp $(OBJS)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
-	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
-
-
-sl_b: $(SL_TARGET)
-$(OBJDIR):
-	@mkdir $(OBJDIR)
 $(SL_TARGET): SharedLine.cpp $(OBJS)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
-	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
 
+$(SL_3WAY_TARGET): SharedLine_3way.cpp $(OBJS)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
+
+$(SL_SRAM_TARGET): SharedLine_SRAM.cpp $(OBJS)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
+
+#===============================================
+#
+# 					Compile
+#
+#===============================================
+
+rdr_b: $(RDR_TARGET)
+
+sl_b: $(SL_TARGET)
+
+sl_3way_b: $(SL_3WAY_TARGET)
+
+sl_sram_b: $(SL_SRAM_TARGET)
+
+#===============================================
+#
+# 					Execute
+#
+#===============================================
 
 gen_fault:
 	(cd fault_generator && ./fault_generator.o --logic_units 4 --fixed_faults $(f) --stack_height $(s) --fault_mode normal)
 
 rdr_r:
-	./RedundantRate.o $(s) $(s)  > RedundantRate.log
-# 	./RedundantRate.o $(s) $(s) --rptName $(rptName) > RedundantRate.log
+	./RedundantRate.o $(s) $(s) $(if $(rptName),--rptName $(rptName)) > RedundantRate.log
 
 sl_r:
 	./SharedLine.o $(s) $(s) > SharedLine.log
 
+sl_3way_r:
+	./SharedLine_3way.o $(s) $(s) > SharedLine_3way.log
+
+sl_sram_r:
+	./SharedLine_SRAM.o $(s) $(s) > SharedLine_SRAM.log
 
 
 #================================================
@@ -76,3 +100,5 @@ analyze_spareline:
 
 analyze_redundantrate:
 	@./scripts/analyze_RedundantRate.sh
+
+

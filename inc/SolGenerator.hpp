@@ -16,16 +16,63 @@
 
 using namespace std;
 
+// A solution represented as line selections.
+// true: spare column
+// false: spare row
+using SolutionVector = std::vector<bool>;
 
-using solVector = std::vector<bool>;              // Col (true),  Row (false)
-using solMatrix = std::vector<std::vector<bool>>; // [Row][Col]
-using AllSolVectorsType = std::vector<solVector>; // allSolutions[solIndex][Row][Col]
-using AllSolMatrixsType = std::vector<solMatrix>; // allSolutions[solIndex][Row][Col]
-using SolVectorsList = std::vector<solVector>; // allSolutions[solIndex][Row][Col]
-using SolMatrixsList = std::vector<solMatrix>; // allSolutions[solIndex][Row][Col]
+// A solution represented as a 2D repair map: [row][column].
+using SolutionMatrix = std::vector<std::vector<bool>>;
 
-using SolVecForSpares = std::unordered_map<std::pair<int, int>, SolVectorsList, PairHash>;    // key: ( spare row cnt, spare col cnt ), value: list of solIndex in allSolVectorsType and allSolMatrixsType
-using SolMatForSpares = std::unordered_map<std::pair<int, int>, SolMatrixsList, PairHash>; // key: ( spare row cnt, spare col cnt ), value: list of solIndex in allSolVectorsType and allSolMatrixsType
+// Collections indexed by solution ID.
+using SolutionVectorList = std::vector<SolutionVector>; // [solutionIndex]
+using SolutionMatrixList = std::vector<SolutionMatrix>; // [solutionIndex]
+
+// Spare-line configuration used to group generated solutions.
+struct SpareConfig
+{
+    int rowCount{};
+    int columnCount{};
+
+    bool operator==(const SpareConfig &other) const noexcept
+    {
+        return rowCount == other.rowCount &&
+               columnCount == other.columnCount;
+    }
+};
+
+struct SpareConfigHash
+{
+    std::size_t operator()(const SpareConfig &config) const noexcept
+    {
+        const auto rowHash = std::hash<int>{}(config.rowCount);
+        const auto columnHash = std::hash<int>{}(config.columnCount);
+
+        return rowHash ^ (columnHash << 1);
+    }
+};
+
+// Generated solutions grouped by spare-line configuration.
+using SolutionVectorsBySpareConfig =
+    std::unordered_map<SpareConfig, SolutionVectorList, SpareConfigHash>;
+
+using SolutionMatricesBySpareConfig =
+    std::unordered_map<SpareConfig, SolutionMatrixList, SpareConfigHash>;
+
+// Deprecated compatibility aliases.
+// Remove after all call sites have migrated to the new names.
+using solVector = SolutionVector;
+using solMatrix = SolutionMatrix;
+using AllSolVectorsType = SolutionVectorList;
+using AllSolMatrixsType = SolutionMatrixList;
+using SolVectorsList = SolutionVectorList;
+using SolMatrixsList = SolutionMatrixList;
+using SolVecForSpareCfgs = SolutionVectorsBySpareConfig;
+using SolMatForSpareCfgs = SolutionMatricesBySpareConfig;
+using SolVecForSpares = SolutionVectorsBySpareConfig;
+using SolMatForSpares = SolutionMatricesBySpareConfig;
+
+
 
 class SolGenerator
 {
@@ -34,15 +81,16 @@ public:
     int matrixSize;
 
     // ======  generate all combinations of solutions =============
-    // 1.generate all combinations of selecting Rs rows from Rs + Cs
-    //  - Must generate the first solvector in dictionary order !!!!!
-    // 2. for each combination, generate the solution matrix
+    // 1.Decide the order of Rs spare rows and Cs spare columns from (Rs + Cs) spare lines.
+    // 2.For each combination, generate the solution matrix
 
+    // All the combinations of solutions for spare lines (Rs + Cs)
     AllSolVectorsType allSolVectorsType;
     AllSolMatrixsType allSolMatrixsType;
 
-    SolVecForSpares solVecForSpares;
-    SolMatForSpares solMatForSpares;
+    //Generate solutions for different spare line configurations in one SolGenerator.
+    SolVecForSpareCfgs solVecForSpares;
+    SolMatForSpareCfgs solMatForSpares;
 
     SolGenerator(int r_spare, int c_spare) : Rs(r_spare), Cs(c_spare)
     {

@@ -213,7 +213,7 @@ void SolGenerator::writeAllSolVecForSparesToFile(string fileName)
     {
         auto &key = entry.first;
         auto &value = entry.second;
-        writeSolVecForSparesToFile(fileName + "_r" + to_string(key.first) + "_c" + to_string(key.second) + ".txt", key.first, key.second);
+        writeSolVecForSparesToFile(fileName + "_r" + to_string(key.rowCount) + "_c" + to_string(key.columnCount) + ".txt", key.rowCount, key.columnCount);
     }
 };
 
@@ -223,6 +223,6 @@ void SolGenerator::writeAllSolMatForSparesToFile(string fileName)
     {
         auto &key = entry.first;
         auto &value = entry.second;
-        writeSolMatForSparesToFile(fileName + "_r" + to_string(key.first) + "_c" + to_string(key.second) + ".txt", key.first, key.second);
+        writeSolMatForSparesToFile(fileName + "_r" + to_string(key.rowCount) + "_c" + to_string(key.columnCount) + ".txt", key.rowCount, key.columnCount);
     }
 };

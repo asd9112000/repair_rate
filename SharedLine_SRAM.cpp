@@ -33,7 +33,7 @@ struct spareLineConfig
 class PatternRecorder
 {
 public:
-    string reportDir = "./SharedLine_SRAM_Report/";
+    string reportDir = "./Report_SharedLine_SRAM/";
     string repairReportPath = reportDir + "RepairReport.rpt";
     string repairRecordPath = reportDir + "RepairRecord.txt";
     string remapTablePath = "remapTable.txt";
