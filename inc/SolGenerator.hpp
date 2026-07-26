@@ -73,7 +73,6 @@ using SolVecForSpares = SolutionVectorsBySpareConfig;
 using SolMatForSpares = SolutionMatricesBySpareConfig;
 
 
-
 class SolGenerator
 {
 public:

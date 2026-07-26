@@ -37,6 +37,7 @@ clean:
 
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
@@ -80,6 +81,7 @@ gen_fault:
 	(cd fault_generator && ./fault_generator.o --logic_units 4 --fixed_faults $(f) --stack_height $(s) --fault_mode normal)
 
 rdr_r:
+	./RedundantRate.o $(s) $(s) $(if $(rptName),--rptName $(rptName)) > RedundantRate.log
 	./RedundantRate.o $(s) $(s) $(if $(rptName),--rptName $(rptName)) > RedundantRate.log
 
 sl_r:
