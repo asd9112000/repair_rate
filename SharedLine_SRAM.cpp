@@ -19,6 +19,7 @@
 #include "inc/SolGenerator.hpp"
 #include "inc/FourWayPE.hpp"
 #include "inc/ResSpareLines.hpp"
+#include "inc/FaultOrganizer.hpp"
 
 
 using namespace std;
@@ -33,13 +34,23 @@ struct spareLineConfig
 class PatternRecorder
 {
 public:
+    struct FailedSubarrayGroup
+    {
+        int HBMID;
+        int ChannelID;
+        int BankID;
+        int SubarrayGroupID;
+    };
+
     string reportDir = "./Report_SharedLine_SRAM/";
     string repairReportPath = reportDir + "RepairReport.rpt";
     string repairRecordPath = reportDir + "RepairRecord.txt";
-    string remapTablePath = "remapTable.txt";
+    string remapTablePath = "./Report_SharedLine_SRAM/RemapTable.txt";
+    string simplifiedRemapTablePath = "./Report_SharedLine_SRAM/RemapTable_simplified.txt";
     ofstream repairRecordFile;
     ofstream repairReportFile;
     ofstream remapTableFile;
+    ofstream simplifiedRemapTableFile;
     int nextRemapOptionId = 0;
 
     // record details for "every" pattern
@@ -54,17 +65,24 @@ public:
     vector<int> repairSuccessPatternList;
     vector<int> repairSuccessPatternList_RECAM;
     unordered_map<int, vector<spareLineConfig>> PERepairSuccConfigMap;
+    vector<FailedSubarrayGroup> failedSubarrayGroups;
 
     PatternRecorder()
     {
         std::filesystem::create_directories(reportDir); // Ensure the directory exists
         remapTableFile.open(remapTablePath);
+        simplifiedRemapTableFile.open(simplifiedRemapTablePath);
         if (remapTableFile.is_open())
         {
             remapTableFile << "# REMAP_TABLE_LOG 1\n";
             remapTableFile << "# OPTION <pattern_id> <option_id> <config_index>\n";
             remapTableFile << "# PE <pe_id> <spare_rows> <spare_cols> <solution_index>\n";
-            remapTableFile << "# MAP <channel> <pseudochannel> <bankgroup> <bank> <row> <col> <R|C> <new_address> <latency>\n";
+            remapTableFile << "# MAP <HBMID> <ChannelID> <BankID> <SubarrayGroupID> <SubarrayID> <r> <c> <R|C> <new_address> <latency>\n";
+            remapTableFile << "#FAILED SUBARRAY GROUP <HBMID> <ChannelID> <BankID> <SubarrayGroupID>\n";
+        }
+        if (!simplifiedRemapTableFile.is_open())
+        {
+            cerr << "Error: Could not open " << simplifiedRemapTablePath << " for writing." << endl;
         }
     }
 
@@ -73,6 +91,10 @@ public:
         if (remapTableFile.is_open())
         {
             remapTableFile.close();
+        }
+        if (simplifiedRemapTableFile.is_open())
+        {
+            simplifiedRemapTableFile.close();
         }
     }
 
@@ -102,34 +124,79 @@ public:
             for (const RemapTable::RemapEntry &entry : pe.remapTableList[tableIndex].RemapEntries)
             {
                 const RemapTable::AddressEntry &address = entry.addressEntry;
-                remapTableFile << "MAP "
-                               << address.channel << " "
-                               << address.pseudochannel << " "
-                               << address.bankgroup << " "
-                               << address.bank << " "
-                               << address.row << " "
-                               << address.col << " "
-                               << (entry.isSpareRow ? 'R' : 'C') << " "
-                               << entry.newRowColAddr << " "
-                               << entry.Latency << "\n";
+                auto writeMapEntry = [&](std::ostream &output)
+                {
+                    output << "MAP "
+                           << address.HBMID << " "
+                           << address.ChannelID << " "
+                           << address.BankID << " "
+                           << address.SubarrayGroupID << " "
+                           << address.SubarrayID << " "
+                           << address.r << " "
+                           << address.c << " "
+                           << (entry.isSpareRow ? 'R' : 'C') << " "
+                           << entry.newRowColAddr << " "
+                           << entry.Latency << "\n";
+                };
+                writeMapEntry(remapTableFile);
+                if (simplifiedRemapTableFile.is_open())
+                {
+                    writeMapEntry(simplifiedRemapTableFile);
+                }
             }
             remapTableFile << "END_PE\n";
         }
         remapTableFile << "END_OPTION\n";
     }
 
-    void writeAllRemapOptions(
+    void recordFailedPattern(
         int patternId,
-        int configIndex,
-        const spareLineConfig &config,
-        const std::array<const RECAM_PE *, 4> &pes)
+        const std::array<const FaultList *, 4> &faultLists)
     {
-        for (size_t table0 = 0; table0 < pes[0]->remapTableList.size(); ++table0)
-        for (size_t table1 = 0; table1 < pes[1]->remapTableList.size(); ++table1)
-        for (size_t table2 = 0; table2 < pes[2]->remapTableList.size(); ++table2)
-        for (size_t table3 = 0; table3 < pes[3]->remapTableList.size(); ++table3)
+        for (int peIndex = 0; peIndex < 4; ++peIndex)
         {
-            writeRemapOption(patternId, configIndex, config, pes, {table0, table1, table2, table3});
+            if (faultLists[peIndex] != nullptr && !faultLists[peIndex]->PEFaults.empty())
+            {
+                const Fault &fault = faultLists[peIndex]->PEFaults.front();
+                failedSubarrayGroups.push_back({
+                    fault.HBMID,
+                    fault.ChannelID,
+                    fault.BankID,
+                    fault.SubarrayGroupID});
+                return;
+            }
+        }
+        cerr << "Warning: Could not determine the address of failed pattern "
+             << patternId << " because all four subarrays are empty." << endl;
+    }
+
+    void writeFailedPatterns()
+    {
+        if ((!remapTableFile.is_open() && !simplifiedRemapTableFile.is_open()) ||
+            failedSubarrayGroups.empty())
+        {
+            return;
+        }
+
+        for (const FailedSubarrayGroup &group : failedSubarrayGroups)
+        {
+            auto writeFailedSubarrayGroup = [&](std::ostream &output)
+            {
+                output << "#FAILED SUBARRAY GROUP "
+                       << group.HBMID << " "
+                       << group.ChannelID << " "
+                       << group.BankID << " "
+                       << group.SubarrayGroupID << "\n";
+            };
+
+            if (remapTableFile.is_open())
+            {
+                writeFailedSubarrayGroup(remapTableFile);
+            }
+            if (simplifiedRemapTableFile.is_open())
+            {
+                writeFailedSubarrayGroup(simplifiedRemapTableFile);
+            }
         }
     }
 
@@ -240,6 +307,13 @@ const RECAM_PE *getPEForSpareConfig(const FourWayPE &fourWayPE, int spareRows, i
 
 int main(int argc, char *argv[])
 {
+    if (argc < 3)
+    {
+        cerr << "Error: Missing spare row/column arguments.\n"
+             << "Usage: " << " <Rs> <Cs> \n"
+             << "Example: " << " 2 2\n";
+        return 1;
+    }
 
     int Rs = atoi(argv[1]); // number of spare rows
     int Cs = atoi(argv[2]); // number of spare columns
@@ -248,12 +322,7 @@ int main(int argc, char *argv[])
     int buf_num = 2;
     int sharedLine_num = 1;
 
-    int faultNum = 0;
-    for(int i = 0; i < argc; ++i){
-        if (argv[i] == string("--faultNum") && i + 1 < argc){
-            faultNum = atoi(argv[i+1]);
-        }
-    }
+
 
     /*
         +---+---+
@@ -344,12 +413,33 @@ int main(int argc, char *argv[])
     // ===================================
     // Load faults from file
     // ===================================
+
+    string unorganizedFaultFilePath ;
+    string organizedFaultFilePath = "./fault_generator/faults.faults";
+
+    // ===============   To Ming-Jie, Wang ====================
+    // Change these two paths when using a different unorganized fault file.
+    // unorganizedFaultFilePath = "./fault_generator/faults_simplified.faults";
+    // organizedFaultFilePath ="./fault_generator/faults_organized.faults";
+    // if (!organizeSimplifiedFaults(
+    //         unorganizedFaultFilePath,
+    //         organizedFaultFilePath))
+    // {
+    //     cerr << "Error: Failed to organize fault file "
+    //          << unorganizedFaultFilePath << endl;
+    //     return 1;
+    // }
+    // ==========================================================
+
+
+
     // Load the same faults for different PE spare line configurations
     FaultLoaderForSpares faultLoaderForSpares(Rs, Cs, buf_num);
     for (const auto& config : spareLineConfigs) {
         int r_spare = config.first;
         int c_spare = config.second;
-        if (!faultLoaderForSpares.generateFaultListsForSpares(r_spare, c_spare, "./fault_generator/faults.faults"))
+        if (!faultLoaderForSpares.generateFaultListsForSpares(
+                r_spare, c_spare, organizedFaultFilePath))
         {
             cout << "load failed, could not open file or too many faults." << endl;
             return 0;
@@ -461,7 +551,10 @@ int main(int argc, char *argv[])
         ResSpareLines resSpareLines(Rs, Cs, sharedLine_num);
 
         int configIndex = -1;
+        bool patternRepairSuccess = false;
+        bool firstRemapTableWritten = false;
         cout << "Start checking spare line configurations for pattern " << ii_pattern << endl;
+        // Check all combinations of spare line configurations for the four PEs
         for ( const auto &configLessRow0 : spareLineConfigsLessRow) { // PE0
             for (const auto &configLessCol1 : spareLineConfigsLessCol){ // PE1
                 for ( const auto & configLessRow2 : spareLineConfigsLessRow){ //PE2
@@ -502,6 +595,7 @@ int main(int argc, char *argv[])
 
                         if (thisConfigRepairSuccess)
                         {
+                            patternRepairSuccess = true;
                             patternRecorder.addPERepairSuccConfigMap((ii_pattern), configIndex, config);
 
                             std::array<const RECAM_PE *, 4> selectedPEs{};
@@ -513,11 +607,11 @@ int main(int argc, char *argv[])
                             const bool hasValidRemapTables = std::all_of(
                                 selectedPEs.begin(), selectedPEs.end(),
                                 [](const RECAM_PE *pe) { return pe != nullptr && !pe->remapTableList.empty(); });
-                            if (hasValidRemapTables)
+                            if (hasValidRemapTables && !firstRemapTableWritten)
                             {
-                                // A successful shared-line configuration is only useful when all
-                                // four PE tables are selected together.  Emit every solution tuple.
-                                patternRecorder.writeAllRemapOptions(ii_pattern, configIndex, config, selectedPEs);
+                                patternRecorder.writeRemapOption(
+                                    ii_pattern, configIndex, config, selectedPEs, {0, 0, 0, 0});
+                                firstRemapTableWritten = true;
                             }
 
                             // Check if this pattern is a new successful repair pattern
@@ -525,60 +619,6 @@ int main(int argc, char *argv[])
                                                 patternRecorder.repairSuccessPatternList.back()  != ii_pattern;
                             if (isNewPattern){
                                 patternRecorder.repairSuccessPatternList.push_back(ii_pattern);
-
-
-
-
-
-
-
-
-                                //=====================================
-                                // gen a remap
-                                // if row match xxx, than remap to row xxx, latency = xxx
-                                // patternRecorder.remapRecords.push_back({ .channel = 0, .pseudochannel = 0, .bankgroup = 0, .bank = 0, .row =
-                                //                                 0, .col = 0, .int = 0, .latency = 0});
-
-                                // get solution for this pattern, and analyze the remap record
-                                // get addressCAM for PE1
-
-                                // get solution for PE1 in this pattern
-
-                                for (int i = 0; i < 4; ++i)
-                                {
-                                    // // TODO
-                                    // // need to check index
-                                    // RECAM_PE *pe[4] = {nullptr, nullptr, nullptr, nullptr};
-                                    // if (configIndex == 0)
-                                    //     pe[i] = &fourWayPEs[i].PE_RsCs;
-                                    // else if (configIndex == 1)
-                                    //     pe[i]    = &fourWayPEs[i].PE_RsReduced;
-                                    // else if (configIndex == 2)
-                                    //     pe[i] = &fourWayPEs[i].PE_CsReduced;
-                                    // else if (configIndex == 3)
-                                    //     pe[i] = &fourWayPEs[i].PE_RsCsReduced;
-
-
-                                    // int solIndex = pe[i]->validSolList[0];
-                                    //   [solIndex];
-                                    // if ((fourWayPEs[i].))
-                                    // {
-                                    //     PERepairSuccessList[i] = resSpareLines.occupySpareLines(i, occupiedRows[i], occupiedCols[i]);
-                                    //     if (!PERepairSuccessList[i])
-                                    //     {
-                                    //         thisConfigRepairSuccess = false;
-                                    //         break;
-                                    //     }
-                                    //     }
-                                    //     else
-                                    //     {
-                                    //         // TODO : record
-                                    //         thisConfigRepairSuccess = false;
-                                    //         break;
-                                    //     }
-                                }
-
-                                // ================================================
                             }
 
                             // Check if this pattern is also successfully repaired by the RECAM configuration ( Rs, Cs )
@@ -595,15 +635,27 @@ int main(int argc, char *argv[])
                 }
             }
         }
+
+        if (!patternRepairSuccess)
+        {
+            std::array<const FaultList *, 4> failedFaultLists{};
+            for (int peIndex = 0; peIndex < 4; ++peIndex)
+            {
+                // Index 1 corresponds to the original (Rs, Cs) configuration.
+                failedFaultLists[peIndex] = &faultListsForSpares[peIndex][1];
+            }
+            patternRecorder.recordFailedPattern(ii_pattern, failedFaultLists);
+        }
     }
 
+    patternRecorder.writeFailedPatterns();
     patternRecorder.analyzeRecord();
     patternRecorder.writeRepairRecord();
     patternRecorder.writeRepairReport();
 
-    // cout << "RepairRate: " << patternRecorder.repairRate  << " ";
-    // cout << "RepairRate_RECAM: " << patternRecorder.repairRate_RECAM << " ";
-    // cout << "SpareLine: " << Rs << " ";
+    cout << "RepairRate: " << patternRecorder.repairRate  << " ";
+    cout << "RepairRate_RECAM: " << patternRecorder.repairRate_RECAM << " ";
+    cout << "SpareLine: " << Rs << " ";
     // cout << "faultNum: " << faultNum << endl;
 
 

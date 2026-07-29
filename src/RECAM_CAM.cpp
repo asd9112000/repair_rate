@@ -70,8 +70,8 @@ void RECAM_addressCAM::printAddressCAMEntries()
     {
         if (entry.enable && entry.faultPtr != nullptr)
         {
-            cout << "Pivot Fault - LU: " << entry.faultPtr->LogicUnitID
-                 << " Layer: " << entry.faultPtr->LayerID
+            cout << "Pivot Fault - Subarray: " << entry.faultPtr->SubarrayID
+                 << " Channel: " << entry.faultPtr->ChannelID
                  << " Bank: " << entry.faultPtr->BankID
                  << " Row: " << entry.faultPtr->r
                  << " Col: " << entry.faultPtr->c
@@ -204,8 +204,8 @@ void RECAM_hybridCAM::printHybridCAMEntries()
     {
         if (entry.enable && entry.faultPtr != nullptr)
         {
-            cout << "Non-Pivot Fault - LU: " << entry.faultPtr->LogicUnitID
-                 << " Layer: " << entry.faultPtr->LayerID
+            cout << "Non-Pivot Fault - Subarray: " << entry.faultPtr->SubarrayID
+                 << " Channel: " << entry.faultPtr->ChannelID
                  << " Bank: " << entry.faultPtr->BankID
                  << " Row: " << entry.faultPtr->r
                  << " Col: " << entry.faultPtr->c

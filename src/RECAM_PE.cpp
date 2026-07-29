@@ -202,8 +202,8 @@ void RECAM_PE::writeFaultAnalyzeMatrixToFile(const string &filename)
     {
         if (entry.enable && entry.faultPtr != nullptr)
         {
-            outFile << "Pivot Fault - LU: " << entry.faultPtr->LogicUnitID
-                    << " Layer: " << entry.faultPtr->LayerID
+            outFile << "Pivot Fault - Subarray: " << entry.faultPtr->SubarrayID
+                    << " Channel: " << entry.faultPtr->ChannelID
                     << " Bank: " << entry.faultPtr->BankID
                     << " Row: " << entry.faultPtr->r
                     << " Col: " << entry.faultPtr->c
@@ -218,8 +218,8 @@ void RECAM_PE::writeFaultAnalyzeMatrixToFile(const string &filename)
     {
         if (entry.enable && entry.faultPtr != nullptr)
         {
-            outFile << "Non-Pivot Fault - LU: " << entry.faultPtr->LogicUnitID
-                    << " Layer: " << entry.faultPtr->LayerID
+            outFile << "Non-Pivot Fault - Subarray: " << entry.faultPtr->SubarrayID
+                    << " Channel: " << entry.faultPtr->ChannelID
                     << " Bank: " << entry.faultPtr->BankID
                     << " Row: " << entry.faultPtr->r
                     << " Col: " << entry.faultPtr->c
@@ -296,15 +296,14 @@ solVector deriveSolVectorFromMatrix(const solMatrix &solution, int matrixSize)
 
 RemapTable::AddressEntry RECAM_PE::buildAddressEntryFromFault(const Fault &fault) const
 {
-    // Fault currently stores LU/layer/bank only.  They are mapped to the
-    // available remap address fields; bankgroup is not represented in Fault.
     RemapTable::AddressEntry addressEntry;
-    addressEntry.channel = fault.LogicUnitID;
-    addressEntry.pseudochannel = fault.LayerID;
-    addressEntry.bankgroup = 0;
-    addressEntry.bank = fault.BankID;
-    addressEntry.row = fault.r;
-    addressEntry.col = fault.c;
+    addressEntry.HBMID = fault.HBMID;
+    addressEntry.ChannelID = fault.ChannelID;
+    addressEntry.BankID = fault.BankID;
+    addressEntry.SubarrayGroupID = fault.SubarrayGroupID;
+    addressEntry.SubarrayID = fault.SubarrayID;
+    addressEntry.r = fault.r;
+    addressEntry.c = fault.c;
     return addressEntry;
 }
 

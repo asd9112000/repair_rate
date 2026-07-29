@@ -78,7 +78,11 @@ sl_sram_b: $(SL_SRAM_TARGET)
 #===============================================
 
 gen_fault:
-	(cd fault_generator && ./fault_generator.o --logic_units 4 --fixed_faults $(f) --stack_height $(s) --fault_mode normal)
+	(cd fault_generator && ./fault_generator.o  --fixed_faults $(f) --stack_height $(s) --fault_mode normal)
+
+organize_fault:
+	g++ -I ./inc -std=c++17 -Wall -Wextra fault_generator/fault_organizer.cpp src/FaultOrganizer.cpp -o fault_generator/fault_organizer.o
+	./fault_generator/fault_organizer.o fault_generator/faults_simplified.faults fault_generator/faults_organized.faults $(if $(g),$(g),)
 
 rdr_r:
 	./RedundantRate.o $(s) $(s) $(if $(rptName),--rptName $(rptName)) > RedundantRate.log
@@ -102,5 +106,3 @@ analyze_spareline:
 
 analyze_redundantrate:
 	@./scripts/analyze_RedundantRate.sh
-
-

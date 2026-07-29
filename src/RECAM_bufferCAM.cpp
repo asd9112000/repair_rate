@@ -9,7 +9,7 @@ void RECAM_bufferCAM::addBufferCAMEntry(Fault &f)
     {
         BufferCAMEntry entry;
         entry.faultPtr = &f;
-        bufferFaults.push_back(&entry);
+        bufferFaults.push_back(entry);
     }
     else
     {
@@ -31,12 +31,12 @@ void RECAM_bufferCAM::printBufferCAMEntries()
     cout << "========= RECAM_bufferCAM :: printBufferCAMEntries ==========" << endl;
     cout << "Buffer CAM Entries:" << endl;
     for (const auto& entry : bufferFaults) {
-        if (entry->faultPtr != nullptr) {
-            cout << "Buffer Fault - LU: " << entry->faultPtr->LogicUnitID
-                    << " Layer: " << entry->faultPtr->LayerID
-                    << " Bank: " << entry->faultPtr->BankID
-                    << " Row: " << entry->faultPtr->r
-                    << " Col: " << entry->faultPtr->c
+        if (entry.faultPtr != nullptr) {
+            cout << "Buffer Fault - Subarray: " << entry.faultPtr->SubarrayID
+                    << " Channel: " << entry.faultPtr->ChannelID
+                    << " Bank: " << entry.faultPtr->BankID
+                    << " Row: " << entry.faultPtr->r
+                    << " Col: " << entry.faultPtr->c
                     << endl;
         }
     }

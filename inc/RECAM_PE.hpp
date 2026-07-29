@@ -22,16 +22,17 @@ using namespace std;
 
 class RemapTable{
 public:
-    static constexpr int kDefaultRemapLatency = 99;
+    static constexpr int kDefaultRemapLatency = 10;
 
     struct AddressEntry
     {
-        int channel         = 99;
-        int pseudochannel   = 99;
-        int bankgroup       = 99;
-        int bank            = 99;
-        int row             = 99;
-        int col             = 99;
+        int HBMID            = 99;
+        int ChannelID        = 99;
+        int BankID           = 99;
+        int SubarrayGroupID  = 99;
+        int SubarrayID       = 99;
+        int r                = 99;
+        int c                = 99;
 
     };
 
@@ -58,13 +59,14 @@ public:
 
     bool isMatchedThisEntry(const AddressEntry &addrEntry, const RemapEntry &entry) const
     {
-        if (addrEntry.channel == entry.addressEntry.channel &&
-            addrEntry.pseudochannel == entry.addressEntry.pseudochannel &&
-            addrEntry.bankgroup == entry.addressEntry.bankgroup &&
-            addrEntry.bank == entry.addressEntry.bank &&
+        if (addrEntry.HBMID == entry.addressEntry.HBMID &&
+            addrEntry.ChannelID == entry.addressEntry.ChannelID &&
+            addrEntry.BankID == entry.addressEntry.BankID &&
+            addrEntry.SubarrayGroupID == entry.addressEntry.SubarrayGroupID &&
+            addrEntry.SubarrayID == entry.addressEntry.SubarrayID &&
             (entry.isSpareRow
-                ? addrEntry.row == entry.addressEntry.row
-                : addrEntry.col == entry.addressEntry.col))
+                ? addrEntry.r == entry.addressEntry.r
+                : addrEntry.c == entry.addressEntry.c))
         {
             return true;
         }
@@ -79,8 +81,8 @@ public:
         {
             if (isMatchedThisEntry(addrEntry, e))
             {
-                if (e.isSpareRow) result.addressEntry.row = e.newRowColAddr;
-                else              result.addressEntry.col = e.newRowColAddr;
+                if (e.isSpareRow) result.addressEntry.r = e.newRowColAddr;
+                else              result.addressEntry.c = e.newRowColAddr;
                 result.latency = std::max(result.latency, e.Latency);
             }
         }
@@ -116,12 +118,13 @@ public:
             {
                 RemapEntry entry;
                 char remapKind = 'R';
-                input >> entry.addressEntry.channel
-                      >> entry.addressEntry.pseudochannel
-                      >> entry.addressEntry.bankgroup
-                      >> entry.addressEntry.bank
-                      >> entry.addressEntry.row
-                      >> entry.addressEntry.col
+                input >> entry.addressEntry.HBMID
+                      >> entry.addressEntry.ChannelID
+                      >> entry.addressEntry.BankID
+                      >> entry.addressEntry.SubarrayGroupID
+                      >> entry.addressEntry.SubarrayID
+                      >> entry.addressEntry.r
+                      >> entry.addressEntry.c
                       >> remapKind
                       >> entry.newRowColAddr
                       >> entry.Latency;
@@ -149,20 +152,20 @@ public:
     }
 
     // Query the option previously selected by loadFromLog().
-    RemappedResult remapAddressFromLog(const AddressEntry &addrEntry) const
-    {
-        return remapAddress(addrEntry);
-    }
+    // RemappedResult remapAddressFromLog(const AddressEntry &addrEntry) const
+    // {
+    //     return remapAddress(addrEntry);
+    // }
 
-    int getLatency(const AddressEntry &addrEntry) const
-    {
-        return remapAddress(addrEntry).latency;
-    }
+    // int getLatency(const AddressEntry &addrEntry) const
+    // {
+    //     return remapAddress(addrEntry).latency;
+    // }
 
-    AddressEntry getRemappedAddr(const AddressEntry &addrEntry) const
-    {
-        return remapAddress(addrEntry).addressEntry;
-    }
+    // AddressEntry getRemappedAddr(const AddressEntry &addrEntry) const
+    // {
+    //     return remapAddress(addrEntry).addressEntry;
+    // }
 
 };
 
@@ -209,8 +212,8 @@ public:
     void printValidSolList() ;
     void genRepairTable(FaultList &faultList){};
 
-    RemapTable buildRemapTable(const solVector &solutionVector) const;
     RemapTable::AddressEntry buildAddressEntryFromFault(const Fault &fault) const;
+    RemapTable buildRemapTable(const solVector &solutionVector) const;
 
 
 

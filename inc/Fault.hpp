@@ -21,7 +21,8 @@ using namespace std;
 struct Fault
 {
     int r, c;
-    int LogicUnitID, LayerID, BankID;
+    int HBMID, ChannelID, BankID, SubarrayGroupID, SubarrayID;
+
     bool isPivot = false;
     bool isBuffer = false;
     bool isNonPivot = false;
@@ -51,6 +52,10 @@ public:
     FaultList(int r_spare, int c_spare, int buff_num) : Rs(r_spare), Cs(c_spare), Buff_num(buff_num) {
         matrixSize = Rs + Cs;
     };
+    FaultList(const FaultList &other);
+    FaultList &operator=(const FaultList &other);
+    FaultList(FaultList &&other) noexcept = default;
+    FaultList &operator=(FaultList &&other) noexcept = default;
 
     void addFault(const Fault &f){
         PEFaults.push_back(f);
@@ -61,7 +66,13 @@ public:
         cout << "Total Faults: " << PEFaults.size() << " pivot faults: " << pivotFaults.size() << " buffer faults: " << bufferFaults.size() << " non-pivot faults: " << nonPivotFaults.size() << endl;
         for (const auto &f : PEFaults)
         {
-            cout << "Fault - LU: " << f.LogicUnitID << " Layer: " << f.LayerID << " Bank: " << f.BankID << " Row: " << f.r << " Col: " << f.c << endl;
+            cout << "Fault - HBM: " << f.HBMID
+                 << " Channel: " << f.ChannelID
+                 << " Bank: " << f.BankID
+                 << " Subarray Group: " << f.SubarrayGroupID
+                 << " Subarray: " << f.SubarrayID
+                 << " Row: " << f.r
+                 << " Col: " << f.c << endl;
         }
     }
     void printFaultList();
@@ -76,7 +87,7 @@ public:
     int matrixSize;
     int Buff_num;
 
-    vector<FaultList> faultLists; // for multiple PEs
+    vector<FaultList> faultLists; // for multiple subarrays
 
     FaultLoader( int r_spare, int c_spare, int buff_num) : Rs(r_spare), Cs(c_spare), Buff_num(buff_num)
     {
@@ -92,8 +103,8 @@ public:
 class FaultLoaderForSpares {
 public:
     int Rs, Cs;
-    int RsRuduced;
-    int CsRuduced;
+    // int RsRuduced;
+    // int CsRuduced;
     int matrixSize;
     int Buff_num;
 
@@ -102,8 +113,8 @@ public:
     FaultLoaderForSpares(int r_spare, int c_spare, int buff_num)
         : Rs(r_spare), Cs(c_spare), Buff_num(buff_num) {
         matrixSize = Rs + Cs;
-        RsRuduced = Rs -1;
-        CsRuduced = Cs -1;
+        // RsRuduced = Rs -1;
+        // CsRuduced = Cs -1;
     };
 
     bool generateFaultListsForSpares(int r_spare, int c_spare, string filename = "./fault_generator/faults.faults")
