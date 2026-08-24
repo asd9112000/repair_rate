@@ -42,6 +42,7 @@ public:
     int CsRuduced;
     int buf_num;
     int PEIndex;
+    bool usePaperCamReuse;
 
     RECAM_PE PE_RsCs;
     RECAM_PE PE_RsReduced;
@@ -55,12 +56,23 @@ public:
     vector<bool> perWayRepairSuccessList{false, false, false, false}; // ( RsCs, RsReduced, CsReduced, RsCsReduced )
     unordered_map<pair<int, int>, bool, PairHash> perWayRepairSuccessListForSparess; // key: (Rs, Cs)
 
-    FourWayPE(int r, int c, int buf_num, int peIndex) :
-        Rs(r), Cs(c), RsRuduced(r-1), CsRuduced(c-1), buf_num(buf_num), PEIndex(peIndex),
-        PE_RsCs(Rs, Cs, buf_num),
-        PE_RsReduced(RsRuduced, Cs, buf_num),
-        PE_CsReduced(Rs, CsRuduced, buf_num),
-        PE_RsCsReduced(RsRuduced, CsRuduced, buf_num)
+    FourWayPE(
+        int r,
+        int c,
+        int buf_num,
+        int peIndex,
+        bool use_paper_cam_reuse = false) :
+        Rs(r), Cs(c), RsRuduced(r-1), CsRuduced(c-1), buf_num(buf_num),
+        PEIndex(peIndex), usePaperCamReuse(use_paper_cam_reuse),
+        PE_RsCs(
+            r, c, use_paper_cam_reuse ? r + c : buf_num),
+        PE_RsReduced(
+            r - 1, c, use_paper_cam_reuse ? r - 1 + c : buf_num),
+        PE_CsReduced(
+            r, c - 1, use_paper_cam_reuse ? r + c - 1 : buf_num),
+        PE_RsCsReduced(
+            r - 1, c - 1,
+            use_paper_cam_reuse ? r + c - 2 : buf_num)
     {};
 
     void loadFaultsToPEs(FaultList &faultListRsCs, FaultList &faultListRsReduced, FaultList &faultListCsReduced, FaultList &faultListRsCsReduced){

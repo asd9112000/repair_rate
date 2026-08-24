@@ -33,7 +33,7 @@ struct spareLineConfig
 class PatternRecorder
 {
 public:
-    string reportDir = "./Report_SharedLine_3way/";
+    string reportDir = "./reports/SharedLine_3way/";
     string repairReportPath = reportDir + "RepairReport.rpt";
     string repairRecordPath = reportDir + "RepairRecord.txt";
     ofstream repairRecordFile;

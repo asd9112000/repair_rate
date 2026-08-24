@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <iomanip> // for std::setw
 #include <limits>
+#include <optional>
 
 // #include "inc/RECAM_addressCAM.hpp"
 #include "./SolGenerator.hpp"
@@ -23,6 +24,9 @@ using namespace std;
 class RemapTable{
 public:
     static constexpr int kDefaultRemapLatency = 10;
+    // The paper reports the online CAM address/data path completing within
+    // 2--3 cycles (Sec. IV-D).  Use the conservative endpoint for BUFFMAP.
+    static constexpr int kDefaultCamReuseLatency = 3;
 
     struct AddressEntry
     {
@@ -45,16 +49,54 @@ public:
         int Latency = kDefaultRemapLatency;
     };
 
+    // Exact-address repair performed by the CAM-reuse storage.  Unlike a
+    // MAP entry, this does not consume or name a spare row/column.
+    struct BufferRemapEntry
+    {
+        AddressEntry addressEntry;
+        int Latency = kDefaultCamReuseLatency;
+    };
+
 
     struct RemappedResult
     {
         AddressEntry addressEntry;
         int latency = 0;
+        bool servedByBufferCAM = false;
     };
 
     std::vector<RemapEntry> RemapEntries;
+    std::vector<BufferRemapEntry> BufferRemapEntries;
     void addRemapEntry(const RemapEntry &entry){
         RemapEntries.push_back(entry);
+    }
+
+    static bool isSamePhysicalAddress(
+        const AddressEntry &lhs,
+        const AddressEntry &rhs)
+    {
+        return lhs.HBMID == rhs.HBMID &&
+               lhs.ChannelID == rhs.ChannelID &&
+               lhs.BankID == rhs.BankID &&
+               lhs.SubarrayGroupID == rhs.SubarrayGroupID &&
+               lhs.SubarrayID == rhs.SubarrayID &&
+               lhs.r == rhs.r &&
+               lhs.c == rhs.c;
+    }
+
+    void addBufferRemapEntry(const BufferRemapEntry &entry)
+    {
+        const bool duplicate = std::any_of(
+            BufferRemapEntries.begin(), BufferRemapEntries.end(),
+            [&entry](const BufferRemapEntry &existing)
+            {
+                return isSamePhysicalAddress(
+                    existing.addressEntry, entry.addressEntry);
+            });
+        if (!duplicate)
+        {
+            BufferRemapEntries.push_back(entry);
+        }
     }
 
     bool isMatchedThisEntry(const AddressEntry &addrEntry, const RemapEntry &entry) const
@@ -76,7 +118,21 @@ public:
 
     RemappedResult remapAddress(const AddressEntry &addrEntry) const
     {
-        RemappedResult result{addrEntry, 0};
+        RemappedResult result;
+        result.addressEntry = addrEntry;
+
+        // An exact CAM-reuse hit is served by CAM data rather than by a
+        // spare line, so it takes precedence over normal line remapping.
+        for (const auto &entry : BufferRemapEntries)
+        {
+            if (isSamePhysicalAddress(addrEntry, entry.addressEntry))
+            {
+                result.latency = entry.Latency;
+                result.servedByBufferCAM = true;
+                return result;
+            }
+        }
+
         for (const auto &e : RemapEntries)
         {
             if (isMatchedThisEntry(addrEntry, e))
@@ -100,6 +156,7 @@ public:
         }
 
         RemapEntries.clear();
+        BufferRemapEntries.clear();
         std::string tag;
         bool inSelectedOption = false;
         bool foundOption = false;
@@ -134,6 +191,22 @@ public:
                     RemapEntries.push_back(entry);
                 }
             }
+            else if (tag == "BUFFMAP")
+            {
+                BufferRemapEntry entry;
+                input >> entry.addressEntry.HBMID
+                      >> entry.addressEntry.ChannelID
+                      >> entry.addressEntry.BankID
+                      >> entry.addressEntry.SubarrayGroupID
+                      >> entry.addressEntry.SubarrayID
+                      >> entry.addressEntry.r
+                      >> entry.addressEntry.c
+                      >> entry.Latency;
+                if (inSelectedOption)
+                {
+                    addBufferRemapEntry(entry);
+                }
+            }
             else if (tag == "END_OPTION")
             {
                 if (inSelectedOption)
@@ -148,24 +221,9 @@ public:
             }
         }
         RemapEntries.clear();
+        BufferRemapEntries.clear();
         return foundOption && !input.bad();
     }
-
-    // Query the option previously selected by loadFromLog().
-    // RemappedResult remapAddressFromLog(const AddressEntry &addrEntry) const
-    // {
-    //     return remapAddress(addrEntry);
-    // }
-
-    // int getLatency(const AddressEntry &addrEntry) const
-    // {
-    //     return remapAddress(addrEntry).latency;
-    // }
-
-    // AddressEntry getRemappedAddr(const AddressEntry &addrEntry) const
-    // {
-    //     return remapAddress(addrEntry).addressEntry;
-    // }
 
 };
 
@@ -180,6 +238,7 @@ public:
     int matrixSize ;
     bool isRepairable = false;
     bool RepairSuccess = false;
+    bool camStorageOverflow = false;
 
     std::unique_ptr<RECAM_addressCAM>   addressCAM;
     std::unique_ptr<RECAM_hybridCAM>    hybridCAM;
@@ -187,16 +246,28 @@ public:
 
     using FaultAnalyzeMatrix = vector<vector<bool>>;
     FaultAnalyzeMatrix  faultAnalyzeMatrixHardware;
+    // Physical address provenance for every logical matrix row/column.
+    // Address-CAM entries initialize the diagonal slots; Hybrid-CAM Case 1
+    // may populate otherwise free slots.  Remap generation must use these
+    // vectors rather than only the Address CAM, or selected extended lines
+    // disappear from RemapTable.txt.
+    std::vector<std::optional<RemapTable::AddressEntry>> matrixRowAddresses;
+    std::vector<std::optional<RemapTable::AddressEntry>> matrixColumnAddresses;
     std::vector<int>    validSolList; // store the index of valid solutions
     std::vector<RemapTable> remapTableList; // one remap table for each validSolList entry
 
-    RECAM_PE(int r_spare, int c_spare, int buff_num)
+    RECAM_PE(
+        int r_spare,
+        int c_spare,
+        int buff_num)
         : Rs(r_spare), Cs(c_spare), buff_num(buff_num), matrixSize(r_spare + c_spare),
           addressCAM(std::make_unique<RECAM_addressCAM>(r_spare, c_spare, buff_num)),
           hybridCAM(std::make_unique<RECAM_hybridCAM>(r_spare, c_spare, buff_num)),
           bufferCAM(std::make_unique<RECAM_bufferCAM>(buff_num))
     {
         faultAnalyzeMatrixHardware.resize(matrixSize, vector<bool>(matrixSize, false));
+        matrixRowAddresses.resize(matrixSize);
+        matrixColumnAddresses.resize(matrixSize);
     }
 
 
@@ -210,7 +281,7 @@ public:
     bool checkSolution(const solMatrix &solution, int solIndex);
     void genValidSolList(const vector<solMatrix> &allSolutions);
     void printValidSolList() ;
-    void genRepairTable(FaultList &faultList){};
+    void genRepairTable(FaultList &){};
 
     RemapTable::AddressEntry buildAddressEntryFromFault(const Fault &fault) const;
     RemapTable buildRemapTable(const solVector &solutionVector) const;

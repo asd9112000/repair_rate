@@ -33,17 +33,10 @@ int main(int argc, char *argv[])
     int buf_num = 2;
 
     // default parameters
-    string reportDir = "./Report_RedundantRate/";
-    string RepairReport = reportDir + "RepairReport.rpt";
+    string reportDir = "./reports/RedundantRate/";
     std::filesystem::create_directories(reportDir); // Ensure the directory exists
+    // string RepairReport = reportDir + "RepairReport.rpt";
 
-    // set parameters from command line arguments
-    for (int i = 1; i < argc; ++i) {
-        if (argv[i] == std::string("--rptName"))
-        {
-            RepairReport = reportDir + "RepairReport" + std::string(argv[++i]) + ".rpt";
-        }
-    }
 
     // ===================================
     //  repair record files
@@ -51,6 +44,14 @@ int main(int argc, char *argv[])
     string   repairRecordFileName = reportDir + "RepairRecordFile.txt";
     string   reportFileName       = reportDir + "RepairReport.txt";
     ofstream repairRecordFile(repairRecordFileName);
+
+    // set parameters from command line arguments
+    for (int i = 1; i < argc; ++i) {
+        if (argv[i] == std::string("--rptName"))
+        {
+            reportFileName = reportDir + "RepairReport" + std::string(argv[++i]) + ".rpt";
+        }
+    }
 
     if (!repairRecordFile.is_open())
     {
@@ -158,12 +159,12 @@ int main(int argc, char *argv[])
         // detecting special cases( I think these cases should not happen )
         if (rdrPEs.PE_RsCsReduced.RepairSuccess){
             if ( ! (rdrPEs.PE_RsReduced.RepairSuccess && rdrPEs.PE_CsReduced.RepairSuccess && rdrPEs.PE_RsCs.RepairSuccess) ){
-                cout << "Warning: special case detected, RsCsReduced repair success but some of others don't  success." << endl;
+                cout << "Error: special case detected, RsCsReduced repair success but some of others don't  success." << endl;
             }
         }
         else if (rdrPEs.PE_RsReduced.RepairSuccess || rdrPEs.PE_CsReduced.RepairSuccess){
             if ( ! rdrPEs.PE_RsCs.RepairSuccess){
-                cout << "Warning: special case detected, RsReduced or CsReduced repair success but RsCs doesn't success." << endl;
+                cout << "Error: special case detected, RsReduced or CsReduced repair success but RsCs doesn't success." << endl;
             }
         }
 
@@ -248,7 +249,7 @@ int main(int argc, char *argv[])
         cerr << "Error: Could not open file " << reportFileName << " for writing." << endl;
         return 0;
     }
-    reportFile << "The PE array has been repaired " << PERepairCount << " times in " << patNum << " times simulation." << endl;
+    // reportFile << "The PE array has been repaired " << PERepairCount << " times in " << patNum << " times simulation." << endl;
     reportFile << "  -Max fault count of all patterns: " << maxFaultCnt << endl;
     reportFile << "  -Min fault count of all patterns: " << minFaultCnt << endl;
     reportFile << "  -Repair rate: " << static_cast<double>(PERepairCount) / patNum << endl;

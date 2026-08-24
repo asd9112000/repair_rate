@@ -1,0 +1,153 @@
+# Fault Generator 使用說明
+
+本目錄提供兩種 fault generator。兩者都會產生相同格式的 fault map，
+但對 `--fixed_faults` 與每層 fault 總數的處理方式不同。
+
+## 兩種 Generator 的差異
+
+### `fault_generator.cpp`：每層 fault 總數固定
+
+`--fixed_faults` 表示每個 Logic Unit 的基準 fault 數量。
+
+- `fixed` mode：每個 Logic Unit 都有 `fixed_faults` 個 faults。
+- `normal` / `extreme` mode：各 Logic Unit 的 fault 數量不同，但程式會重新
+  分配數量，確保每一層的 fault 總數固定。
+
+每層固定總數為：
+
+```text
+fixed_faults × logic_units
+```
+
+例如 `--num_subarrays 4 --fixed_faults 10` 時，不論使用哪一種 mode，
+每層都固定有 40 個 faults；`normal` 與 `extreme` 只會改變這 40 個 faults
+在 4 個 Logic Units 之間的分配方式。
+
+### `fault_generator_rand_amount.cpp`：每層 fault 總數不固定
+
+`--fixed_faults` 是隨機分布的基準值。程式會針對每一層的每個 Logic Unit
+獨立產生 fault 數量，不會再把結果正規化成固定總數。
+
+因此在 `normal` / `extreme` mode 下：
+
+- 同一層中的各 Logic Unit 可以有不同的 fault 數量。
+- 不同層的 fault 總數也可能不同。
+- 整個 stack 的 fault 總數會隨亂數結果變動。
+
+`fixed` mode 仍然會讓每個 Logic Unit 產生恰好 `fixed_faults` 個 faults。
+
+## 三種 Fault Mode
+
+| Mode | `fault_generator.cpp` | `fault_generator_rand_amount.cpp` |
+| --- | --- | --- |
+| `fixed` | 每個 Logic Unit 固定為 `fixed_faults`；每層總數固定 | 行為相同 |
+| `normal` | 以 `fixed_faults` 為中心產生小幅差異，再重新分配以維持每層總數 | 以常態分布獨立產生每個 Logic Unit 的數量；標準差為 `max(1, fixed_faults × 0.4)`，結果最小為 0 |
+| `extreme` | 使用 log-normal 權重產生較大的 Logic Unit 間差異，再重新分配以維持每層總數 | 70% 機率產生 `0%～20%` 的低 fault 數，30% 機率產生 `120%～140%` 的高 fault 數 |
+
+簡單選擇方式：
+
+- 需要完全一致的 fault 數量：使用 `fixed`。
+- 需要接近基準值的自然波動：使用 `normal`。
+- 需要模擬 fault 集中在少數 Logic Units 的不均勻情況：使用 `extreme`。
+- 需要比較不同分布、但保持每層總 fault 數一致：使用
+  `fault_generator.cpp`。
+- 需要讓每層與整個 stack 的總 fault 數也一起浮動：使用
+  `fault_generator_rand_amount.cpp`。
+
+## Fault 位置的產生方式
+
+上述 mode 只控制「fault 數量」。決定數量後，兩個 generator 都使用相同的
+方式產生不重複的 `(Row, Col)` 位置：
+
+- 20%：在既有 fault 附近產生 cluster fault。
+- 30%：與既有 fault 位於相同 row 或 column。
+- 50%：在整個 `1024 × 1024` 範圍內隨機產生。
+
+## 編譯
+
+建議從 repository 根目錄透過 Makefile 建置：
+
+```bash
+make fault_generator_b
+make fault_generator_rand_b
+```
+
+兩個 executable 分別位於：
+
+```text
+build/bin/fault_generator
+build/bin/fault_generator_rand_amount
+```
+
+它們不使用 `.o` 副檔名；`.o` 僅用於 `build/obj/` 內的中間 object。
+
+## 執行方式
+
+主要參數：
+
+| 參數 | 適用版本 | 說明 | 預設值 |
+| --- | --- | --- | --- |
+| `--num_subarrays` | 固定總量版 | 每個 subarray group 的 subarray 數量 | `4` |
+| `--logic_units` | 隨機總量版 | 每層的 Logic Unit 數量 | `4` |
+| `--fixed_faults` | 兩者 | 每個 Logic Unit／subarray 的基準 fault 數量 | `10` |
+| `--stack_height` | 兩者 | stack 的層數 | 固定總量版 `1`；隨機總量版 `2` |
+| `--fault_mode` | 兩者 | `fixed`、`normal` 或 `extreme` | `extreme` |
+| `--seed` | 兩者 | 亂數種子；指定相同值可重現相同結果 | 未固定 |
+| `--output` | 兩者 | 輸出檔案路徑 | `faults.faults` |
+
+每層總 fault 數固定：
+
+```bash
+./build/bin/fault_generator \
+  --num_subarrays 4 \
+  --fixed_faults 14 \
+  --stack_height 10 \
+  --fault_mode normal \
+  --seed 1234 \
+  --output faults_fixed_total.faults
+```
+
+每層總 fault 數隨機：
+
+```bash
+./build/bin/fault_generator_rand_amount \
+  --logic_units 4 \
+  --fixed_faults 14 \
+  --stack_height 10 \
+  --fault_mode normal \
+  --seed 1234 \
+  --output faults_random_total.faults
+```
+
+三種 mode 的快速執行範例：
+
+```bash
+./build/bin/fault_generator --num_subarrays 4 --fixed_faults 10 --stack_height 8 --fault_mode fixed
+./build/bin/fault_generator --num_subarrays 4 --fixed_faults 10 --stack_height 8 --fault_mode normal
+./build/bin/fault_generator --num_subarrays 4 --fixed_faults 10 --stack_height 8 --fault_mode extreme
+```
+
+專案的標準固定總量流程可直接使用：
+
+```bash
+make gen_fault f=14 s=10
+```
+
+此 target 會按需要建立 `build/bin/fault_generator`，並將結果寫到
+`fault_generator/faults.faults`。
+
+## 輸出格式
+
+輸出檔開頭包含設定資訊，接著是 pattern 數量：
+
+```text
+stack_height × logic_units
+```
+
+每個 pattern 先寫入該 Logic Unit 的 fault 數量，後面再列出每個 fault：
+
+```text
+LogicUnitID LayerID BankID Row Col
+```
+
+目前 `BankID` 固定為 `0`。

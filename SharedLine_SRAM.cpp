@@ -42,11 +42,11 @@ public:
         int SubarrayGroupID;
     };
 
-    string reportDir = "./Report_SharedLine_SRAM/";
+    string reportDir = "./reports/SharedLine_SRAM/";
     string repairReportPath = reportDir + "RepairReport.rpt";
     string repairRecordPath = reportDir + "RepairRecord.txt";
-    string remapTablePath = "./Report_SharedLine_SRAM/RemapTable.txt";
-    string simplifiedRemapTablePath = "./Report_SharedLine_SRAM/RemapTable_simplified.txt";
+    string remapTablePath = "./reports/SharedLine_SRAM/RemapTable.txt";
+    string simplifiedRemapTablePath = "./reports/SharedLine_SRAM/RemapTable_simplified.txt";
     ofstream repairRecordFile;
     ofstream repairReportFile;
     ofstream remapTableFile;
@@ -67,17 +67,38 @@ public:
     unordered_map<int, vector<spareLineConfig>> PERepairSuccConfigMap;
     vector<FailedSubarrayGroup> failedSubarrayGroups;
 
-    PatternRecorder()
+    explicit PatternRecorder(
+        int bufferEntriesPerPE = 0,
+        bool paperCamReuse = false)
     {
         std::filesystem::create_directories(reportDir); // Ensure the directory exists
         remapTableFile.open(remapTablePath);
         simplifiedRemapTableFile.open(simplifiedRemapTablePath);
         if (remapTableFile.is_open())
         {
-            remapTableFile << "# REMAP_TABLE_LOG 1\n";
+            const bool bufferDisabled = !paperCamReuse && bufferEntriesPerPE == 0;
+            remapTableFile << "# REMAP_TABLE_LOG 2\n";
+            remapTableFile << "# CAM_REUSE_MODE "
+                           << (paperCamReuse
+                               ? "PAPER_ADDITIONAL_PIVOT"
+                               : (bufferDisabled
+                                   ? "BUFFER_DISABLED"
+                                   : "FIXED_ADDITIONAL_PIVOT_BUFFER")) << "\n";
+            if (paperCamReuse)
+            {
+                remapTableFile << "# BUFFER_ENTRIES_PER_PE Rs+Cs\n";
+            }
+            else
+            {
+                remapTableFile << "# BUFFER_ENTRIES_PER_PE "
+                               << bufferEntriesPerPE << "\n";
+            }
+            remapTableFile << "# HYBRID_OVERFLOW_TO_BUFFER_EXTENSION "
+                           << 0 << "\n";
             remapTableFile << "# OPTION <pattern_id> <option_id> <config_index>\n";
             remapTableFile << "# PE <pe_id> <spare_rows> <spare_cols> <solution_index>\n";
             remapTableFile << "# MAP <HBMID> <ChannelID> <BankID> <SubarrayGroupID> <SubarrayID> <r> <c> <R|C> <new_address> <latency>\n";
+            remapTableFile << "# BUFFMAP <HBMID> <ChannelID> <BankID> <SubarrayGroupID> <SubarrayID> <r> <c> <latency>\n";
             remapTableFile << "#FAILED SUBARRAY GROUP <HBMID> <ChannelID> <BankID> <SubarrayGroupID>\n";
         }
         if (!simplifiedRemapTableFile.is_open())
@@ -142,6 +163,28 @@ public:
                 if (simplifiedRemapTableFile.is_open())
                 {
                     writeMapEntry(simplifiedRemapTableFile);
+                }
+            }
+            for (const RemapTable::BufferRemapEntry &entry :
+                 pe.remapTableList[tableIndex].BufferRemapEntries)
+            {
+                const RemapTable::AddressEntry &address = entry.addressEntry;
+                auto writeBufferMapEntry = [&](std::ostream &output)
+                {
+                    output << "BUFFMAP "
+                           << address.HBMID << " "
+                           << address.ChannelID << " "
+                           << address.BankID << " "
+                           << address.SubarrayGroupID << " "
+                           << address.SubarrayID << " "
+                           << address.r << " "
+                           << address.c << " "
+                           << entry.Latency << "\n";
+                };
+                writeBufferMapEntry(remapTableFile);
+                if (simplifiedRemapTableFile.is_open())
+                {
+                    writeBufferMapEntry(simplifiedRemapTableFile);
                 }
             }
             remapTableFile << "END_PE\n";
@@ -310,8 +353,10 @@ int main(int argc, char *argv[])
     if (argc < 3)
     {
         cerr << "Error: Missing spare row/column arguments.\n"
-             << "Usage: " << " <Rs> <Cs> \n"
-             << "Example: " << " 2 2\n";
+             << "Usage: " << argv[0]
+             << " <Rs> <Cs> [--paper-cam-reuse | --buffer <entries>]"
+             << " [--rptName <name>]\n"
+             << "Example: " << argv[0] << " 2 2 --paper-cam-reuse\n";
         return 1;
     }
 
@@ -321,6 +366,62 @@ int main(int argc, char *argv[])
     int CsRuduced = Cs - 1;
     int buf_num = 2;
     int sharedLine_num = 1;
+    bool paperCamReuse = false;
+    bool fixedBufferSpecified = false;
+
+    for (int i = 3; i < argc; ++i)
+    {
+        if (argv[i] == string("--buffer"))
+        {
+            fixedBufferSpecified = true;
+            if (i + 1 >= argc)
+            {
+                cerr << "Error: --buffer requires a nonnegative entry count.\n";
+                return 1;
+            }
+            const string bufferArgument = argv[++i];
+            size_t parsedCharacters = 0;
+            try
+            {
+                buf_num = stoi(bufferArgument, &parsedCharacters);
+            }
+            catch (const std::exception &)
+            {
+                cerr << "Error: --buffer must be a nonnegative integer.\n";
+                return 1;
+            }
+            if (parsedCharacters != bufferArgument.size() || buf_num < 0)
+            {
+                cerr << "Error: --buffer must be a nonnegative integer.\n";
+                return 1;
+            }
+        }
+        else if (argv[i] == string("--paper-cam-reuse"))
+        {
+            paperCamReuse = true;
+        }
+    }
+    if (paperCamReuse && fixedBufferSpecified)
+    {
+        cerr << "Error: --paper-cam-reuse and --buffer are mutually exclusive.\n";
+        return 1;
+    }
+
+    if (paperCamReuse)
+    {
+        cout << "Buffer CAM mode: paper additional-pivot reuse "
+             << "(capacity = local Rs+Cs)." << endl;
+    }
+    else if (buf_num == 0)
+    {
+        cout << "Buffer CAM mode: disabled (capacity = 0). "
+             << "CAM overflow makes that PE configuration unrepairable." << endl;
+    }
+    else
+    {
+        cout << "Buffer CAM mode: fixed-capacity additional-pivot buffer "
+             << "(capacity = " << buf_num << ")." << endl;
+    }
 
 
 
@@ -390,7 +491,7 @@ int main(int argc, char *argv[])
     // ===================================
     //  Record files
     // ===================================
-    PatternRecorder patternRecorder;
+    PatternRecorder patternRecorder(buf_num, paperCamReuse);
     for ( int i = 0; i < argc; ++i){
         if ( argv[i] == string("--rptName") && i + 1 < argc){
             patternRecorder.setReportFileName(argv[i+1]);
@@ -434,7 +535,8 @@ int main(int argc, char *argv[])
 
 
     // Load the same faults for different PE spare line configurations
-    FaultLoaderForSpares faultLoaderForSpares(Rs, Cs, buf_num);
+    FaultLoaderForSpares faultLoaderForSpares(
+        Rs, Cs, buf_num, paperCamReuse);
     for (const auto& config : spareLineConfigs) {
         int r_spare = config.first;
         int c_spare = config.second;
@@ -456,11 +558,6 @@ int main(int argc, char *argv[])
     patternRecorder.patNum = patNum;
     cout << "Total fault patterns: " << patNum << endl;
     // statistics
-    int redundantLineCnt = 0;
-    int allWayRepairCount = 0;
-    int PERepairCount = 0;
-    int maxFaultCnt = 0;
-    int minFaultCnt = 10000;
     vector<int> perPERepairCount = {0, 0, 0, 0};
 
     // [PE indeex][ spare line config index ] -> list of fault lists for different patterns
@@ -492,10 +589,10 @@ int main(int argc, char *argv[])
         // for PE1 PE2 with max spare lines ( Rs + sharedLine_num, Cs)
         // =======================================================
         std::array<FourWayPE, 4> fourWayPEs = {
-            FourWayPE(Rs, Cs + sharedLine_num, buf_num, 0),
-            FourWayPE(Rs + sharedLine_num, Cs, buf_num, 1),
-            FourWayPE(Rs + sharedLine_num, Cs, buf_num, 2),
-            FourWayPE(Rs, Cs + sharedLine_num, buf_num, 3)};
+            FourWayPE(Rs, Cs + sharedLine_num, buf_num, 0, paperCamReuse),
+            FourWayPE(Rs + sharedLine_num, Cs, buf_num, 1, paperCamReuse),
+            FourWayPE(Rs + sharedLine_num, Cs, buf_num, 2, paperCamReuse),
+            FourWayPE(Rs, Cs + sharedLine_num, buf_num, 3, paperCamReuse)};
 
 
         // =======================================================
@@ -557,14 +654,14 @@ int main(int argc, char *argv[])
         // Check all combinations of spare line configurations for the four PEs
         for ( const auto &configLessRow0 : spareLineConfigsLessRow) { // PE0
             for (const auto &configLessCol1 : spareLineConfigsLessCol){ // PE1
-                for ( const auto & configLessRow2 : spareLineConfigsLessRow){ //PE2
-                    for ( const auto & configLessCol3 : spareLineConfigsLessCol){ // PE3
+                for ( const auto & configLessCol2 : spareLineConfigsLessCol){ //PE2
+                    for (const auto &configLessRow3 : spareLineConfigsLessRow){ // PE3
                         configIndex++;
                         resSpareLines.resetResSpareLines();
                         bool thisConfigRepairSuccess = true;
                         bool PERepairSuccessList[4] = {false, false, false, false};
-                        int occupiedRows[4] = {configLessRow0.first, configLessCol1.first, configLessRow2.first, configLessCol3.first};
-                        int occupiedCols[4] = {configLessRow0.second, configLessCol1.second, configLessRow2.second, configLessCol3.second};
+                        int occupiedRows[4] = {configLessRow0.first, configLessCol1.first, configLessCol2.first, configLessRow3.first};
+                        int occupiedCols[4] = {configLessRow0.second, configLessCol1.second, configLessCol2.second, configLessRow3.second};
 
 
                         for (int i = 0; i < 4; ++i){
@@ -656,7 +753,6 @@ int main(int argc, char *argv[])
     cout << "RepairRate: " << patternRecorder.repairRate  << " ";
     cout << "RepairRate_RECAM: " << patternRecorder.repairRate_RECAM << " ";
     cout << "SpareLine: " << Rs << " ";
-    // cout << "faultNum: " << faultNum << endl;
 
 
     return 0;

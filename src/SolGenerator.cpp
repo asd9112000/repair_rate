@@ -2,22 +2,26 @@
 
 void SolGenerator::initialize_allSolVectorsType()
 {
+    // Paper-faithful Fig. 8 ordering: RR...CC is solution #1 and
+    // CC...RR is the last solution.  false denotes Row and true denotes
+    // Column, so start with Rs rows followed by Cs columns and enumerate in
+    // ascending lexicographic order.
     solVector solvector = solVector(Rs + Cs, false);
-    fill(solvector.begin(), solvector.begin() + Cs, true); // 0~Cs-1  are Col (true), the rest are Row (false)
+    fill(solvector.begin() + Rs, solvector.end(), true);
     do
     {
         allSolVectorsType.push_back(solvector);
-    } while (prev_permutation(solvector.begin(), solvector.end())); // gerate all combinations
+    } while (next_permutation(solvector.begin(), solvector.end()));
 };
 
 
 void SolGenerator::initialize_allSolMatrixsType()
 {
-    for (int i = 0; i < allSolVectorsType.size(); ++i)
+    for (size_t i = 0; i < allSolVectorsType.size(); ++i)
     {
         solMatrix solmatrix(matrixSize, vector<bool>(matrixSize, false));
         solVector &solvector = allSolVectorsType[i];
-        for (int j = 0; j < solvector.size(); ++j)
+        for (size_t j = 0; j < solvector.size(); ++j)
         {
             if (solvector[j] == false)
             { // spare row
@@ -49,7 +53,7 @@ void SolGenerator::writeAllSolVectorsToFile(string fileName)
     }
 
     outFile << "=========== All Solution Vectors =============" << endl;
-    for (int i = 0; i < allSolVectorsType.size(); ++i)
+    for (size_t i = 0; i < allSolVectorsType.size(); ++i)
     {
         outFile << "Solution Vector " << i << ": ";
         for (bool sel : allSolVectorsType[i])
@@ -75,7 +79,7 @@ void SolGenerator::writeAllSolMatrixsToFile(string fileName)
     }
 
     outFile << "=========== All Solution Matrixs =============" << endl;
-    for (int i = 0; i < allSolMatrixsType.size(); ++i)
+    for (size_t i = 0; i < allSolMatrixsType.size(); ++i)
     {
         outFile << "Solution Matrix " << i << ":" << endl;
         for (int r = 0; r < matrixSize; ++r)
@@ -101,11 +105,13 @@ void SolGenerator::genSolVecForSpares(int r_spare, int c_spare)
     {
         solVector solvector = solVector(r_spare + c_spare, false);
         AllSolVectorsType tmpAllSolVectorsType;
-        fill(solvector.begin(), solvector.begin() + c_spare, true); // 0~c_spare-1  are Col (true), the rest are Row (false)
+        // Keep the per-configuration solution indices identical to Fig. 8:
+        // all Row choices first, then advance toward all Column choices.
+        fill(solvector.begin() + r_spare, solvector.end(), true);
         do
         {
             tmpAllSolVectorsType.push_back(solvector);
-        } while (prev_permutation(solvector.begin(), solvector.end())); // gerate all combinations
+        } while (next_permutation(solvector.begin(), solvector.end()));
         solVecForSpares.insert({{r_spare, c_spare}, tmpAllSolVectorsType});
     }
 };
@@ -113,16 +119,19 @@ void SolGenerator::genSolVecForSpares(int r_spare, int c_spare)
 
 void SolGenerator::genSolMatForSpares(int r_spare, int c_spare)
 {
+    // This method is part of the public API; do not require callers to know
+    // that vectors must be generated first.
+    genSolVecForSpares(r_spare, c_spare);
     // check if the solution has already been generated
     if (solMatForSpares.find({r_spare, c_spare}) == solMatForSpares.end())
     {
         int tmpMatrixSize = r_spare + c_spare;
         AllSolMatrixsType tmpAllSolMatrixsType;
-        for (int i = 0; i < solVecForSpares[{r_spare, c_spare}].size(); ++i)
+        for (size_t i = 0; i < solVecForSpares[{r_spare, c_spare}].size(); ++i)
         {
             solMatrix solmatrix(tmpMatrixSize, vector<bool>(tmpMatrixSize, false));
             solVector &solvector = solVecForSpares[{r_spare, c_spare}][i];
-            for (int j = 0; j < solvector.size(); ++j)
+            for (size_t j = 0; j < solvector.size(); ++j)
             {
                 if (solvector[j] == false)
                 { // spare row
@@ -164,7 +173,7 @@ void SolGenerator::writeSolVecForSparesToFile(string fileName, int r_spare, int 
 
     cout << "All solution vectors have been written to AllSolVectors.txt" << endl;
     outFile << "=========== solVecForSpares =============" << endl;
-    for (int i = 0; i < solVecForSpares[{r_spare, c_spare}].size(); ++i)
+    for (size_t i = 0; i < solVecForSpares[{r_spare, c_spare}].size(); ++i)
     {
         outFile << "Solution Vector " << i << ": ";
         for (bool sel : solVecForSpares[{r_spare, c_spare}][i])
@@ -189,7 +198,7 @@ void SolGenerator::writeSolMatForSparesToFile(string fileName, int r_spare, int 
     }
 
     outFile << "=========== solMatForSpares =============" << endl;
-    for (int i = 0; i < solMatForSpares[{r_spare, c_spare}].size(); ++i)
+    for (size_t i = 0; i < solMatForSpares[{r_spare, c_spare}].size(); ++i)
     {
         outFile << "Solution Matrix " << i << ":" << endl;
         for (int r = 0; r < tmpMatrixSize; ++r)
@@ -212,7 +221,6 @@ void SolGenerator::writeAllSolVecForSparesToFile(string fileName)
     for (auto &entry : solVecForSpares)
     {
         auto &key = entry.first;
-        auto &value = entry.second;
         writeSolVecForSparesToFile(fileName + "_r" + to_string(key.rowCount) + "_c" + to_string(key.columnCount) + ".txt", key.rowCount, key.columnCount);
     }
 };
@@ -222,7 +230,6 @@ void SolGenerator::writeAllSolMatForSparesToFile(string fileName)
     for (auto &entry : solMatForSpares)
     {
         auto &key = entry.first;
-        auto &value = entry.second;
         writeSolMatForSparesToFile(fileName + "_r" + to_string(key.rowCount) + "_c" + to_string(key.columnCount) + ".txt", key.rowCount, key.columnCount);
     }
 };

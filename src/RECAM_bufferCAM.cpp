@@ -3,27 +3,29 @@
 
 
 
-void RECAM_bufferCAM::addBufferCAMEntry(Fault &f)
+bool RECAM_bufferCAM::addBufferCAMEntry(Fault &f)
 {
     if (bufferFaults.size() < buff_num)
     {
         BufferCAMEntry entry;
         entry.faultPtr = &f;
         bufferFaults.push_back(entry);
+        return true;
     }
-    else
-    {
-        cout << "Unrepairable :Buffer CAM is full. Cannot add more buffer faults." << endl;
-    }
+    return false;
 }
 
-void RECAM_bufferCAM::addBufferCAMEntryFromList(FaultList *fPtr)
+bool RECAM_bufferCAM::addBufferCAMEntryFromList(FaultList *fPtr)
 {
     // cout << " =========== Loading faults to buffer CAMs  ===========" << endl;
     for (auto &f : fPtr->bufferFaults)
     {
-        addBufferCAMEntry(*f);
+        if (!addBufferCAMEntry(*f))
+        {
+            return false;
+        }
     }
+    return true;
 }
 
 void RECAM_bufferCAM::printBufferCAMEntries()

@@ -1,19 +1,56 @@
 #include "../inc/RECAM_PE.hpp"
 
+#include <set>
+
 void RECAM_PE::loadFaultsToCAMs(FaultList &faultList)
 {
     // cout << " =========== Loading faults to CAMs  ===========" << endl;
-    if (faultList.bufferCAM_overflow)
-    {
-        cout << "RECAM_PE::loadFaultsToCAMs" << endl;
-        cout << "Warning: Unrepairable fault list" << endl;
-        cout << "  - bufferCAM_overflow is true." ;
-        cout << "  - Too many pivot faults, exceeding both address CAM and buffer CAM capacity." << endl;
-    }
-    isRepairable = !faultList.bufferCAM_overflow;
     addressCAM->addAddressCAMEntryFromList(&faultList);
-    hybridCAM->addHybridCAMEntryFromList(&faultList, addressCAM.get());
-    bufferCAM->addBufferCAMEntryFromList(&faultList);
+
+    // Overflow pivot faults require full-address CAM-reuse entries.  Load
+    // those first because a Hybrid-CAM entry cannot represent a pivot that
+    // has no Address-CAM pointer.
+    const bool pivotBufferLoaded = bufferCAM->addBufferCAMEntryFromList(&faultList);
+
+    // Buffer CAM is reserved for additional pivots. A nonpivot that cannot be
+    // represented by Hybrid CAM is unrepairable in every operating mode.
+    const std::vector<Fault *> hybridOverflowFaults =
+        hybridCAM->addHybridCAMEntryFromList(&faultList, addressCAM.get());
+
+    camStorageOverflow = faultList.bufferCAM_overflow ||
+                         !pivotBufferLoaded ||
+                         !hybridOverflowFaults.empty();
+    isRepairable = !camStorageOverflow;
+
+    if (camStorageOverflow)
+    {
+
+        std::ostringstream message;
+        message << "RECAM_PE::loadFaultsToCAMs" << endl;
+        message << (buff_num == 0
+            ? "Result: Unrepairable fault list in buffer-disabled mode"
+            : "Warning: Unrepairable fault list") << endl;
+        message << "  - CAM collection capacity is exhausted." << endl;
+        if (!hybridOverflowFaults.empty())
+        {
+            message << "  - Hybrid CAM has no entry for a required nonpivot; "
+                 << "Buffer CAM accepts additional pivots only." << endl;
+        }
+        else if (buff_num == 0)
+        {
+            message << "  - Buffer CAM capacity is 0; an additional pivot cannot "
+                 << "fall back to CAM reuse." << endl;
+        }
+        else
+        {
+            message << "  - Address CAM and the additional-pivot buffer have no "
+                 << "remaining entry." << endl;
+        }
+
+        // cout << message.str() << endl;
+
+
+    }
 }
 
 void RECAM_PE::printPE()
@@ -36,6 +73,9 @@ void RECAM_PE::genFaultAnalyzeMatrix()
     int faultAnalyzeMatrixColCnt = addressCAMEntriesCnt;
     int faultAnalyzeMatrixExtraRows = 0;
     int faultAnalyzeMatrixExtraCols = 0;
+
+    std::fill(matrixRowAddresses.begin(), matrixRowAddresses.end(), std::nullopt);
+    std::fill(matrixColumnAddresses.begin(), matrixColumnAddresses.end(), std::nullopt);
 
     for (int i_row = 0; i_row < matrixSize; ++i_row)
     {
@@ -60,12 +100,19 @@ void RECAM_PE::genFaultAnalyzeMatrix()
 
 
     vector<int> rowAddrs, colAddrs;
-    for (auto &entry : addressCAM->addressCAMEntries)
+    for (size_t index = 0; index < addressCAM->addressCAMEntries.size(); ++index)
     {
+        auto &entry = addressCAM->addressCAMEntries[index];
         if (entry.enable && entry.faultPtr != nullptr)
         {
             rowAddrs.push_back(entry.faultPtr->r);
             colAddrs.push_back(entry.faultPtr->c);
+            if (index < matrixRowAddresses.size())
+            {
+                const auto address = buildAddressEntryFromFault(*entry.faultPtr);
+                matrixRowAddresses[index] = address;
+                matrixColumnAddresses[index] = address;
+            }
         }
     }
 
@@ -88,21 +135,21 @@ void RECAM_PE::genFaultAnalyzeMatrix()
     {
         bool rowMatch = false, colMatch = false;
         int rowMatchIndex = -1, colMatchIndex = -1;
-        for (int i_row = 0; i_row < rowAddrs.size(); ++i_row)
+        for (size_t i_row = 0; i_row < rowAddrs.size(); ++i_row)
         {
             rowMatch = (hyEntry.faultPtr->r == rowAddrs[i_row]);
             if (rowMatch)
             {
-                rowMatchIndex = i_row;
+                rowMatchIndex = static_cast<int>(i_row);
                 break;
             }
         }
-        for (int i_col = 0; i_col < colAddrs.size(); ++i_col)
+        for (size_t i_col = 0; i_col < colAddrs.size(); ++i_col)
         {
             colMatch = (hyEntry.faultPtr->c == colAddrs[i_col]);
             if (colMatch)
             {
-                colMatchIndex = i_col;
+                colMatchIndex = static_cast<int>(i_col);
                 break;
             }
         }
@@ -143,7 +190,11 @@ void RECAM_PE::genFaultAnalyzeMatrix()
             {
                 if (faultAnalyzeMatrixColCnt + faultAnalyzeMatrixExtraCols < addressCAMFullSize)
                 {
-                    faultAnalyzeMatrixHardware[rowMatchIndex][faultAnalyzeMatrixColCnt + faultAnalyzeMatrixExtraCols] = true;
+                    const int extendedColumnIndex =
+                        faultAnalyzeMatrixColCnt + faultAnalyzeMatrixExtraCols;
+                    faultAnalyzeMatrixHardware[rowMatchIndex][extendedColumnIndex] = true;
+                    matrixColumnAddresses[extendedColumnIndex] =
+                        buildAddressEntryFromFault(*hyEntry.faultPtr);
                     colAddrs.push_back(hyEntry.faultPtr->c); // add the new column address to the list
                     faultAnalyzeMatrixExtraCols++;
                     if ((faultAnalyzeMatrixColCnt + faultAnalyzeMatrixExtraCols >= addressCAMFullSize) && (faultAnalyzeMatrixRowCnt + faultAnalyzeMatrixExtraRows >= addressCAMFullSize))
@@ -163,7 +214,11 @@ void RECAM_PE::genFaultAnalyzeMatrix()
             {
                 if (faultAnalyzeMatrixRowCnt + faultAnalyzeMatrixExtraRows < addressCAMFullSize)
                 {
-                    faultAnalyzeMatrixHardware[faultAnalyzeMatrixRowCnt + faultAnalyzeMatrixExtraRows][colMatchIndex] = true;
+                    const int extendedRowIndex =
+                        faultAnalyzeMatrixRowCnt + faultAnalyzeMatrixExtraRows;
+                    faultAnalyzeMatrixHardware[extendedRowIndex][colMatchIndex] = true;
+                    matrixRowAddresses[extendedRowIndex] =
+                        buildAddressEntryFromFault(*hyEntry.faultPtr);
                     rowAddrs.push_back(hyEntry.faultPtr->r); // add the new row address to the list
                     faultAnalyzeMatrixExtraRows++;
                     if ((faultAnalyzeMatrixColCnt + faultAnalyzeMatrixExtraCols >= addressCAMFullSize) && (faultAnalyzeMatrixRowCnt + faultAnalyzeMatrixExtraRows >= addressCAMFullSize))
@@ -258,6 +313,17 @@ void RECAM_PE::printFaultAnalyzeMatrix()
 
 bool RECAM_PE::checkSolution(const solMatrix &solution, int solIndex)
 {
+    (void)solIndex;
+    if (solution.size() != static_cast<size_t>(matrixSize) ||
+        std::any_of(solution.begin(), solution.end(),
+                    [this](const std::vector<bool> &row)
+                    {
+                        return row.size() != static_cast<size_t>(matrixSize);
+                    }))
+    {
+        throw std::invalid_argument(
+            "RECAM solution matrix dimensions do not match Rs + Cs");
+    }
     // cout << "  -Checking solution: " << solIndex << endl;
     for ( int i_row = 0; i_row < matrixSize; ++i_row){
         for ( int i_col = 0; i_col < matrixSize; ++i_col){
@@ -274,8 +340,34 @@ bool RECAM_PE::checkSolution(const solMatrix &solution, int solIndex)
 
 namespace
 {
-solVector deriveSolVectorFromMatrix(const solMatrix &solution, int matrixSize)
+size_t paperSolutionCount(int spareRows, int spareColumns)
 {
+    const int total = spareRows + spareColumns;
+    const int choose = std::min(spareRows, spareColumns);
+    size_t result = 1;
+    for (int divisor = 1; divisor <= choose; ++divisor)
+    {
+        result = result * static_cast<size_t>(total - choose + divisor) /
+                 static_cast<size_t>(divisor);
+    }
+    return result;
+}
+
+solVector deriveSolVectorFromMatrix(
+    const solMatrix &solution,
+    int matrixSize,
+    int spareRows,
+    int spareColumns)
+{
+    if (spareColumns == 0)
+    {
+        return solVector(matrixSize, false);
+    }
+    if (spareRows == 0)
+    {
+        return solVector(matrixSize, true);
+    }
+
     solVector solutionVector(matrixSize, false);
     for (int col = 0; col < matrixSize; ++col)
     {
@@ -291,6 +383,28 @@ solVector deriveSolVectorFromMatrix(const solMatrix &solution, int matrixSize)
         solutionVector[col] = isSpareColumn;
     }
     return solutionVector;
+}
+
+bool matchesPaperSolutionMatrix(
+    const solMatrix &solution,
+    const solVector &solutionVector,
+    int matrixSize)
+{
+    for (int row = 0; row < matrixSize; ++row)
+    {
+        for (int column = 0; column < matrixSize; ++column)
+        {
+            const bool expected =
+                !solutionVector[static_cast<size_t>(row)] ||
+                solutionVector[static_cast<size_t>(column)];
+            if (solution[static_cast<size_t>(row)]
+                        [static_cast<size_t>(column)] != expected)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 }
 
@@ -310,25 +424,45 @@ RemapTable::AddressEntry RECAM_PE::buildAddressEntryFromFault(const Fault &fault
 RemapTable RECAM_PE::buildRemapTable(const solVector &solutionVector) const
 {
     RemapTable table;
-    int nextSpareRowAddr = 0;
-    int nextSpareColAddr = 0;
+    // Keep spare addresses outside the normal 0..1023 address space used by
+    // the current fault generator.  The 999-prefix is an output namespace,
+    // not a physical normal-memory address.
+    int nextSpareRowAddr = 999000;
+    int nextSpareColAddr = 999000;
 
-    const size_t addressCAMCount = std::min(solutionVector.size(), addressCAM->addressCAMEntries.size());
-    for (size_t index = 0; index < addressCAMCount; ++index)
+    const size_t matrixAddressCount = std::min(
+        solutionVector.size(), matrixRowAddresses.size());
+    for (size_t index = 0; index < matrixAddressCount; ++index)
     {
-        const AddressCAMEntry &camEntry = addressCAM->addressCAMEntries[index];
-        if (!camEntry.enable || camEntry.faultPtr == nullptr)
+        const bool isSpareColumn = solutionVector[index];
+        const auto &physicalAddress = isSpareColumn
+            ? matrixColumnAddresses[index]
+            : matrixRowAddresses[index];
+        if (!physicalAddress.has_value())
         {
+            // Paper candidates always assign R or C to every logical index,
+            // but an unused matrix slot has no physical line to remap.
             continue;
         }
 
-        const bool isSpareColumn = solutionVector[index];
         RemapTable::RemapEntry remapEntry;
-        remapEntry.addressEntry = buildAddressEntryFromFault(*camEntry.faultPtr);
+        remapEntry.addressEntry = *physicalAddress;
         remapEntry.isSpareRow = !isSpareColumn;
         remapEntry.newRowColAddr = isSpareColumn ? nextSpareColAddr++ : nextSpareRowAddr++;
         remapEntry.Latency = RemapTable::kDefaultRemapLatency;
         table.addRemapEntry(remapEntry);
+    }
+
+    for (const BufferCAMEntry &bufferEntry : bufferCAM->bufferFaults)
+    {
+        if (bufferEntry.faultPtr == nullptr)
+        {
+            continue;
+        }
+        RemapTable::BufferRemapEntry remapEntry;
+        remapEntry.addressEntry = buildAddressEntryFromFault(*bufferEntry.faultPtr);
+        remapEntry.Latency = RemapTable::kDefaultCamReuseLatency;
+        table.addBufferRemapEntry(remapEntry);
     }
     return table;
 }
@@ -339,13 +473,42 @@ void RECAM_PE::genValidSolList(const vector<solMatrix> &allSolutions)
     remapTableList.clear();
     RepairSuccess = false;
 
+    const size_t expectedSolutionCount = paperSolutionCount(Rs, Cs);
+    if (allSolutions.size() != expectedSolutionCount)
+    {
+        throw std::invalid_argument(
+            "RECAM candidate count does not equal C(Rs+Cs,Rs)");
+    }
+
+    std::vector<solVector> solutionVectors;
+    solutionVectors.reserve(allSolutions.size());
+    std::set<solVector> uniqueSolutionVectors;
+    for (size_t solIndex = 0; solIndex < allSolutions.size(); ++solIndex)
+    {
+        const solMatrix &solution = allSolutions[solIndex];
+        // checkSolution performs the common KxK dimension validation.
+        (void)checkSolution(solution, static_cast<int>(solIndex));
+        solVector solutionVector = deriveSolVectorFromMatrix(
+            solution, matrixSize, Rs, Cs);
+        const size_t selectedColumns = static_cast<size_t>(std::count(
+            solutionVector.begin(), solutionVector.end(), true));
+        if (selectedColumns != static_cast<size_t>(Cs) ||
+            !matchesPaperSolutionMatrix(solution, solutionVector, matrixSize) ||
+            !uniqueSolutionVectors.insert(solutionVector).second)
+        {
+            throw std::invalid_argument(
+                "RECAM candidates are not the paper Fig. 8 solution space");
+        }
+        solutionVectors.push_back(std::move(solutionVector));
+    }
+
     for (size_t solIndex = 0; solIndex < allSolutions.size(); ++solIndex)
     {
         const solMatrix &solution = allSolutions[solIndex];
         if (checkSolution(solution, static_cast<int>(solIndex)))
         {
             validSolList.push_back(static_cast<int>(solIndex));
-            remapTableList.push_back(buildRemapTable(deriveSolVectorFromMatrix(solution, matrixSize)));
+            remapTableList.push_back(buildRemapTable(solutionVectors[solIndex]));
         }
     }
 

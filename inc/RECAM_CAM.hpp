@@ -61,14 +61,17 @@ public:
     int Rs, Cs;
     int matrixSize;
     int hybridCAMSize;
+    size_t peakEntries = 0;
     bool hybridCAM_overflow = false;
     vector<HybridCAMEntry> hybridCAMEntries;
 
 
     RECAM_hybridCAM(int r_spare, int c_spare, int buff_num);
 
-    void addHybridCAMEntry(Fault &f, RECAM_addressCAM *addressCAM);
-    void addHybridCAMEntryFromList(FaultList *fPtr, RECAM_addressCAM *addressCAM);
+    bool addHybridCAMEntry(Fault &f, RECAM_addressCAM *addressCAM);
+    std::vector<Fault *> addHybridCAMEntryFromList(
+        FaultList *fPtr,
+        RECAM_addressCAM *addressCAM);
     void printHybridCAMEntries() ;
 
 };

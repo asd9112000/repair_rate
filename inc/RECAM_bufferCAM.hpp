@@ -18,8 +18,8 @@ public:
 
     RECAM_bufferCAM(int buff_num) : buff_num(buff_num) {}
 
-    void addBufferCAMEntry(Fault &f);
-    void addBufferCAMEntryFromList(FaultList *fPtr);
+    bool addBufferCAMEntry(Fault &f);
+    bool addBufferCAMEntryFromList(FaultList *fPtr);
     void printBufferCAMEntries() ;
 
 };

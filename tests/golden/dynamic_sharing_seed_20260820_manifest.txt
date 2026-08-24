@@ -1,0 +1,95 @@
+Golden baseline: DynamicSpareSharing foundation / legacy SharedLine tracking
+
+Provenance
+----------
+Captured from git HEAD eb52e37ccab5acf5999a1efcf8eb51a1bd4d43e5.
+The solver worktree was dirty at capture time, so the exact relevant source
+hashes are recorded below; git HEAD alone is not the baseline identity.
+
+Generator command
+-----------------
+./fault_generator/fault_generator.o \
+  --num_HBM 1 \
+  --num_channel 1 \
+  --stack_height 32 \
+  --num_subarray_group 1 \
+  --num_subarrays 4 \
+  --rows 1024 \
+  --cols 1024 \
+  --fixed_faults 7 \
+  --seed 20260820 \
+  --fault_mode normal \
+  --output tests/fixtures/dynamic_sharing_seed_20260820.faults
+
+Important: legacy --fixed_faults=7 is a per-subarray distribution baseline.
+The generator normalizes every A/B/C/D group to 28 faults.  Under the new
+SimulationConfig contract this is recorded as group fault_count=28.
+
+Legacy simulation parameters
+----------------------------
+Rs=2
+Cs=2
+buffer_cam_entries=2
+shared_lines=1
+subarrays=4 (A/B/C/D)
+candidate_indices=zero-based paper order
+baseline_sharedline_config_index=150 (option digits 2,1,1,2)
+
+Captured results
+----------------
+runs=32
+baseline_group_success=10/32
+legacy_sharedline_success=19/32
+
+The legacy shared result deliberately preserves SharedLine.cpp behavior:
+candidate capacities are charged as occupied spares, allocation order is
+A/B/C/D, and all 256 configuration combinations are tested.  A future
+physical-line ledger may intentionally differ, but it must be reported as a
+new-policy result rather than silently changing this golden baseline.
+
+File SHA-256
+------------
+0c07523edb5af7c192cafe6814db211ba509d5e61e625097a947ffc57e071fb9  tests/fixtures/dynamic_sharing_seed_20260820.faults
+a195b381f6c5ceca0dd7463bd4fc07b584c6e1d862a977dac3465e3149be3be9  tests/golden/dynamic_sharing_seed_20260820_attempts.csv
+50665b8ac6dfc7dfddbf62dff19a295068405d5ac990b0aa680adf5df28a95f4  tests/golden/dynamic_sharing_seed_20260820_groups.csv
+
+The regression test also checks the raw ordered fault fixture using 64-bit
+FNV-1a value 9663152482410307176, so an address/order edit cannot pass merely
+because it preserves the same aggregate repair outcome.
+
+`SharedLine.cpp` is independently locked by 64-bit FNV-1a value
+5095697116192954848. Any source edit requires explicit review and golden
+recapture, preventing its configuration/allocation order from drifting away
+from the legacy comparator unnoticed.
+
+Current locked legacy/core source SHA-256
+-----------------------------------------
+Fault now carries a default cell-fault type, and Hybrid CAM records its peak
+plus an explicit single-zero-axis boundary.  Neither change alters the
+positive-axis golden results; all 512 direct legacy attempts below remain
+byte-for-byte identical.
+
+e9b73343d685222857d74bd0baa3f2056f4440b0634c33d70ba9bfe6b8f3eeed  SharedLine.cpp
+06e570439bb44746900666ffcbb5dfeab282969d8d72b9aeb732d806a2192308  inc/Fault.hpp
+b64c41566f8c427cb3307af3d3c2e6063f07ecc7cf0e6ee552de15a50b192ac9  inc/FourWayPE.hpp
+2197ffe8cb39fffdc66706014044607915b39f0cadec3f1d0d73a77429b99351  inc/ResSpareLines.hpp
+4f61f31111ccaa84f2ed8904aa8343d4b870f16274f67ba35a6af4812b0cc116  inc/RECAM_PE.hpp
+377b9e8e332e59276ae8815c78459291f3894b2e4334c5be63f478a015cc25af  inc/RECAM_CAM.hpp
+d9a9a55340d76652b9d898f7140a4ea6b43ee0ae053c16007847ae94c1027799  inc/RECAM_bufferCAM.hpp
+723ab941964f3918a37940438a6bd60c537d84b82cfaea66d1f217cfa47fbe95  inc/SolGenerator.hpp
+5fc8c576101134992e628cf1b38575ac154c63c1280d29f828967e73f099b6dd  src/Fault.cpp
+344838c5f20286365e4eae6f956af00997eca89335ae8b2f77803fe699de7dfb  src/RECAM_PE.cpp
+e162a0a60050b2dfa41c236bc6edcc4fa3b1c6f9ebaddffb72cd80a51cdce9c2  src/RECAM_CAM.cpp
+43cb8fd7cbe2adef3c6faf128a756149c3b76eb030b50bf6db4eb3a38b21a3be  src/RECAM_bufferCAM.cpp
+728347daa8899b3e995c4018034656bf5d74c529799879819a63c0c8d9876828  src/SolGenerator.cpp
+
+Verification contract
+---------------------
+1. Reload the checked-in ordered fault file; do not regenerate it at test time.
+2. Run the direct legacy FaultList -> RECAM_PE -> SolGenerator call sequence.
+3. Compare all 512 legacy attempts (32 runs x A/B/C/D x four configurations),
+   including complete validSolList and every candidate's used R/C and mapping
+   signature, to the CSV.
+4. Compare the new RECAMSolverAdapter to the direct legacy result for every
+   one of those attempts.
+5. Reproduce config 150 and every successful legacy SharedLine config index.

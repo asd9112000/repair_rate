@@ -33,7 +33,7 @@ struct spareLineConfig
 class PatternRecorder
 {
 public:
-    string reportDir = "./Report_SharedLine/";
+    string reportDir = "./reports/SharedLine/";
     string repairReportPath = reportDir + "RepairReport.rpt";
     string repairRecordPath = reportDir + "RepairRecord.txt";
     ofstream repairRecordFile;
@@ -300,8 +300,11 @@ int main(int argc, char *argv[])
         { // PE index
             for (int SL_index = 0; SL_index < 4; ++SL_index)
             { // spare line config index
-                int r_spare = spareLineConfigsLessRow[SL_index].first;
-                int c_spare = spareLineConfigsLessRow[SL_index].second;
+                const auto &configs = (PE_index == 0 || PE_index == 3)
+                    ? spareLineConfigsLessRow
+                    : spareLineConfigsLessCol;
+                int r_spare = configs[SL_index].first;
+                int c_spare = configs[SL_index].second;
                 faultListsForSpares[PE_index][SL_index] = faultLoaderForSpares.faultListsForSpares[{r_spare, c_spare}][ii_pattern *4 + PE_index];
             }
         }
@@ -374,14 +377,14 @@ int main(int argc, char *argv[])
         cout << "Start checking spare line configurations for pattern " << ii_pattern << endl;
         for ( const auto &configLessRow0 : spareLineConfigsLessRow) { // PE0
             for (const auto &configLessCol1 : spareLineConfigsLessCol){ // PE1
-                for ( const auto & configLessRow2 : spareLineConfigsLessRow){ //PE2
-                    for ( const auto & configLessCol3 : spareLineConfigsLessCol){ // PE3
+                for ( const auto & configLessCol2 : spareLineConfigsLessCol){ //PE2
+                    for ( const auto & configLessRow3 : spareLineConfigsLessRow){ // PE3
                         configIndex++;
                         resSpareLines.resetResSpareLines();
                         bool thisConfigRepairSuccess = true;
                         bool PERepairSuccessList[4] = {false, false, false, false};
-                        int occupiedRows[4] = {configLessRow0.first, configLessCol1.first, configLessRow2.first, configLessCol3.first};
-                        int occupiedCols[4] = {configLessRow0.second, configLessCol1.second, configLessRow2.second, configLessCol3.second};
+                        int occupiedRows[4] = {configLessRow0.first, configLessCol1.first, configLessCol2.first, configLessRow3.first};
+                        int occupiedCols[4] = {configLessRow0.second, configLessCol1.second, configLessCol2.second, configLessRow3.second};
 
 
                         for (int i = 0; i < 4; ++i){

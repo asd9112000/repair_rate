@@ -94,106 +94,113 @@ void RECAM_addressCAM::printAddressCAMEntries()
 RECAM_hybridCAM::RECAM_hybridCAM(int r_spare, int c_spare, int buff_num) : Rs(r_spare), Cs(c_spare)
 {
     matrixSize = Rs + Cs;
-    hybridCAMSize = Rs * (Cs - 1) + Cs * (Rs - 1); // the maximum number of non-pivot faults that can be stored in hybrid CAM, which is when all the non-pivot faults are related to different pivot faults
+    // The paper sizing rule assumes positive R and C.  At the sweep boundary
+    // where exactly one axis is zero, no Hybrid-CAM descriptor is
+    // provisioned.  Compute only after handling that boundary so the legacy
+    // signed expression cannot become negative or overflow.
+    hybridCAMSize = (Rs == 0 || Cs == 0)
+        ? 0
+        : Rs * (Cs - 1) + Cs * (Rs - 1);
 }
 
-void RECAM_hybridCAM::addHybridCAMEntry(Fault &f, RECAM_addressCAM *addressCAM)
+bool RECAM_hybridCAM::addHybridCAMEntry(Fault &f, RECAM_addressCAM *addressCAM)
 {
-    // cout << "RECAM_hybridCAM::addHybridCAMEntry" << endl;
-    // cout << "  -Trying to add non-pivot fault to Hybrid CAM - Row: " << f.r << " Col: " << f.c << endl;
-
-    bool findRelatedPivotFault = false;
-    for (int idx = 0; idx < addressCAM->addressCAMEntries.size(); ++idx)
+    for (size_t idx = 0; idx < addressCAM->addressCAMEntries.size(); ++idx)
     {
         const auto &addressCAMEntry = addressCAM->addressCAMEntries[idx];
-        bool matchRow = addressCAMEntry.faultPtr->r == f.r;
-        bool matchCol = addressCAMEntry.faultPtr->c == f.c;
-        // auto [mustCreated, isRowMust, halfAddress] = make_tuple(false, false, -1);
+        const bool matchRow = addressCAMEntry.faultPtr->r == f.r;
+        const bool matchCol = addressCAMEntry.faultPtr->c == f.c;
 
         if (addressCAMEntry.enable && matchRow)
         {
             if (addressCAMEntry.rowMust)
             {
-                findRelatedPivotFault = true;
-                // cout << "  -Skipped Fault Row: " << f.r << " Col: " << f.c << " (It's already classified as must row.)" << endl;
-                break;
+                return true;
             }
 
-            HybridCAMEntry hybridentry = {true, f.c, idx, false, &f};
-            hybridCAMEntries.push_back(hybridentry);
-            // cout << "  -Adding Hybrid CAM Entry: Row: " << f.r << " Col: " << f.c << " pointer: " << idx << " descriptorRowIsDiff: " << hybridentry.descriptorRowIsDiff << endl;
-
-            auto [mustCreated, isRowMust, halfAddress] = addressCAM->updateRowColMust(hybridentry);
+            HybridCAMEntry hybridentry = {
+                true, f.c, static_cast<int>(idx), false, &f};
+            const bool mustCreated = std::get<0>(
+                addressCAM->updateRowColMust(hybridentry));
             if (mustCreated)
             {
-                // if (isRowMust)
-                // {
-                for (int k = hybridCAMEntries.size() - 1; k >= 0; k--)
-                {
-                    // if (hybridCAMEntries[k].enable && hybridCAMEntries[k].halfAddr == halfAddress && hybridCAMEntries[k].descriptor_row)
-                    if (hybridCAMEntries[k].enable && hybridCAMEntries[k].pointer == idx && !hybridCAMEntries[k].descriptorRowIsDiff)
-                    {
-                        // cout << "  -Removing Hybrid CAM Entry: Row: " << hybridCAMEntries[k].faultPtr->r << " Col: " << hybridCAMEntries[k].faultPtr->c << endl;
-                        // cout << "  -Removing Hybrid CAM Entry with pointer: " << hybridCAMEntries[k].pointer << " descriptorRowIsDiff: " << (hybridCAMEntries[k].descriptorRowIsDiff ? "True" : "False") << endl;
-                        hybridCAMEntries.erase(hybridCAMEntries.begin() + k);
-                    }
-                }
-                // }
+                // Count/must evaluation precedes allocation. Once the row is
+                // mandatory, reclaim its earlier Hybrid entries and do not
+                // allocate an entry for this triggering fault.
+                hybridCAMEntries.erase(
+                    std::remove_if(
+                        hybridCAMEntries.begin(), hybridCAMEntries.end(),
+                        [idx](const HybridCAMEntry &entry)
+                        {
+                            return entry.enable &&
+                                   entry.pointer == static_cast<int>(idx) &&
+                                   !entry.descriptorRowIsDiff;
+                        }),
+                    hybridCAMEntries.end());
+                return true;
             }
-            findRelatedPivotFault = true;
+            if (hybridCAMEntries.size() >= static_cast<size_t>(hybridCAMSize))
+            {
+                hybridCAM_overflow = true;
+                return false;
+            }
+            hybridCAMEntries.push_back(hybridentry);
+            peakEntries = std::max(peakEntries, hybridCAMEntries.size());
+            return true;
         }
         else if (addressCAMEntry.enable && matchCol)
         {
             if (addressCAMEntry.colMust)
             {
-                findRelatedPivotFault = true;
-                // cout << "  -Skipped Fault Row: " << f.r << " Col: " << f.c << " (It's already classified as must col.)" << endl;
-                break;
+                return true;
             }
 
-            HybridCAMEntry hybridentry = {true, f.c, idx, true, &f};
-            hybridCAMEntries.push_back(hybridentry);
-            // cout << "  -Adding Hybrid CAM Entry: Row: " << f.r << " Col: " << f.c << " pointer: " << idx << " descriptorRowIsDiff: " << hybridentry.descriptorRowIsDiff << endl;
-
-            auto [mustCreated, isRowMust, halfAddress] = addressCAM->updateRowColMust(hybridentry);
+            HybridCAMEntry hybridentry = {
+                true, f.c, static_cast<int>(idx), true, &f};
+            const bool mustCreated = std::get<0>(
+                addressCAM->updateRowColMust(hybridentry));
             if (mustCreated)
             {
-                // if (!isRowMust)
-                // {
-                    for (int k = hybridCAMEntries.size() - 1; k >= 0; k--)
-                    {
-                        if (hybridCAMEntries[k].enable && hybridCAMEntries[k].pointer == idx && hybridCAMEntries[k].descriptorRowIsDiff)
+                // Column-symmetric must behavior.
+                hybridCAMEntries.erase(
+                    std::remove_if(
+                        hybridCAMEntries.begin(), hybridCAMEntries.end(),
+                        [idx](const HybridCAMEntry &entry)
                         {
-                            // cout << "  -Removing Hybrid CAM Entry: Row: " << hybridCAMEntries[k].faultPtr->r << " Col: " << hybridCAMEntries[k].faultPtr->c << endl;
-                            // cout << "  -Removing Hybrid CAM Entry with pointer: " << hybridCAMEntries[k].pointer << " descriptorRowIsDiff: " << (hybridCAMEntries[k].descriptorRowIsDiff ? "True" : "False") << endl;
-                            hybridCAMEntries.erase(hybridCAMEntries.begin() + k);
-                        }
-                    }
-                // }
+                            return entry.enable &&
+                                   entry.pointer == static_cast<int>(idx) &&
+                                   entry.descriptorRowIsDiff;
+                        }),
+                    hybridCAMEntries.end());
+                return true;
             }
-            findRelatedPivotFault = true;
-        }
-
-        if (hybridCAMEntries.size() > hybridCAMSize)
-        {
-            hybridCAM_overflow = true;
-            cout << "Error :Hybrid CAM overflow! Current size: " << hybridCAMEntries.size() << ", Max size: " << hybridCAMSize << endl;
-        }
-
-        if (findRelatedPivotFault)
-        {
-            break;
+            if (hybridCAMEntries.size() >= static_cast<size_t>(hybridCAMSize))
+            {
+                hybridCAM_overflow = true;
+                return false;
+            }
+            hybridCAMEntries.push_back(hybridentry);
+            peakEntries = std::max(peakEntries, hybridCAMEntries.size());
+            return true;
         }
     }
+    return false;
 }
 
-void RECAM_hybridCAM::addHybridCAMEntryFromList(FaultList *fPtr, RECAM_addressCAM *addressCAM)
+std::vector<Fault *> RECAM_hybridCAM::addHybridCAMEntryFromList(
+    FaultList *fPtr,
+    RECAM_addressCAM *addressCAM)
 {
     // cout << " =========== Loading faults to hybrid CAMs  ===========" << endl;
+    std::vector<Fault *> overflowFaults;
     for (auto &f : fPtr->nonPivotFaults)
     {
-        addHybridCAMEntry(*f, addressCAM);
+        if (!addHybridCAMEntry(*f, addressCAM))
+        {
+            overflowFaults.push_back(f);
+        }
     }
+    return overflowFaults;
 }
 
 void RECAM_hybridCAM::printHybridCAMEntries()

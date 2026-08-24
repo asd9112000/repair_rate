@@ -17,11 +17,16 @@
 
 using namespace std;
 
+enum class FaultType
+{
+    Cell
+};
 
 struct Fault
 {
     int r, c;
     int HBMID, ChannelID, BankID, SubarrayGroupID, SubarrayID;
+    FaultType faultType = FaultType::Cell;
 
     bool isPivot = false;
     bool isBuffer = false;
@@ -107,11 +112,17 @@ public:
     // int CsRuduced;
     int matrixSize;
     int Buff_num;
+    bool usePaperCamReuseCapacity;
 
     unordered_map<pair<int, int>,vector<FaultList>, PairHash> faultListsForSpares;
 
-    FaultLoaderForSpares(int r_spare, int c_spare, int buff_num)
-        : Rs(r_spare), Cs(c_spare), Buff_num(buff_num) {
+    FaultLoaderForSpares(
+        int r_spare,
+        int c_spare,
+        int buff_num,
+        bool use_paper_cam_reuse_capacity = false)
+        : Rs(r_spare), Cs(c_spare), Buff_num(buff_num),
+          usePaperCamReuseCapacity(use_paper_cam_reuse_capacity) {
         matrixSize = Rs + Cs;
         // RsRuduced = Rs -1;
         // CsRuduced = Cs -1;
@@ -130,7 +141,10 @@ public:
         if (faultListsForSpares.find({r_spare, c_spare}) == faultListsForSpares.end())
         {
             cout << "Fault lists for spare configuration (Rs: " << r_spare << ", Cs: " << c_spare << ") already generated." << endl;
-            FaultLoader faultLoader(r_spare, c_spare, Buff_num);
+            const int bufferCapacity = usePaperCamReuseCapacity
+                ? r_spare + c_spare
+                : Buff_num;
+            FaultLoader faultLoader(r_spare, c_spare, bufferCapacity);
             faultLoader.loadFaults(filename);
             faultListsForSpares[{r_spare, c_spare}] = faultLoader.faultLists;
         }

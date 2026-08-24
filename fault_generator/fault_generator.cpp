@@ -7,9 +7,16 @@
 #include <cmath>
 #include <stdexcept>
 
+/*
+fault_generator_rand_amount.cpp: Generates a fault file with randomly distributed faults .
+fault_generator.cpp: Generates a fault file with a fixed number of faults per subarray group.
+*/
+
 /* ============ running command ==============
-g++ -std=c++17 fault_generator.cpp -o fault_generator.o
-c
+# From the repository root:
+make fault_generator_b
+./build/bin/fault_generator --fixed_faults 10 --stack_height 100 --fault_mode normal --output fault_generator/faults.faults
+
 --fault_mode fixed   : every logic unit has exactly --fixed_faults faults
 --fault_mode normal  : fault counts follow a normal distribution around --fixed_faults
 --fault_mode extreme : fault counts tend to be either very low or high
