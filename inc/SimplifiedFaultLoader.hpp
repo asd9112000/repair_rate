@@ -20,6 +20,12 @@ std::vector<FaultGroup> loadSimplifiedFaultGroups(
     const std::filesystem::path &path,
     const SimulationConfig &config);
 
+// Load the legacy count-framed fault_generator/faults.faults grammar:
+// list_count, then for each A/B/C/D list: fault_count + seven-field records.
+std::vector<FaultGroup> loadCountFramedFaultGroups(
+    const std::filesystem::path &path,
+    const SimulationConfig &config);
+
 } // namespace dynamic_spare
 
 #endif

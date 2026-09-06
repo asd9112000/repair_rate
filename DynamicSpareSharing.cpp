@@ -54,7 +54,8 @@ void printUsage(const char *program)
         << "  --spatial uniform|mixed|clustered\n"
         << "  --memory-rows N --memory-columns N\n\n"
         << "Sharing policy:\n"
-        << "  --topology none|directional|global|edge\n"
+        << "  --layout 2x2|1x4       Group geometry (default: 2x2)\n"
+        << "  --topology none|directional|global|edge|pair|neighbor\n"
         << "  --shared-lines N         Set shared rows and columns\n"
         << "  --shared-rows N --shared-columns N\n"
         << "  --global-local-rows N --global-local-columns N\n"
@@ -62,7 +63,8 @@ void printUsage(const char *program)
         << "  --local-first\n"
         << "  --minimum-row-reserve N --minimum-column-reserve N\n"
         << "  --single-dimension\n"
-        << "  --max-borrows N\n\n"
+        << "  --max-borrows N\n"
+        << "  --solution-take legacy|early|group (default: legacy)\n\n"
         << "Hardware/latency:\n"
         << "  --paper-cam-reuse        Buffer capacity = Rs+Cs (default)\n"
         << "  --buffer N               Use a fixed buffer capacity instead\n"
@@ -182,7 +184,20 @@ dynamic_spare::SharingTopology parseTopology(const std::string &value)
         return dynamic_spare::SharingTopology::GlobalPool;
     if (value == "edge")
         return dynamic_spare::SharingTopology::PairwiseEdge;
+    if (value == "pair")
+        return dynamic_spare::SharingTopology::PairSharing;
+    if (value == "neighbor")
+        return dynamic_spare::SharingTopology::NeighborSharing;
     throw std::invalid_argument("Unknown topology: " + value);
+}
+
+dynamic_spare::GroupLayout parseLayout(const std::string &value)
+{
+    if (value == "2x2")
+        return dynamic_spare::GroupLayout::Grid2x2;
+    if (value == "1x4")
+        return dynamic_spare::GroupLayout::Line1x4;
+    throw std::invalid_argument("Unknown layout: " + value);
 }
 
 dynamic_spare::FaultCountModel parseFaultModel(const std::string &value)
@@ -219,6 +234,18 @@ dynamic_spare::FaultInformationStorage parseStorage(
     if (value == "sram")
         return dynamic_spare::FaultInformationStorage::SRAM;
     throw std::invalid_argument("Unknown storage mode: " + value);
+}
+
+dynamic_spare::SolutionTakePolicy parseSolutionTake(
+    const std::string &value)
+{
+    if (value == "legacy")
+        return dynamic_spare::SolutionTakePolicy::Legacy;
+    if (value == "early")
+        return dynamic_spare::SolutionTakePolicy::Early;
+    if (value == "group" || value == "group_compressed")
+        return dynamic_spare::SolutionTakePolicy::GroupCompressed;
+    throw std::invalid_argument("Unknown solution-take policy: " + value);
 }
 
 FaultGroupIdentity identity(const Fault &fault)
@@ -520,6 +547,8 @@ int main(int argc, char *argv[])
                 config.topology = parseTopology(requireValue());
                 topologySpecified = true;
             }
+            else if (option == "--layout")
+                config.layout = parseLayout(requireValue());
             else if (option == "--shared-lines")
             {
                 const int value = parseInt(requireValue(), option);
@@ -567,6 +596,8 @@ int main(int argc, char *argv[])
                 config.modifiers.singleDimensionBorrowing = true;
             else if (option == "--max-borrows")
                 config.modifiers.maximumGroupBorrowedSpares = parseInt(requireValue(), option);
+            else if (option == "--solution-take")
+                config.solutionTakePolicy = parseSolutionTake(requireValue());
             else if (option == "--buffer")
             {
                 if (paperCamReuseSpecified)
@@ -766,12 +797,20 @@ int main(int argc, char *argv[])
                     "Repair-rate spare range must satisfy 0 < min <= max");
 
             using Topology = dynamic_spare::SharingTopology;
-            const std::array<std::pair<Topology, int>, 5> comparisons{{
-                {Topology::Directional, 1},
-                {Topology::Directional, 2},
-                {Topology::PairwiseEdge, 1},
-                {Topology::PairwiseEdge, 2},
-                {Topology::GlobalPool, 1}}};
+            const std::vector<std::pair<Topology, int>> comparisons =
+                config.layout == dynamic_spare::GroupLayout::Line1x4
+                    ? std::vector<std::pair<Topology, int>>{
+                          {Topology::PairSharing, 1},
+                          {Topology::PairSharing, 2},
+                          {Topology::NeighborSharing, 1},
+                          {Topology::NeighborSharing, 2},
+                          {Topology::GlobalPool, 1}}
+                    : std::vector<std::pair<Topology, int>>{
+                          {Topology::Directional, 1},
+                          {Topology::Directional, 2},
+                          {Topology::PairwiseEdge, 1},
+                          {Topology::PairwiseEdge, 2},
+                          {Topology::GlobalPool, 1}};
 
             for (std::uint64_t faultCount = faultMin;;)
             {
@@ -823,19 +862,28 @@ int main(int argc, char *argv[])
                         dynamic_spare::SimulationConfig policy = baselineConfig;
                         policy.topology = topology;
                         policy.sharedRows = sharedLines;
-                        policy.sharedColumns = sharedLines;
+                        policy.sharedColumns =
+                            policy.layout == dynamic_spare::GroupLayout::Line1x4
+                                ? 0
+                                : sharedLines;
                         if (topology == Topology::GlobalPool)
                         {
                             policy.globalPool =
                                 dynamic_spare::GlobalPoolConfiguration{
                                     spareLines - sharedLines,
-                                    spareLines - sharedLines,
+                                    policy.layout ==
+                                            dynamic_spare::GroupLayout::Line1x4
+                                        ? spareLines
+                                        : spareLines - sharedLines,
                                     static_cast<int>(
                                         dynamic_spare::kSubarrayCount) *
                                         sharedLines,
-                                    static_cast<int>(
-                                        dynamic_spare::kSubarrayCount) *
-                                        sharedLines};
+                                    policy.layout ==
+                                            dynamic_spare::GroupLayout::Line1x4
+                                        ? 0
+                                        : static_cast<int>(
+                                              dynamic_spare::kSubarrayCount) *
+                                              sharedLines};
                         }
                         else
                         {
@@ -869,10 +917,16 @@ int main(int argc, char *argv[])
                 dynamic_spare::FaultCountModel::ModerateImbalance,
                 dynamic_spare::FaultCountModel::StrongImbalance,
                 dynamic_spare::FaultCountModel::Hotspot}};
-            const std::array<dynamic_spare::SharingTopology, 3> sharing{{
-                dynamic_spare::SharingTopology::Directional,
-                dynamic_spare::SharingTopology::GlobalPool,
-                dynamic_spare::SharingTopology::PairwiseEdge}};
+            const std::vector<dynamic_spare::SharingTopology> sharing =
+                config.layout == dynamic_spare::GroupLayout::Line1x4
+                    ? std::vector<dynamic_spare::SharingTopology>{
+                          dynamic_spare::SharingTopology::PairSharing,
+                          dynamic_spare::SharingTopology::NeighborSharing,
+                          dynamic_spare::SharingTopology::GlobalPool}
+                    : std::vector<dynamic_spare::SharingTopology>{
+                          dynamic_spare::SharingTopology::Directional,
+                          dynamic_spare::SharingTopology::GlobalPool,
+                          dynamic_spare::SharingTopology::PairwiseEdge};
             for (const auto model : models)
             {
                 dynamic_spare::SimulationConfig modelConfig = config;
@@ -902,20 +956,31 @@ int main(int argc, char *argv[])
                     for (int sharedLines = 0; sharedLines <= 2; ++sharedLines)
                     {
                         if (sharedLines > config.spareRows ||
-                            sharedLines > config.spareColumns)
+                            (config.layout ==
+                                 dynamic_spare::GroupLayout::Grid2x2 &&
+                             sharedLines > config.spareColumns))
                             continue;
                         dynamic_spare::SimulationConfig policy = config;
                         policy.faultCountModel = model;
                         policy.topology = topology;
                         policy.sharedRows = sharedLines;
-                        policy.sharedColumns = sharedLines;
+                        policy.sharedColumns =
+                            policy.layout == dynamic_spare::GroupLayout::Line1x4
+                                ? 0
+                                : sharedLines;
                         if (topology == dynamic_spare::SharingTopology::GlobalPool)
                         {
                             policy.globalPool = dynamic_spare::GlobalPoolConfiguration{
                                 policy.spareRows - sharedLines,
-                                policy.spareColumns - sharedLines,
+                                policy.layout ==
+                                        dynamic_spare::GroupLayout::Line1x4
+                                    ? policy.spareColumns
+                                    : policy.spareColumns - sharedLines,
                                 static_cast<int>(dynamic_spare::kSubarrayCount) * sharedLines,
-                                static_cast<int>(dynamic_spare::kSubarrayCount) * sharedLines};
+                                policy.layout ==
+                                        dynamic_spare::GroupLayout::Line1x4
+                                    ? 0
+                                    : static_cast<int>(dynamic_spare::kSubarrayCount) * sharedLines};
                         }
                         else policy.globalPool.reset();
                         policy.validate();

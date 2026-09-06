@@ -1,0 +1,45 @@
+{
+  "schema_version": "moderate-repair-study-v1",
+  "fault_model": "moderate",
+  "spatial_model": "mixed",
+  "memory_rows": 512,
+  "memory_columns": 8192,
+  "word_bits": 16,
+  "row_address_bits": 9,
+  "column_address_bits": 13,
+  "spares": [2, 3],
+  "fault_counts": [16, 24, 32, 48],
+  "sram_fault_count": 24,
+  "sram_policies": ["serial", "chunk2", "chunk4", "wide"],
+  "sram_matrix_policy": "scan",
+  "sram_shadow_policy": "chunk2",
+  "device_sram_policy": "chunked:2",
+  "shared_lines": 1,
+  "max_borrows": 3,
+  "group_policies": [
+    {"id": "no_sharing", "topology": "none", "shared_lines": 0},
+    {"id": "directional_m1", "topology": "directional", "shared_lines": 1},
+    {"id": "pairwise_edge_m1", "topology": "edge", "shared_lines": 1},
+    {"id": "global_m1", "topology": "global", "shared_lines": 1}
+  ],
+  "profiles": {
+    "smoke": {
+      "group_runs": 50,
+      "device_groups": 2,
+      "seeds": [20260820],
+      "group_policy_mode": "all"
+    },
+    "screen": {
+      "group_runs": 150,
+      "device_groups": 32,
+      "seeds": [20260820],
+      "group_policy_mode": "all"
+    },
+    "confirm": {
+      "group_runs": 500,
+      "device_groups": 64,
+      "seeds": [20260820, 20260821, 20260822],
+      "group_policy_mode": "selected"
+    }
+  }
+}

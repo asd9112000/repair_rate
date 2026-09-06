@@ -1,5 +1,11 @@
 # 研究背景
 
+> 文件狀態：Archive
+> 適用範圍：legacy-group
+> 建立時間：Unknown
+> 最後修改時間：2026-09-02T00:00:00+08:00
+> 本文件權威主題：歷史版研究背景與問題定義
+
 ## 1. 研究動機
 
 記憶體或運算陣列中的 Processing Element（PE）可能因製程、老化或操作環境產生 row／column fault。若每個 PE 都配置足以涵蓋最壞情況的專屬備援列與欄，硬體面積與控制成本會增加；若配置不足，則 fault pattern 無法被完整映射，良率與可用性下降。
@@ -59,7 +65,7 @@ LogicUnitID LayerID BankID Row Col
 - 30%：與既有 fault 位於相同 row 或 column。
 - 50%：全陣列隨機位置。
 
-數量分布支援 `fixed`、`normal`、`extreme`。標準 generator 會在 `normal`／`extreme` 下重新分配，使每層總 fault 數維持 `fixed_faults × logic_units`；`fault_generator_rand_amount.cpp` 則允許各層總數浮動。完整定義見 [`fault_generator/README_fault_generator`](fault_generator/README_fault_generator)。
+數量分布支援 `fixed`、`normal`、`extreme`。標準 generator 會在 `normal`／`extreme` 下重新分配，使每層總 fault 數維持 `fixed_faults × logic_units`；`fault_generator_rand_amount.cpp` 則允許各層總數浮動。完整定義見 [`fault_generator/README_fault_generator`](../../fault_generator/README_fault_generator)。
 
 ## 5. 求解概念
 

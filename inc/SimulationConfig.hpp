@@ -12,6 +12,12 @@ namespace dynamic_spare
 
 constexpr std::size_t kSubarrayCount = 4;
 
+enum class GroupLayout
+{
+    Grid2x2,
+    Line1x4
+};
+
 enum class FaultCountModel
 {
     FileProvided,
@@ -35,13 +41,22 @@ enum class SharingTopology
     NoSharing,
     Directional,
     GlobalPool,
-    PairwiseEdge
+    PairwiseEdge,
+    PairSharing,
+    NeighborSharing
 };
 
 enum class FaultInformationStorage
 {
     CAM,
     SRAM
+};
+
+enum class SolutionTakePolicy
+{
+    Legacy,
+    Early,
+    GroupCompressed
 };
 
 struct PolicyModifiers
@@ -106,8 +121,12 @@ struct SimulationConfig
     FaultSpatialModel faultSpatialModel = FaultSpatialModel::Mixed;
     std::array<int, kSubarrayCount> userDefinedFaultCounts{{0, 0, 0, 0}};
 
+    GroupLayout layout = GroupLayout::Grid2x2;
     SharingTopology topology = SharingTopology::NoSharing;
     FaultInformationStorage storageMode = FaultInformationStorage::CAM;
+    // Legacy preserves the pre-policy group selector exactly.  The explicit
+    // policies operate on compressed, pointer-free RECAM solution state.
+    SolutionTakePolicy solutionTakePolicy = SolutionTakePolicy::Legacy;
     AnalysisLatencyParameters latency;
 
     // CAM reuse is the dynamic simulator default. A fixed entry count remains
@@ -120,8 +139,10 @@ struct SimulationConfig
 
 const char *toString(FaultCountModel model) noexcept;
 const char *toString(FaultSpatialModel model) noexcept;
+const char *toString(GroupLayout layout) noexcept;
 const char *toString(SharingTopology topology) noexcept;
 const char *toString(FaultInformationStorage storage) noexcept;
+const char *toString(SolutionTakePolicy policy) noexcept;
 
 } // namespace dynamic_spare
 

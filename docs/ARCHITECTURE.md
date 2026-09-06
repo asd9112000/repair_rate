@@ -1,158 +1,267 @@
-# 架構說明
+# Repository 架構
 
-## 1. 文件範圍
+> 文件狀態：Current
+> 適用範圍：cross-cutting
+> 建立時間：Unknown
+> 最後修改時間：2026-09-02T00:00:00+08:00
+> 本文件權威主題：架構分層、resource ownership 與 Legacy/Hierarchical 邊界
 
-本文件同時記錄：
+## 1. 架構邊界
 
-1. repository 目前可執行的 legacy 架構；
-2. 兩份重構 prompt 所描述的目標架構。
-
-凡標示為「目標」的類別或檔案目前尚未存在，不代表已完成實作。
-
-## 2. 目前架構總覽
-
-```text
-┌──────────────────────────────────────────────────────────┐
-│ Apps                                                     │
-│ basicPEarray | RedundantRate | SharedLine | 3way | SRAM │
-└──────────────────────────┬───────────────────────────────┘
-                           │ 直接組裝、迴圈、統計、寫檔
-          ┌────────────────┼───────────────────┐
-          ▼                ▼                   ▼
-  FaultLoaderForSpares  FourWayPE       PatternRecorder
-          │                │                   │
-          ▼                ▼                   ▼
-   Fault / FaultList    RECAM_PE          reports/
-                           │
-             ┌─────────────┼─────────────┐
-             ▼             ▼             ▼
-         RECAM_CAM  RECAM_bufferCAM  SolGenerator
-                           │
-                           ▼
-                    ResSpareLines
-                  （Ring 資源檢查）
-```
-
-目前是多入口、共享 solver 元件的單體式批次模擬器。主程式負責 CLI、候選配置建立、fault loading、solution 列舉、四 PE 組裝、統計及輸出；核心類別位於 `inc/` 與 `src/`。
-
-## 3. 執行資料流
-
-### 3.1 Fault 產生
-
-`fault_generator/fault_generator.cpp` 或 `fault_generator_rand_amount.cpp` 根據 Logic Unit、fault 數、stack height、mode 與 seed 產生 `faults.faults`。Makefile 的標準流程使用固定總量版本。
-
-### 3.2 載入與分類
-
-`FaultLoaderForSpares` 對同一輸入建立不同 spare 配置的 `FaultList`。`Fault`／`FaultList` 與 loader 目前集中在 `inc/Fault.hpp`、`src/Fault.cpp`，包含解析、分類與部分狀態管理。
-
-### 3.3 Solution 生成
-
-`SolGenerator` 將 `Rs + Cs` 條 spare lines 的 row／column選擇順序列舉為 `SolutionVector`，再轉為 `SolutionMatrix`。結果依 `SpareConfig` 快取於 unordered map，供多個 PE 與 pattern 重用。
-
-### 3.4 單 PE 求解
-
-`RECAM_PE` 組合 Address／Hybrid CAM 與 Buffer CAM：
-
-1. 載入分類後 faults；
-2. 套用 must-rule 與 CAM 限制；
-3. 產生 fault analysis matrix；
-4. 逐一檢查 `SolutionMatrix`；
-5. 設定 `RepairSuccess` 並保留有效 solution。
-
-### 3.5 四配置封裝
-
-`FourWayPE` 這個名稱容易誤解：每一個實例實際上包裝「同一個 PE 的四種 spare 配置」：
-
-- `PE_RsCs`
-- `PE_RsReduced`
-- `PE_CsReduced`
-- `PE_RsCsReduced`
-
-SharedLine 主流程會建立四個 `FourWayPE` 實例，分別代表 PE0～PE3，再透過 `perWayRepairSuccessListForSparess` 查詢特定 `(rowCount,columnCount)` 是否可修復。
-
-### 3.6 Ring 資源仲裁
-
-`ResSpareLines` 保存四個 PE 的專屬 row／column 餘額與四段 shared-line 餘額。`occupySpareLines(PE_index, usedRow, usedCol)` 依 PE index 將 row 和 column 需求映射至相鄰共享段。
-
-初始化規則：
-
-- PE0、PE3：專屬 row 為 `Rs - sharedLine`，專屬 column 為 `Cs`。
-- PE1、PE2：專屬 row 為 `Rs`，專屬 column 為 `Cs - sharedLine`。
-- 每段共享餘額為 `sharedLine_num`。
-
-需求先扣專屬資源，不足部分才扣對應 shared segment。SharedLine 目前以 PE0 → PE1 → PE2 → PE3 的順序檢查，因此仲裁順序是現行演算法語意的一部分。
-
-### 3.7 彙總與輸出
-
-各 app 在主程式內維護統計或 `PatternRecorder`。SharedLine 對每個 pattern 列舉最多 `4^4 = 256` 組候選配置，記錄成功配置、共享策略成功 pattern、固定 `(Rs,Cs)` baseline pattern，最後寫入 record、report 與 stdout summary。
-
-## 4. 主要元件責任
-
-| 元件 | 目前責任 | 架構問題 |
-| --- | --- | --- |
-| `Fault`／`FaultList` | fault 資料、分類狀態 | domain 與 loading/classification 邊界不清 |
-| `FaultLoaderForSpares` | 對多配置解析相同輸入 | 與檔案格式及 solver 配置耦合 |
-| `SolGenerator` | solution vector/matrix 列舉與快取 | legacy type alias 仍存在 |
-| `RECAM_CAM` | CAM 規則與可達性 | debug／輸出責任尚未完全分離 |
-| `RECAM_bufferCAM` | buffer CAM 邏輯 | 由 `RECAM_PE` 直接組裝 |
-| `RECAM_PE` | 單 PE fault analysis 與 solution 驗證 | 可變狀態多，缺少單一 `solve` 結果介面 |
-| `FourWayPE` | 同一 PE 的四種配置封裝 | 命名與「四個 PE」概念混淆 |
-| `ResSpareLines` | 固定四 PE Ring 資源帳本 | topology 與 PE index 寫死 |
-| 各 `main` | pipeline、策略、統計、I/O | 多入口重複且難以單元測試 |
-
-## 5. 入口與變體
-
-- `RedundantRate.cpp`：不進行 Ring 借用，觀察四種降低配置及四 PE 組合結果。
-- `SharedLine.cpp`：完整四候選共享策略，輸出共享與固定 RECAM repair rate。
-- `SharedLine_3way.cpp`：移除一個資源需求較高的候選路徑，縮小搜尋空間。
-- `SharedLine_SRAM.cpp`：沿用共享求解，另產生完整與 simplified remap table，表達 address remap 與 latency。
-- `basicPEarray.cpp`：較早期／基本 RECAM 流程，用於 baseline 與除錯。
-
-## 6. 目前耦合與風險
-
-- 策略配置、四 PE 拓樸及 I/O 直接寫在 app 中。
-- `PatternRecorder` 在多個入口重複定義。
-- Ring 資源分配依陣列 index 與 switch，擴充 N-way 容易破壞語意。
-- fault analysis、solver debug output 和正式報表沒有一致介面。
-- CLI 驗證不一致；部分程式在 `argc < 3` 時可能直接存取無效參數。
-- Makefile 的 `_b` target 將 executable 集中到 `build/bin/`，一般 object
-  放在 `build/obj/`，test executable 放在 `build/tests/`。
-- 所有 simulation、log、CSV 與圖表結果集中在 `reports/`；`build/` 可安全
-  重建，`reports/` 則不會被 `make clean` 移除。
-
-## 7. 目標架構（重構方向）
+repository 目前不是只有一個 simulator，而是三條可並存、用途不同的路徑：
 
 ```text
-CLI / App
-    │
-    ▼
-ExperimentRunner ───────────────► Reporter / CsvExporter
-    │                                      │
-    ├──► FaultLoader ──► Domain DTO ◄──────┘
-    │
-    ├──► StrategyEnumerator ──► RingTopology
-    │
-    └──► Solver interface ──► RECAM_PE / CAM / SolGenerator
+Legacy paper regression
+    basicPEarray / RedundantRate / SharedLine / SharedLine_SRAM
+
+4-SA group experiments
+    DynamicSpareSharing / DynamicSpareSharing_SRAM_RECAM
+
+Device-level hierarchical experiments
+    HierarchicalRECAM
 ```
 
-建議分成七個責任區：
+`RECAM_PE`、CAM、solution generator 等 solver 元件可以共用；但是否跨 group
+保留 CAM occupancy，必須由上層架構決定。Legacy 或 group-level app 的一個
+software container，不等於一份實體 CAM hardware。
 
-1. **Domain Model**：`Fault`、`FaultList`、`SpareConfig`、`RepairResult`，不進行檔案 I/O。
-2. **Fault Ingestion**：清洗、解析及分類輸入。
-3. **Solver Core**：單 PE 求解，提供類似 `solve(faults, config) -> RepairResult` 的介面。
-4. **Spare Strategy**：候選配置生成、Ring topology 與資源規則。
-5. **Experiment Orchestrator**：pattern／PE／strategy 迴圈及統計。
-6. **Report/Export**：純粹將 in-memory result 寫為 txt／rpt／csv。
-7. **CLI/App**：參數解析、組裝依賴與 legacy command 相容層。
+## 2. 分層
 
-依賴應由上層指向下層，Reporter 不應反向依賴 solver，Domain 不應依賴任何 I/O 或 app。
+```text
+Apps / CLI
+│
+├── Legacy experiment loops
+├── Dynamic group runner
+└── DeviceRepairScheduler
+        │
+        ├── BIRA engine scheduling / scratch lifetime
+        └── GlobalOnlineRepairPool / persistent Tier-2 assignments
+                 │
+                 ▼
+        DynamicRepairSimulator          4-SA group analyzer
+                 │
+        PhysicalResourceLedger          Tier-0/Tier-1 physical spares
+                 │
+        RepairAttemptSolver interface
+          ├── RECAMSolverAdapter
+          └── SramRecamSolverAdapter
+                 │
+        RECAM_PE / CAM / SolGenerator
+```
 
-## 8. 建議遷移順序
+`RecamGeometry` 是 CAM 與 SRAM backend 共用的 entry-count／field-width 來源；
+`HardwareMetrics` 與 `BiraLatencyMetrics` 則是兩個 backend 共用的輸出 contract。
+因此 CSV 中的 CAM/SRAM bit 數與 BIRA work／event-timeline 欄位可以直接並列，
+但不應將其視為 foundry macro area 或 RTL sign-off timing。
 
-1. 固定相同 input 與現有 output，建立 golden baseline。
-2. 抽離 Domain 與 FaultLoader，比對分類數與 fault map。
-3. 抽離 Solver Core，比對每個 pattern／配置的 `RepairSuccess` 與 matrix。
-4. 抽離 Strategy 與 ExperimentRunner，比對每個 pattern 的成功配置集合。
-5. 統一 Reporter、CLI 與 Makefile，同時保留一版 legacy 別名。
+## 3. 主要模組
 
-每一步都不應同時修改修復演算法。重構驗收標準以相同 fault input 得到相同成功 pattern 集合及 repair rate 為主，而不只比較格式化後的百分比。
+| 模組 | 責任 |
+|---|---|
+| `Fault`／`FaultList` | fault address、classification state、fault-file loading |
+| `RECAM_addressCAM` | pivot address collection 與 must-rule state |
+| `RECAM_hybridCAM` | compressed nonpivot information |
+| `RECAM_bufferCAM` | additional-pivot CAM-reuse functional representation |
+| `SolGenerator` | `choose(R+C,R)` repair candidates 與 matrices |
+| `RECAM_PE` | 一次 RECAM collection、matrix conversion、candidate validation |
+| `RECAMSolverAdapter` | 將 legacy pointer-rich solver 結果轉為 pointer-free DTO |
+| `SramRecamSolverAdapter` | 保持 repair semantics，改用 SRAM search/latency model |
+| `DynamicRepairSimulator` | 一個 4-SA group 的 Tier-0/Tier-1 candidate analysis |
+| `PhysicalResourceLedger` | spare ownership、借用、reserve 與 physical conservation |
+| `TileSolutionState` | pointer-free matrix address dictionary、valid-solution bitmap 與 persistent BUFFMAP snapshot |
+| `DeviceRepairScheduler` | 跨 groups 的 BIRA scheduling、Tier-2 allocation 與 hierarchy success |
+| `GlobalOnlineRepairPool` | device-wide finite CAM capacity、full tags、dedup、occupancy |
+| `DynamicCsvReporter` | group-level attempts/runs/summary CSV |
+| `HierarchicalCsvReporter` | v2 device/groups/BIRA-engine CSV |
+| `CanonicalExperimentReporter` | B0/B1/B2/B3 long-format CSV 與每組獨立 RemapTable |
+
+## 4. Fault 與位址
+
+程式內 `Fault` 保留：
+
+```text
+HBMID
+ChannelID
+BankID
+SubarrayGroupID
+SubarrayID
+row
+cell column
+```
+
+這是 **internal physical-cell address**。既有 `fault_generator/faults.faults` 與
+給下游使用的 `RemapTable.txt` 都維持這個單位；不可把第七欄 `Col` 改解釋為
+word column，否則會破壞 line-remap coverage 的語意。
+
+外部 BIST port 則使用明確不同的型別／介面：
+
+```text
+BIST_PORT_WORD_MASK_V1
+    HBMID ChannelID BankID SubarrayGroupID SubarrayID Row WordCol
+    + wordBits-wide failMask (syndrome sideband)
+
+FAULT_FILE_PHYSICAL_V1 / REMAP_LOG_PHYSICAL_V2
+    HBMID ChannelID BankID SubarrayGroupID SubarrayID Row CellCol
+```
+
+每個 fail-mask set bit 會解碼為一筆 internal `Fault`：
+
+```text
+cell_col = word_col × word_bits + bit_offset
+word_col = cell_col / word_bits
+bit_offset = cell_col % word_bits
+```
+
+因此同一個 word 的多個 faulty bits 有相同 BIST arrival cycle，但在目前
+physical-fault FIFO baseline 中仍是不同的 queue entries；online CAM/SRAM reuse
+才依 word address 去重。
+
+在 WoW-v1.0 hierarchical model 中：
+
+```text
+HBMID              = device
+ChannelID          = GBUS-based channel-like domain
+BankID             = bank within domain
+SubarrayGroupID    = 16-Mbit section / 4-SA repair group
+SubarrayID         = A/B/C/D
+```
+
+Online data-word repair tag 不含 device ID，因為一個
+`DeviceRepairScheduler`／pool 只處理一個 device：
+
+```text
+(domain, bank, group, subarray, row, repair_column)
+```
+
+`repair_column` 在 `DATA_WORD` 模式為 `cell_col / data_word_bits`，在 `CELL`
+模式為原始 cell column。
+
+## 5. Resource ownership
+
+| Resource | Ownership | Lifetime |
+|---|---|---|
+| Local spare rows/columns | 每個 SA | physical、persistent |
+| Tier-1 borrowable spare lines | 同一 4-SA group | physical、由 ledger 分配 |
+| Address/Hybrid CAM + matrix scratch | 每個實體 BIRA engine | offline temporary |
+| Final line-repair solution | 每個 repair domain | eFuse/NVM conceptual state |
+| Online CAM-reuse assignments | 一個 memory device 共用 | runtime persistent |
+
+硬體面積不得用：
+
+```text
+CAM_per_SA × total_subarrays
+```
+
+Hierarchical accounting 使用：
+
+```text
+local spare cost × total_subarrays
++ sharing logic × total_repair_groups
++ BIRA scratch cost × bira_engine_count
++ persistent solution storage
++ one finite global online CAM structure
+```
+
+若 offline 與 online 使用同一 mode-reused CAM structure，不再額外加上一份
+online CAM area。
+
+## 6. 三個 repair tiers
+
+```text
+Tier 0: one SA
+    local spare rows / columns
+
+Tier 1: one 4-SA group
+    constrained borrowed physical spare lines
+
+Tier 2: whole device
+    residual repair words request global CAM entries
+```
+
+Tier 1 仍是 line remapping，不是 CAM reuse。Tier 2 不消耗 spare row/column。
+
+## 7. Offline／online lifetime
+
+```text
+Manufacturing / offline
+group N faults
+    -> selected BIRA engine scratch
+    -> Tier-0 / Tier-1 analysis
+    -> derive Tier-2 word requests if needed
+    -> commit persistent solution
+    -> clear scratch
+    -> next group
+
+Power-up / runtime
+persistent CAM assignments
+    -> load global Address/Hybrid CAM representation
+    -> tag hit returns replacement word
+    -> miss uses normal memory path
+```
+
+`scratchClearCount` 只表示 transient analysis state 被清除；不會釋放已提交的
+global online CAM entry。
+
+## 8. Legacy architecture
+
+`SharedLine.cpp` 使用固定 2×2 Ring 與 candidate enumeration。
+`DynamicSpareSharing.cpp` 將它一般化為 configurable 4-SA group policies，並用
+`PhysicalResourceLedger` 確保：
+
+- 一條 physical spare 最多分配一次；
+- borrowing 不增加 physical total；
+- Directional／Global／Edge topology 遵守各自連線限制；
+- minimum reserve 與 single-dimension modifiers 可觀察。
+
+Solution Take Policy 是獨立於 layout/topology 的第三個維度。預設 `legacy` 保留既有
+group selector；`early` 依 A→D commit、失敗時不回溯；`group` 在不改動 ledger
+的 speculative allocation 上枚舉四個 SA 的 RECAM-valid solution product，找到
+最佳組合後才做一次 logical commit。兩個新 policy 都重用
+`PhysicalResourceLedger`，不建立另一套 spare ownership 或 repairability oracle。
+
+`DynamicSpareSharing` 的 group geometry 與 sharing topology 是兩個獨立設定：
+
+```text
+GRID_2X2                   LINE_1X4
+A B                       A — B — C — D
+C D
+```
+
+`GRID_2X2` 保留既有 `none`／`directional`／`edge`／`global` 行為。
+`LINE_1X4` 第一階段只允許 row sharing，並提供 `none`、`pair`
+（A↔B、C↔D）、`neighbor`（A↔B↔C↔D 的直接相鄰邊）與 `global`。
+Neighbor spare 不可跨越中間 SA 進行 multi-hop borrowing。兩種 layout 都沿用同一個
+`PhysicalResourceLedger` 與 RECAM backend；layout 不改變 fault address、SubarrayID
+或 RECAM classification／solution semantics。
+
+這些 app 的多個 `runs` 是 Monte Carlo group samples，不代表一個 device 中會
+共同保留 online CAM occupancy。需要研究跨 bank/domain/global capacity 時，
+必須使用 `HierarchicalRECAM`。
+
+## 9. 輸出責任
+
+| Reporter | 輸出 | 架構 scope |
+|---|---|---|
+| `DynamicCsvReporter` | `attempts.csv`、`runs.csv`、`summary.csv` | 4-SA group／legacy experiments |
+| `DynamicRemapReporter` | `RemapTable.txt`、simplified table | selected group remaps |
+| `HierarchicalCsvReporter` | `device_summary.csv`、`groups.csv`、`bira_engines.csv` | WoW-v1.0 device |
+| SRAM-RECAM app/reporters | policy CSV、area JSON、runtime metrics | group-level CAM-vs-SRAM comparison |
+
+所有 hierarchical CSV 必須有 `WoW-v1.0`、`Hierarchical-RECAM-v2.1` 與
+`GLOBAL_LOGIC_DIE` metadata。完整欄位見
+[HIERARCHICAL_RECAM.md](HIERARCHICAL_RECAM.md)。
+
+## 10. 目前限制
+
+- Hierarchical CLI 一次只處理一個 memory device；包含多個 HBMID 的輸入會被拒絕。
+- `--groups N` 可模擬 reference device 的前 N 個 groups；`device_success` 只針對
+  本次提供的 modeled groups，不自動補齊未提供的 groups。
+- Reference geometry 的 4-SA section decomposition 是研究模型，不是 Micron
+  patent 明示的實體 subarray 組織。
+- Full RTL timing、NoC traffic、bank scheduling 與複雜 global allocation optimization
+  尚未建模。
+- `BiraLatencyMetrics` 的 BIST event timeline 是 **group-relative** A→B→C→D
+  schedule；多個 groups 共用同一 BIRA engine 的 device-wide wall-clock backlog
+  尚未加入這條 timeline。`bira_engines.csv` 的 `total_cycles` 是累積 work proxy。
+- Legacy `SharedLine.cpp` 有 source fingerprint golden；修改其演算法前必須明確
+  recapture regression data。

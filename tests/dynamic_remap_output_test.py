@@ -185,6 +185,43 @@ def verify_group_selected_sharing_remap(
             raise AssertionError("selected edge-sharing remap is not executable")
 
 
+def verify_compressed_group_remap(
+    simulator: Path,
+    validator: Path,
+) -> None:
+    with tempfile.TemporaryDirectory(prefix="compressed-remap-edge-") as temp:
+        output = Path(temp)
+        run(
+            [
+                str(simulator),
+                "2",
+                "2",
+                "--fault-file",
+                str(SHARING_FIXTURE),
+                "--topology",
+                "edge",
+                "--shared-lines",
+                "1",
+                "--max-borrows",
+                "3",
+                "--buffer",
+                "2",
+                "--solution-take",
+                "group",
+                "--write-remap-tables",
+                "--output-dir",
+                str(output),
+            ]
+        )
+        full = output / "RemapTable.txt"
+        validation = run([str(validator), str(SHARING_FIXTURE), str(full)])
+        if "REMAP VALIDATION PASSED" not in validation.stdout or \
+                " / 0" not in validation.stdout:
+            raise AssertionError(
+                "GROUP_COMPRESSED selected a remap that does not cover faults"
+            )
+
+
 def main() -> None:
     if len(sys.argv) != 3:
         raise SystemExit(
@@ -195,6 +232,7 @@ def main() -> None:
     verify_simplified_input_and_buffer_maps(simulator, validator)
     verify_integrated_generator_remains_available(simulator)
     verify_group_selected_sharing_remap(simulator, validator)
+    verify_compressed_group_remap(simulator, validator)
     print("Dynamic remap output integration test passed")
 
 

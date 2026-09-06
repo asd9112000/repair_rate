@@ -1,5 +1,11 @@
 # Dynamic Spare Sharing Simulator
 
+> 文件狀態：Archive
+> 適用範圍：legacy-group
+> 建立時間：Unknown
+> 最後修改時間：2026-09-02T00:00:00+08:00
+> 本文件權威主題：歷史版 DynamicSpareSharing 說明
+
 ## Scope
 
 `DynamicSpareSharing.cpp` is the new entry point for the dynamic sharing

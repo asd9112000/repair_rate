@@ -70,6 +70,13 @@ std::size_t configuredShareableCapacity(
                 ? config.sharedRows
                 : config.sharedColumns);
     }
+    if (config.topology == SharingTopology::PairSharing ||
+        config.topology == SharingTopology::NeighborSharing)
+    {
+        return dimension == SpareDimension::Row
+            ? static_cast<std::size_t>(config.sharedRows)
+            : 0;
+    }
     return 0;
 }
 
@@ -199,7 +206,31 @@ bool PhysicalResourceLedger::mayBorrow(
                (owner == 2 && borrowerSubarray == 3) ||
                (owner == 3 && borrowerSubarray == 2);
     }
+    if (dimension != SpareDimension::Row)
+    {
+        return false;
+    }
+    if (config_.topology == SharingTopology::PairSharing)
+    {
+        return (owner == 0 && borrowerSubarray == 1) ||
+               (owner == 1 && borrowerSubarray == 0) ||
+               (owner == 2 && borrowerSubarray == 3) ||
+               (owner == 3 && borrowerSubarray == 2);
+    }
+    if (config_.topology == SharingTopology::NeighborSharing)
+    {
+        return owner + 1 == borrowerSubarray ||
+               borrowerSubarray + 1 == owner;
+    }
     return false;
+}
+
+bool PhysicalResourceLedger::canBorrow(
+    int ownerSubarray,
+    std::size_t borrowerSubarray,
+    SpareDimension dimension) const noexcept
+{
+    return mayBorrow(ownerSubarray, borrowerSubarray, dimension);
 }
 
 LedgerAllocationResult PhysicalResourceLedger::allocate(
@@ -369,6 +400,166 @@ LedgerAllocationResult PhysicalResourceLedger::allocate(
     result.unusedRows = result.physicalRows - result.usedRows;
     result.unusedColumns = result.physicalColumns - result.usedColumns;
 
+    if (config_.topology == SharingTopology::GlobalPool)
+    {
+        const GlobalPoolConfiguration &pool = *config_.globalPool;
+        result.remainingGlobalRows =
+            static_cast<std::size_t>(pool.globalRows) -
+            result.globalRowsUsed;
+        result.remainingGlobalColumns =
+            static_cast<std::size_t>(pool.globalColumns) -
+            result.globalColumnsUsed;
+    }
+    result.success = result.failedBorrows == 0;
+    return result;
+}
+
+LedgerAllocationResult PhysicalResourceLedger::allocateSequential(
+    const std::array<SpareDemand, kSubarrayCount> &demands,
+    std::size_t committedTileCount) const
+{
+    if (committedTileCount > kSubarrayCount)
+    {
+        throw std::invalid_argument(
+            "Sequential ledger tile count exceeds the four-SA group");
+    }
+
+    LedgerAllocationResult result;
+    result.demands = demands;
+    result.lines = physicalLines_;
+    result.physicalRows = physicalRows();
+    result.physicalColumns = physicalColumns();
+
+    for (std::size_t borrower = 0;
+         borrower < committedTileCount; ++borrower)
+    {
+        SpareDemand excess;
+        for (SpareDimension dimension :
+             {SpareDimension::Row, SpareDimension::Column})
+        {
+            std::vector<std::size_t> ownedLineIndices;
+            for (std::size_t lineIndex = 0;
+                 lineIndex < result.lines.size(); ++lineIndex)
+            {
+                const PhysicalSpareLine &line = result.lines[lineIndex];
+                if (!line.assignedSubarray.has_value() &&
+                    line.ownerSubarray == static_cast<int>(borrower) &&
+                    line.dimension == dimension)
+                {
+                    ownedLineIndices.push_back(lineIndex);
+                }
+            }
+            std::stable_sort(
+                ownedLineIndices.begin(), ownedLineIndices.end(),
+                [&result](std::size_t left, std::size_t right)
+                {
+                    return result.lines[left].shareable <
+                        result.lines[right].shareable;
+                });
+            const std::size_t demand = dimensionValue(
+                demands[borrower], dimension);
+            const std::size_t ownUse = std::min(
+                demand, ownedLineIndices.size());
+            for (std::size_t index = 0; index < ownUse; ++index)
+            {
+                result.lines[ownedLineIndices[index]].assignedSubarray =
+                    borrower;
+            }
+            dimensionValue(excess, dimension) = demand - ownUse;
+        }
+
+        const bool forbiddenDualDimension =
+            config_.modifiers.singleDimensionBorrowing &&
+            excess.rows != 0 && excess.columns != 0;
+        for (SpareDimension dimension :
+             {SpareDimension::Row, SpareDimension::Column})
+        {
+            const std::size_t requestCount = dimensionValue(
+                excess, dimension);
+            for (std::size_t requestIndex = 0;
+                 requestIndex < requestCount; ++requestIndex)
+            {
+                ++result.borrowRequests;
+                if (forbiddenDualDimension)
+                {
+                    ++result.failedBorrows;
+                    continue;
+                }
+                auto selected = result.lines.end();
+                for (auto line = result.lines.begin();
+                     line != result.lines.end(); ++line)
+                {
+                    if (line->assignedSubarray.has_value() ||
+                        !line->shareable || line->dimension != dimension ||
+                        !mayBorrow(
+                            line->ownerSubarray, borrower, dimension))
+                    {
+                        continue;
+                    }
+                    if (line->ownerSubarray >= 0)
+                    {
+                        const std::size_t reserve = static_cast<std::size_t>(
+                            dimension == SpareDimension::Row
+                                ? config_.modifiers.minimumRowReserve
+                                : config_.modifiers.minimumColumnReserve);
+                        const std::size_t ownerFree =
+                            static_cast<std::size_t>(std::count_if(
+                                result.lines.begin(), result.lines.end(),
+                                [line, dimension](
+                                    const PhysicalSpareLine &candidate)
+                                {
+                                    return candidate.ownerSubarray ==
+                                               line->ownerSubarray &&
+                                           candidate.dimension == dimension &&
+                                           !candidate.assignedSubarray
+                                                .has_value();
+                                }));
+                        if (ownerFree <= reserve)
+                            continue;
+                    }
+                    selected = line;
+                    break;
+                }
+                if (selected == result.lines.end())
+                {
+                    ++result.failedBorrows;
+                    ++result.donorStarvationCount;
+                    continue;
+                }
+                selected->assignedSubarray = borrower;
+                ++result.successfulBorrows;
+                dimensionValue(
+                    result.borrowedBySubarray[borrower], dimension)++;
+                if (selected->ownerSubarray >= 0)
+                {
+                    dimensionValue(
+                        result.lentBySubarray[static_cast<std::size_t>(
+                            selected->ownerSubarray)], dimension)++;
+                }
+                else if (dimension == SpareDimension::Row)
+                    ++result.globalRowsUsed;
+                else
+                    ++result.globalColumnsUsed;
+                result.transfers.push_back(BorrowTransfer{
+                    selected->ownerSubarray,
+                    borrower,
+                    dimension,
+                    selected->physicalId});
+            }
+        }
+    }
+
+    for (const PhysicalSpareLine &line : result.lines)
+    {
+        if (!line.assignedSubarray.has_value())
+            continue;
+        if (line.dimension == SpareDimension::Row)
+            ++result.usedRows;
+        else
+            ++result.usedColumns;
+    }
+    result.unusedRows = result.physicalRows - result.usedRows;
+    result.unusedColumns = result.physicalColumns - result.usedColumns;
     if (config_.topology == SharingTopology::GlobalPool)
     {
         const GlobalPoolConfiguration &pool = *config_.globalPool;

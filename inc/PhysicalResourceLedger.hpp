@@ -74,8 +74,20 @@ public:
     LedgerAllocationResult allocate(
         const std::array<SpareDemand, kSubarrayCount> &demands) const;
 
+    // Allocate tiles A..committedTileCount-1 in order.  Each tile borrows
+    // before the next tile receives local resources, so earlier assignments
+    // cannot be reclaimed.  Used by the non-backtracking EARLY policy.
+    LedgerAllocationResult allocateSequential(
+        const std::array<SpareDemand, kSubarrayCount> &demands,
+        std::size_t committedTileCount) const;
+
     std::size_t physicalRows() const noexcept;
     std::size_t physicalColumns() const noexcept;
+
+    bool canBorrow(
+        int ownerSubarray,
+        std::size_t borrowerSubarray,
+        SpareDimension dimension) const noexcept;
 
 private:
     SimulationConfig config_;

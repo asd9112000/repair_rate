@@ -1,5 +1,11 @@
 # RECAM Dynamic Spare Sharing Simulation Specification
 
+> 文件狀態：Archive
+> 適用範圍：legacy-group
+> 建立時間：Unknown
+> 最後修改時間：2026-09-02T00:00:00+08:00
+> 本文件權威主題：歷史版 spare-sharing policy 規格
+
 ## 1. Objective
 
 Extend the existing RECAM-based C++ simulator to evaluate resource-constrained spare sharing among four subarrays.

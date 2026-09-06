@@ -1,5 +1,11 @@
 # 系統規格
 
+> 文件狀態：Archive
+> 適用範圍：legacy-group
+> 建立時間：Unknown
+> 最後修改時間：2026-09-02T00:00:00+08:00
+> 本文件權威主題：歷史版系統、CLI 與輸出規格
+
 ## 1. 系統目的
 
 系統應讀取一組 fault patterns，依指定 spare row／column 資源執行 RECAM 修復求解，並針對單 PE、四配置、四子陣列共享 Ring、3-way 或 SRAM 模式輸出成功 pattern 與 repair rate。
@@ -89,7 +95,7 @@ object 與 dependency files 位於 `build/obj/`，test executables 位於
   [--output <path>]
 ```
 
-預設值及兩種 generator 的數量分布差異，以 [`fault_generator/README_fault_generator`](fault_generator/README_fault_generator) 為準。
+預設值及兩種 generator 的數量分布差異，以 [`fault_generator/README_fault_generator`](../../fault_generator/README_fault_generator) 為準。
 
 ## 5. 輸入格式
 

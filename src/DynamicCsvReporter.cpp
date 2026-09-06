@@ -52,6 +52,26 @@ std::string formatIndices(const std::vector<std::size_t> &indices)
     return output.str();
 }
 
+std::string formatBitmap(const std::vector<bool> &bitmap)
+{
+    if (bitmap.empty())
+        return "-";
+    std::string result;
+    result.reserve(bitmap.size());
+    for (bool bit : bitmap)
+        result.push_back(bit ? '1' : '0');
+    return result;
+}
+
+std::string formatRemaining(
+    const std::optional<RemainingSpareResources> &remaining)
+{
+    if (!remaining.has_value())
+        return "-";
+    return std::to_string(remaining->rows) + "|" +
+        std::to_string(remaining->columns);
+}
+
 std::size_t totalAttempts(const GroupRepairResult &group)
 {
     return std::accumulate(
@@ -241,7 +261,7 @@ void DynamicCsvReporter::writeAttempts(
     if (!append)
     {
         output
-        << "seed,run_index,fault_model,policy,subarray_id,attempt_index,stage,"
+        << "seed,run_index,fault_model,layout,policy,subarray_id,attempt_index,stage,"
            "available_rows,available_columns,fault_count,pivot_fault_count,"
            "nonpivot_fault_count,buffered_pivot_fault_count,"
            "overflow_pivot_fault_count,is_repairable,cam_storage_overflow,"
@@ -258,7 +278,8 @@ void DynamicCsvReporter::writeAttempts(
            "fault_information_lookup_cycles,fault_information_read_cycles,"
            "matrix_generation_cycles,solution_generation_cycles,"
            "solution_evaluation_cycles,sharing_allocation_cycles,"
-           "total_analysis_cycles\n";
+           "total_analysis_cycles,solution_take_policy,valid_solution_bitmap,"
+           "compressed_state_bits\n";
     }
 
     for (const SimulationBatch &batch : batches)
@@ -274,6 +295,7 @@ void DynamicCsvReporter::writeAttempts(
                     output
                         << group.seed << ',' << group.runIndex << ','
                         << toString(batch.config.faultCountModel) << ','
+                        << toString(batch.config.layout) << ','
                         << toString(batch.config.topology) << ','
                         << attempt.subarrayId << ',' << attempt.attemptIndex
                         << ',' << attempt.stage << ',' << attempt.availableRows
@@ -319,7 +341,17 @@ void DynamicCsvReporter::writeAttempts(
                         << attempt.latency.solutionGenerationCycles << ','
                         << attempt.latency.solutionEvaluationCycles << ','
                         << attempt.latency.sharingAllocationCycles << ','
-                        << attempt.latency.totalCycles() << '\n';
+                        << attempt.latency.totalCycles() << ','
+                        << toString(batch.config.solutionTakePolicy) << ','
+                        << (attempt.tileSolutionState.has_value()
+                                ? formatBitmap(attempt.tileSolutionState
+                                      ->validSolutionBitmap)
+                                : "-")
+                        << ',' << (attempt.tileSolutionState.has_value()
+                                ? attempt.tileSolutionState
+                                      ->compressedStorageBits
+                                : 0)
+                        << '\n';
                 }
             }
         }
@@ -335,7 +367,7 @@ void DynamicCsvReporter::writeRuns(
     if (!append)
     {
         output
-        << "seed,run_index,fault_model,fault_spatial_model,policy,storage_mode,"
+        << "seed,run_index,fault_model,fault_spatial_model,layout,policy,storage_mode,"
            "data_width_bits,row_address_width_bits,column_address_width_bits,"
            "hybrid_CAM_entry_width_bits,Rs,Cs,shared_rows,shared_columns,"
            "global_local_rows,global_local_columns,global_rows,global_columns,"
@@ -364,7 +396,13 @@ void DynamicCsvReporter::writeRuns(
            "fault_information_lookup_cycles,fault_information_read_cycles,"
            "matrix_generation_cycles,solution_generation_cycles,"
            "solution_evaluation_cycles,sharing_allocation_cycles,"
-           "analysis_cycles\n";
+           "analysis_cycles,solution_take_policy,valid_solution_bitmap_A,"
+           "valid_solution_bitmap_B,valid_solution_bitmap_C,"
+           "valid_solution_bitmap_D,feasible_combination_count,"
+           "solution_selection_work,compressed_state_bits,early_success,"
+           "group_compressed_success,greedy_loss,remaining_after_A,"
+           "remaining_after_B,remaining_after_C,remaining_after_D,"
+           "solution_selection_failure_reason\n";
     }
 
     for (const SimulationBatch &batch : batches)
@@ -384,6 +422,7 @@ void DynamicCsvReporter::writeRuns(
                 << group.seed << ',' << group.runIndex << ','
                 << toString(batch.config.faultCountModel) << ','
                 << toString(batch.config.faultSpatialModel) << ','
+                << toString(batch.config.layout) << ','
                 << toString(batch.config.topology) << ','
                 << toString(batch.config.storageMode) << ','
                 << batch.config.dataWidthBits << ','
@@ -481,7 +520,24 @@ void DynamicCsvReporter::writeRuns(
                 << ',' << group.latency.solutionGenerationCycles
                 << ',' << group.latency.solutionEvaluationCycles
                 << ',' << group.latency.sharingAllocationCycles
-                << ',' << group.latency.totalCycles() << '\n';
+                << ',' << group.latency.totalCycles()
+                << ',' << toString(group.solutionTakePolicy);
+            for (const auto &bitmap : group.validSolutionBitmaps)
+                output << ',' << formatBitmap(bitmap);
+            output
+                << ',' << group.feasibleCombinationCount
+                << ',' << group.solutionSelectionWork
+                << ',' << group.compressedStateBits
+                << ',' << (group.earlySuccess.has_value()
+                        ? (*group.earlySuccess ? "1" : "0") : "-")
+                << ',' << (group.groupCompressedSuccess.has_value()
+                        ? (*group.groupCompressedSuccess ? "1" : "0") : "-")
+                << ',' << (group.greedyLoss ? 1 : 0);
+            for (const auto &remaining : group.remainingResourcesAfterTile)
+                output << ',' << formatRemaining(remaining);
+            output << ',' << (group.solutionSelectionFailureReason.empty()
+                    ? "-" : group.solutionSelectionFailureReason)
+                   << '\n';
         }
     }
 }
@@ -495,7 +551,7 @@ void DynamicCsvReporter::writeSummary(
     if (!append)
     {
         output
-        << "seed,fault_count,fault_model,fault_spatial_model,policy,storage_mode,"
+        << "seed,fault_count,fault_model,fault_spatial_model,layout,policy,storage_mode,"
            "data_width_bits,row_address_width_bits,column_address_width_bits,"
            "hybrid_CAM_entry_width_bits,Rs,Cs,shared_rows,shared_columns,"
            "global_local_rows,global_local_columns,global_rows,global_columns,"
@@ -509,7 +565,13 @@ void DynamicCsvReporter::writeSummary(
            "p95_analysis_cycles,average_hardware_cost_proxy_bits,"
            "peak_hardware_cost_proxy_bits,repair_gain_per_extra_CAM_entry,"
            "repair_gain_per_matrix_cell,repair_gain_per_analysis_cycle,"
-           "repair_gain_per_borrowed_spare\n";
+           "repair_gain_per_borrowed_spare,local_subarray_repairs,"
+           "groups_requiring_borrow,total_borrowed_rows,"
+           "average_borrowed_rows,maximum_borrowed_rows,solution_take_policy,"
+           "greedy_loss_count,greedy_loss_rate,"
+           "average_feasible_combinations,maximum_feasible_combinations,"
+           "average_group_selector_candidates_checked,"
+           "average_compressed_state_bits\n";
     }
 
     for (const SimulationBatch &batch : batches)
@@ -519,6 +581,15 @@ void DynamicCsvReporter::writeSummary(
         std::uint64_t baselineSuccesses = 0;
         std::uint64_t usedSpares = 0;
         std::uint64_t borrowedSpares = 0;
+        std::uint64_t borrowedRows = 0;
+        std::uint64_t maximumBorrowedRows = 0;
+        std::uint64_t greedyLossCount = 0;
+        std::uint64_t feasibleCombinations = 0;
+        std::uint64_t maximumFeasibleCombinations = 0;
+        std::uint64_t selectorCandidatesChecked = 0;
+        std::uint64_t compressedStateBits = 0;
+        std::uint64_t localSubarrayRepairs = 0;
+        std::uint64_t groupsRequiringBorrow = 0;
         std::uint64_t camRequirement = 0;
         std::uint64_t peakCamRequirement = 0;
         std::uint64_t matrixSize = 0;
@@ -543,6 +614,22 @@ void DynamicCsvReporter::writeSummary(
             const std::uint64_t borrowed =
                 group.sharing.borrowedRows + group.sharing.borrowedColumns;
             borrowedSpares += borrowed;
+            borrowedRows += group.sharing.borrowedRows;
+            maximumBorrowedRows = std::max<std::uint64_t>(
+                maximumBorrowedRows, group.sharing.borrowedRows);
+            greedyLossCount += group.greedyLoss ? 1 : 0;
+            feasibleCombinations += group.feasibleCombinationCount;
+            maximumFeasibleCombinations = std::max(
+                maximumFeasibleCombinations,
+                group.feasibleCombinationCount);
+            selectorCandidatesChecked += group.solutionSelectionWork;
+            compressedStateBits += group.compressedStateBits;
+            localSubarrayRepairs += static_cast<std::uint64_t>(
+                std::count(
+                    group.localRepairSuccess.begin(),
+                    group.localRepairSuccess.end(), true));
+            groupsRequiringBorrow +=
+                group.groupRepairSuccess && borrowed != 0 ? 1 : 0;
             borrowSamples.push_back(borrowed);
             const std::uint64_t activeCam =
                 hardware.addressActive + hardware.hybridActive;
@@ -609,6 +696,7 @@ void DynamicCsvReporter::writeSummary(
             << batch.config.faultCount << ','
             << toString(batch.config.faultCountModel) << ','
             << toString(batch.config.faultSpatialModel) << ','
+            << toString(batch.config.layout) << ','
             << toString(batch.config.topology) << ','
             << toString(batch.config.storageMode) << ','
             << batch.config.dataWidthBits << ','
@@ -658,6 +746,18 @@ void DynamicCsvReporter::writeSummary(
             << ',' << (averageBorrow == 0.0
                             ? 0.0
                             : repairGain / averageBorrow)
+            << ',' << localSubarrayRepairs
+            << ',' << groupsRequiringBorrow
+            << ',' << borrowedRows
+            << ',' << divide(borrowedRows, runCount)
+            << ',' << maximumBorrowedRows
+            << ',' << toString(batch.config.solutionTakePolicy)
+            << ',' << greedyLossCount
+            << ',' << divide(greedyLossCount, runCount)
+            << ',' << divide(feasibleCombinations, runCount)
+            << ',' << maximumFeasibleCombinations
+            << ',' << divide(selectorCandidatesChecked, runCount)
+            << ',' << divide(compressedStateBits, runCount)
             << '\n';
     }
 }

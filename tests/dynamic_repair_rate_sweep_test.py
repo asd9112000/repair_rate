@@ -10,7 +10,7 @@ import sys
 import tempfile
 
 
-EXPECTED_CONFIGS = {
+EXPECTED_GRID_CONFIGS = {
     ("no_sharing", 0),
     ("directional", 1),
     ("directional", 2),
@@ -18,13 +18,23 @@ EXPECTED_CONFIGS = {
     ("pairwise_edge", 2),
     ("global_pool", 1),
 }
+EXPECTED_LINE_CONFIGS = {
+    ("no_sharing", 0),
+    ("pair", 1),
+    ("pair", 2),
+    ("neighbor", 1),
+    ("neighbor", 2),
+    ("global_pool", 1),
+}
 
 
-def run_sweep(executable: Path, output_dir: Path) -> bytes:
+def run_sweep(executable: Path, output_dir: Path, layout: str) -> bytes:
     command = [
         str(executable),
         "2",
         "2",
+        "--layout",
+        layout,
         "--repair-rate-sweep",
         "--fault-min",
         "8",
@@ -72,7 +82,7 @@ def run_sweep(executable: Path, output_dir: Path) -> bytes:
     return summary.read_bytes()
 
 
-def validate_summary(contents: bytes) -> None:
+def validate_summary(contents: bytes, layout: str) -> None:
     text = contents.decode("utf-8")
     rows = list(csv.DictReader(text.splitlines()))
     if len(rows) != 12:
@@ -81,6 +91,8 @@ def validate_summary(contents: bytes) -> None:
         )
     if "fault_count" not in rows[0]:
         raise AssertionError("summary.csv does not expose fault_count")
+    if {row["layout"] for row in rows} != {layout}:
+        raise AssertionError("summary.csv layout metadata is wrong")
     fault_counts = {int(row["fault_count"]) for row in rows}
     if fault_counts != {8, 12}:
         raise AssertionError(f"fault step was not respected: {fault_counts}")
@@ -94,7 +106,10 @@ def validate_summary(contents: bytes) -> None:
             for row in rows
             if int(row["fault_count"]) == fault_count
         }
-        if configurations != EXPECTED_CONFIGS:
+        expected = (
+            EXPECTED_LINE_CONFIGS if layout == "1x4" else EXPECTED_GRID_CONFIGS
+        )
+        if configurations != expected:
             raise AssertionError(
                 "representative configuration set changed for "
                 f"fault_count={fault_count}: {configurations}"
@@ -116,13 +131,20 @@ def main() -> None:
     executable = Path(sys.argv[1]).resolve()
     if not executable.is_file():
         raise AssertionError(f"simulator not found: {executable}")
-    with tempfile.TemporaryDirectory(prefix="dynamic-sweep-first-") as first:
-        first_contents = run_sweep(executable, Path(first))
-    with tempfile.TemporaryDirectory(prefix="dynamic-sweep-second-") as second:
-        second_contents = run_sweep(executable, Path(second))
-    validate_summary(first_contents)
-    if first_contents != second_contents:
-        raise AssertionError("repair-rate sweep summary is not deterministic")
+    for layout in ("2x2", "1x4"):
+        with tempfile.TemporaryDirectory(
+            prefix=f"dynamic-sweep-{layout}-first-"
+        ) as first:
+            first_contents = run_sweep(executable, Path(first), layout)
+        with tempfile.TemporaryDirectory(
+            prefix=f"dynamic-sweep-{layout}-second-"
+        ) as second:
+            second_contents = run_sweep(executable, Path(second), layout)
+        validate_summary(first_contents, layout)
+        if first_contents != second_contents:
+            raise AssertionError(
+                f"{layout} repair-rate sweep summary is not deterministic"
+            )
     print("Dynamic repair-rate sweep integration test passed")
 
 

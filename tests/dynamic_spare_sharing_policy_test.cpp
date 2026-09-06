@@ -551,6 +551,15 @@ void verifyGoldenRunnerAndCsv()
     }
     const std::string attemptsCsv = readFile(
         firstDirectory / "attempts.csv");
+    require(attemptsCsv.find("fault_model,layout,policy") !=
+                std::string::npos &&
+                readFile(firstDirectory / "runs.csv").find(
+                    "fault_spatial_model,layout,policy") !=
+                    std::string::npos &&
+                readFile(firstDirectory / "summary.csv").find(
+                    "fault_spatial_model,layout,policy") !=
+                    std::string::npos,
+            "Dynamic CSV output is missing layout metadata");
     require(static_cast<std::size_t>(std::count(
                 attemptsCsv.begin(), attemptsCsv.end(), '\n')) == 129,
             "Baseline attempts.csv does not contain 128 attempt rows");

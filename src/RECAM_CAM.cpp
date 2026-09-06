@@ -145,6 +145,7 @@ bool RECAM_hybridCAM::addHybridCAMEntry(Fault &f, RECAM_addressCAM *addressCAM)
                 return false;
             }
             hybridCAMEntries.push_back(hybridentry);
+            ++writeOperations;
             peakEntries = std::max(peakEntries, hybridCAMEntries.size());
             return true;
         }
@@ -180,6 +181,7 @@ bool RECAM_hybridCAM::addHybridCAMEntry(Fault &f, RECAM_addressCAM *addressCAM)
                 return false;
             }
             hybridCAMEntries.push_back(hybridentry);
+            ++writeOperations;
             peakEntries = std::max(peakEntries, hybridCAMEntries.size());
             return true;
         }

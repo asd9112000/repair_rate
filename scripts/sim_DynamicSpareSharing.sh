@@ -22,6 +22,7 @@ SEED=20260820
 FAULT_MODEL=moderate
 SPATIAL_MODEL=mixed
 STORAGE_MODE=cam
+GROUP_LAYOUT=2x2
 MAX_BORROWS=3
 HYBRID_CAM_ENTRY_WIDTH_BITS=64
 BUFFER_ENTRIES=2
@@ -48,6 +49,7 @@ Sweep options:
   --seed N               Deterministic seed (default: 20260820)
 
 Experiment definition:
+  --layout LAYOUT        2x2 or row-only 1x4 (default: 2x2)
   --fault-model MODEL    uniform|moderate|strong|hotspot (default: moderate)
   --spatial MODEL        uniform|mixed|clustered (default: mixed)
   --storage MODE         cam|sram (default: cam)
@@ -64,12 +66,13 @@ Output/control:
   --no-build             Use the existing build/bin/DynamicSpareSharing
   -h, --help             Show this help
 
-The representative architecture set is:
-  No Sharing, Directional m=1/m=2, Pairwise m=1/m=2, Global Pool m=1.
+The 2x2 representative set is No Sharing, Directional m=1/m=2,
+Pairwise Edge m=1/m=2, Global Pool m=1.  The 1x4 set replaces those sharing
+policies with Pair m=1/m=2 and Neighbor m=1/m=2.
 
 Examples:
-  make analyze_dynamic_spare_sharing ARGS="--fault-model strong --runs 1000"
-  make analyze_dynamic_spare_sharing ARGS="--storage sram --run-id sram_strong"
+  make sim_DynamicSpareSharing ARGS="--fault-model strong --runs 1000"
+  make sim_DynamicSpareSharing ARGS="--storage sram --run-id sram_strong"
 EOF
 }
 
@@ -136,6 +139,11 @@ while (( $# > 0 )); do
         --storage)
             require_value "$@"
             STORAGE_MODE=$2
+            shift 2
+            ;;
+        --layout)
+            require_value "$@"
+            GROUP_LAYOUT=$2
             shift 2
             ;;
         --max-borrows)
@@ -236,13 +244,17 @@ case "${STORAGE_MODE}" in
     cam|sram) ;;
     *) die "--storage must be cam or sram." ;;
 esac
+case "${GROUP_LAYOUT}" in
+    2x2|1x4) ;;
+    *) die "--layout must be 2x2 or 1x4." ;;
+esac
 if [[ -n ${RUN_ID} && ! ${RUN_ID} =~ ^[A-Za-z0-9._-]+$ ]]; then
     die "--run-id may contain only letters, digits, '.', '_' and '-'."
 fi
 
 if [[ -z ${OUTPUT_DIR} ]]; then
     if [[ -z ${RUN_ID} ]]; then
-        RUN_ID="$(date -u +%Y%m%dT%H%M%SZ)_${FAULT_MODEL}_${STORAGE_MODE}_f${FAULT_MIN}-${FAULT_MAX}_step${FAULT_STEP}_s${SPARE_MIN}-${SPARE_MAX}_seed${SEED}"
+        RUN_ID="$(date -u +%Y%m%dT%H%M%SZ)_layout_${GROUP_LAYOUT}_${FAULT_MODEL}_${STORAGE_MODE}_f${FAULT_MIN}-${FAULT_MAX}_step${FAULT_STEP}_s${SPARE_MIN}-${SPARE_MAX}_seed${SEED}"
     fi
     RUN_ROOT="${PROJECT_ROOT}/reports/dynamic_spare_sharing/${RUN_ID}"
 elif [[ ${OUTPUT_DIR} == /* ]]; then
@@ -271,6 +283,7 @@ fi
 SIMULATOR_ARGS=(
     "${SPARE_MIN}"
     "${SPARE_MIN}"
+    --layout "${GROUP_LAYOUT}"
     --repair-rate-sweep
     --fault-min "${FAULT_MIN}"
     --fault-max "${FAULT_MAX}"
@@ -304,6 +317,7 @@ fi
     printf 'FaultModel=%s\n' "${FAULT_MODEL}"
     printf 'FaultSpatialModel=%s\n' "${SPATIAL_MODEL}"
     printf 'StorageMode=%s\n' "${STORAGE_MODE}"
+    printf 'GroupLayout=%s\n' "${GROUP_LAYOUT}"
     printf 'FaultRange=%s..%s\n' "${FAULT_MIN}" "${FAULT_MAX}"
     printf 'FaultStep=%s\n' "${FAULT_STEP}"
     printf 'SpareRange=%s..%s (Rs=Cs)\n' "${SPARE_MIN}" "${SPARE_MAX}"
@@ -318,7 +332,11 @@ fi
         printf 'BufferMode=fixed (capacity=%s)\n' "${BUFFER_ENTRIES}"
     fi
     printf 'KeepRunDetails=%s\n' "${KEEP_RUN_DETAILS}"
-    printf 'Policies=NoSharing,D1,D2,P1,P2,G1\n'
+    if [[ ${GROUP_LAYOUT} == 1x4 ]]; then
+        printf 'Policies=NoSharing,Pair1,Pair2,Neighbor1,Neighbor2,G1\n'
+    else
+        printf 'Policies=NoSharing,D1,D2,PairwiseEdge1,PairwiseEdge2,G1\n'
+    fi
     printf 'Command='
     printf '%q ' "./${SIMULATOR_RELATIVE}" "${SIMULATOR_ARGS[@]}"
     printf '\n'
@@ -327,6 +345,7 @@ fi
 echo "DynamicSpareSharing repair-rate sweep"
 echo "  Fault model: ${FAULT_MODEL} (${SPATIAL_MODEL})"
 echo "  Storage:     ${STORAGE_MODE}"
+echo "  Layout:      ${GROUP_LAYOUT}"
 if [[ ${PAPER_CAM_REUSE} == true ]]; then
     echo "  Buffer:      CAM reuse (capacity=Rs+Cs)"
 else

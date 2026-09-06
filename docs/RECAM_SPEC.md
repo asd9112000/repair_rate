@@ -1,5 +1,18 @@
 # RECAM_SPEC.md
 
+> 文件狀態：Current
+> 適用範圍：cross-cutting / recam-core
+> 建立時間：Unknown
+> 最後修改時間：2026-09-02T00:00:00+08:00
+> 本文件權威主題：RECAM fault classification、CAM、matrix、repair semantics 與核心驗證契約
+
+## 文件分區
+
+- 第 1–17 節：目前 RECAM 行為、資料模型與 repair semantics 的權威規格。
+- 第 18–43 節：驗證策略、測試案例、回歸目標、invariants 與規格邊界。
+
+本文件同時保存行為規格與驗證契約；其他文件若描述 RECAM 共通規則，均以本文件為準。
+
 ## 1. Purpose
 
 This document defines the **behavioral specification and verification contract** for the implemented RECAM simulator.

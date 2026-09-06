@@ -36,6 +36,8 @@ CONFIG_LABELS = {
     "D2": "Directional m=2",
     "P1": "Pairwise m=1",
     "P2": "Pairwise m=2",
+    "N1": "Neighbor m=1",
+    "N2": "Neighbor m=2",
     "G1": "Global Pool m=1",
 }
 CONFIG_COLORS = {
@@ -44,6 +46,8 @@ CONFIG_COLORS = {
     "D2": "#9ECAE9",
     "P1": "#F58518",
     "P2": "#FFBF79",
+    "N1": "#B279A2",
+    "N2": "#D6B5D0",
     "G1": "#54A24B",
 }
 CONFIG_MARKERS = {
@@ -52,6 +56,8 @@ CONFIG_MARKERS = {
     "D2": "D",
     "P1": "^",
     "P2": "v",
+    "N1": "X",
+    "N2": "*",
     "G1": "P",
 }
 FAULT_LABELS = {
@@ -66,6 +72,7 @@ REQUIRED_COLUMNS = [
     "fault_count",
     "fault_model",
     "fault_spatial_model",
+    "layout",
     "policy",
     "storage_mode",
     "Rs",
@@ -152,14 +159,25 @@ def load_data(path: Path) -> pd.DataFrame:
 def _config_key(row: pd.Series) -> str | None:
     if row["policy"] == "no_sharing":
         return "Base"
-    if row["shared_rows"] != row["shared_columns"]:
+    layout = str(row["layout"])
+    if layout == "2x2" and row["shared_rows"] != row["shared_columns"]:
+        return None
+    if layout == "1x4" and row["shared_columns"] != 0:
         return None
     shared = int(row["shared_rows"])
-    prefix = {
-        "directional": "D",
-        "pairwise_edge": "P",
-        "global_pool": "G",
-    }.get(str(row["policy"]))
+    prefix = (
+        {
+            "pair": "P",
+            "neighbor": "N",
+            "global_pool": "G",
+        }
+        if layout == "1x4"
+        else {
+            "directional": "D",
+            "pairwise_edge": "P",
+            "global_pool": "G",
+        }
+    ).get(str(row["policy"]))
     key = f"{prefix}{shared}" if prefix else None
     return key if key in CONFIG_ORDER else None
 
@@ -169,6 +187,7 @@ def prepare_data(
     fault_model: str | None,
     storage_mode: str | None,
 ) -> tuple[pd.DataFrame, list[str]]:
+    global CONFIG_ORDER
     warnings: list[str] = []
     selected = data.copy()
     if fault_model is not None:
@@ -194,6 +213,23 @@ def prepare_data(
             f"--storage-mode. Available: {', '.join(storage_modes)}"
         )
 
+    layouts = sorted(selected["layout"].astype(str).unique())
+    if len(layouts) != 1:
+        raise ValueError(
+            "The sweep plot requires one layout; separate 2x2 and 1x4 "
+            f"results. Available: {', '.join(layouts)}"
+        )
+    if layouts[0] == "1x4":
+        CONFIG_ORDER = ["Base", "P1", "P2", "N1", "N2", "G1"]
+        CONFIG_LABELS["P1"] = "Pair m=1"
+        CONFIG_LABELS["P2"] = "Pair m=2"
+    elif layouts[0] == "2x2":
+        CONFIG_ORDER = ["Base", "D1", "D2", "P1", "P2", "G1"]
+        CONFIG_LABELS["P1"] = "Pairwise Edge m=1"
+        CONFIG_LABELS["P2"] = "Pairwise Edge m=2"
+    else:
+        raise ValueError(f"Unsupported group layout: {layouts[0]}")
+
     if (selected["Rs"] != selected["Cs"]).any():
         raise ValueError("Repair-rate sweep plots require symmetric Rs=Cs rows")
     for column in ("fault_count", "Rs", "Cs", "runs"):
@@ -217,7 +253,7 @@ def prepare_data(
     if unsupported.any():
         warnings.append(
             f"Excluded {int(unsupported.sum())} rows that are not representative "
-            "Base/D1/D2/P1/P2/G1 configurations."
+            f"{('/'.join(CONFIG_ORDER))} configurations."
         )
         selected = selected[~unsupported].copy()
     selected["configuration_label"] = selected["configuration"].map(CONFIG_LABELS)

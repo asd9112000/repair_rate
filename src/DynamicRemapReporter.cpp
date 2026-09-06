@@ -123,6 +123,7 @@ RemapWriteSummary DynamicRemapReporter::write(
     }
     full
         << "# HYBRID_OVERFLOW_TO_BUFFER_EXTENSION 0\n"
+        << "# GROUP_LAYOUT " << toString(config.layout) << "\n"
         << "# DYNAMIC_POLICY " << toString(config.topology) << "\n"
         << "# OPTION <pattern_id> <option_id> <config_index>\n"
         << "# PE <pe_id> <spare_rows> <spare_cols> <solution_index>\n"

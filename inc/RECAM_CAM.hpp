@@ -62,6 +62,7 @@ public:
     int matrixSize;
     int hybridCAMSize;
     size_t peakEntries = 0;
+    size_t writeOperations = 0;
     bool hybridCAM_overflow = false;
     vector<HybridCAMEntry> hybridCAMEntries;
 

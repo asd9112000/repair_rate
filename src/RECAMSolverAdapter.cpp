@@ -227,7 +227,59 @@ CandidateRepairOption snapshotCandidateOption(
     return option;
 }
 
+MatrixRepairAddress snapshotMatrixAddress(
+    const RemapTable::AddressEntry &address)
+{
+    return MatrixRepairAddress{
+        address.HBMID,
+        address.ChannelID,
+        address.BankID,
+        address.SubarrayGroupID,
+        address.SubarrayID,
+        address.r,
+        address.c};
+}
+
 } // namespace
+
+DecodedSolution decodeSolution(
+    const TileSolutionState &state,
+    std::size_t solutionId)
+{
+    const std::size_t dimension = static_cast<std::size_t>(
+        state.spareRows + state.spareColumns);
+    SolGenerator solutions(state.spareRows, state.spareColumns);
+    if (state.matrixRowAddresses.size() != dimension ||
+        state.matrixColumnAddresses.size() != dimension ||
+        state.validSolutionBitmap.size() !=
+            solutions.allSolVectorsType.size())
+    {
+        throw std::invalid_argument(
+            "TileSolutionState violates its RECAM size contract");
+    }
+    if (solutionId >= state.validSolutionBitmap.size())
+    {
+        throw std::out_of_range("RECAM solution ID is out of range");
+    }
+
+    DecodedSolution decoded;
+    decoded.solutionId = solutionId;
+    const solVector &orientation = solutions.allSolVectorsType[solutionId];
+    for (std::size_t index = 0; index < dimension; ++index)
+    {
+        if (orientation[index])
+        {
+            if (state.matrixColumnAddresses[index].has_value())
+                decoded.sourceColumns.push_back(
+                    *state.matrixColumnAddresses[index]);
+        }
+        else if (state.matrixRowAddresses[index].has_value())
+        {
+            decoded.sourceRows.push_back(*state.matrixRowAddresses[index]);
+        }
+    }
+    return decoded;
+}
 
 RepairAttemptResult RECAMSolverAdapter::solve(
     const std::vector<Fault> &faults,
@@ -318,6 +370,8 @@ RepairAttemptResult RECAMSolverAdapter::solve(
     result.subarrayId = request.subarrayId;
     result.availableRows = request.availableRows;
     result.availableColumns = request.availableColumns;
+    result.provisionedRows = provisionedRows;
+    result.provisionedColumns = provisionedColumns;
     result.isRepairable = pe.isRepairable;
     result.repairSuccess = pe.RepairSuccess;
     result.camStorageOverflow = pe.camStorageOverflow;
@@ -333,6 +387,7 @@ RepairAttemptResult RECAMSolverAdapter::solve(
     result.addressCamEntriesProvisioned = provisionedDimension;
     result.hybridCamEntriesActive = pe.hybridCAM->hybridCAMEntries.size();
     result.hybridCamEntriesPeak = pe.hybridCAM->peakEntries;
+    result.hybridCamWriteOperations = pe.hybridCAM->writeOperations;
     result.hybridCamEntriesProvisioned = provisionedHybridCapacity;
     result.bufferCamEntriesActive = pe.bufferCAM->bufferFaults.size();
     result.bufferCamEntriesProvisioned = static_cast<std::size_t>(
@@ -390,6 +445,48 @@ RepairAttemptResult RECAMSolverAdapter::solve(
     }
     result.failedCandidates = result.candidateSolutions -
         result.validCandidateIndices.size();
+
+    TileSolutionState state;
+    state.subarrayId = request.subarrayId;
+    state.spareRows = request.availableRows;
+    state.spareColumns = request.availableColumns;
+    state.matrixRowAddresses.reserve(pe.matrixRowAddresses.size());
+    state.matrixColumnAddresses.reserve(pe.matrixColumnAddresses.size());
+    for (const auto &address : pe.matrixRowAddresses)
+    {
+        state.matrixRowAddresses.push_back(address.has_value()
+            ? std::optional<MatrixRepairAddress>(
+                  snapshotMatrixAddress(*address))
+            : std::nullopt);
+    }
+    for (const auto &address : pe.matrixColumnAddresses)
+    {
+        state.matrixColumnAddresses.push_back(address.has_value()
+            ? std::optional<MatrixRepairAddress>(
+                  snapshotMatrixAddress(*address))
+            : std::nullopt);
+    }
+    state.validSolutionBitmap.assign(result.candidateSolutions, false);
+    for (std::size_t candidateIndex : result.validCandidateIndices)
+    {
+        state.validSolutionBitmap[candidateIndex] = true;
+    }
+    if (!result.validCandidateOptions.empty())
+    {
+        state.camReuseMappings =
+            result.validCandidateOptions.front().bufferMappings;
+    }
+    const std::uint64_t addressBits = checkedUint64Multiply(
+        static_cast<std::uint64_t>(activeDimension),
+        static_cast<std::uint64_t>(request.rowAddressWidthBits) +
+            request.columnAddressWidthBits,
+        "Compressed matrix-address dictionary bit count");
+    const std::uint64_t validityBits = checkedUint64Multiply(
+        static_cast<std::uint64_t>(activeDimension), 2,
+        "Compressed matrix-address validity bit count");
+    state.compressedStorageBits = addressBits + validityBits +
+        result.candidateSolutions;
+    result.tileSolutionState = std::move(state);
 
     if (result.repairSuccess && !pe.validSolList.empty())
     {

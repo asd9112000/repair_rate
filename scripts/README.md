@@ -19,6 +19,11 @@ python3 -m pip install -r requirements-plot.txt
 | `plot_dynamic_repair_rate_sweep.py` | 將 Dynamic Spare Sharing 的 `summary.csv` 轉為比較圖、heatmap、趨勢圖及分析表 | `summary.csv` | `plots/`、`plot_data/` |
 | `generate_DynamicSpareSharing_table_gallery.sh` | 建置 simulator，批次執行預設的 `Rs=Cs`／fault-count 組合，再呼叫 gallery 產圖 | script 內的 sweep 設定 | `reports/dynamic_spare_sharing/table_gallery/` |
 | `plot_fault_model_vs_policy.py` | 從一個或多個 `summary.csv` 產生各 Fault Model × policy 的 repair-rate 表格與 fault-count 趨勢圖 | CSV 或包含 CSV 的目錄 | `tables/`、`curves/`、`table_data/` |
+| `run_canonical_four_sweep.py` | 逐 parameter point 執行一次 B0/B1/B2/B3 unified runner，合併 long-format 結果 | `HierarchicalRECAM`、axes | `canonical_four_sweep.csv`、`runs/` |
+| `plot_canonical_four.py` | 繪製 B0/B1/B2/B3 repair rate、after-BIST latency、hardware bits | `canonical_four_sweep.csv` | PNG、PDF、`plot_data.csv` |
+| `run_moderate_repair_study.py` | 執行 moderate/mixed group policy、SRAM search 與 device B0–B3 profiles | JSON manifest、profile | 完整 point outputs、合併 CSV、圖表 |
+| `collect_moderate_repair_results.py` | 合併三種實驗 scope 並檢查 fault corpus 與 CAM/SRAM 等價性 | study run root | `combined/*.csv`、`validation.json` |
+| `plot_moderate_repair_study.py` | 分開繪製 group、SRAM frontier 與 device 圖表 | `combined/` | PNG、PDF、plot manifest |
 | `analyze_SpareLine.sh` | 執行傳統 `build/bin/SharedLine` 的固定 fault/spare sweep，整理 repair rate 並繪圖 | 固定迴圈參數 | `reports/SharedLine/` |
 | `plot_repair_rates_for_sharedline_cpp.py` | 繪製 SharedLine 與 RECAM 的 repair-rate 比較、改善量及 heatmap | `repairRates.csv` | PNG、PDF |
 | `analyze_SpareLine_SRAM.sh` | 執行 `build/bin/SharedLine_SRAM` 的 fault/spare sweep，可切換固定 buffer 或 paper CAM reuse | CLI 參數 | `reports/SharedLine_SRAM/` |
@@ -36,8 +41,17 @@ script。
 simulation、保留執行設定、產生 CSV，最後呼叫繪圖程式。
 
 ```bash
-make analyze_dynamic_spare_sharing \
+make sim_DynamicSpareSharing \
   ARGS="--fault-model moderate --runs 1000 --run-id moderate_demo"
+```
+
+1×4 row-only sweep 使用同一 wrapper；它會改用 No Sharing、Pair、Neighbor 與
+Global Row Pool 的代表性 policy，並在 manifest 與 CSV 記錄 layout：
+
+```bash
+make sim_DynamicSpareSharing \
+  ARGS="--layout 1x4 --fault-model moderate --runs 1000 \
+        --run-id layout_1x4_moderate"
 ```
 
 若要直接把七欄 simplified fault pattern 接到 Dynamic simulator，並輸出可供
@@ -75,6 +89,7 @@ scripts/sim_DynamicSpareSharing.sh \
 
 - `--fault-model`：`uniform`、`moderate`、`strong` 或 `hotspot`。
 - `--storage`：`cam` 或 `sram`。
+- `--layout`：`2x2`（預設）或第一階段 row-only 的 `1x4`。
 - `--runs`：每組 configuration 的 simulation 次數。
 - `--run-id`：輸出資料夾名稱。
 - `--keep-run-details`：額外保留 `attempts.csv` 與 `runs.csv`。
@@ -166,7 +181,98 @@ SPATIAL_MODEL=mixed \
 
 另可用 `GALLERY_OUTPUT_DIR` 將最終 gallery 放到不同目錄。
 
-### 4. 傳統 SharedLine 分析
+### 4. Canonical B0/B1/B2/B3 sweep
+
+`HierarchicalRECAM --canonical-four` 的 wrapper 會對每個 parameter point 執行一次，
+在單一 process 內配對 B0/B1/B2/B3；因此四組確實使用同一組 generated faults，
+而不是四次獨立抽樣。
+
+```bash
+make hierarchical_recam_b
+python3 scripts/run_canonical_four_sweep.py \
+  --simulator build/bin/HierarchicalRECAM \
+  --output-dir reports/canonical/sweep_demo \
+  --rs 2 --cs 2 --fault-counts 4,8,12 \
+  --word-bits 16 --seeds 20260820 \
+  --sram-policies chunked:2 \
+  --groups 32 --memory-rows 512 --memory-columns 8192 \
+  --topology edge --shared-rows 1 --shared-columns 0 --max-borrows 1
+
+python3 scripts/plot_canonical_four.py \
+  reports/canonical/sweep_demo/canonical_four_sweep.csv \
+  --output-dir reports/canonical/sweep_demo/plots
+```
+
+每個 `runs/<point>/` 都有原始 B0–B3 outputs 與 `command.txt`；根目錄的
+`canonical_four_sweep.csv` 是後續分析唯一應讀取的合併表。輸入可掃描 `Rs`、`Cs`、
+fault count、word width、seed 與 SRAM search policy；一次圖表請固定除 seed 和
+fault count 外的 axes，避免把不同硬體 configuration 的結果平均在一起。
+
+### 4.1 Moderate repair study
+
+此 workflow 同時包含三種不同用途的階段：
+
+| 階段 | Simulator | 用途 |
+|---|---|---|
+| Group policy | `DynamicSpareSharing` | 在獨立 4-SA samples 篩選 sharing policy |
+| SRAM policy | `DynamicSpareSharing_SRAM_RECAM` | 比較 Serial／Chunked／Wide 與 scan／shadow |
+| Device canonical | `HierarchicalRECAM --canonical-four` | 比較 B0–B3 與 finite device-wide CAM |
+
+三種階段會由同一 runner 執行，但 collector 與 plotter 保持 scope 分離。
+
+```bash
+python3 scripts/run_moderate_repair_study.py --profile smoke
+python3 scripts/run_moderate_repair_study.py --profile screen
+
+python3 scripts/run_moderate_repair_study.py --profile confirm \
+  --selection-from \
+  reports/moderate_repair_study/screen/selected_policies.json
+```
+
+Profiles：
+
+| Profile | Group runs/point | Device groups/point | Seeds | Policy set |
+|---|---:|---:|---|---|
+| `smoke` | 50 | 2 | 1 | 全部四種 |
+| `screen` | 150 | 32 | 1 | 全部四種 |
+| `confirm` | 500 | 64 | 3 | No Sharing + screen 前兩名 |
+
+完整矩陣在 `experiments/moderate_repair_study.json`。Runner 預設建置三個 simulator；
+已有 binary 時可加 `--no-build`。標準 smoke／screen／confirm 目錄目前均已存在，
+runner 會拒絕覆寫。重跑時必須使用新目錄：
+
+```bash
+python3 scripts/run_moderate_repair_study.py --profile confirm \
+  --selection-from \
+  reports/moderate_repair_study/screen/selected_policies.json \
+  --output-dir reports/moderate_repair_study/confirm_rerun
+```
+
+每個 point 保存 `point.json`、`command.txt`、`run.log` 與 simulator 原始輸出；
+根目錄保存 `run_config.json` 與 `selected_policies.json`。若 simulation 已完成，只需
+重做彙整與繪圖：
+
+```bash
+python3 scripts/collect_moderate_repair_results.py \
+  reports/moderate_repair_study/screen
+python3 scripts/plot_moderate_repair_study.py \
+  reports/moderate_repair_study/screen/combined \
+  --output-dir reports/moderate_repair_study/screen/plots
+```
+
+`confirm` profile 需以 `--selection-from` 指向 screen 的
+`selected_policies.json`，因此不會重新執行已淘汰的 sharing policies。
+
+Collector 會檢查 moderate/mixed metadata、fault corpus counts、B0=B2、B1=B3，
+以及 SRAM group signature 等於 CAM baseline。驗證結果寫入
+`combined/validation.json`。Plotter 產生八組 PNG/PDF，涵蓋 group repair rate、
+spare cost、SRAM latency/cost、device repair rate、global reuse pressure 與 BIRA
+modeled bits。
+
+完整研究交接、結果解讀與限制見
+[`docs/MODERATE_REPAIR_STUDY_HANDOFF.md`](../docs/MODERATE_REPAIR_STUDY_HANDOFF.md)。
+
+### 5. 傳統 SharedLine 分析
 
 ```bash
 make sl_b
@@ -191,7 +297,7 @@ python3 scripts/plot_repair_rates_for_sharedline_cpp.py \
   --architecture-label SharedLine
 ```
 
-### 5. SharedLine SRAM 分析
+### 6. SharedLine SRAM 分析
 
 固定 buffer 模式：
 
@@ -216,7 +322,7 @@ script 預設會透過 Makefile 建立 `build/bin/SharedLine_SRAM` 與
 `build/bin/fault_generator`，並在 simulation 後呼叫目前的 SharedLine plotter。
 使用 `--no-build` 時，這兩個 executable 必須已存在。
 
-### 6. RedundantRate 分析
+### 7. RedundantRate 分析
 
 ```bash
 make rdr_b

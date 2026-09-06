@@ -1,5 +1,11 @@
 # Dynamic Spare Sharing Plot Generation
 
+> 文件狀態：Archive
+> 適用範圍：legacy-group
+> 建立時間：Unknown
+> 最後修改時間：2026-09-02T00:00:00+08:00
+> 本文件權威主題：歷史版 plotting 流程
+
 `plot_results.py` reads the dynamic simulator's `summary.csv` and generates
 paper/PPT figures without changing the simulator or inventing missing
 experiments.

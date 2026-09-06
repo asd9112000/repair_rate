@@ -1,12 +1,16 @@
 #ifndef DYNAMIC_SPARE_SHARING_REPAIR_RESULT_HPP
 #define DYNAMIC_SPARE_SHARING_REPAIR_RESULT_HPP
 
+#include "BiraLatency.hpp"
+#include "HardwareMetrics.hpp"
 #include "SimulationConfig.hpp"
+#include "SramRecamModel.hpp"
 
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <optional>
+#include <string>
 #include <vector>
 
 namespace dynamic_spare
@@ -45,6 +49,44 @@ struct BufferRepairMapping
     int sourceRow = -1;
     int sourceColumn = -1;
     int latency = 0;
+};
+
+// Pointer-free physical-cell address retained after RECAM scratch is cleared.
+// An absent optional slot preserves the matrix's unused-address semantics.
+struct MatrixRepairAddress
+{
+    int HBMID = -1;
+    int ChannelID = -1;
+    int BankID = -1;
+    int SubarrayGroupID = -1;
+    int SubarrayID = -1;
+    int row = -1;
+    int column = -1;
+};
+
+struct TileSolutionState
+{
+    int subarrayId = -1;
+    int spareRows = 0;
+    int spareColumns = 0;
+    std::vector<std::optional<MatrixRepairAddress>> matrixRowAddresses;
+    std::vector<std::optional<MatrixRepairAddress>> matrixColumnAddresses;
+    std::vector<bool> validSolutionBitmap;
+    std::vector<BufferRepairMapping> camReuseMappings;
+    std::uint64_t compressedStorageBits = 0;
+};
+
+struct DecodedSolution
+{
+    std::size_t solutionId = 0;
+    std::vector<MatrixRepairAddress> sourceRows;
+    std::vector<MatrixRepairAddress> sourceColumns;
+};
+
+struct RemainingSpareResources
+{
+    std::size_t rows = 0;
+    std::size_t columns = 0;
 };
 
 // Value-only snapshot for one matrix-valid paper candidate.  Keeping every
@@ -90,6 +132,8 @@ struct RepairAttemptResult
     int subarrayId = -1;
     int availableRows = 0;
     int availableColumns = 0;
+    int provisionedRows = 0;
+    int provisionedColumns = 0;
 
     bool isRepairable = false;
     bool repairSuccess = false;
@@ -112,6 +156,7 @@ struct RepairAttemptResult
     std::size_t addressCamEntriesProvisioned = 0;
     std::size_t hybridCamEntriesActive = 0;
     std::optional<std::size_t> hybridCamEntriesPeak;
+    std::size_t hybridCamWriteOperations = 0;
     std::size_t hybridCamEntriesProvisioned = 0;
     std::size_t bufferCamEntriesActive = 0;
     std::size_t bufferCamEntriesProvisioned = 0;
@@ -129,9 +174,15 @@ struct RepairAttemptResult
     std::optional<std::size_t> successfulCandidateIndex;
     std::vector<std::size_t> validCandidateIndices;
     std::vector<CandidateRepairOption> validCandidateOptions;
+    std::optional<TileSolutionState> tileSolutionState;
 
     std::uint64_t analysisAttempts = 1;
     AnalysisLatencyBreakdown latency;
+    BiraLatencyResult biraLatency;
+    std::optional<HardwareMetrics> hardwareMetrics;
+    // Populated only by the SRAM_RECAM solver wrapper.  Existing CAM fields
+    // remain unchanged for CSV/golden compatibility.
+    std::optional<sram_recam::SramRecamAttemptMetrics> sramRecam;
 };
 
 struct SharingMetrics
@@ -157,6 +208,7 @@ struct GroupRepairResult
     std::uint64_t seed = 0;
     std::size_t runIndex = 0;
     FaultCountModel faultCountModel = FaultCountModel::Uniform;
+    GroupLayout layout = GroupLayout::Grid2x2;
     SharingTopology topology = SharingTopology::NoSharing;
 
     std::array<std::size_t, kSubarrayCount> faultCounts{{0, 0, 0, 0}};
@@ -174,6 +226,18 @@ struct GroupRepairResult
     std::array<std::optional<CandidateRepairOption>, kSubarrayCount>
         selectedCandidateOptions;
 
+    SolutionTakePolicy solutionTakePolicy = SolutionTakePolicy::Legacy;
+    std::array<std::vector<bool>, kSubarrayCount> validSolutionBitmaps;
+    std::uint64_t solutionSelectionWork = 0;
+    std::uint64_t feasibleCombinationCount = 0;
+    std::uint64_t compressedStateBits = 0;
+    std::array<std::optional<RemainingSpareResources>, kSubarrayCount>
+        remainingResourcesAfterTile;
+    std::optional<bool> earlySuccess;
+    std::optional<bool> groupCompressedSuccess;
+    bool greedyLoss = false;
+    std::string solutionSelectionFailureReason;
+
     bool groupRepairSuccess = false;
     bool baselineGroupRepairSuccess = false;
     int sharingGain = 0;
@@ -189,6 +253,7 @@ struct GroupRepairResult
     std::size_t unusedPhysicalRows = 0;
     std::size_t unusedPhysicalColumns = 0;
     AnalysisLatencyBreakdown latency;
+    BiraLatencyResult biraLatency;
 
     bool repairedAfterBorrowCount(std::size_t borrowCount) const noexcept
     {

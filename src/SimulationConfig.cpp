@@ -104,6 +104,45 @@ void SimulationConfig::validate() const
             "Maximum group borrowed spare count cannot be negative");
     }
 
+    if (layout == GroupLayout::Grid2x2 &&
+        (topology == SharingTopology::PairSharing ||
+         topology == SharingTopology::NeighborSharing))
+    {
+        throw std::invalid_argument(
+            "pair and neighbor topologies require layout=1x4");
+    }
+    if (layout == GroupLayout::Line1x4)
+    {
+        if (topology == SharingTopology::Directional ||
+            topology == SharingTopology::PairwiseEdge)
+        {
+            throw std::invalid_argument(
+                "directional and edge topologies are not supported for "
+                "layout=1x4");
+        }
+        if (sharedColumns != 0)
+        {
+            throw std::invalid_argument(
+                "layout=1x4 supports row-only sharing; shared_columns must "
+                "be zero");
+        }
+        if (topology == SharingTopology::NeighborSharing &&
+            sharedRows > std::numeric_limits<int>::max() / 2)
+        {
+            throw std::invalid_argument(
+                "1x4 neighbor capacity exceeds the safe int range");
+        }
+        if (topology == SharingTopology::GlobalPool &&
+            globalPool.has_value() &&
+            (globalPool->localColumnsPerSubarray != spareColumns ||
+             globalPool->globalColumns != 0))
+        {
+            throw std::invalid_argument(
+                "layout=1x4 global sharing must leave all column spares "
+                "locally owned");
+        }
+    }
+
     if (faultCountModel == FaultCountModel::UserDefined)
     {
         for (int count : userDefinedFaultCounts)
@@ -206,6 +245,16 @@ const char *toString(FaultSpatialModel model) noexcept
     return "unknown";
 }
 
+const char *toString(GroupLayout layout) noexcept
+{
+    switch (layout)
+    {
+        case GroupLayout::Grid2x2: return "2x2";
+        case GroupLayout::Line1x4: return "1x4";
+    }
+    return "unknown";
+}
+
 const char *toString(SharingTopology topology) noexcept
 {
     switch (topology)
@@ -214,6 +263,8 @@ const char *toString(SharingTopology topology) noexcept
         case SharingTopology::Directional: return "directional";
         case SharingTopology::GlobalPool: return "global_pool";
         case SharingTopology::PairwiseEdge: return "pairwise_edge";
+        case SharingTopology::PairSharing: return "pair";
+        case SharingTopology::NeighborSharing: return "neighbor";
     }
     return "unknown";
 }
@@ -224,6 +275,17 @@ const char *toString(FaultInformationStorage storage) noexcept
     {
         case FaultInformationStorage::CAM: return "cam";
         case FaultInformationStorage::SRAM: return "sram";
+    }
+    return "unknown";
+}
+
+const char *toString(SolutionTakePolicy policy) noexcept
+{
+    switch (policy)
+    {
+        case SolutionTakePolicy::Legacy: return "legacy";
+        case SolutionTakePolicy::Early: return "early";
+        case SolutionTakePolicy::GroupCompressed: return "group";
     }
     return "unknown";
 }

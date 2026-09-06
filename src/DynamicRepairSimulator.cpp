@@ -1,4 +1,5 @@
 #include "../inc/DynamicRepairSimulator.hpp"
+#include "../inc/CamRecamModel.hpp"
 
 #include <algorithm>
 #include <array>
@@ -40,6 +41,9 @@ struct CandidatePlan
     std::size_t attemptVectorIndex = 0;
     const RepairAttemptResult *attempt = nullptr;
     const CandidateRepairOption *candidate = nullptr;
+    std::size_t solutionId = 0;
+    std::size_t usedRows = 0;
+    std::size_t usedColumns = 0;
 };
 
 struct GroupChoice
@@ -49,6 +53,10 @@ struct GroupChoice
     std::array<CandidatePlan, kSubarrayCount> plans;
     LedgerAllocationResult allocation;
     std::uint64_t selectedCycles = 0;
+    std::uint64_t candidatesChecked = 0;
+    std::uint64_t feasibleCombinations = 0;
+    std::array<std::optional<RemainingSpareResources>, kSubarrayCount>
+        remainingResourcesAfterTile;
 };
 
 std::uint64_t checkedAdd(
@@ -150,6 +158,87 @@ void calculateAttemptLatency(
         attempt.candidateSolutionsEvaluated,
         config.latency.solutionEvaluationCyclesPerCandidate,
         "Solution-evaluation cycle count overflow");
+
+    if (attempt.sramRecam.has_value())
+    {
+        attempt.biraLatency.storageTechnology =
+            BiraStorageTechnology::Sram;
+        attempt.biraLatency.faultCollectionWorkCycles =
+            attempt.sramRecam->bira.faultCollectionCycles;
+        attempt.biraLatency.repairAnalysisWorkCycles =
+            attempt.sramRecam->bira.repairAnalysisCycles;
+        attempt.hardwareMetrics = attempt.sramRecam->hardware;
+    }
+    else
+    {
+        attempt.biraLatency.storageTechnology =
+            config.storageMode == FaultInformationStorage::SRAM
+                ? BiraStorageTechnology::Sram
+                : BiraStorageTechnology::Cam;
+        if (config.storageMode == FaultInformationStorage::CAM)
+        {
+            CamLatencyParameters parameters;
+            parameters.insertCyclesPerFault =
+                config.latency.cam.insertCyclesPerOperation;
+            parameters.lookupCyclesPerFault =
+                config.latency.cam.lookupCyclesPerOperation;
+            parameters.readCyclesPerEntry =
+                config.latency.cam.readCyclesPerOperation;
+            parameters.matrixCyclesPerCell =
+                config.latency.matrixGenerationCyclesPerCell;
+            parameters.solutionGenerationCyclesPerCandidate =
+                config.latency.solutionGenerationCyclesPerCandidate;
+            parameters.solutionEvaluationCyclesPerCandidate =
+                config.latency.solutionEvaluationCyclesPerCandidate;
+            CamBiraWorkload workload;
+            workload.faultsDetected = attempt.faultCount;
+            workload.storageEntriesRead = storageReads;
+            workload.activeMatrixCells = attempt.activeMatrixCells;
+            workload.candidatesGenerated = attempt.candidateSolutions;
+            workload.candidatesEvaluated =
+                attempt.candidateSolutionsEvaluated;
+            attempt.biraLatency = modelCamBiraLatency(
+                parameters, workload);
+
+            if (attempt.availableRows != 0 ||
+                attempt.availableColumns != 0)
+            {
+                RecamGeometryConfig geometry;
+                geometry.rows = config.memoryRows;
+                geometry.columns = config.memoryColumns;
+                geometry.spareRows = static_cast<std::uint32_t>(
+                    attempt.availableRows);
+                geometry.spareColumns = static_cast<std::uint32_t>(
+                    attempt.availableColumns);
+                geometry.channels = 1;
+                geometry.dataWordBits = config.dataWidthBits;
+                geometry.onlineReuseEntries = static_cast<std::uint32_t>(
+                    attempt.bufferCamEntriesProvisioned);
+                attempt.hardwareMetrics = deriveCamHardwareMetrics(geometry);
+            }
+        }
+        else
+        {
+            // A custom SRAM solver should attach detailed SRAM_RECAM metrics.
+            // Keep the legacy generic latency path for external solvers that
+            // have not migrated to the common backend contract yet.
+            attempt.biraLatency.faultCollectionWorkCycles = checkedAdd(
+                attempt.latency.faultInformationInsertCycles,
+                attempt.latency.faultInformationLookupCycles,
+                "BIRA fault-collection cycle count overflow");
+            attempt.biraLatency.repairAnalysisWorkCycles = checkedAdd(
+                attempt.latency.faultInformationReadCycles,
+                checkedAdd(
+                    attempt.latency.matrixGenerationCycles,
+                    checkedAdd(
+                        attempt.latency.solutionGenerationCycles,
+                        attempt.latency.solutionEvaluationCycles,
+                        "BIRA repair-analysis cycle count overflow"),
+                    "BIRA repair-analysis cycle count overflow"),
+                "BIRA repair-analysis cycle count overflow");
+        }
+    }
+    finalizeBiraWork(attempt.biraLatency);
 }
 
 std::pair<int, int> localCapacity(
@@ -185,6 +274,13 @@ std::pair<int, int> maximumBorrowCapacity(
                 config.globalPool->globalColumns};
         case SharingTopology::PairwiseEdge:
             return {config.sharedRows, config.sharedColumns};
+        case SharingTopology::PairSharing:
+            return {config.sharedRows, 0};
+        case SharingTopology::NeighborSharing:
+            return {
+                config.sharedRows *
+                    (subarray == 0 || subarray == 3 ? 1 : 2),
+                0};
     }
     return {0, 0};
 }
@@ -317,6 +413,8 @@ RepairAttemptResult zeroCapacityAttempt(
     attempt.subarrayId = request.subarrayId;
     attempt.availableRows = 0;
     attempt.availableColumns = 0;
+    attempt.provisionedRows = request.provisionedRows;
+    attempt.provisionedColumns = request.provisionedColumns;
     attempt.faultCount = faults.size();
     attempt.addressCamEntriesProvisioned =
         static_cast<std::size_t>(request.provisionedRows) +
@@ -354,6 +452,13 @@ RepairAttemptResult zeroCapacityAttempt(
     {
         attempt.failedCandidates = 1;
     }
+    TileSolutionState state;
+    state.subarrayId = request.subarrayId;
+    state.spareRows = 0;
+    state.spareColumns = 0;
+    state.validSolutionBitmap = {faults.empty()};
+    state.compressedStorageBits = 1;
+    attempt.tileSolutionState = std::move(state);
     return attempt;
 }
 
@@ -377,7 +482,10 @@ std::vector<CandidatePlan> plansForSubarray(
             const auto key = std::make_pair(
                 candidate.usedRows, candidate.usedColumns);
             const CandidatePlan plan{
-                attemptIndex, &attempt, &candidate};
+                attemptIndex, &attempt, &candidate,
+                candidate.candidateIndex,
+                candidate.usedRows,
+                candidate.usedColumns};
             const auto existing = bestByDemand.find(key);
             const bool replace = existing == bestByDemand.end() ||
                 attempt.latency.totalCycles() <
@@ -385,9 +493,9 @@ std::vector<CandidatePlan> plansForSubarray(
                 (attempt.latency.totalCycles() ==
                      existing->second.attempt->latency.totalCycles() &&
                  (candidate.candidateIndex <
-                      existing->second.candidate->candidateIndex ||
+                      existing->second.solutionId ||
                   (candidate.candidateIndex ==
-                       existing->second.candidate->candidateIndex &&
+                       existing->second.solutionId &&
                    attemptIndex <
                        existing->second.attemptVectorIndex)));
             if (replace)
@@ -401,6 +509,62 @@ std::vector<CandidatePlan> plansForSubarray(
     for (const auto &entry : bestByDemand)
     {
         plans.push_back(entry.second);
+    }
+    return plans;
+}
+
+std::vector<CandidatePlan> compressedPlansForSubarray(
+    const std::vector<RepairAttemptResult> &attempts)
+{
+    std::vector<CandidatePlan> plans;
+    for (std::size_t attemptIndex = 0;
+         attemptIndex < attempts.size(); ++attemptIndex)
+    {
+        const RepairAttemptResult &attempt = attempts[attemptIndex];
+        if (!attempt.repairSuccess || !attempt.tileSolutionState.has_value())
+            continue;
+        const TileSolutionState &state = *attempt.tileSolutionState;
+        if (state.validSolutionBitmap.size() != attempt.candidateSolutions)
+        {
+            throw std::logic_error(
+                "Compressed valid-solution bitmap has the wrong size");
+        }
+        std::map<std::size_t, const CandidateRepairOption *> optionsById;
+        for (const CandidateRepairOption &option :
+             attempt.validCandidateOptions)
+        {
+            optionsById.emplace(option.candidateIndex, &option);
+        }
+        for (std::size_t solutionId = 0;
+             solutionId < state.validSolutionBitmap.size(); ++solutionId)
+        {
+            const bool listed = optionsById.find(solutionId) !=
+                optionsById.end();
+            if (state.validSolutionBitmap[solutionId] != listed)
+            {
+                throw std::logic_error(
+                    "Compressed bitmap differs from RECAM validSolList");
+            }
+            if (listed)
+            {
+                const DecodedSolution decoded = decodeSolution(
+                    state, solutionId);
+                const CandidateRepairOption *option =
+                    optionsById.at(solutionId);
+                if (decoded.sourceRows.size() != option->usedRows ||
+                    decoded.sourceColumns.size() != option->usedColumns)
+                {
+                    throw std::logic_error(
+                        "Compressed matrix-address decode differs from the "
+                        "retained RECAM remap");
+                }
+                plans.push_back(CandidatePlan{
+                    attemptIndex, &attempt, option,
+                    solutionId,
+                    decoded.sourceRows.size(),
+                    decoded.sourceColumns.size()});
+            }
+        }
     }
     return plans;
 }
@@ -427,9 +591,9 @@ bool choiceIsBetter(
          subarray < kSubarrayCount; ++subarray)
     {
         const std::size_t candidateIndex =
-            candidate.plans[subarray].candidate->candidateIndex;
+            candidate.plans[subarray].solutionId;
         const std::size_t currentIndex =
-            current.plans[subarray].candidate->candidateIndex;
+            current.plans[subarray].solutionId;
         if (candidateIndex != currentIndex)
         {
             return candidateIndex < currentIndex;
@@ -486,9 +650,9 @@ GroupChoice findBestChoice(
         std::uint64_t selectedCycles = 0;
         for (std::size_t index = 0; index < kSubarrayCount; ++index)
         {
-            demands[index].rows = selectedPlans[index].candidate->usedRows;
+            demands[index].rows = selectedPlans[index].usedRows;
             demands[index].columns =
-                selectedPlans[index].candidate->usedColumns;
+                selectedPlans[index].usedColumns;
             selectedCycles = checkedAdd(
                 selectedCycles,
                 selectedPlans[index].attempt->latency.totalCycles(),
@@ -551,6 +715,236 @@ GroupChoice findBestChoice(
     return best.success ? best : bestFailure;
 }
 
+bool compressedChoiceIsBetter(
+    const GroupChoice &candidate,
+    const GroupChoice &current,
+    bool rowOnly)
+{
+    if (!current.success)
+        return true;
+    const std::size_t candidateBorrowed = rowOnly
+        ? candidate.allocation.borrowedRows()
+        : candidate.allocation.transfers.size();
+    const std::size_t currentBorrowed = rowOnly
+        ? current.allocation.borrowedRows()
+        : current.allocation.transfers.size();
+    if (candidateBorrowed != currentBorrowed)
+    {
+        return candidateBorrowed < currentBorrowed;
+    }
+    const std::size_t candidateLines = rowOnly
+        ? candidate.allocation.usedRows
+        : candidate.allocation.usedRows + candidate.allocation.usedColumns;
+    const std::size_t currentLines = rowOnly
+        ? current.allocation.usedRows
+        : current.allocation.usedRows + current.allocation.usedColumns;
+    if (candidateLines != currentLines)
+        return candidateLines < currentLines;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const std::size_t left =
+            candidate.plans[subarray].solutionId;
+        const std::size_t right =
+            current.plans[subarray].solutionId;
+        if (left != right)
+            return left < right;
+    }
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const std::size_t left =
+            candidate.plans[subarray].attemptVectorIndex;
+        const std::size_t right =
+            current.plans[subarray].attemptVectorIndex;
+        if (left != right)
+            return left < right;
+    }
+    return false;
+}
+
+GroupChoice findCompressedGroupChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount>
+        &attempts,
+    std::size_t maximumBorrowCount,
+    bool rowOnly,
+    const PhysicalResourceLedger &ledger)
+{
+    std::array<std::vector<CandidatePlan>, kSubarrayCount> plans;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        plans[subarray] = compressedPlansForSubarray(attempts[subarray]);
+        if (plans[subarray].empty())
+            return {};
+    }
+
+    GroupChoice best;
+    std::array<CandidatePlan, kSubarrayCount> selected;
+    std::uint64_t checked = 0;
+    std::uint64_t feasible = 0;
+    const auto visit = [&](const auto &self, std::size_t subarray) -> void
+    {
+        if (subarray < kSubarrayCount)
+        {
+            for (const CandidatePlan &plan : plans[subarray])
+            {
+                selected[subarray] = plan;
+                self(self, subarray + 1);
+            }
+            return;
+        }
+        ++checked;
+        std::array<SpareDemand, kSubarrayCount> demands;
+        for (std::size_t index = 0; index < kSubarrayCount; ++index)
+        {
+            demands[index] = {
+                selected[index].usedRows,
+                selected[index].usedColumns};
+        }
+        LedgerAllocationResult allocation = ledger.allocate(demands);
+        if (!allocation.success ||
+            allocation.transfers.size() > maximumBorrowCount)
+            return;
+        ++feasible;
+        GroupChoice choice;
+        choice.hasProposal = true;
+        choice.success = true;
+        choice.plans = selected;
+        choice.allocation = std::move(allocation);
+        if (compressedChoiceIsBetter(choice, best, rowOnly))
+            best = std::move(choice);
+    };
+    visit(visit, 0);
+    best.candidatesChecked = checked;
+    best.feasibleCombinations = feasible;
+    return best;
+}
+
+GroupChoice findEarlyChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount>
+        &attempts,
+    std::size_t maximumBorrowCount,
+    bool rowOnly,
+    const PhysicalResourceLedger &ledger)
+{
+    GroupChoice result;
+    result.hasProposal = true;
+    std::array<SpareDemand, kSubarrayCount> committedDemands;
+
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const std::vector<CandidatePlan> plans =
+            compressedPlansForSubarray(attempts[subarray]);
+        bool found = false;
+        CandidatePlan bestPlan;
+        LedgerAllocationResult bestAllocation;
+        for (const CandidatePlan &plan : plans)
+        {
+            ++result.candidatesChecked;
+            auto demands = committedDemands;
+            demands[subarray] = {
+                plan.usedRows,
+                plan.usedColumns};
+            LedgerAllocationResult allocation = ledger.allocateSequential(
+                demands, subarray + 1);
+            if (!allocation.success ||
+                allocation.transfers.size() > maximumBorrowCount)
+                continue;
+            ++result.feasibleCombinations;
+            const auto rank = std::make_tuple(
+                rowOnly ? allocation.borrowedRows()
+                        : allocation.transfers.size(),
+                rowOnly ? allocation.usedRows
+                        : allocation.usedRows + allocation.usedColumns,
+                plan.solutionId,
+                plan.attemptVectorIndex);
+            const auto bestRank = std::make_tuple(
+                rowOnly ? bestAllocation.borrowedRows()
+                        : bestAllocation.transfers.size(),
+                rowOnly ? bestAllocation.usedRows
+                        : bestAllocation.usedRows +
+                              bestAllocation.usedColumns,
+                found ? bestPlan.solutionId : 0,
+                found ? bestPlan.attemptVectorIndex : 0);
+            if (!found || rank < bestRank)
+            {
+                found = true;
+                bestPlan = plan;
+                bestAllocation = std::move(allocation);
+            }
+        }
+        if (!found)
+        {
+            result.success = false;
+            return result;
+        }
+        result.plans[subarray] = bestPlan;
+        committedDemands[subarray] = {
+            bestPlan.usedRows,
+            bestPlan.usedColumns};
+        result.allocation = std::move(bestAllocation);
+        result.remainingResourcesAfterTile[subarray] =
+            RemainingSpareResources{
+                result.allocation.unusedRows,
+                result.allocation.unusedColumns};
+    }
+    result.success = true;
+    return result;
+}
+
+void captureCompressedSelection(
+    GroupRepairResult &group,
+    const GroupChoice &choice)
+{
+    group.solutionSelectionWork = choice.candidatesChecked;
+    group.feasibleCombinationCount = choice.feasibleCombinations;
+    group.remainingResourcesAfterTile =
+        choice.remainingResourcesAfterTile;
+    if (!choice.success)
+    {
+        for (std::size_t subarray = 0;
+             subarray < kSubarrayCount; ++subarray)
+        {
+            const TileSolutionState *state = nullptr;
+            if (choice.plans[subarray].attempt != nullptr &&
+                choice.plans[subarray].attempt->tileSolutionState.has_value())
+            {
+                state = &*choice.plans[subarray].attempt->tileSolutionState;
+            }
+            else
+            {
+                for (const RepairAttemptResult &attempt :
+                     group.attemptsBySubarray[subarray])
+                {
+                    if (attempt.tileSolutionState.has_value() &&
+                        attempt.repairSuccess)
+                    {
+                        state = &*attempt.tileSolutionState;
+                        break;
+                    }
+                }
+            }
+            if (state == nullptr)
+                continue;
+            group.validSolutionBitmaps[subarray] =
+                state->validSolutionBitmap;
+            group.compressedStateBits = checkedAdd(
+                group.compressedStateBits,
+                state->compressedStorageBits,
+                "Compressed group solution-state bit count overflow");
+        }
+        return;
+    }
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const TileSolutionState &state =
+            *choice.plans[subarray].attempt->tileSolutionState;
+        group.validSolutionBitmaps[subarray] = state.validSolutionBitmap;
+        group.compressedStateBits = checkedAdd(
+            group.compressedStateBits,
+            state.compressedStorageBits,
+            "Compressed group solution-state bit count overflow");
+    }
+}
+
 void applyAllocation(
     GroupRepairResult &group,
     const GroupChoice &choice,
@@ -578,6 +972,22 @@ void applyAllocation(
     }
     if (!choice.success)
     {
+        if (config.solutionTakePolicy == SolutionTakePolicy::Early)
+        {
+            for (std::size_t subarray = 0;
+                 subarray < kSubarrayCount; ++subarray)
+            {
+                const CandidatePlan &plan = choice.plans[subarray];
+                if (plan.attempt == nullptr || plan.candidate == nullptr)
+                    continue;
+                group.selectedAttemptIndices[subarray] =
+                    plan.attemptVectorIndex;
+                group.selectedCandidateIndices[subarray] = plan.solutionId;
+                if (retainSelectedRemap)
+                    group.selectedCandidateOptions[subarray] = *plan.candidate;
+                group.repairSuccess[subarray] = true;
+            }
+        }
         return;
     }
 
@@ -600,7 +1010,7 @@ void applyAllocation(
         group.selectedAttemptIndices[subarray] =
             plan.attemptVectorIndex;
         group.selectedCandidateIndices[subarray] =
-            plan.candidate->candidateIndex;
+            plan.solutionId;
         if (retainSelectedRemap)
         {
             group.selectedCandidateOptions[subarray] = *plan.candidate;
@@ -611,6 +1021,22 @@ void applyAllocation(
 }
 
 } // namespace
+
+DynamicRepairSimulator::DynamicRepairSimulator()
+    : solver_(std::make_shared<RECAMSolverAdapter>())
+{
+}
+
+DynamicRepairSimulator::DynamicRepairSimulator(
+    std::shared_ptr<const RepairAttemptSolver> solver)
+    : solver_(std::move(solver))
+{
+    if (!solver_)
+    {
+        throw std::invalid_argument(
+            "DynamicRepairSimulator requires a non-null attempt solver");
+    }
+}
 
 GroupRepairResult DynamicRepairSimulator::run(
     const FaultGroup &faults,
@@ -625,7 +1051,9 @@ GroupRepairResult DynamicRepairSimulator::run(
     group.seed = config.randomSeed;
     group.runIndex = runIndex;
     group.faultCountModel = config.faultCountModel;
+    group.layout = config.layout;
     group.topology = config.topology;
+    group.solutionTakePolicy = config.solutionTakePolicy;
 
     std::array<std::vector<CapacityOption>, kSubarrayCount> options;
     std::array<std::pair<int, int>, kSubarrayCount> provisioned;
@@ -662,11 +1090,13 @@ GroupRepairResult DynamicRepairSimulator::run(
         request.attemptIndex = group.attemptsBySubarray[subarray].size();
         request.hybridCamEntryWidthBits =
             config.hybridCamEntryWidthBits;
+        request.rowAddressWidthBits = config.rowAddressWidthBits;
+        request.columnAddressWidthBits = config.columnAddressWidthBits;
 
         RepairAttemptResult attempt =
             capacity.rows == 0 && capacity.columns == 0
                 ? zeroCapacityAttempt(faults[subarray], request)
-                : solver_.solve(faults[subarray], request);
+                : solver_->solve(faults[subarray], request);
         attempt.addressCamEntriesProvisioned =
             hardwareProvisioning[subarray].addressCamEntries;
         attempt.hybridCamEntriesProvisioned =
@@ -704,7 +1134,8 @@ GroupRepairResult DynamicRepairSimulator::run(
     const std::size_t maximumBorrowCount = static_cast<std::size_t>(
         config.modifiers.maximumGroupBorrowedSpares);
 
-    if (config.topology != SharingTopology::NoSharing)
+    if (config.solutionTakePolicy == SolutionTakePolicy::Legacy &&
+        config.topology != SharingTopology::NoSharing)
     {
         if (config.modifiers.localFirst)
         {
@@ -752,6 +1183,46 @@ GroupRepairResult DynamicRepairSimulator::run(
         }
     }
 
+    if (config.solutionTakePolicy != SolutionTakePolicy::Legacy)
+    {
+        // Explicit solution-take policies require the complete compressed
+        // candidate set.  The legacy/local-first attempt schedule above stays
+        // untouched when the new flag is absent.
+        for (std::size_t subarray = 0;
+             subarray < kSubarrayCount; ++subarray)
+        {
+            for (std::size_t option = 1;
+                 option < options[subarray].size(); ++option)
+            {
+                runAttempt(subarray, options[subarray][option]);
+            }
+        }
+        const bool rowOnly = config.layout == GroupLayout::Line1x4;
+        const GroupChoice early = findEarlyChoice(
+            group.attemptsBySubarray, maximumBorrowCount, rowOnly, ledger);
+        const GroupChoice compressed = findCompressedGroupChoice(
+            group.attemptsBySubarray, maximumBorrowCount, rowOnly, ledger);
+        if (early.success && !compressed.success)
+        {
+            throw std::logic_error(
+                "GROUP_COMPRESSED rejected a feasible EARLY selection");
+        }
+        group.earlySuccess = early.success;
+        group.groupCompressedSuccess = compressed.success;
+        group.greedyLoss = !early.success && compressed.success;
+        best = config.solutionTakePolicy == SolutionTakePolicy::Early
+            ? early
+            : compressed;
+        if (!best.success)
+        {
+            group.solutionSelectionFailureReason =
+                config.solutionTakePolicy == SolutionTakePolicy::Early
+                    ? "NO_FEASIBLE_SOLUTION_AFTER_PRIOR_COMMIT"
+                    : "NO_FEASIBLE_GROUP_COMBINATION";
+        }
+        captureCompressedSelection(group, best);
+    }
+
     applyAllocation(group, best, config, retainSelectedRemap);
     std::size_t totalAttempts = 0;
     for (const auto &subarrayAttempts : group.attemptsBySubarray)
@@ -760,8 +1231,12 @@ GroupRepairResult DynamicRepairSimulator::run(
         for (const RepairAttemptResult &attempt : subarrayAttempts)
         {
             addLatency(group.latency, attempt.latency);
+            accumulateBiraWork(group.biraLatency, attempt.biraLatency);
         }
     }
+    group.biraLatency.sharingAllocationWorkCycles =
+        group.latency.sharingAllocationCycles;
+    finalizeBiraWork(group.biraLatency);
     group.extraAnalysisAttempts = totalAttempts - kSubarrayCount;
     group.sharing.repairSuccessDueToSharing =
         group.groupRepairSuccess && !group.baselineGroupRepairSuccess;
