@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：cross-cutting / recam-core
 > 建立時間：Unknown
-> 最後修改時間：2026-09-02T00:00:00+08:00
+> 最後修改時間：2026-09-07T00:00:00+08:00
 > 本文件權威主題：RECAM fault classification、CAM、matrix、repair semantics 與核心驗證契約
 
 ## 文件分區
@@ -1505,7 +1505,7 @@ host
 
 ### 15.4 Remap log contract
 
-A successful `OPTION` in `reports/SharedLine_SRAM/RemapTable.txt` must provide
+A successful `OPTION` in `reports/legacy/sharedline_sram/RemapTable.txt` must provide
 an independently executable repair description for every fault in that
 pattern.  Two record types have different coverage semantics.
 
@@ -1570,12 +1570,12 @@ Reference invocation:
 make validate_remap_b
 ./build/bin/validate_remap \
   fault_generator/faults.faults \
-  reports/SharedLine_SRAM/RemapTable.txt
+  reports/legacy/sharedline_sram/RemapTable.txt
 
 # Validate only one pattern ID:
 ./build/bin/validate_remap \
   fault_generator/faults.faults \
-  reports/SharedLine_SRAM/RemapTable.txt 66
+  reports/legacy/sharedline_sram/RemapTable.txt 66
 ```
 
 ---

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 ## =========== running command ==============
-# python3 scripts/plot_repair_rates_for_sharedline_cpp.py
-# python3 scripts/plot_repair_rates_for_sharedline_cpp.py path/to/repairRates.csv --output-dir path/to/figures
+# python3 scripts/legacy/sharedline/plot_repair_rates.py
+# python3 scripts/legacy/sharedline/plot_repair_rates.py path/to/repairRates.csv --output-dir path/to/figures
 ## ==========================================
 
 
@@ -26,8 +26,8 @@ import pandas as pd
 import seaborn as sns
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CSV_FILE = PROJECT_ROOT / "reports/SharedLine" / "repairRates.csv"
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_CSV_FILE = PROJECT_ROOT / "reports/legacy/sharedline/repairRates.csv"
 REQUIRED_COLUMNS = (
     "FaultNum",
     "SpareLine",

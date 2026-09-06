@@ -13,7 +13,7 @@ from collections import defaultdict
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_MANIFEST = ROOT / "experiments" / "moderate_repair_study.json"
 
 
@@ -114,7 +114,8 @@ def main() -> int:
     manifest = read_json(manifest_path)
     profile = manifest["profiles"][args.profile]
     output_root = (args.output_dir or
-                   ROOT / "reports" / "moderate_repair_study" / args.profile).resolve()
+                   ROOT / "reports" / "studies" / "moderate_repair" /
+                   args.profile).resolve()
     if output_root.exists():
         raise SystemExit(f"output directory already exists: {output_root}")
     output_root.mkdir(parents=True)
@@ -258,10 +259,10 @@ def main() -> int:
                 })
 
     subprocess.run([
-        sys.executable, str(ROOT / "scripts/collect_moderate_repair_results.py"),
+        sys.executable, str(ROOT / "scripts/device/moderate_repair_study/collect.py"),
         str(output_root)], cwd=ROOT, check=True)
     subprocess.run([
-        sys.executable, str(ROOT / "scripts/plot_moderate_repair_study.py"),
+        sys.executable, str(ROOT / "scripts/device/moderate_repair_study/plot.py"),
         str(output_root / "combined"), "--output-dir",
         str(output_root / "plots")], cwd=ROOT, check=True)
     print(f"Completed {args.profile} profile: {output_root}")

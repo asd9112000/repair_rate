@@ -3,12 +3,12 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/.." && pwd)
+PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/../../.." && pwd)
 cd "${PROJECT_ROOT}"
 
 SIMULATOR="${PROJECT_ROOT}/build/bin/DynamicSpareSharing"
-INPUT_ROOT=${OUTPUT_ROOT:-"${PROJECT_ROOT}/reports/dynamic_spare_sharing/table_gallery"}
-GALLERY_DIR=${GALLERY_OUTPUT_DIR:-"${PROJECT_ROOT}/reports/plots/dynamic_spare_sharing/fault_model_vs_policytable_gallery"}
+INPUT_ROOT=${OUTPUT_ROOT:-"${PROJECT_ROOT}/reports/group/dynamic_spare_sharing/table_gallery"}
+GALLERY_DIR=${GALLERY_OUTPUT_DIR:-"${INPUT_ROOT}/gallery"}
 RUNS=${RUNS:-250}
 SEED=${SEED:-20260820}
 SPATIAL_MODEL=${SPATIAL_MODEL:-mixed}
@@ -36,6 +36,6 @@ for rs in "${RS_LIST[@]}"; do
 #   done
 done
 
-python3 scripts/plot_fault_model_vs_policy.py \
+python3 scripts/group/dynamic_spare_sharing/plot_fault_model_vs_policy.py \
     "${INPUT_ROOT}" \
     --output-dir "${GALLERY_DIR}"

@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_SUMMARY = PROJECT_ROOT / "reports" / "dynamic_spare_sharing" / "summary.csv"
 OUTPUT_DPI = 300
 RELATIVE_IMPROVEMENT_LIMIT = 100.0

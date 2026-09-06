@@ -42,11 +42,11 @@ public:
         int SubarrayGroupID;
     };
 
-    string reportDir = "./reports/SharedLine_SRAM/";
+    string reportDir = "./reports/legacy/sharedline_sram/";
     string repairReportPath = reportDir + "RepairReport.rpt";
     string repairRecordPath = reportDir + "RepairRecord.txt";
-    string remapTablePath = "./reports/SharedLine_SRAM/RemapTable.txt";
-    string simplifiedRemapTablePath = "./reports/SharedLine_SRAM/RemapTable_simplified.txt";
+    string remapTablePath = "./reports/legacy/sharedline_sram/RemapTable.txt";
+    string simplifiedRemapTablePath = "./reports/legacy/sharedline_sram/RemapTable_simplified.txt";
     ofstream repairRecordFile;
     ofstream repairReportFile;
     ofstream remapTableFile;

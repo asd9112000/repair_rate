@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Visualize average extra lines for equal row/column spare settings."""
+"""Visualize the legacy average-extra-line sweep for equal spare settings."""
 
 from __future__ import annotations
 
@@ -16,8 +16,8 @@ import pandas as pd
 import seaborn as sns
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CSV_FILE = PROJECT_ROOT / "reports/RedundantRate" / "RedundantRate.csv"
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_CSV_FILE = PROJECT_ROOT / "reports/legacy/redundant_rate/RedundantRate.csv"
 REQUIRED_COLUMNS = ("Row", "Column", "Fault", "AverageExtraLines")
 OUTPUT_STEM = "redundant_rate_visualization"
 OUTPUT_DPI = 300

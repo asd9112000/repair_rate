@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run canonical B0/B1/B2/B3 parameter points and merge long-format CSV."""
+"""Run device-level canonical B0/B1/B2/B3 points and merge long-format CSV."""
 
 from __future__ import annotations
 

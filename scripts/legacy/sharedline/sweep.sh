@@ -3,11 +3,11 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/.." && pwd)
+PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/../../.." && pwd)
 cd "${PROJECT_ROOT}"
 
 SIMULATOR="${PROJECT_ROOT}/build/bin/SharedLine"
-REPORT_DIR="${PROJECT_ROOT}/reports/SharedLine"
+REPORT_DIR="${PROJECT_ROOT}/reports/legacy/sharedline"
 LOG_FILE="${REPORT_DIR}/SharedLine.log"
 CSV_FILE="${REPORT_DIR}/repairRates.csv"
 
@@ -57,5 +57,5 @@ grep "RepairRate:" "${LOG_FILE}" | while read -r line; do
 done
 
 # Generate publication-ready figures and print comparison statistics.
-python3 scripts/plot_repair_rates_for_sharedline_cpp.py "${CSV_FILE}" \
+python3 scripts/legacy/sharedline/plot_repair_rates.py "${CSV_FILE}" \
     --output-dir "${REPORT_DIR}"

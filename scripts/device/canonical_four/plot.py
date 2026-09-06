@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plot canonical-four repair rate, after-BIST latency, and hardware bits."""
+"""Plot device-level canonical-four repair rate, latency, and hardware bits."""
 
 from __future__ import annotations
 

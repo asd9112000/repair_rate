@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：cross-cutting
 > 建立時間：Unknown
-> 最後修改時間：2026-09-02T00:00:00+08:00
+> 最後修改時間：2026-09-07T00:00:00+08:00
 > 本文件權威主題：文件索引、閱讀順序與文件管理規則
 
 本專案以 C++17 模擬 RECAM、subarray spare-line sharing，以及 logic-die
@@ -25,6 +25,7 @@ BIRA/CAM reuse。現在同時保留兩類架構：
 | [ARCHITECTURE.md](ARCHITECTURE.md) | repository 現況、程式分層、resource ownership 與各執行入口的邊界 |
 | [HIERARCHICAL_RECAM.md](HIERARCHICAL_RECAM.md) | `HierarchicalRECAM` 架構、完整 CLI、輸入、輸出與指標解讀 |
 | [EXPERIMENTS.md](EXPERIMENTS.md) | 實驗設計、dynamic sharing policies、sweep、plotting 與可重現性 |
+| [REPORTS.md](REPORTS.md) | `reports/` scope 分類、輸出位置與 artifact 保留規則 |
 | [handoff/MODERATE_REPAIR_STUDY_HANDOFF.md](handoff/MODERATE_REPAIR_STUDY_HANDOFF.md) | 本次 moderate smoke／screen／confirm 的目的、矩陣、code flow、結果與後續交接 |
 | [RECAM_SPEC.md](RECAM_SPEC.md) | paper-faithful RECAM fault classification、CAM、matrix 與 solver 驗證細節 |
 | [SRAM_RECAM_ARCHITECTURE_GUIDE.md](SRAM_RECAM_ARCHITECTURE_GUIDE.md) | SRAM-RECAM search、latency、area 與 runtime variants |
@@ -67,13 +68,13 @@ make hierarchical_recam_b
   --shared-rows 1 \
   --shared-columns 0 \
   --bira-engines 1 \
-  --output-dir reports/hierarchical_recam/example
+  --output-dir reports/device/hierarchical_recam/example
 ```
 
 輸出：
 
 ```text
-reports/hierarchical_recam/example/
+reports/device/hierarchical_recam/example/
 ├── device_summary.csv
 ├── groups.csv
 └── bira_engines.csv

@@ -3,6 +3,17 @@
 `scripts/` 收錄本專案的批次 simulation 與結果繪圖工具。建議從專案根目錄
 `/home/asd9112000/repair_rate` 執行以下指令，避免相對路徑指向錯誤。
 
+工具依硬體 resource scope 分類；不要跨 `legacy`、`group`、`device` 的目錄合併
+repair-rate 結果。輸出 scope 定義與新 run 的目錄規則以
+[`docs/REPORTS.md`](../docs/REPORTS.md) 為準。
+
+```text
+scripts/
+├── legacy/                 # Legacy paper / fixed-sharing experiments
+├── group/                  # Single 4-SA group experiments
+└── device/                 # Hierarchical device-level experiments
+```
+
 ## 環境需求
 
 C++ simulator 由 Makefile 編譯；Python 圖表套件可透過下列指令安裝：
@@ -15,20 +26,15 @@ python3 -m pip install -r requirements-plot.txt
 
 | Script | 功能 | 主要輸入 | 主要輸出 |
 | --- | --- | --- | --- |
-| `sim_DynamicSpareSharing.sh` | 建置並執行 Dynamic Spare Sharing 的 fault-count × spare-line sweep，接著自動繪圖 | CLI 參數 | `reports/dynamic_spare_sharing/<run-id>/` |
-| `plot_dynamic_repair_rate_sweep.py` | 將 Dynamic Spare Sharing 的 `summary.csv` 轉為比較圖、heatmap、趨勢圖及分析表 | `summary.csv` | `plots/`、`plot_data/` |
-| `generate_DynamicSpareSharing_table_gallery.sh` | 建置 simulator，批次執行預設的 `Rs=Cs`／fault-count 組合，再呼叫 gallery 產圖 | script 內的 sweep 設定 | `reports/dynamic_spare_sharing/table_gallery/` |
-| `plot_fault_model_vs_policy.py` | 從一個或多個 `summary.csv` 產生各 Fault Model × policy 的 repair-rate 表格與 fault-count 趨勢圖 | CSV 或包含 CSV 的目錄 | `tables/`、`curves/`、`table_data/` |
-| `run_canonical_four_sweep.py` | 逐 parameter point 執行一次 B0/B1/B2/B3 unified runner，合併 long-format 結果 | `HierarchicalRECAM`、axes | `canonical_four_sweep.csv`、`runs/` |
-| `plot_canonical_four.py` | 繪製 B0/B1/B2/B3 repair rate、after-BIST latency、hardware bits | `canonical_four_sweep.csv` | PNG、PDF、`plot_data.csv` |
-| `run_moderate_repair_study.py` | 執行 moderate/mixed group policy、SRAM search 與 device B0–B3 profiles | JSON manifest、profile | 完整 point outputs、合併 CSV、圖表 |
-| `collect_moderate_repair_results.py` | 合併三種實驗 scope 並檢查 fault corpus 與 CAM/SRAM 等價性 | study run root | `combined/*.csv`、`validation.json` |
-| `plot_moderate_repair_study.py` | 分開繪製 group、SRAM frontier 與 device 圖表 | `combined/` | PNG、PDF、plot manifest |
-| `analyze_SpareLine.sh` | 執行傳統 `build/bin/SharedLine` 的固定 fault/spare sweep，整理 repair rate 並繪圖 | 固定迴圈參數 | `reports/SharedLine/` |
-| `plot_repair_rates_for_sharedline_cpp.py` | 繪製 SharedLine 與 RECAM 的 repair-rate 比較、改善量及 heatmap | `repairRates.csv` | PNG、PDF |
-| `analyze_SpareLine_SRAM.sh` | 執行 `build/bin/SharedLine_SRAM` 的 fault/spare sweep，可切換固定 buffer 或 paper CAM reuse | CLI 參數 | `reports/SharedLine_SRAM/` |
-| `analyze_RedundantRate.sh` | 執行 `build/bin/RedundantRate` sweep，從報告整理平均額外線數 | 固定迴圈參數 | `reports/RedundantRate/RedundantRate.csv` |
-| `plot_redundant_rate_for_redudant_rate_cpp.py` | 繪製 RedundantRate 的平均額外線數趨勢 | `RedundantRate.csv` | PNG、PDF |
+| `group/dynamic_spare_sharing/sweep.sh` + `plot_sweep.py` | Dynamic Spare Sharing fault-count × spare-line sweep 與圖表 | CLI、`summary.csv` | `reports/group/dynamic_spare_sharing/<run-id>/` |
+| `group/dynamic_spare_sharing/plot_figure1_repair_rate.py` | 配對 2×2 sweeps 的 Figure 1 repair-rate 圖與 95% Wilson CI | 各 seed 的 `summary.csv` | PNG、PDF、`figure1_plot_data.csv` |
+| `group/dynamic_spare_sharing/generate_table_gallery.sh` + `plot_fault_model_vs_policy.py` | 預設 sweep 與 Fault Model × policy gallery | script 設定、CSV | `tables/`、`curves/`、`table_data/` |
+| `group/sram_recam/sweep.sh` | 4-SA SRAM-RECAM policy comparison | CLI 參數 | `reports/group/sram_recam/` |
+| `device/canonical_four/sweep.py` + `plot.py` | Device B0/B1/B2/B3 sweep 與圖表 | `HierarchicalRECAM`、axes | `canonical_four_sweep.csv`、`runs/`、PNG/PDF |
+| `device/moderate_repair_study/run.py` + `collect.py` + `plot.py` | Scope-separated moderate study | JSON manifest、study root | 合併 CSV、validation、PNG/PDF |
+| `legacy/sharedline/sweep.sh` + `plot_repair_rates.py` | SharedLine repair-rate sweep 與圖表 | 固定迴圈、`repairRates.csv` | `reports/legacy/sharedline/` |
+| `legacy/sharedline_sram/sweep.sh` | SharedLine SRAM sweep；共用 SharedLine plotter | CLI 參數 | `reports/legacy/sharedline_sram/` |
+| `legacy/redundant_rate/sweep.sh` + `plot.py` | RedundantRate sweep 與趨勢圖 | 固定迴圈、CSV | `reports/legacy/redundant_rate/` |
 
 `__pycache__/` 是 Python 自動產生的 bytecode cache，不是需要手動執行或維護的
 script。
@@ -63,7 +69,7 @@ make dynamic_sharing_b
   --simplified-fault-file fault_generator/faults_simplified.faults \
   --topology edge --shared-lines 1 --local-first \
   --write-remap-tables \
-  --output-dir reports/dynamic_spare_sharing/integration_run
+  --output-dir reports/group/dynamic_spare_sharing/integration_run
 ```
 
 除原本三份 CSV 外，輸出目錄會增加 `RemapTable.txt` 與
@@ -73,7 +79,7 @@ fault generator；remap table 目前只允許單一 policy run，不允許 sweep
 或直接執行：
 
 ```bash
-scripts/sim_DynamicSpareSharing.sh \
+scripts/group/dynamic_spare_sharing/sweep.sh \
   --fault-min 16 \
   --fault-max 32 \
   --fault-step 4 \
@@ -98,7 +104,7 @@ scripts/sim_DynamicSpareSharing.sh \
 完整參數可用以下指令查看：
 
 ```bash
-scripts/sim_DynamicSpareSharing.sh --help
+scripts/group/dynamic_spare_sharing/sweep.sh --help
 ```
 
 注意：指定的 run directory 必須尚不存在，以避免新舊資料混合。
@@ -108,16 +114,28 @@ scripts/sim_DynamicSpareSharing.sh --help
 若 simulation 已完成，可以直接使用既有的 `summary.csv` 重新繪圖：
 
 ```bash
-python3 scripts/plot_dynamic_repair_rate_sweep.py \
-  reports/dynamic_spare_sharing/moderate_demo/raw/summary.csv \
-  --output-dir reports/dynamic_spare_sharing/moderate_demo/plots \
-  --plot-data-dir reports/dynamic_spare_sharing/moderate_demo/plot_data \
+python3 scripts/group/dynamic_spare_sharing/plot_sweep.py \
+  reports/group/dynamic_spare_sharing/moderate_demo/raw/summary.csv \
+  --output-dir reports/group/dynamic_spare_sharing/moderate_demo/plots \
+  --plot-data-dir reports/group/dynamic_spare_sharing/moderate_demo/plot_data \
   --fault-model moderate_imbalance \
   --storage-mode cam
 ```
 
 輸入資料必須是 `build/bin/DynamicSpareSharing --repair-rate-sweep` 產生的對稱
 `Rs=Cs` sweep，而且一次只能選取一種 Fault Model 與 storage mode。
+
+### 2.1 Figure 1 2×2 directional DSS 圖表
+
+此 plotter 只讀取同一組 `Rs`／`Cs`、fault model 與 spatial model 的 CAM 2×2
+結果，並要求 No Sharing、Directional `m=1`、Directional `m=2` 三個 policy 都存在，
+避免把不完整的 policy set 畫成比較圖。
+
+```bash
+python3 scripts/group/dynamic_spare_sharing/plot_figure1_repair_rate.py \
+  reports/group/dynamic_spare_sharing/figure1_input \
+  --output-dir reports/group/dynamic_spare_sharing/figure1/plots
+```
 
 ### 3. 產生 Fault Model vs Policy Gallery
 
@@ -130,17 +148,17 @@ unverified diagnostic，不應直接視為已驗證的正式比較結果。
 讀取包含多個 `summary.csv` 的目錄：
 
 ```bash
-python3 scripts/plot_fault_model_vs_policy.py \
-  reports/fault_model_vs_policy_demo/input \
-  --output-dir reports/fault_model_vs_policy_demo/gallery
+python3 scripts/group/dynamic_spare_sharing/plot_fault_model_vs_policy.py \
+  reports/group/dynamic_spare_sharing/fault_model_vs_policy_demo/input \
+  --output-dir reports/group/dynamic_spare_sharing/fault_model_vs_policy_demo/gallery
 ```
 
 也可以指定單一 CSV：
 
 ```bash
-python3 scripts/plot_fault_model_vs_policy.py \
-  reports/example/raw/summary.csv \
-  --output-dir reports/example/gallery
+python3 scripts/group/dynamic_spare_sharing/plot_fault_model_vs_policy.py \
+  reports/group/dynamic_spare_sharing/example/raw/summary.csv \
+  --output-dir reports/group/dynamic_spare_sharing/example/gallery
 ```
 
 SRAM 資料需加上 `--storage-mode sram`；未指定時預設為 `cam`。
@@ -161,22 +179,22 @@ gallery/
 若要直接執行專案預設的完整示範流程，可使用：
 
 ```bash
-scripts/generate_DynamicSpareSharing_table_gallery.sh
+scripts/group/dynamic_spare_sharing/generate_table_gallery.sh
 ```
 
 此 wrapper 會先執行 `make dynamic_sharing_b`，再以
 `build/bin/DynamicSpareSharing` 模擬 `Rs=Cs=2,3,4` 與 fault count
 `16,20,24,28,32`（每組 `250` runs），最後產生 gallery。原始 CSV 與圖表
-都位於 `reports/dynamic_spare_sharing/table_gallery/`。可以透過環境變數調整：
+都位於 `reports/group/dynamic_spare_sharing/table_gallery/`。可以透過環境變數調整：
 
 ```bash
-OUTPUT_ROOT=reports/dynamic_spare_sharing/table_gallery_run2 \
+OUTPUT_ROOT=reports/group/dynamic_spare_sharing/table_gallery_run2 \
 RS_VALUES="2 3" \
 FAULT_COUNTS="16 20 24" \
 RUNS=1000 \
 SEED=20260820 \
 SPATIAL_MODEL=mixed \
-  scripts/generate_DynamicSpareSharing_table_gallery.sh
+  scripts/group/dynamic_spare_sharing/generate_table_gallery.sh
 ```
 
 另可用 `GALLERY_OUTPUT_DIR` 將最終 gallery 放到不同目錄。
@@ -189,18 +207,18 @@ SPATIAL_MODEL=mixed \
 
 ```bash
 make hierarchical_recam_b
-python3 scripts/run_canonical_four_sweep.py \
+python3 scripts/device/canonical_four/sweep.py \
   --simulator build/bin/HierarchicalRECAM \
-  --output-dir reports/canonical/sweep_demo \
+  --output-dir reports/device/canonical_four/sweep_demo \
   --rs 2 --cs 2 --fault-counts 4,8,12 \
   --word-bits 16 --seeds 20260820 \
   --sram-policies chunked:2 \
   --groups 32 --memory-rows 512 --memory-columns 8192 \
   --topology edge --shared-rows 1 --shared-columns 0 --max-borrows 1
 
-python3 scripts/plot_canonical_four.py \
-  reports/canonical/sweep_demo/canonical_four_sweep.csv \
-  --output-dir reports/canonical/sweep_demo/plots
+python3 scripts/device/canonical_four/plot.py \
+  reports/device/canonical_four/sweep_demo/canonical_four_sweep.csv \
+  --output-dir reports/device/canonical_four/sweep_demo/plots
 ```
 
 每個 `runs/<point>/` 都有原始 B0–B3 outputs 與 `command.txt`；根目錄的
@@ -221,12 +239,12 @@ fault count 外的 axes，避免把不同硬體 configuration 的結果平均在
 三種階段會由同一 runner 執行，但 collector 與 plotter 保持 scope 分離。
 
 ```bash
-python3 scripts/run_moderate_repair_study.py --profile smoke
-python3 scripts/run_moderate_repair_study.py --profile screen
+python3 scripts/device/moderate_repair_study/run.py --profile smoke
+python3 scripts/device/moderate_repair_study/run.py --profile screen
 
-python3 scripts/run_moderate_repair_study.py --profile confirm \
+python3 scripts/device/moderate_repair_study/run.py --profile confirm \
   --selection-from \
-  reports/moderate_repair_study/screen/selected_policies.json
+  reports/studies/moderate_repair/screen/selected_policies.json
 ```
 
 Profiles：
@@ -242,10 +260,10 @@ Profiles：
 runner 會拒絕覆寫。重跑時必須使用新目錄：
 
 ```bash
-python3 scripts/run_moderate_repair_study.py --profile confirm \
+python3 scripts/device/moderate_repair_study/run.py --profile confirm \
   --selection-from \
-  reports/moderate_repair_study/screen/selected_policies.json \
-  --output-dir reports/moderate_repair_study/confirm_rerun
+  reports/studies/moderate_repair/screen/selected_policies.json \
+  --output-dir reports/studies/moderate_repair/confirm_rerun
 ```
 
 每個 point 保存 `point.json`、`command.txt`、`run.log` 與 simulator 原始輸出；
@@ -253,11 +271,11 @@ python3 scripts/run_moderate_repair_study.py --profile confirm \
 重做彙整與繪圖：
 
 ```bash
-python3 scripts/collect_moderate_repair_results.py \
-  reports/moderate_repair_study/screen
-python3 scripts/plot_moderate_repair_study.py \
-  reports/moderate_repair_study/screen/combined \
-  --output-dir reports/moderate_repair_study/screen/plots
+python3 scripts/device/moderate_repair_study/collect.py \
+  reports/studies/moderate_repair/screen
+python3 scripts/device/moderate_repair_study/plot.py \
+  reports/studies/moderate_repair/screen/combined \
+  --output-dir reports/studies/moderate_repair/screen/plots
 ```
 
 `confirm` profile 需以 `--selection-from` 指向 screen 的
@@ -285,15 +303,15 @@ make analyze_spareline
 - Spare line：2 到 6。
 - 每個 fault number 產生 100 組 patterns。
 
-它會重建 `reports/SharedLine/repairRates.csv`，因此執行前應先保存需要保留的
+它會重建 `reports/legacy/sharedline/repairRates.csv`，因此執行前應先保存需要保留的
 舊結果。
 
 若已有 CSV，只需要重新繪圖：
 
 ```bash
-python3 scripts/plot_repair_rates_for_sharedline_cpp.py \
-  reports/SharedLine/repairRates.csv \
-  --output-dir reports/SharedLine/plots \
+python3 scripts/legacy/sharedline/plot_repair_rates.py \
+  reports/legacy/sharedline/repairRates.csv \
+  --output-dir reports/legacy/sharedline/plots \
   --architecture-label SharedLine
 ```
 
@@ -315,7 +333,7 @@ make analyze_spareline_sram ARGS="--paper-cam-reuse"
 完整參數：
 
 ```bash
-scripts/analyze_SpareLine_SRAM.sh --help
+scripts/legacy/sharedline_sram/sweep.sh --help
 ```
 
 script 預設會透過 Makefile 建立 `build/bin/SharedLine_SRAM` 與
@@ -338,15 +356,15 @@ make analyze_redundantrate
 整理後的資料位於：
 
 ```text
-reports/RedundantRate/RedundantRate.csv
+reports/legacy/redundant_rate/RedundantRate.csv
 ```
 
 若只需重新繪圖：
 
 ```bash
-python3 scripts/plot_redundant_rate_for_redudant_rate_cpp.py \
-  reports/RedundantRate/RedundantRate.csv \
-  --output-dir reports/RedundantRate/plots
+python3 scripts/legacy/redundant_rate/plot.py \
+  reports/legacy/redundant_rate/RedundantRate.csv \
+  --output-dir reports/legacy/redundant_rate/plots
 ```
 
 ## 建議流程

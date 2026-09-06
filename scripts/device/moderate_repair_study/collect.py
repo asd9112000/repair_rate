@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge moderate-study outputs and enforce paired CAM/SRAM invariants."""
+"""Merge scope-separated moderate-study outputs and enforce paired invariants."""
 
 from __future__ import annotations
 

@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/.." && pwd)
+PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/../../.." && pwd)
 cd "${PROJECT_ROOT}"
 
 ## ===================================================
@@ -41,7 +41,7 @@ for fault_num in {4..16}; do
 done
 
 # Collect RepairReportR_C_F.rpt files into one CSV summary.
-report_dir="reports/RedundantRate"
+report_dir="reports/legacy/redundant_rate"
 csv_file="${report_dir}/RedundantRate.csv"
 csv_rows=$(mktemp)
 trap 'rm -f "${csv_rows}"' EXIT
@@ -83,4 +83,4 @@ done
 echo "CSV summary written to ${csv_file}"
 
 # Generate the publication-ready visualization for the new CSV summary.
-python3 scripts/plot_redundant_rate_for_redudant_rate_cpp.py
+python3 scripts/legacy/redundant_rate/plot.py

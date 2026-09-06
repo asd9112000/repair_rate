@@ -7,7 +7,7 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/.." && pwd)
+PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/../../.." && pwd)
 cd "${PROJECT_ROOT}"
 SIMULATOR_RELATIVE="build/bin/SharedLine_SRAM"
 SIMULATOR="${PROJECT_ROOT}/${SIMULATOR_RELATIVE}"
@@ -27,7 +27,7 @@ OUTPUT_DIR=""
 
 usage() {
     cat <<'EOF'
-Usage: scripts/analyze_SpareLine_SRAM.sh [options]
+Usage: scripts/legacy/sharedline_sram/sweep.sh [options]
 
 Sweep options:
   --fault-min N          First fault count (default: 4)
@@ -46,9 +46,9 @@ Output/control:
   -h, --help             Show this help
 
 Examples:
-  scripts/analyze_SpareLine_SRAM.sh --buffer 0
-  scripts/analyze_SpareLine_SRAM.sh --buffer 2 --fault-min 8 --fault-max 12
-  scripts/analyze_SpareLine_SRAM.sh --paper-cam-reuse
+  scripts/legacy/sharedline_sram/sweep.sh --buffer 0
+  scripts/legacy/sharedline_sram/sweep.sh --buffer 2 --fault-min 8 --fault-max 12
+  scripts/legacy/sharedline_sram/sweep.sh --paper-cam-reuse
 EOF
 }
 
@@ -152,13 +152,13 @@ else
 fi
 
 if [[ -z ${OUTPUT_DIR} ]]; then
-    OUTPUT_DIR="${PROJECT_ROOT}/reports/SharedLine_SRAM/analysis_${MODE_SLUG}"
+    OUTPUT_DIR="${PROJECT_ROOT}/reports/legacy/sharedline_sram/analysis_${MODE_SLUG}"
 elif [[ ${OUTPUT_DIR} != /* ]]; then
     OUTPUT_DIR="${PROJECT_ROOT}/${OUTPUT_DIR}"
 fi
 
 REPORT_RELATIVE_DIR="analysis_${MODE_SLUG}/reports"
-REPORT_DIR="${PROJECT_ROOT}/reports/SharedLine_SRAM/${REPORT_RELATIVE_DIR}"
+REPORT_DIR="${PROJECT_ROOT}/reports/legacy/sharedline_sram/${REPORT_RELATIVE_DIR}"
 CSV_FILE="${OUTPUT_DIR}/repairRates.csv"
 LOG_FILE="${OUTPUT_DIR}/SharedLine_SRAM.log"
 CONFIG_FILE="${OUTPUT_DIR}/run_config.txt"
@@ -249,7 +249,7 @@ done
 
 PLOT_CACHE_DIR=${MPLCONFIGDIR:-"${TMPDIR:-/tmp}/repair_rate_matplotlib_${UID}"}
 mkdir -p "${PLOT_CACHE_DIR}"
-MPLCONFIGDIR="${PLOT_CACHE_DIR}" python3 scripts/plot_repair_rates_for_sharedline_cpp.py \
+MPLCONFIGDIR="${PLOT_CACHE_DIR}" python3 scripts/legacy/sharedline/plot_repair_rates.py \
     "${CSV_FILE}" \
     --output-dir "${OUTPUT_DIR}" \
     --architecture-label "SharedLine_SRAM"

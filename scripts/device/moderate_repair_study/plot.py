@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plot reusable group, SRAM, and device views for the moderate study."""
+"""Plot scope-separated group, SRAM, and device views for the moderate study."""
 
 from __future__ import annotations
 

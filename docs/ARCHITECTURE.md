@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：cross-cutting
 > 建立時間：Unknown
-> 最後修改時間：2026-09-02T00:00:00+08:00
+> 最後修改時間：2026-09-07T00:00:00+08:00
 > 本文件權威主題：架構分層、resource ownership 與 Legacy/Hierarchical 邊界
 
 ## 1. 架構邊界
@@ -164,6 +164,19 @@ local spare cost × total_subarrays
 
 若 offline 與 online 使用同一 mode-reused CAM structure，不再額外加上一份
 online CAM area。
+
+## 5.1 Report scope
+
+`reports/` 的 scope 是實驗結果的硬體 ownership 邊界，而非單純的資料夾名稱：
+
+- `group`：獨立 4-SA analysis；不累積跨 group 的 online CAM occupancy。
+- `device`：hierarchical device analysis；所有 modeled groups 競爭同一個 finite
+  device-wide online CAM pool。
+- `studies`：編排多個 scope 的研究容器，不是新的 simulator scope；其 group、SRAM、
+  device 子輸出仍不可混合比較。
+
+完整輸出目錄、legacy scope 與 artifact 保留規則以
+[REPORTS.md](REPORTS.md) 為準。
 
 ## 6. 三個 repair tiers
 

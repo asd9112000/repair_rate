@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：cross-cutting
 > 建立時間：Unknown
-> 最後修改時間：2026-09-02T00:00:00+08:00
+> 最後修改時間：2026-09-07T00:00:00+08:00
 > 本文件權威主題：實驗方法、可重現性、sweep、plotting 與結果比較規則
 
 本文件整合 dynamic spare sharing、SRAM-RECAM、sweep 與 plotting 的操作方式。
@@ -38,10 +38,11 @@ sharing 實驗則使用 `DynamicSpareSharing`。兩者的 CAM ownership 不同�
 hierarchical runner 會 truncate 同名 CSV，dynamic sweep wrapper 則會拒絕既有 run
 directory。
 
-建議目錄：
+新 run 的目錄 scope 定義與完整規則以 [REPORTS.md](REPORTS.md) 為準；既有 reports
+不因這項規則而搬移。每次 run 應依其 simulator scope 寫入：
 
 ```text
-reports/<simulator>/<run-id>/
+reports/<scope>/<experiment>/<run-id>/
 ├── run_config.txt
 ├── raw/
 │   └── summary.csv
@@ -64,7 +65,7 @@ make dynamic_sharing_b
   --runs 10000 \
   --seed 20260820 \
   --hybrid-cam-entry-width-bits 64 \
-  --output-dir reports/dynamic_spare_sharing/manual_run
+  --output-dir reports/group/dynamic_spare_sharing/manual_run
 ```
 
 `fault-count` 是 A/B/C/D 一個 group 的總 faults。預設採 paper CAM reuse，buffer
@@ -88,7 +89,7 @@ row-only 實驗使用：
   --shared-rows 1 --shared-columns 0 \
   --local-first --max-borrows 1 \
   --fault-count 20 --runs 100 --seed 20260820 \
-  --output-dir reports/dynamic_spare_sharing/layout_1x4_neighbor_row_m1
+  --output-dir reports/group/dynamic_spare_sharing/layout_1x4_neighbor_row_m1
 ```
 
 1×4 topology 定義如下：
@@ -158,7 +159,7 @@ mappings 另行保存與計數。
   --fault-model user --fault-counts 2,4,5,9 \
   --spatial mixed --runs 1000 --seed 20260820 \
   --topology edge --shared-lines 1 --local-first \
-  --output-dir reports/dynamic_spare_sharing/user_2_4_5_9
+  --output-dir reports/group/dynamic_spare_sharing/user_2_4_5_9
 ```
 
 ### 3.4 Fault-count × spare-line sweep
@@ -173,7 +174,7 @@ make sim_DynamicSpareSharing \
         --seed 20260820 --run-id moderate_demo"
 ```
 
-或直接執行 `scripts/sim_DynamicSpareSharing.sh --help`。代表性 policy set 為 No
+或直接執行 `scripts/group/dynamic_spare_sharing/sweep.sh --help`。代表性 policy set 為 No
 Sharing、Directional m=1/m=2、Pairwise m=1/m=2、Global Pool m=1。
 Global Pool m=2 的 `local=0/global=8` 組態仍是 unverified diagnostic，不應放入
 正式 publication comparison。
@@ -193,7 +194,7 @@ HBMID ChannelID BankID SubarrayGroupID SubarrayID Row Col
   --simplified-fault-file fault_generator/faults_simplified.faults \
   --topology edge --shared-lines 1 --local-first \
   --write-remap-tables \
-  --output-dir reports/dynamic_spare_sharing/integration_run
+  --output-dir reports/group/dynamic_spare_sharing/integration_run
 ```
 
 另產生 `RemapTable.txt` 與 `RemapTable_simplified.txt`。Remap output 只允許單一
@@ -208,7 +209,7 @@ make dynamic_sram_recam_b
   --fault-count 20 --runs 100 --seed 20260820 \
   --policies serial,chunk2,chunk4,wide \
   --matrix-policy scan \
-  --output-dir reports/dynamic_sram_recam/example
+  --output-dir reports/group/sram_recam/example
 ```
 
 政策可使用 `serial`、`chunk2`、`chunk4`、`wide` 或 `chunked:N`。硬體 geometry、
@@ -248,7 +249,7 @@ cam_scope = GLOBAL_LOGIC_DIE
   --canonical-four --groups 32 --fault-count 8 --seed 20260820 \
   --topology edge --shared-rows 1 --shared-columns 0 --max-borrows 1 \
   --sram-policy chunked:2 \
-  --output-dir reports/canonical/baseline_r2c2
+  --output-dir reports/device/canonical_four/baseline_r2c2
 ```
 
 四組定義固定為 B0 CAM/no sharing、B1 CAM/sharing、B2 SRAM/no sharing、
@@ -277,18 +278,18 @@ make hierarchical_recam_b
 以一個 small smoke sweep 為例：
 
 ```bash
-python3 scripts/run_canonical_four_sweep.py \
+python3 scripts/device/canonical_four/sweep.py \
   --simulator build/bin/HierarchicalRECAM \
-  --output-dir reports/canonical/sweep_demo \
+  --output-dir reports/device/canonical_four/sweep_demo \
   --rs 2 --cs 2 --fault-counts 4,8,12 \
   --word-bits 16 --seeds 20260820 \
   --sram-policies chunked:2 \
   --groups 32 --memory-rows 512 --memory-columns 8192 \
   --topology edge --shared-rows 1 --shared-columns 0 --max-borrows 1
 
-python3 scripts/plot_canonical_four.py \
-  reports/canonical/sweep_demo/canonical_four_sweep.csv \
-  --output-dir reports/canonical/sweep_demo/plots
+python3 scripts/device/canonical_four/plot.py \
+  reports/device/canonical_four/sweep_demo/canonical_four_sweep.csv \
+  --output-dir reports/device/canonical_four/sweep_demo/plots
 ```
 
 runner 會保留每個 point 的 command、四組原始 output，並合併為 long-format
@@ -310,14 +311,14 @@ spare configuration 的最佳 sharing policy 帶入 device-level B0–B3，兩�
 
 ```bash
 # 50 runs/point、2 groups/device 的端到端檢查
-python3 scripts/run_moderate_repair_study.py --profile smoke
+python3 scripts/device/moderate_repair_study/run.py --profile smoke
 
 # 150 runs/point、32 groups/device；group 主矩陣共 4,800 samples
-python3 scripts/run_moderate_repair_study.py --profile screen
+python3 scripts/device/moderate_repair_study/run.py --profile screen
 
 # 後續較完整統計只保留 no-sharing 與 screen 前兩名
-python3 scripts/run_moderate_repair_study.py --profile confirm \
-  --selection-from reports/moderate_repair_study/screen/selected_policies.json
+python3 scripts/device/moderate_repair_study/run.py --profile confirm \
+  --selection-from reports/studies/moderate_repair/screen/selected_policies.json
 ```
 
 每個 point 保存 `command.txt`、`point.json`、`run.log` 與原始 simulator outputs。
@@ -347,10 +348,10 @@ python3 -m pip install -r requirements-plot.txt
 對 repair-rate sweep 重畫圖：
 
 ```bash
-python3 scripts/plot_dynamic_repair_rate_sweep.py \
-  reports/dynamic_spare_sharing/moderate_demo/raw/summary.csv \
-  --output-dir reports/dynamic_spare_sharing/moderate_demo/plots \
-  --plot-data-dir reports/dynamic_spare_sharing/moderate_demo/plot_data \
+python3 scripts/group/dynamic_spare_sharing/plot_sweep.py \
+  reports/group/dynamic_spare_sharing/moderate_demo/raw/summary.csv \
+  --output-dir reports/group/dynamic_spare_sharing/moderate_demo/plots \
+  --plot-data-dir reports/group/dynamic_spare_sharing/moderate_demo/plot_data \
   --fault-model moderate_imbalance \
   --storage-mode cam
 ```

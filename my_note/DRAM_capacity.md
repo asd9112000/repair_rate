@@ -12,7 +12,7 @@
 1. `docs/HIERARCHICAL_RECAM.md`
 2. `HierarchicalRECAM.cpp`
 3. `experiments/moderate_repair_study.json`
-4. `scripts/run_canonical_four_sweep.py`
+4. `scripts/device/canonical_four/sweep.py`
 
 ### DRAM hierarchy
 
@@ -152,4 +152,3 @@ The key distinction is:
 - **35 bits**: full physical cell address of the modeled 32-Gbit device.
 - **27 or 31 bits**: Global CAM word-level tag, depending on `word_bits`.
 - **32 bits**: byte address over the full 4-GiB device.
-

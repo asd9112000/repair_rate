@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：hierarchical-device
 > 建立時間：Unknown
-> 最後修改時間：2026-09-02T00:00:00+08:00
+> 最後修改時間：2026-09-07T00:00:00+08:00
 > 本文件權威主題：WoW-v1.0 hierarchy、HierarchicalRECAM CLI、輸入、輸出與 device-level 指標
 
 ## 1. 這個程式解決什麼問題？
@@ -291,7 +291,7 @@ solution reordering。
 
 | Option | Default |
 |---|---|
-| `--output-dir PATH` | `reports/hierarchical_recam` |
+| `--output-dir PATH` | `reports/device/hierarchical_recam` |
 | `--write-fault-corpus` | off；啟用後寫出 `fault_corpus.txt` |
 
 三份 CSV 會以 truncate 模式寫入指定目錄；重跑同一路徑會覆寫同名 CSV。
@@ -332,7 +332,7 @@ SRAM 的 matrix conversion／fault-free analyzer 仍執行以維持功能正確�
 ./build/bin/HierarchicalRECAM 2 2 \
   --canonical-four --groups 32 --fault-count 8 --seed 20260820 \
   --topology edge --shared-rows 1 --shared-columns 0 --max-borrows 1 \
-  --sram-policy chunked:2 --output-dir reports/canonical/example
+  --sram-policy chunked:2 --output-dir reports/device/canonical_four/example
 ```
 
 輸出包括：
@@ -366,7 +366,7 @@ configuration 選取其中一個完整 `RemapTable.txt`。
   --bira-engines 1 \
   --data-word-bits 256 \
   --cam-granularity word \
-  --output-dir reports/hierarchical_recam/edge_m1_paper_cam
+  --output-dir reports/device/hierarchical_recam/edge_m1_paper_cam
 ```
 
 Generated group index 使用：
@@ -405,7 +405,7 @@ HBMID ChannelID BankID SubarrayGroupID SubarrayID Row Col
   --simplified-fault-file path/to/device_faults.txt \
   --memory-rows 512 \
   --memory-columns 8192 \
-  --output-dir reports/hierarchical_recam/file_run
+  --output-dir reports/device/hierarchical_recam/file_run
 ```
 
 規則：
@@ -635,7 +635,8 @@ latency after BIST=1, BIST backpressure=0
 ```
 
 已另外實測 `fault_generator/faults.faults` 與既有
-`reports/SharedLine_SRAM/RemapTable.txt` 的 compatibility validator：250 patterns、
+已另外實測舊輸出 `reports/SharedLine_SRAM/RemapTable.txt`（scope-first 整理前的
+legacy artifact）的 compatibility validator：250 patterns、
 63 options、4032/4032 covered、0 invalid。以同一份 fault file、`Rs=Cs=6`、
 `word_bits=16` 執行 canonical runner 後，B0/B2 各輸出並驗證 56 個 options，
 B1/B3 各 86 個 options；所有 emitted options 均為 valid physical remaps。

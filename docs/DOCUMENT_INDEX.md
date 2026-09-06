@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：cross-cutting
 > 建立時間：2026-09-02T00:00:00+08:00
-> 最後修改時間：2026-09-02T00:00:00+08:00
+> 最後修改時間：2026-09-07T00:00:00+08:00
 > 本文件權威主題：docs 內文件分類、責任分工與參數位置索引
 
 本文件只管理 `docs/` 內的文本。它是導航與責任分工文件，不取代任何架構或行為規格。
@@ -17,8 +17,10 @@
 | [RECAM_SPEC.md](RECAM_SPEC.md) | Current | recam-core | RECAM fault、CAM、matrix、repair semantics、核心驗證契約 |
 | [HIERARCHICAL_RECAM.md](HIERARCHICAL_RECAM.md) | Current | hierarchical-device | WoW hierarchy、CLI、輸入、輸出與 device-level 指標 |
 | [EXPERIMENTS.md](EXPERIMENTS.md) | Current | cross-cutting | 實驗方法、可重現性、sweep、plotting、結果比較規則 |
+| [REPORTS.md](REPORTS.md) | Current | cross-cutting | `reports/` scope、run artifact 與輸出位置規則 |
 | [SRAM_RECAM_ARCHITECTURE_GUIDE.md](SRAM_RECAM_ARCHITECTURE_GUIDE.md) | Current | sram-group | SRAM-RECAM storage、search、latency、area、runtime variants |
 | [handoff/MODERATE_REPAIR_STUDY_HANDOFF.md](handoff/MODERATE_REPAIR_STUDY_HANDOFF.md) | Handoff | moderate-study | 特定研究階段的狀態、結果摘要與交接 |
+| [handoff/EXPERIMENT_WORKFLOW_HANDOFF.md](handoff/EXPERIMENT_WORKFLOW_HANDOFF.md) | Handoff | experiment-workflow | C++ core、Python runner、manifest 與 scope-first reports workflow 的交接 |
 | [archive/](archive/README.md) | Archive | historical | 已取代規格與歷史設計快照 |
 
 ## 單一真實來源規則
@@ -29,6 +31,7 @@
 - 整體 ownership 與架構邊界以 `ARCHITECTURE.md` 為準。
 - Hierarchical 專屬參數、CLI 與 CSV 欄位以 `HIERARCHICAL_RECAM.md` 為準。
 - 實驗流程與比較限制以 `EXPERIMENTS.md` 為準。
+- `reports/` 的 scope 定義與新輸出位置以 `REPORTS.md` 為準。
 - SRAM 文件中的 RECAM 基礎規則不得另立版本；該文件只補充 SRAM 特有內容。
 - Handoff 是時間點快照，不取代 Current 文件。
 - Archive 只供追溯，不可作為目前操作依據。

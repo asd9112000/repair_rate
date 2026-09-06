@@ -275,7 +275,7 @@ test_canonical_experiment: $(CANONICAL_EXPERIMENT_TEST_TARGET)
 test_canonical_sweep: $(HIERARCHICAL_RECAM_TARGET)
 	python3 tests/canonical_sweep_test.py \
 		./$(HIERARCHICAL_RECAM_TARGET) \
-		./scripts/run_canonical_four_sweep.py
+		./scripts/device/canonical_four/sweep.py
 
 test_hierarchical_fault_models: $(HIERARCHICAL_RECAM_TARGET)
 	python3 tests/hierarchical_fault_model_test.py \
@@ -293,7 +293,7 @@ test: test_recam_overflow test_recam_paper_faithful test_remap_validator test_dy
 validate_remap: $(REMAP_VALIDATOR_TARGET)
 	./$(REMAP_VALIDATOR_TARGET) \
 		$(if $(faults),$(faults),./fault_generator/faults.faults) \
-		$(if $(remap),$(remap),./reports/SharedLine_SRAM/RemapTable.txt) \
+		$(if $(remap),$(remap),./reports/legacy/sharedline_sram/RemapTable.txt) \
 		$(if $(pattern),$(pattern),)
 
 #===============================================
@@ -317,33 +317,33 @@ basic_pe_r: $(BASIC_PE_TARGET)
 	./$(BASIC_PE_TARGET) $(s) $(s) > $(REPORTDIR)/basicPEarray/basicPEarray.log
 
 rdr_r: $(RDR_TARGET)
-	@mkdir -p $(REPORTDIR)/RedundantRate
+	@mkdir -p $(REPORTDIR)/legacy/redundant_rate
 	./$(RDR_TARGET) $(s) $(s) $(if $(rptName),--rptName $(rptName)) \
-		> $(REPORTDIR)/RedundantRate/RedundantRate.log
+		> $(REPORTDIR)/legacy/redundant_rate/RedundantRate.log
 
 sl_r: $(SL_TARGET)
-	@mkdir -p $(REPORTDIR)/SharedLine
-	./$(SL_TARGET) $(s) $(s) > $(REPORTDIR)/SharedLine/SharedLine.log
+	@mkdir -p $(REPORTDIR)/legacy/sharedline
+	./$(SL_TARGET) $(s) $(s) > $(REPORTDIR)/legacy/sharedline/SharedLine.log
 
 sl_sram_r: $(SL_SRAM_TARGET)
-	@mkdir -p $(REPORTDIR)/SharedLine_SRAM
+	@mkdir -p $(REPORTDIR)/legacy/sharedline_sram
 	./$(SL_SRAM_TARGET) $(s) $(s) \
 		$(if $(paperCamReuse),--paper-cam-reuse,$(if $(buffer),--buffer $(buffer),)) \
-		> $(REPORTDIR)/SharedLine_SRAM/SharedLine_SRAM.log
+		> $(REPORTDIR)/legacy/sharedline_sram/SharedLine_SRAM.log
 
 dynamic_sharing_r: $(DYNAMIC_SHARING_TARGET)
 	./$(DYNAMIC_SHARING_TARGET) 2 2 \
 		--topology directional --shared-lines 1 --local-first \
 		--fault-count 20 --runs 10000 --seed 20260820 \
 		--hybrid-cam-entry-width-bits 64 \
-		--output-dir reports/dynamic_spare_sharing
+		--output-dir reports/group/dynamic_spare_sharing
 
 dynamic_sram_recam_r: $(DYNAMIC_SRAM_RECAM_TARGET)
 	./$(DYNAMIC_SRAM_RECAM_TARGET) 2 2 \
 		--topology directional --shared-lines 1 --local-first \
 		--fault-count 20 --runs 100 --seed 20260820 \
 		--policies serial,chunk2,chunk4,wide \
-		--output-dir reports/dynamic_sram_recam
+		--output-dir reports/group/sram_recam
 
 hierarchical_recam_r: $(HIERARCHICAL_RECAM_TARGET)
 	./$(HIERARCHICAL_RECAM_TARGET) 2 2 \
@@ -353,30 +353,30 @@ hierarchical_recam_r: $(HIERARCHICAL_RECAM_TARGET)
 		--bira-engines 1 \
 		--data-word-bits 16 \
 		--cam-granularity word \
-		--output-dir reports/hierarchical_recam
+		--output-dir reports/device/hierarchical_recam
 
 
 #================================================
 # Script targets
 # ===============================================
 analyze_spareline: $(SL_TARGET) $(FAULT_GENERATOR_TARGET)
-	@./scripts/analyze_SpareLine.sh
+	@./scripts/legacy/sharedline/sweep.sh
 
 analyze_spareline_sram:
-	@./scripts/analyze_SpareLine_SRAM.sh \
+	@./scripts/legacy/sharedline_sram/sweep.sh \
 		$(if $(buffer),--buffer $(buffer),) \
 		$(if $(paperCamReuse),--paper-cam-reuse,) \
 		$(ARGS)
 
 analyze_redundantrate: $(RDR_TARGET) $(FAULT_GENERATOR_TARGET)
-	@./scripts/analyze_RedundantRate.sh
+	@./scripts/legacy/redundant_rate/sweep.sh
 
 
 sim_DynamicSpareSharing: $(DYNAMIC_SHARING_TARGET)
-	@./scripts/sim_DynamicSpareSharing.sh $(ARGS)
+	@./scripts/group/dynamic_spare_sharing/sweep.sh $(ARGS)
 
 generate_DynamicSpareSharing_table_gallery:
-	@./scripts/generate_DynamicSpareSharing_table_gallery.sh
+	@./scripts/group/dynamic_spare_sharing/generate_table_gallery.sh
 
 sim_DynamicSpareSharing_SRAM_RECAM: $(DYNAMIC_SRAM_RECAM_TARGET)
-	@./scripts/sim_DynamicSpareSharing_SRAM_RECAM.sh $(ARGS)
+	@./scripts/group/sram_recam/sweep.sh $(ARGS)

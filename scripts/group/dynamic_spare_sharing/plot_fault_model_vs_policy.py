@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plot fault-model versus sharing-policy galleries from summary CSVs."""
+"""Plot group-level fault-model versus sharing-policy galleries from CSVs."""
 
 from __future__ import annotations
 

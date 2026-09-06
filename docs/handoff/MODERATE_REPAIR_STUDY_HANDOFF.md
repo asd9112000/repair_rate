@@ -3,7 +3,7 @@
 > 文件狀態：Handoff
 > 適用範圍：cross-cutting / moderate-study
 > 建立時間：Unknown
-> 最後修改時間：2026-09-02T00:00:00+08:00
+> 最後修改時間：2026-09-07T00:00:00+08:00
 > 本文件權威主題：moderate study 的階段性狀態、結果摘要與後續交接
 > 注意：本文件是時間點快照，不取代架構與行為規格
 
@@ -29,7 +29,7 @@ agent 不需要重新推導實驗意圖，即可：
 結果位於：
 
 ```text
-reports/moderate_repair_study/{smoke,screen,confirm}/
+reports/studies/moderate_repair/{smoke,screen,confirm}/
 ```
 
 ## 2. 研究目的
@@ -109,7 +109,7 @@ global_m1
 Confirm 不重新執行已淘汰的 policy，而是讀取 screen 的：
 
 ```text
-reports/moderate_repair_study/screen/selected_policies.json
+reports/studies/moderate_repair/screen/selected_policies.json
 ```
 
 本次選擇結果：
@@ -192,9 +192,9 @@ bits 宣稱為 PDK/foundry macro area。
 | 檔案 | 責任 |
 |---|---|
 | `experiments/moderate_repair_study.json` | axes、profiles、policies 與固定 geometry |
-| `scripts/run_moderate_repair_study.py` | build、執行 point、policy selection、呼叫 collector/plotter |
-| `scripts/collect_moderate_repair_results.py` | 合併 CSV、計算 spare cost、執行跨 backend invariant checks |
-| `scripts/plot_moderate_repair_study.py` | 分開產生 group、SRAM、device PNG/PDF |
+| `scripts/device/moderate_repair_study/run.py` | build、執行 point、policy selection、呼叫 collector/plotter |
+| `scripts/device/moderate_repair_study/collect.py` | 合併 CSV、計算 spare cost、執行跨 backend invariant checks |
+| `scripts/device/moderate_repair_study/plot.py` | 分開產生 group、SRAM、device PNG/PDF |
 | `HierarchicalRECAM.cpp` | moderate/mixed CLI、canonical B0–B3、fault corpus 輸出 |
 | `src/DynamicFaultGenerator.cpp` | 共用 deterministic fault generator 與 2:4:5:9 weights |
 | `tests/hierarchical_fault_model_test.py` | corpus determinism、reload 與 B0/B2、B1/B3 regression |
@@ -291,40 +291,40 @@ Collector 在產生 `combined/` 前強制檢查：
 
 ```bash
 # 建置 + 小型流程驗證
-python3 scripts/run_moderate_repair_study.py --profile smoke
+python3 scripts/device/moderate_repair_study/run.py --profile smoke
 
 # 全 policy screen
-python3 scripts/run_moderate_repair_study.py --profile screen
+python3 scripts/device/moderate_repair_study/run.py --profile screen
 
 # 三 seeds confirm，只保留 no-sharing 與 screen 前兩名
-python3 scripts/run_moderate_repair_study.py --profile confirm \
+python3 scripts/device/moderate_repair_study/run.py --profile confirm \
   --selection-from \
-  reports/moderate_repair_study/screen/selected_policies.json
+  reports/studies/moderate_repair/screen/selected_policies.json
 ```
 
 若 binary 已存在，可加 `--no-build`。目前三個標準 output directory 已存在；再次
 執行請指定新目錄，例如：
 
 ```bash
-python3 scripts/run_moderate_repair_study.py --profile confirm \
+python3 scripts/device/moderate_repair_study/run.py --profile confirm \
   --selection-from \
-  reports/moderate_repair_study/screen/selected_policies.json \
-  --output-dir reports/moderate_repair_study/confirm_rerun
+  reports/studies/moderate_repair/screen/selected_policies.json \
+  --output-dir reports/studies/moderate_repair/confirm_rerun
 ```
 
 ### 7.2 只重新彙整
 
 ```bash
-python3 scripts/collect_moderate_repair_results.py \
-  reports/moderate_repair_study/confirm
+python3 scripts/device/moderate_repair_study/collect.py \
+  reports/studies/moderate_repair/confirm
 ```
 
 ### 7.3 只重新繪圖
 
 ```bash
-python3 scripts/plot_moderate_repair_study.py \
-  reports/moderate_repair_study/confirm/combined \
-  --output-dir reports/moderate_repair_study/confirm/plots
+python3 scripts/device/moderate_repair_study/plot.py \
+  reports/studies/moderate_repair/confirm/combined \
+  --output-dir reports/studies/moderate_repair/confirm/plots
 ```
 
 ### 7.4 驗證
@@ -341,7 +341,7 @@ make test_canonical_sweep
 ## 8. Output schema 與目錄
 
 ```text
-reports/moderate_repair_study/<profile>/
+reports/studies/moderate_repair/<profile>/
 ├── run_config.json
 ├── selected_policies.json
 ├── group/<point>/

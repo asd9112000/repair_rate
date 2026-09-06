@@ -7,7 +7,7 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/.." && pwd)
+PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/../../.." && pwd)
 cd "${PROJECT_ROOT}"
 SIMULATOR_RELATIVE="build/bin/DynamicSpareSharing"
 SIMULATOR="${PROJECT_ROOT}/${SIMULATOR_RELATIVE}"
@@ -37,7 +37,7 @@ RUN_ID=""
 
 usage() {
     cat <<'EOF'
-Usage: scripts/sim_DynamicSpareSharing.sh [options]
+Usage: scripts/group/dynamic_spare_sharing/sweep.sh [options]
 
 Sweep options:
   --fault-min N          First total A/B/C/D fault count (default: 16)
@@ -61,7 +61,7 @@ Experiment definition:
 
 Output/control:
   --output-dir DIR       Explicit run root; must not already exist
-  --run-id NAME          Name under reports/dynamic_spare_sharing/
+  --run-id NAME          Name under reports/group/dynamic_spare_sharing/
   --keep-run-details     Also retain attempts.csv and runs.csv
   --no-build             Use the existing build/bin/DynamicSpareSharing
   -h, --help             Show this help
@@ -256,7 +256,7 @@ if [[ -z ${OUTPUT_DIR} ]]; then
     if [[ -z ${RUN_ID} ]]; then
         RUN_ID="$(date -u +%Y%m%dT%H%M%SZ)_layout_${GROUP_LAYOUT}_${FAULT_MODEL}_${STORAGE_MODE}_f${FAULT_MIN}-${FAULT_MAX}_step${FAULT_STEP}_s${SPARE_MIN}-${SPARE_MAX}_seed${SEED}"
     fi
-    RUN_ROOT="${PROJECT_ROOT}/reports/dynamic_spare_sharing/${RUN_ID}"
+    RUN_ROOT="${PROJECT_ROOT}/reports/group/dynamic_spare_sharing/${RUN_ID}"
 elif [[ ${OUTPUT_DIR} == /* ]]; then
     RUN_ROOT=${OUTPUT_DIR}
 else
@@ -358,7 +358,7 @@ echo "  Output:      ${RUN_ROOT}"
 
 "${SIMULATOR}" "${SIMULATOR_ARGS[@]}" 2>&1 | tee "${SIMULATION_LOG}"
 
-python3 scripts/plot_dynamic_repair_rate_sweep.py \
+python3 scripts/group/dynamic_spare_sharing/plot_sweep.py \
     "${RAW_DIR}/summary.csv" \
     --output-dir "${PLOTS_DIR}" \
     --plot-data-dir "${PLOT_DATA_DIR}" \
