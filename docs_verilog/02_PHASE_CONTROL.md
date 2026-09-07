@@ -36,6 +36,8 @@ Allowed:
 
 Required documents:
 
+PHASE_STATUS.md
+
 03_DSS_2X2_SPEC.md
 
 04_RECAM_SPEC.md
@@ -50,7 +52,7 @@ Required documents:
 
 09_ASSUMPTIONS.md
 
-10_DECISION_LOG.md
+DECISION_LOG.md
 
 Forbidden:
 

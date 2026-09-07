@@ -42,6 +42,9 @@ void printUsage(const char *program)
         << "  --seed N                 Deterministic generation seed\n"
         << "  --output-dir PATH        CSV directory (default: reports/dynamic_spare_sharing)\n"
         << "  --write-remap-tables     Also write RemapTable.txt and RemapTable_simplified.txt\n"
+        << "  --runtime-repair-storage cam|sram-serial|sram-chunked:N|sram-wide\n"
+        << "  --runtime-registered-search --runtime-data-read-cycles N\n"
+        << "  --runtime-data-write-cycles N --runtime-mux-cycles N\n"
         << "  --summary-only           Write summary.csv without attempts/runs CSV\n"
         << "  --sweep                  Run models x topologies x shared=0,1,2\n"
         << "  --repair-rate-sweep      Sweep fault count x symmetric Rs=Cs\n"
@@ -466,6 +469,7 @@ int main(int argc, char *argv[])
         bool fixedBufferSpecified = false;
         bool paperCamReuseSpecified = false;
         bool writeRemapTables = false;
+        dynamic_spare::RuntimeRepairLatencyConfig runtimeRepair;
         std::optional<std::uint64_t> sweepFaultMin;
         std::optional<std::uint64_t> sweepFaultMax;
         std::optional<std::uint64_t> sweepFaultStep;
@@ -489,6 +493,36 @@ int main(int argc, char *argv[])
             else if (option == "--output-dir") outputDirectory = requireValue();
             else if (option == "--write-remap-tables")
                 writeRemapTables = true;
+            else if (option == "--runtime-repair-storage")
+            {
+                const std::string value = requireValue();
+                if (value == "cam")
+                    runtimeRepair.storage = dynamic_spare::RuntimeRepairStorage::Cam;
+                else if (value == "sram-serial")
+                    runtimeRepair.storage = dynamic_spare::RuntimeRepairStorage::SramSerial;
+                else if (value == "sram-wide")
+                    runtimeRepair.storage = dynamic_spare::RuntimeRepairStorage::SramWide;
+                else if (value.rfind("sram-chunked:", 0) == 0)
+                {
+                    runtimeRepair.storage = dynamic_spare::RuntimeRepairStorage::SramChunked;
+                    const std::uint64_t parallelism = parseUint64(
+                        value.substr(std::string("sram-chunked:").size()), option);
+                    if (parallelism > std::numeric_limits<std::uint32_t>::max())
+                        throw std::invalid_argument(option + " parallelism is too large");
+                    runtimeRepair.sramParallelism =
+                        static_cast<std::uint32_t>(parallelism);
+                }
+                else
+                    throw std::invalid_argument("Unknown runtime repair storage: " + value);
+            }
+            else if (option == "--runtime-registered-search")
+                runtimeRepair.registeredSearch = true;
+            else if (option == "--runtime-data-read-cycles")
+                runtimeRepair.sramDataReadCycles = parseUint64(requireValue(), option);
+            else if (option == "--runtime-data-write-cycles")
+                runtimeRepair.sramDataWriteCycles = parseUint64(requireValue(), option);
+            else if (option == "--runtime-mux-cycles")
+                runtimeRepair.sramMuxCycles = parseUint64(requireValue(), option);
             else if (option == "--runs")
             {
                 config.simulationRuns = parseUint64(requireValue(), option);
@@ -1061,13 +1095,15 @@ int main(int argc, char *argv[])
                         outputDirectory / "RemapTable_simplified.txt",
                         config,
                         groups,
-                        batch.runs);
+                        batch.runs,
+                        runtimeRepair);
                 std::cout
                     << "RemapTables: success_groups="
                     << remapSummary.successfulGroups
                     << " failed_groups=" << remapSummary.failedGroups
                     << " map_entries=" << remapSummary.lineMappings
                     << " buffmap_entries=" << remapSummary.bufferMappings
+                    << " runtime_entries=" << remapSummary.runtimeRepairEntries
                     << '\n';
             }
             emitBatch(std::move(batch), false);

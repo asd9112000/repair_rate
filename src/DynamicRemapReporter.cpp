@@ -1,6 +1,8 @@
 #include "../inc/DynamicRemapReporter.hpp"
 
+#include <algorithm>
 #include <fstream>
+#include <map>
 #include <optional>
 #include <stdexcept>
 #include <tuple>
@@ -11,6 +13,15 @@ namespace
 {
 
 using GroupIdentity = std::tuple<int, int, int, int>;
+using RuntimeEntryKey = std::tuple<std::size_t, int, int, int, int, int, int, int>;
+
+struct RuntimeEntryProfile
+{
+    std::size_t slot = 0;
+    std::uint64_t searchRounds = 0;
+    std::uint64_t readHitCycles = 0;
+    std::uint64_t writeHitCycles = 0;
+};
 
 std::ofstream openOutput(const std::filesystem::path &path)
 {
@@ -72,6 +83,100 @@ void writeBufferMapping(
         << mapping.latency << '\n';
 }
 
+RuntimeEntryKey runtimeKey(
+    std::size_t pattern,
+    const BufferRepairMapping &mapping)
+{
+    return {pattern, mapping.HBMID, mapping.ChannelID, mapping.BankID,
+            mapping.SubarrayGroupID, mapping.SubarrayID, mapping.sourceRow,
+            mapping.sourceColumn};
+}
+
+std::map<RuntimeEntryKey, RuntimeEntryProfile> assignRuntimeProfiles(
+    const std::vector<GroupRepairResult> &results,
+    const RuntimeRepairLatencyConfig &config)
+{
+    std::map<RuntimeEntryKey, RuntimeEntryProfile> profiles;
+    for (std::size_t pattern = 0; pattern < results.size(); ++pattern)
+    {
+        const GroupRepairResult &group = results[pattern];
+        if (!group.groupRepairSuccess)
+            continue;
+        for (const auto &candidate : group.selectedCandidateOptions)
+        {
+            if (!candidate.has_value())
+                continue;
+            for (const BufferRepairMapping &mapping : candidate->bufferMappings)
+                profiles.emplace(runtimeKey(pattern, mapping), RuntimeEntryProfile{});
+        }
+    }
+
+    std::size_t nextSlot = 0;
+    std::size_t currentPattern = static_cast<std::size_t>(-1);
+    std::size_t patternEntries = 0;
+    for (auto &entry : profiles)
+    {
+        const std::size_t pattern = std::get<0>(entry.first);
+        if (pattern != currentPattern)
+        {
+            currentPattern = pattern;
+            nextSlot = 0;
+            patternEntries = 0;
+            for (const auto &candidate : profiles)
+                if (std::get<0>(candidate.first) == pattern)
+                    ++patternEntries;
+        }
+        RuntimeEntryProfile &profile = entry.second;
+        profile.slot = nextSlot++;
+        if (config.storage == RuntimeRepairStorage::Cam)
+        {
+            profile.searchRounds = 1;
+            profile.readHitCycles = config.camReadHitCycles;
+            profile.writeHitCycles = config.camWriteHitCycles;
+            continue;
+        }
+        const std::size_t parallelism =
+            config.storage == RuntimeRepairStorage::SramWide
+                ? std::max<std::size_t>(1, patternEntries)
+                : config.sramParallelism;
+        profile.searchRounds = profile.slot / parallelism + 1;
+        const std::uint64_t searchCycles = profile.searchRounds *
+            (config.registeredSearch ? 2U : 1U);
+        profile.readHitCycles = searchCycles + config.sramDataReadCycles +
+            config.sramMuxCycles;
+        profile.writeHitCycles = searchCycles + config.sramDataWriteCycles;
+    }
+    return profiles;
+}
+
+void writeRuntimeManifest(
+    const std::filesystem::path &path,
+    const std::map<RuntimeEntryKey, RuntimeEntryProfile> &profiles,
+    const RuntimeRepairLatencyConfig &config)
+{
+    std::ofstream output = openOutput(path);
+    output << "# RUNTIME_REPAIR_TABLE_V1\n"
+           << "# Scope: independent 4-SA group per pattern; slots reset per pattern.\n"
+           << "# BUFFMAP latency is runtime_read_hit_latency_cycles.\n"
+           << "pattern_id,HBMID,ChannelID,BankID,SubarrayGroupID,SubarrayID,row,column,"
+              "backend,slot,search_rounds,read_hit_latency_cycles,"
+              "write_hit_latency_cycles\n";
+    for (const auto &entry : profiles)
+    {
+        const auto &[pattern, hbm, channel, bank, group, subarray, row, column] =
+            entry.first;
+        const RuntimeEntryProfile &profile = entry.second;
+        output << pattern << ',' << hbm << ',' << channel << ',' << bank << ','
+               << group << ',' << subarray << ',' << row << ',' << column << ','
+               << toString(config.storage) << ',' << profile.slot << ','
+               << profile.searchRounds << ',' << profile.readHitCycles << ','
+               << profile.writeHitCycles << '\n';
+    }
+    if (!output)
+        throw std::runtime_error("Failed while writing runtime repair manifest: " +
+                                 path.string());
+}
+
 void writeFailure(
     std::ostream &output,
     const GroupIdentity &identity)
@@ -86,12 +191,31 @@ void writeFailure(
 
 } // namespace
 
+const char *toString(RuntimeRepairStorage storage) noexcept
+{
+    switch (storage)
+    {
+        case RuntimeRepairStorage::Cam: return "cam";
+        case RuntimeRepairStorage::SramSerial: return "sram_serial";
+        case RuntimeRepairStorage::SramChunked: return "sram_chunked";
+        case RuntimeRepairStorage::SramWide: return "sram_wide";
+    }
+    return "unknown";
+}
+
+void RuntimeRepairLatencyConfig::validate() const
+{
+    if (storage == RuntimeRepairStorage::SramChunked && sramParallelism == 0)
+        throw std::invalid_argument("SRAM chunked runtime parallelism must be positive");
+}
+
 RemapWriteSummary DynamicRemapReporter::write(
     const std::filesystem::path &fullPath,
     const std::filesystem::path &simplifiedPath,
     const SimulationConfig &config,
     const std::vector<FaultGroup> &faultGroups,
-    const std::vector<GroupRepairResult> &results)
+    const std::vector<GroupRepairResult> &results,
+    const RuntimeRepairLatencyConfig &runtimeConfig)
 {
     if (faultGroups.size() != results.size())
     {
@@ -99,6 +223,8 @@ RemapWriteSummary DynamicRemapReporter::write(
             "Remap reporter requires one result per fault group");
     }
 
+    runtimeConfig.validate();
+    const auto runtimeProfiles = assignRuntimeProfiles(results, runtimeConfig);
     std::ofstream full = openOutput(fullPath);
     std::ofstream simplified = openOutput(simplifiedPath);
     const bool bufferDisabled =
@@ -123,6 +249,8 @@ RemapWriteSummary DynamicRemapReporter::write(
     }
     full
         << "# HYBRID_OVERFLOW_TO_BUFFER_EXTENSION 0\n"
+        << "# BUFFMAP_LATENCY_SEMANTICS RUNTIME_READ_HIT_RESPONSE_CYCLES\n"
+        << "# RUNTIME_REPAIR_BACKEND " << toString(runtimeConfig.storage) << "\n"
         << "# GROUP_LAYOUT " << toString(config.layout) << "\n"
         << "# DYNAMIC_POLICY " << toString(config.topology) << "\n"
         << "# OPTION <pattern_id> <option_id> <config_index>\n"
@@ -207,8 +335,13 @@ RemapWriteSummary DynamicRemapReporter::write(
             for (const BufferRepairMapping &mapping :
                  candidate.bufferMappings)
             {
-                writeBufferMapping(full, mapping);
-                writeBufferMapping(simplified, mapping);
+                BufferRepairMapping timed = mapping;
+                const auto profile = runtimeProfiles.find(runtimeKey(pattern, mapping));
+                if (profile == runtimeProfiles.end())
+                    throw std::logic_error("Selected BUFFMAP has no runtime profile");
+                timed.latency = static_cast<int>(profile->second.readHitCycles);
+                writeBufferMapping(full, timed);
+                writeBufferMapping(simplified, timed);
                 ++summary.bufferMappings;
             }
             full << "END_PE\n";
@@ -221,6 +354,9 @@ RemapWriteSummary DynamicRemapReporter::write(
     {
         throw std::runtime_error("Failed while writing dynamic remap output");
     }
+    writeRuntimeManifest(fullPath.parent_path() / "RuntimeRepairTable.csv",
+                         runtimeProfiles, runtimeConfig);
+    summary.runtimeRepairEntries = runtimeProfiles.size();
     return summary;
 }
 

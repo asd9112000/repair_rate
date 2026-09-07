@@ -2339,6 +2339,12 @@ runtime_miss_rounds
 runtime_latency_avg
 runtime_extra_latency_avg
 
+For remap-table experiments, `DynamicSpareSharing` additionally emits a
+`RuntimeRepairTable.csv` next to `RemapTable.txt`.  Its per-entry fixed slot,
+search rounds, read-hit latency, and write-hit latency make the runtime path
+auditable.  The `BUFFMAP` latency field itself remains read-hit response
+latency so that the established remap grammar and coverage tools remain valid.
+
 row_comparator_count
 column_comparator_count
 runtime_comparator_count

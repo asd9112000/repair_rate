@@ -200,6 +200,27 @@ HBMID ChannelID BankID SubarrayGroupID SubarrayID Row Col
 另產生 `RemapTable.txt` 與 `RemapTable_simplified.txt`。Remap output 只允許單一
 policy configuration，不可與 `--sweep` 或 `--repair-rate-sweep` 同時使用。
 
+`BUFFMAP` 的最後一欄是 runtime **read-hit response** latency。執行器另會寫入
+`RuntimeRepairTable.csv`，保存每個 exact-address entry 的 backend、固定 slot、
+search rounds、read-hit 與 write-hit latency。例如以 two-entry chunked SRAM
+runtime table 建模：
+
+```bash
+./build/bin/DynamicSpareSharing 2 2 \
+  --simplified-fault-file fault_generator/faults_simplified.faults \
+  --topology edge --shared-lines 1 --local-first \
+  --write-remap-tables \
+  --runtime-repair-storage sram-chunked:2 \
+  --runtime-data-read-cycles 0 --runtime-data-write-cycles 1 \
+  --runtime-mux-cycles 1 \
+  --output-dir reports/group/dynamic_spare_sharing/runtime_sram
+```
+
+`sram-serial`、`sram-chunked:N`、`sram-wide` 與 `cam` 可選；
+`--runtime-registered-search` 將一個 SRAM search round 從 abstract 1 cycle 改為
+read + compare 的 2 cycles。這份 group-level manifest 的 slot 每個 pattern 重設，
+不可解讀為 hierarchical device-wide online pool 的最終 placement。
+
 ## 5. SRAM-RECAM policy comparison
 
 ```bash

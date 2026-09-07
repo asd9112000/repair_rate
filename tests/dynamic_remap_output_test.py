@@ -112,6 +112,56 @@ def verify_simplified_input_and_buffer_maps(
             raise AssertionError("coverage validator rejected dynamic remap output")
 
 
+def verify_runtime_sram_manifest(simulator: Path) -> None:
+    with tempfile.TemporaryDirectory(prefix="dynamic-remap-runtime-") as temp:
+        output = Path(temp)
+        run(
+            [
+                str(simulator),
+                "2",
+                "2",
+                "--simplified-fault-file",
+                str(SIMPLIFIED),
+                "--topology",
+                "none",
+                "--write-remap-tables",
+                "--runtime-repair-storage",
+                "sram-serial",
+                "--runtime-data-read-cycles",
+                "0",
+                "--runtime-data-write-cycles",
+                "1",
+                "--runtime-mux-cycles",
+                "1",
+                "--output-dir",
+                str(output),
+            ]
+        )
+        manifest = output / "RuntimeRepairTable.csv"
+        if not manifest.is_file():
+            raise AssertionError("runtime SRAM manifest was not written")
+        rows = [
+            line
+            for line in manifest.read_text(encoding="utf-8").splitlines()
+            if line and not line.startswith("#")
+        ]
+        expected = [
+            "0,2,3,4,5,0,4,4,sram_serial,0,1,2,2",
+            "0,2,3,4,5,1,14,14,sram_serial,1,2,3,3",
+            "0,2,3,4,5,2,24,24,sram_serial,2,3,4,4",
+            "0,2,3,4,5,3,34,34,sram_serial,3,4,5,5",
+        ]
+        if rows[1:] != expected:
+            raise AssertionError("runtime SRAM slot or read/write latency changed")
+        buffmaps = [
+            line
+            for line in records(output / "RemapTable.txt")
+            if line.startswith("BUFFMAP ")
+        ]
+        if [line.rsplit(" ", 1)[1] for line in buffmaps] != ["2", "3", "4", "5"]:
+            raise AssertionError("BUFFMAP did not expose runtime read-hit latency")
+
+
 def verify_integrated_generator_remains_available(simulator: Path) -> None:
     with tempfile.TemporaryDirectory(prefix="dynamic-remap-generated-") as temp:
         output = Path(temp)
@@ -230,6 +280,7 @@ def main() -> None:
     simulator = Path(sys.argv[1]).resolve()
     validator = Path(sys.argv[2]).resolve()
     verify_simplified_input_and_buffer_maps(simulator, validator)
+    verify_runtime_sram_manifest(simulator)
     verify_integrated_generator_remains_available(simulator)
     verify_group_selected_sharing_remap(simulator, validator)
     verify_compressed_group_remap(simulator, validator)

@@ -294,3 +294,32 @@ analysis_cycles
 hardware project 的主要任務是：
 
 量化 implementation cost，而不是重新設計 repair algorithm。
+
+---
+
+# 12. Repository Boundary
+
+RTL hardware work 與既有 C++ system-level simulation 使用不同的 source、test、
+script 與 output boundaries：
+
+```text
+C++ simulation
+├── *.cpp, inc/, src/, tests/, fault_generator/
+├── scripts/legacy/, scripts/group/, scripts/device/
+└── reports/
+
+RTL hardware work
+├── rtl/
+├── tb/
+├── scripts/lint/, scripts/simulation/, scripts/synthesis/
+├── scripts/sweep.py, scripts/parse_reports.py
+└── results/
+```
+
+`scripts/simulation/` 專指 HDL/RTL simulation automation；既有 C++ simulator 的
+runner 不得搬入該目錄。`results/` 專收 RTL synthesis 與 RTL cycle-accurate
+verification 結果；C++ architecture／repair-rate simulation 仍輸出至 `reports/`。
+
+兩條流程只透過明確版本化的 fault trace、golden output 或 CSV schema 交換資料。
+RTL 不得直接修改 C++ repair semantics，C++ analytical cycle／area proxy 也不得寫入
+RTL `results/` 冒充 synthesis 或 cycle-accurate RTL measurement。

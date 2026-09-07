@@ -142,6 +142,13 @@ legacy/group-level 結果。舊結果若曾把 CAM capacity 對每個 SA 或 gro
 ├── fault_generator/      # fault 產生與格式說明
 ├── scripts/              # batch experiment scripts
 ├── docs/                 # 目前文件、handoff 與 archive
+├── docs_verilog/         # RTL project contract、phase status 與 decision log
+├── rtl/                  # synthesizable RTL；與 C++ simulator source 隔離
+├── tb/                   # RTL testbench；不屬於 C++ tests/
 ├── build/                # 可重建產物；make clean 會移除
-└── reports/              # 實驗輸出；make clean 不會移除
+├── reports/              # C++ simulation 實驗輸出；make clean 不會移除
+└── results/              # RTL synthesis／cycle-accurate verification 輸出
 ```
+
+RTL workspace 的完整邊界與命名以
+[`docs_verilog/00_PROJECT_MASTER.md`](../docs_verilog/00_PROJECT_MASTER.md) 為準。

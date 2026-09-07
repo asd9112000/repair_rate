@@ -302,3 +302,19 @@ SRAM comparator parallelism P：
 RS / CS sweep 應依 DATE architecture 實際設定決定。
 
 不要在 architecture 尚未 functional-verified 前進行大規模 sweep。
+
+---
+
+# 16. Simulation / RTL Artifact Boundary
+
+比較資料必須保留來源類型：
+
+- C++ system-level simulation source、runner 與輸出分別位於既有 simulator path、
+  `scripts/{legacy,group,device}/` 與 `reports/`。
+- RTL source、testbench、automation 與輸出分別位於 `rtl/`、`tb/`、
+  `scripts/{lint,simulation,synthesis}/` 與 `results/`。
+- C++ simulator 可作為 RTL functional golden model，但必須以固定 fault trace 與明確
+  schema 交換資料，不得讓兩者共用未版本化的內部狀態。
+- `reports/` 中的 analytical area／latency proxy 不得填入 `results/` 的 synthesis 或
+  RTL cycle 欄位；回灌 simulator 的 RTL 數值必須能追溯到 configuration、tool、
+  library、constraint、RTL commit 與原始 log。

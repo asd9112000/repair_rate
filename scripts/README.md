@@ -1,6 +1,7 @@
 # Scripts 使用說明
 
-`scripts/` 收錄本專案的批次 simulation 與結果繪圖工具。建議從專案根目錄
+`scripts/` 收錄本專案的 C++ system-level simulation 工具，以及彼此隔離的 RTL
+automation 入口。建議從專案根目錄
 `/home/asd9112000/repair_rate` 執行以下指令，避免相對路徑指向錯誤。
 
 工具依硬體 resource scope 分類；不要跨 `legacy`、`group`、`device` 的目錄合併
@@ -9,10 +10,17 @@ repair-rate 結果。輸出 scope 定義與新 run 的目錄規則以
 
 ```text
 scripts/
-├── legacy/                 # Legacy paper / fixed-sharing experiments
-├── group/                  # Single 4-SA group experiments
-└── device/                 # Hierarchical device-level experiments
+├── legacy/                 # C++ legacy paper / fixed-sharing experiments
+├── group/                  # C++ single 4-SA group experiments
+├── device/                 # C++ hierarchical device-level experiments
+├── lint/                   # RTL lint automation
+├── simulation/             # HDL/RTL simulation automation only
+└── synthesis/              # RTL synthesis and constraints
 ```
+
+C++ simulation output 一律寫入 `reports/`；RTL synthesis 與 cycle-accurate RTL
+simulation output 一律寫入 `results/`。`scripts/simulation/` 的名稱不代表既有 C++
+simulator runner，既有 runner 仍按 `legacy`、`group`、`device` 分類。
 
 ## 環境需求
 

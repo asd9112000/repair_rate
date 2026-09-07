@@ -1530,9 +1530,28 @@ BUFFMAP <HBMID> <ChannelID> <BankID> <SubarrayGroupID> <SubarrayID>
 `BUFFMAP` covers exactly one address: all seven address fields must match.  It
 does not consume a spare row/column and has no `new_address`, because online
 CAM reuse serves data through Address CAM, Hybrid CAM, and the output MUX
-(Figs. 11–13).  The implementation uses 3 cycles as the conservative endpoint
-of the paper's reported 2–3-cycle online CAM path (Sec. IV-D).  This latency is
+(Figs. 11–13).  The `latency` field is specifically the **runtime read-hit
+response latency**, not BIRA collection time and not runtime write latency.
+The default CAM backend uses 3 cycles as the conservative endpoint of the
+paper's reported 2–3-cycle online CAM path (Sec. IV-D).  This latency is
 distinct from the simulator's project-specific spare-line latency.
+
+When `DynamicSpareSharing --write-remap-tables` is used, the adjacent
+`RuntimeRepairTable.csv` records the immutable runtime placement and both
+operations without changing this established `BUFFMAP` grammar:
+
+```text
+pattern_id,...,backend,slot,search_rounds,
+runtime_read_hit_latency_cycles,runtime_write_hit_latency_cycles
+```
+
+For group-level output each pattern is an independent 4-SA experiment, so slot
+numbering starts at zero for each pattern.  CAM entries use fixed configured
+read/write hit cycles.  SRAM serial/chunked/wide entries are sorted by complete
+physical address before assigning their fixed slot; their read/write hit
+latency is derived from that slot's search rounds.  This manifest does not
+model a device-wide SRAM/CAM directory; that ownership requires the
+hierarchical path.
 
 Remap generation must preserve physical address provenance for every logical
 matrix row and column:
