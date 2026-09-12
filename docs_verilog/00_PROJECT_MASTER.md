@@ -1,8 +1,23 @@
 # WoW 3D DRAM Repair Analyzer RTL Project
 
+> Current project-level authority for RTL scope.  The detailed Phase 2
+> implementation record for the 2×2 Directional Multi-Config Analyzer is
+> [03_ANALYZER_RTL_HANDOFF.md](03_ANALYZER_RTL_HANDOFF.md).  Phase 3 execution
+> authority is instead governed by [02_PHASE_CONTROL.md](02_PHASE_CONTROL.md).
+
 ## 1. Project Goal
 
 本專案目標是透過 synthesizable SystemVerilog 與統一 ASIC synthesis methodology，建立 memory repair analyzer 的硬體成本模型。
+
+## Frozen Phase 3 address boundary
+
+For the active Phase 3 RECAM/DSS analyzer work, the authoritative RTL address
+boundary is [PHASE3B_ANALYZER_INTERFACE.md](PHASE3B_ANALYZER_INTERFACE.md):
+`Domain[2:0] + Bank[1:0] + Group[5:0] + SA[1:0] + Row[8:0] +
+ColumnWord[4:0] = 27` bits. RECAM Channel is the 13-bit
+`Domain+Bank+Group+SA` prefix. This analyzer address interface is distinct from
+the C++ simulator's physical-cell geometry and does not authorize synthesis or
+Phase 3C.
 
 主要比較三種 architecture：
 
@@ -31,7 +46,45 @@
 
 # 2. Architecture Priority
 
-## Primary Architecture — DATE
+## Primary Architecture — Phase 3 Analyzer-Area Decomposition
+
+The Phase 2 Directional Multi-Config implementation is frozen historical
+evidence.  It remains reproducible, but it is not the primary architecture for
+new analyzer-area comparisons and must not be deleted, refactored, or subjected
+to further timing optimization.
+
+The current research order is:
+
+1. RECAM 2R2C analyzer area: CAM logical state → matrix → `PatternID`.
+2. One shared DSS multi-config analyzer, with configuration-serial and
+   pattern-parallel operation.
+3. EARLY selector overhead.
+4. GROUP_COMPRESSED local policy, then separately `PhysicalResourceLedger`
+   overhead.
+
+Phase 3D remains at its authorized EARLY-only boundary: it is a combinational
+selector after the complete four-config Phase 3C map, not early-stop scheduling.
+Its accepted 20 ns integrated synthesis closes at 73,533.399055 area and
+7,368.67 GE, a +1.7210% area increment over Phase 3C. It does not authorize
+PhysicalResourceLedger mutation or group allocation work.
+
+Phase 3E is functionally complete for GROUP_COMPRESSED only. It ranks completed
+local map entries by `2*Borrow + (1-Release)` after all four Phase 3C scans;
+it does not allocate or commit a shared spare. Its accepted 20 ns integrated
+synthesis closes at 73,693.066257 area and 7,384.67 GE, +1.9418% over Phase 3C.
+PhysicalResourceLedger mutation and group allocation remain unstarted and
+require separate authorization.
+
+Phase 3F/3G now defines only read-only ledger semantics and a single-SA
+policy-aware fallback over the completed map. Neither phase commits a release
+or borrow, arbitrates subarrays, or fixes group order; those remain Phase 3H
+research questions.
+
+The immediate target is a clean analyzer-area baseline, not a completed DSS
+top-level implementation.  Phase 3 authority and exit gates are defined in
+[02_PHASE_CONTROL.md](02_PHASE_CONTROL.md).
+
+## Historical Primary Architecture — DATE Phase 2
 
 DATE paper 的主要 Dynamic Spare Sharing architecture 為：
 
@@ -59,6 +112,27 @@ C D
 - deprecated
 - regression-only
 
+### 2.1 Frozen Phase 2 2×2 analyzer architecture
+
+The current 2×2 directional RTL study uses the **Directional Multi-Config
+Analyzer**.  It evaluates seven physical R/C resource envelopes:
+
+```text
+2R2C, 2R1C, 3R2C, 3R1C, 1R2C, 2R3C, 1R3C
+```
+
+`ConfigID` identifies that physical resource envelope.  It is distinct from
+`PatternID`, which identifies the RECAM row/column ordering within one
+configuration.  The target physical architecture shares pivot/address payload
+and physical fault counters; configuration-specific state is logical metadata,
+not a complete CAM/counter replica.  The retained 2×2 group state is therefore
+conceptually ordered `PivotPayload`, `ConfigPatternMap`, and
+`CAMReusePending`, with selected repairs staged before eFuse programming.
+
+This supersedes the earlier matrix-address plus valid-bitmap retention model
+for this **new 2×2 analyzer only**.  It does not alter legacy RECAM,
+hierarchical, or 1×4 experiment representations.
+
 ---
 
 # 3. Secondary Architecture
@@ -74,7 +148,36 @@ C D
 
 1×4 不得取代 DATE 2×2 architecture。
 
+The existing 1×4 row-only experiments remain a separate, valid research
+layout.  The 2×2 multi-config RTL architecture must not be interpreted as a
+replacement for their topology, policy, or retained-state semantics.
+
 在 2×2 RTL hardware evaluation 完成之前，不投入完整 1×4 RTL implementation。
+
+## 3.1 Phase 3 measurement decomposition
+
+Phase 3 reports must retain separate synthesis visibility for:
+
+```text
+A_RECAM_MATRIX
+A_RECAM_PATTERN
+A_RECAM_ENCODER
+A_RECAM_COMPLETE
+
+A_SHARED_CONFIG_ANALYZER
+A_CONFIG_SCHEDULER
+A_CONFIG_PATTERN_MAP
+
+A_EARLY
+
+A_GROUP_CONTROLLER
+A_RESOURCE_LEDGER
+```
+
+Do not replace this decomposition with one opaque total-area report.  Area,
+critical path, slack, and estimated Fmax are separate observations; timing
+failure does not authorize serializing RECAM candidates or changing the
+approved architecture.
 
 ---
 

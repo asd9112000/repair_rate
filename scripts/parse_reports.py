@@ -107,13 +107,46 @@ def collect_row(json_path: Path, input_root: Path) -> dict[str, str | int]:
     }
 
 
+def collect_module_breakdown(json_path: Path, input_root: Path) -> list[dict[str, str | int]]:
+    """Return direct, pre-flatten cell counts for each elaborated module."""
+    metadata = parse_metadata(json_path.parent / "metadata.txt")
+    netlist = json.loads(json_path.read_text(encoding="utf-8"))
+    rows: list[dict[str, str | int]] = []
+    for module_name, module in sorted(netlist.get("modules", {}).items()):
+        type_counts = Counter(
+            cell.get("type", "UNKNOWN") for cell in module.get("cells", {}).values()
+        )
+        rows.append(
+            {
+                "phase": metadata.get("PHASE", ""),
+                "configuration": metadata.get("CONFIGURATION", json_path.parent.name),
+                "top_module": metadata.get("TOP", ""),
+                "module": module_name,
+                "direct_cell_count": sum(type_counts.values()),
+                "cell_types": ";".join(
+                    f"{cell_type}:{count}"
+                    for cell_type, count in sorted(type_counts.items())
+                ),
+                "technology": metadata.get("TECHNOLOGY", ""),
+                "library": metadata.get("LIBRARY", ""),
+                "status": metadata.get("STATUS", "UNSPECIFIED"),
+                "source_json": str(json_path.relative_to(input_root.parent.parent)),
+            }
+        )
+    return rows
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--module-breakdown-output", type=Path)
     args = parser.parse_args()
 
-    json_paths = sorted(args.input_root.glob("*/*.json"))
+    json_paths = sorted(
+        path for path in args.input_root.glob("*/*.json")
+        if not path.name.endswith(".hierarchy.json")
+    )
     if not json_paths:
         raise SystemExit(f"no Yosys JSON reports found below {args.input_root}")
     rows = [collect_row(path, args.input_root) for path in json_paths]
@@ -126,6 +159,27 @@ def main() -> int:
         writer = csv.DictWriter(output_file, fieldnames=FIELDS)
         writer.writeheader()
         writer.writerows(rows)
+
+    if args.module_breakdown_output:
+        breakdown_paths = sorted(args.input_root.glob("*/*.hierarchy.json"))
+        if not breakdown_paths:
+            raise SystemExit("no pre-flatten hierarchy JSON reports found")
+        breakdown_rows = [
+            row
+            for path in breakdown_paths
+            for row in collect_module_breakdown(path, args.input_root)
+        ]
+        breakdown_fields = [
+            "phase", "configuration", "top_module", "module", "direct_cell_count",
+            "cell_types", "technology", "library", "status", "source_json",
+        ]
+        args.module_breakdown_output.parent.mkdir(parents=True, exist_ok=True)
+        with args.module_breakdown_output.open(
+            "w", encoding="utf-8", newline=""
+        ) as output_file:
+            writer = csv.DictWriter(output_file, fieldnames=breakdown_fields)
+            writer.writeheader()
+            writer.writerows(breakdown_rows)
     print(f"parsed {len(rows)} synthesis reports into {args.output}")
     return 0
 

@@ -42,7 +42,7 @@ python3 -m pip install -r requirements-plot.txt
 | `device/moderate_repair_study/run.py` + `collect.py` + `plot.py` | Scope-separated moderate study | JSON manifest、study root | 合併 CSV、validation、PNG/PDF |
 | `legacy/sharedline/sweep.sh` + `plot_repair_rates.py` | SharedLine repair-rate sweep 與圖表 | 固定迴圈、`repairRates.csv` | `reports/legacy/sharedline/` |
 | `legacy/sharedline_sram/sweep.sh` | SharedLine SRAM sweep；共用 SharedLine plotter | CLI 參數 | `reports/legacy/sharedline_sram/` |
-| `legacy/redundant_rate/sweep.sh` + `plot.py` | RedundantRate sweep 與趨勢圖 | 固定迴圈、CSV | `reports/legacy/redundant_rate/` |
+| `legacy/redundant_rate/sweep.sh` + `plot.py` | RedundantRate sweep 與趨勢圖 | 固定迴圈、CSV | `reports/RedundantRate/` |
 
 `__pycache__/` 是 Python 自動產生的 bytecode cache，不是需要手動執行或維護的
 script。
@@ -364,15 +364,15 @@ make analyze_redundantrate
 整理後的資料位於：
 
 ```text
-reports/legacy/redundant_rate/RedundantRate.csv
+reports/RedundantRate/RedundantRate.csv
 ```
 
 若只需重新繪圖：
 
 ```bash
 python3 scripts/legacy/redundant_rate/plot.py \
-  reports/legacy/redundant_rate/RedundantRate.csv \
-  --output-dir reports/legacy/redundant_rate/plots
+  reports/RedundantRate/RedundantRate.csv \
+  --output-dir reports/RedundantRate/plots
 ```
 
 ## 建議流程

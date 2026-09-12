@@ -1,5 +1,14 @@
 # Codex Phase Control Protocol
 
+## Multi-Config analyzer scope note
+
+For the completed Phase 2 2×2 Directional Multi-Config Analyzer, detailed
+implementation decisions in
+[03_ANALYZER_RTL_HANDOFF.md](03_ANALYZER_RTL_HANDOFF.md) remain historical
+evidence.  They do not authorize Phase 3 implementation.  In particular, Phase
+2 must not be read as authorizing per-configuration Address/Hybrid CAM
+replication or as replacing the existing separate 1×4 extension scope.
+
 ## Authority
 
 Codex 不得自行進入下一 Phase。
@@ -196,210 +205,102 @@ module area breakdown available。
 
 ---
 
-# PHASE 3 — RECAM Baseline
+# PHASE 3A — RECAM 2R2C Analyzer
 
-Implement RECAM architecture according to supplied paper.
+Implement only the fully combinational `RS=2`, `CS=2`, `K=4` analyzer path:
 
-Separate：
+```text
+CAM logical state → Matrix Builder → 4×4 matrix →
+6 parallel candidate evaluators → Pattern Encoder → PatternID
+```
 
-paper facts
+Keep separate synthesis boundaries for `A_RECAM_MATRIX`, `A_RECAM_PATTERN`,
+`A_RECAM_ENCODER`, and `A_RECAM_COMPLETE`.  The complete analyzer has an
+expected sequential-cell count of zero.  Do not serialize candidate evaluation
+or change the architecture to address timing.
 
-implementation assumptions
+Exit Gate:
 
-Do not silently optimize the baseline.
-
-Required：
-
-RECAM top
-
-fault collection storage
-
-Address CAM
-
-Hybrid CAM
-
-matrix / repair-analysis path according to available specification
-
-solution output
-
-If paper does not provide enough implementation detail：
-
-record it in 09_ASSUMPTIONS.md.
-
-Exit Gate：
-
-all implemented behavior traceable to paper or explicit assumption。
-
-functional tests PASS。
-
-synthesis PASS。
-
-module area breakdown available。
+- Functional behavior is traceable to RECAM specification or an explicit
+  assumption.
+- Matrix Builder, Pattern Analyzer, Pattern Encoder, and complete analyzer
+  have separate reports.
+- Candidate evaluation is parallel and sequential-cell count is zero.
+- Report area, critical path, slack, and estimated Fmax, whether timing passes
+  or fails.
 
 ---
 
-# PHASE 4 — 2×2 DSS SRAM/FIFO
+# PHASE 3B — Shared Multi-Config Analyzer
 
-Reuse the Phase 2 DSS repair algorithm.
+Implement one combinational Shared Config Analyzer for `2R2C`, `2R1C`,
+`3R2C`, `3R1C`, `1R2C`, `2R3C`, and `1R3C`.  Apply canonical R/C transpose
+relationships where appropriate.  Do not instantiate one complete analyzer per
+`ConfigID`; candidates within each selected `ConfigID` remain parallel.  The
+historical 40-cycle Pattern-serial architecture is not authorized for this
+workstream.
 
-Replace storage/search backend with：
+Exit Gate:
 
-FIFO
-
-SRAM-like storage
-
-P-way comparator search engine
-
-controller
-
-Do not redesign DSS repair policy.
-
-Required configurations：
-
-P = 1
-
-P = 2
-
-P = 4
-
-P = 8
-
-where legal for ENTRY_NUM.
-
-Required correctness：
-
-For identical fault input and DSS policy：
-
-DSS-CAM functional repair output
-
-must equal
-
-DSS-SRAM/FIFO functional repair output.
-
-Latency may differ.
-
-Exit Gate：
-
-functional equivalence PASS。
-
-FIFO behavior PASS。
-
-all selected P configurations PASS。
-
-synthesis PASS。
+- One `A_SHARED_CONFIG_ANALYZER` combinational datapath is structurally
+  identifiable.
+- All seven configurations produce the required `PatternID` mapping.
+- No candidate serialization or per-ConfigID complete-analyzer replication.
 
 ---
 
-# PHASE 5 — Unified Verification
+# PHASE 3C — Serial Config Analysis Engine
 
-Build common regression.
+Add sequential control around, but not inside, the Shared Config Analyzer:
 
-Same traces run through：
+```text
+Config Scheduler (sequential) → ConfigID → Shared Config Analyzer
+(combinational) → PatternID → ConfigPatternMap (sequential)
+```
 
-RECAM
+Analyze CFG0 through CFG6 in one configuration per cycle: seven
+configuration-analysis cycles per subarray.  Keep `A_CONFIG_SCHEDULER` and
+`A_CONFIG_PATTERN_MAP` separately measurable.
 
-DSS-CAM
+Exit Gate:
 
-DSS-SRAM/FIFO
-
-For DSS-CAM vs DSS-SRAM：
-
-check functional equivalence.
-
-For RECAM vs DSS：
-
-do not require identical solutions if algorithms differ.
-
-Instead compare：
-
-repair result
-
-hardware cost
-
-analysis latency
-
-under defined experiment conditions.
-
-Exit Gate：
-
-regression reproducible。
-
-all configurations tracked。
-
-no unexplained mismatch。
+- The observed schedule is exactly seven ConfigID cycles per subarray.
+- ConfigPatternMap contains all seven completed results.
+- Scheduler, combinational analyzer, and result storage remain separate RTL
+  and reporting boundaries.
 
 ---
 
-# PHASE 6 — Synthesis Sweep
+# PHASE 3D — EARLY
 
-Only after Phase 5.
+Use a completed ConfigPatternMap: analyze all seven configurations first, then
+invoke EARLY selection.  Streaming early termination is out of scope.  Report
+`A_EARLY` separately.
 
-Sweep primary parameters：
+Exit Gate:
 
-ENTRY_NUM
-
-P
-
-spare configuration where required.
-
-Output：
-
-synthesis_results.csv
-
-latency_results.csv
-
-module_area_breakdown.csv
-
-Do not change RTL algorithm during sweep.
-
-Every failed synthesis configuration must be recorded instead of silently dropped.
-
-Exit Gate：
-
-all CSV schema validated。
-
-all results reproducible from scripts。
-
-area and latency scaling sanity-checked。
+- EARLY consumes only a complete seven-result map.
+- EARLY overhead has a separate functional and synthesis report.
 
 ---
 
-# PHASE 7 — Pareto and Selective P&R
+# PHASE 3E — GROUP
 
-Use synthesis results to identify representative points：
+After all four subarrays complete configuration analysis, feed their four
+seven-entry maps to a sequential GROUP Selector FSM and separately measurable
+PhysicalResourceLedger.  Report `A_GROUP_CONTROLLER` and `A_RESOURCE_LEDGER`
+separately.
 
-smallest-area
+Exit Gate:
 
-lowest-latency
-
-balanced Pareto point
-
-RECAM baseline
-
-DSS-CAM baseline
-
-Only selected points proceed to P&R.
-
-P&R is validation rather than exhaustive sweep.
-
-Compare synthesis vs post-layout trends.
+- GROUP starts only after all four ConfigPatternMaps are complete.
+- GROUP controller and resource ledger are separately measurable.
 
 ---
 
-# PHASE 8 — 1×4 Extension
+## Historical downstream phases
 
-Only after DATE primary hardware evaluation is stable.
-
-Reuse：
-
-storage primitive
-
-synthesis framework
-
-verification framework
-
-results schema
-
-Extend DSS architecture to 1×4 row-only.
-
-This Phase must not delay DATE 2×2 results.
+The former Phase 4–8 SRAM/FIFO, unified-verification, sweep, P&R, and 1×4
+extension plan is retained as historical planning context only.  It has no
+execution authority until it is re-planned after Phase 3E and explicitly
+authorized.

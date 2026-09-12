@@ -1,0 +1,4 @@
+#include "Vrecam_config_resource_action_decoder.h"
+#include <iostream>
+static bool check(Vrecam_config_resource_action_decoder&d,int sa,int cfg,bool b,bool r,int rr,int p,int s){d.sa_id_i=sa;d.config_id_i=cfg;d.eval();return d.config_legal_for_sa_o&&d.borrow_required_o==b&&d.release_required_o==r&&(!r||d.release_resource_o==rr)&&d.donor_primary_o==p&&d.donor_secondary_o==s;}
+int main(){Vrecam_config_resource_action_decoder d;int ac[]={0,4,5,6},bc[]={0,1,2,3};for(int sa: {0,3})for(int c:ac)if(!check(d,sa,c,c>=5,c==4||c==6,sa==0?0:1,sa==0?2:3,sa==0?3:2))return 1;for(int sa:{1,2})for(int c:bc)if(!check(d,sa,c,c>=2,c==1||c==3,sa==1?2:3,sa==1?0:1,sa==1?1:0))return 1;for(int sa=0;sa<4;sa++)for(int c=0;c<8;c++){bool ok=(sa==0||sa==3)?(c==0||c==4||c==5||c==6):(c<=3);d.sa_id_i=sa;d.config_id_i=c;d.eval();if(d.config_legal_for_sa_o!=ok)return 1;}std::cout<<"PHASE3F_RESOURCE_ACTION_DECODER_REGRESSION PASS\n";}

@@ -1,0 +1,1252 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : recam_dss_v2_early_top
+Version: W-2024.09-SP2
+Date   : Fri Sep 11 03:38:18 2026
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/l/borrower_id_q_reg[7]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U1853/Y (OAI31X4)                                     0.51      13.95 r
+  a/U2342/Y (XNOR2X4)                                     0.29      14.24 r
+  a/U146/Y (INVX4)                                        0.06      14.30 f
+  a/U145/Y (NAND2X4)                                      0.13      14.43 r
+  a/U1155/Y (NAND3X2)                                     0.12      14.55 f
+  a/U1154/Y (INVX1)                                       0.32      14.87 r
+  a/U49/Y (INVX4)                                         0.09      14.95 f
+  a/U48/Y (NAND4X4)                                       0.23      15.18 r
+  a/U1298/Y (CLKINVX3)                                    0.15      15.33 f
+  a/U2427/Y (OR2X4)                                       0.26      15.59 f
+  a/U2426/Y (NAND3X4)                                     0.20      15.79 r
+  a/U2377/Y (AND4X4)                                      0.25      16.04 r
+  a/U2609/Y (AOI31X2)                                     0.13      16.18 f
+  a/U2619/Y (OR4X4)                                       0.55      16.72 f
+  a/U3639/Y (AND2X2)                                      0.27      16.99 f
+  a/U2675/Y (NAND4X4)                                     0.25      17.24 r
+  a/U3640/Y (OAI31X2)                                     0.18      17.42 f
+  a/U2630/Y (INVX4)                                       0.14      17.56 r
+  a/U2628/Y (AND4X4)                                      0.26      17.82 r
+  a/U2680/Y (NAND3X4)                                     0.20      18.02 f
+  a/U2678/Y (NAND4X4)                                     0.22      18.24 r
+  a/U38/Y (BUFX20)                                        0.16      18.40 r
+  a/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.40 r
+  c/candidate_solution_valid_i (recam_dss_v2_early_core)
+                                                          0.00      18.40 r
+  c/U20/Y (AND4X2)                                        0.40      18.80 r
+  c/l/commit_i (dss_v2_resource_ledger)                   0.00      18.80 r
+  c/l/U56/Y (INVX8)                                       0.09      18.89 f
+  c/l/U10/Y (OAI31X4)                                     0.53      19.42 r
+  c/l/U9/Y (INVX4)                                        0.08      19.50 f
+  c/l/U33/Y (MXI2X1)                                      0.20      19.70 f
+  c/l/borrower_id_q_reg[7]/D (DFFHQXL)                    0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/l/borrower_id_q_reg[7]/CK (DFFHQXL)                   0.00      20.00 r
+  library setup time                                     -0.29      19.71
+  data required time                                                19.71
+  --------------------------------------------------------------------------
+  data required time                                                19.71
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.01
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/l/borrower_valid_q_reg[3]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U1853/Y (OAI31X4)                                     0.51      13.95 r
+  a/U2342/Y (XNOR2X4)                                     0.29      14.24 r
+  a/U146/Y (INVX4)                                        0.06      14.30 f
+  a/U145/Y (NAND2X4)                                      0.13      14.43 r
+  a/U1155/Y (NAND3X2)                                     0.12      14.55 f
+  a/U1154/Y (INVX1)                                       0.32      14.87 r
+  a/U49/Y (INVX4)                                         0.09      14.95 f
+  a/U48/Y (NAND4X4)                                       0.23      15.18 r
+  a/U1298/Y (CLKINVX3)                                    0.15      15.33 f
+  a/U2427/Y (OR2X4)                                       0.26      15.59 f
+  a/U2426/Y (NAND3X4)                                     0.20      15.79 r
+  a/U2377/Y (AND4X4)                                      0.25      16.04 r
+  a/U2609/Y (AOI31X2)                                     0.13      16.18 f
+  a/U2619/Y (OR4X4)                                       0.55      16.72 f
+  a/U3639/Y (AND2X2)                                      0.27      16.99 f
+  a/U2675/Y (NAND4X4)                                     0.25      17.24 r
+  a/U3640/Y (OAI31X2)                                     0.18      17.42 f
+  a/U2630/Y (INVX4)                                       0.14      17.56 r
+  a/U2628/Y (AND4X4)                                      0.26      17.82 r
+  a/U2680/Y (NAND3X4)                                     0.20      18.02 f
+  a/U2678/Y (NAND4X4)                                     0.22      18.24 r
+  a/U38/Y (BUFX20)                                        0.16      18.40 r
+  a/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.40 r
+  c/candidate_solution_valid_i (recam_dss_v2_early_core)
+                                                          0.00      18.40 r
+  c/U20/Y (AND4X2)                                        0.40      18.80 r
+  c/l/commit_i (dss_v2_resource_ledger)                   0.00      18.80 r
+  c/l/U56/Y (INVX8)                                       0.09      18.89 f
+  c/l/U10/Y (OAI31X4)                                     0.53      19.42 r
+  c/l/U9/Y (INVX4)                                        0.08      19.50 f
+  c/l/U44/Y (MXI2X1)                                      0.20      19.70 f
+  c/l/borrower_valid_q_reg[3]/D (DFFHQXL)                 0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/l/borrower_valid_q_reg[3]/CK (DFFHQXL)                0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.02
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/l/borrower_valid_q_reg[2]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U1853/Y (OAI31X4)                                     0.51      13.95 r
+  a/U2342/Y (XNOR2X4)                                     0.29      14.24 r
+  a/U146/Y (INVX4)                                        0.06      14.30 f
+  a/U145/Y (NAND2X4)                                      0.13      14.43 r
+  a/U1155/Y (NAND3X2)                                     0.12      14.55 f
+  a/U1154/Y (INVX1)                                       0.32      14.87 r
+  a/U49/Y (INVX4)                                         0.09      14.95 f
+  a/U48/Y (NAND4X4)                                       0.23      15.18 r
+  a/U1298/Y (CLKINVX3)                                    0.15      15.33 f
+  a/U2427/Y (OR2X4)                                       0.26      15.59 f
+  a/U2426/Y (NAND3X4)                                     0.20      15.79 r
+  a/U2377/Y (AND4X4)                                      0.25      16.04 r
+  a/U2609/Y (AOI31X2)                                     0.13      16.18 f
+  a/U2619/Y (OR4X4)                                       0.55      16.72 f
+  a/U3639/Y (AND2X2)                                      0.27      16.99 f
+  a/U2675/Y (NAND4X4)                                     0.25      17.24 r
+  a/U3640/Y (OAI31X2)                                     0.18      17.42 f
+  a/U2630/Y (INVX4)                                       0.14      17.56 r
+  a/U2628/Y (AND4X4)                                      0.26      17.82 r
+  a/U2680/Y (NAND3X4)                                     0.20      18.02 f
+  a/U2678/Y (NAND4X4)                                     0.22      18.24 r
+  a/U38/Y (BUFX20)                                        0.16      18.40 r
+  a/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.40 r
+  c/candidate_solution_valid_i (recam_dss_v2_early_core)
+                                                          0.00      18.40 r
+  c/U20/Y (AND4X2)                                        0.40      18.80 r
+  c/l/commit_i (dss_v2_resource_ledger)                   0.00      18.80 r
+  c/l/U56/Y (INVX8)                                       0.09      18.89 f
+  c/l/U6/Y (OAI31X4)                                      0.53      19.42 r
+  c/l/U5/Y (INVX4)                                        0.08      19.50 f
+  c/l/U43/Y (MXI2X1)                                      0.20      19.70 f
+  c/l/borrower_valid_q_reg[2]/D (DFFHQXL)                 0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/l/borrower_valid_q_reg[2]/CK (DFFHQXL)                0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.02
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/l/borrower_valid_q_reg[1]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U1853/Y (OAI31X4)                                     0.51      13.95 r
+  a/U2342/Y (XNOR2X4)                                     0.29      14.24 r
+  a/U146/Y (INVX4)                                        0.06      14.30 f
+  a/U145/Y (NAND2X4)                                      0.13      14.43 r
+  a/U1155/Y (NAND3X2)                                     0.12      14.55 f
+  a/U1154/Y (INVX1)                                       0.32      14.87 r
+  a/U49/Y (INVX4)                                         0.09      14.95 f
+  a/U48/Y (NAND4X4)                                       0.23      15.18 r
+  a/U1298/Y (CLKINVX3)                                    0.15      15.33 f
+  a/U2427/Y (OR2X4)                                       0.26      15.59 f
+  a/U2426/Y (NAND3X4)                                     0.20      15.79 r
+  a/U2377/Y (AND4X4)                                      0.25      16.04 r
+  a/U2609/Y (AOI31X2)                                     0.13      16.18 f
+  a/U2619/Y (OR4X4)                                       0.55      16.72 f
+  a/U3639/Y (AND2X2)                                      0.27      16.99 f
+  a/U2675/Y (NAND4X4)                                     0.25      17.24 r
+  a/U3640/Y (OAI31X2)                                     0.18      17.42 f
+  a/U2630/Y (INVX4)                                       0.14      17.56 r
+  a/U2628/Y (AND4X4)                                      0.26      17.82 r
+  a/U2680/Y (NAND3X4)                                     0.20      18.02 f
+  a/U2678/Y (NAND4X4)                                     0.22      18.24 r
+  a/U38/Y (BUFX20)                                        0.16      18.40 r
+  a/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.40 r
+  c/candidate_solution_valid_i (recam_dss_v2_early_core)
+                                                          0.00      18.40 r
+  c/U20/Y (AND4X2)                                        0.40      18.80 r
+  c/l/commit_i (dss_v2_resource_ledger)                   0.00      18.80 r
+  c/l/U56/Y (INVX8)                                       0.09      18.89 f
+  c/l/U8/Y (OAI31X4)                                      0.53      19.42 r
+  c/l/U7/Y (INVX4)                                        0.08      19.50 f
+  c/l/U42/Y (MXI2X1)                                      0.20      19.70 f
+  c/l/borrower_valid_q_reg[1]/D (DFFHQXL)                 0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/l/borrower_valid_q_reg[1]/CK (DFFHQXL)                0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.02
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/sa_commit_valid_o_reg[0]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U3336/Y (OAI31X2)                                     0.34      13.79 r
+  a/U2433/Y (NAND2X4)                                     0.12      13.91 f
+  a/U2445/Y (CLKINVX4)                                    0.07      13.98 r
+  a/U2653/Y (OR2X4)                                       0.18      14.16 r
+  a/U147/Y (INVX8)                                        0.08      14.24 f
+  a/U2677/Y (NAND4X4)                                     0.25      14.49 r
+  a/U2676/Y (OAI221X4)                                    0.51      15.01 f
+  a/U2345/Y (INVX8)                                       0.13      15.14 r
+  a/U2509/Y (NAND4X2)                                     0.19      15.33 f
+  a/U1408/Y (INVX1)                                       0.19      15.51 r
+  a/U3544/Y (OR2X2)                                       0.20      15.72 r
+  a/U1407/Y (CLKINVX3)                                    0.12      15.84 f
+  a/U9/Y (OAI2BB1X1)                                      0.32      16.16 r
+  a/U3626/Y (CLKINVX3)                                    0.11      16.27 f
+  a/U2508/Y (OR2X4)                                       0.24      16.51 f
+  a/U1430/Y (AND3X2)                                      0.35      16.86 f
+  a/U1860/Y (NAND3X4)                                     0.19      17.05 r
+  a/U2675/Y (NAND4X4)                                     0.24      17.30 f
+  a/U3640/Y (OAI31X2)                                     0.19      17.49 r
+  a/U2630/Y (INVX4)                                       0.11      17.60 f
+  a/U2628/Y (AND4X4)                                      0.28      17.88 f
+  a/U2680/Y (NAND3X4)                                     0.25      18.12 r
+  a/U2678/Y (NAND4X4)                                     0.17      18.29 f
+  a/U38/Y (BUFX20)                                        0.18      18.47 f
+  a/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.47 f
+  c/candidate_solution_valid_i (recam_dss_v2_early_core)
+                                                          0.00      18.47 f
+  c/U171/Y (NAND3X2)                                      0.21      18.68 r
+  c/U138/Y (OR2X4)                                        0.21      18.89 r
+  c/U107/Y (INVX2)                                        0.07      18.95 f
+  c/U190/Y (OR2X4)                                        0.24      19.20 f
+  c/U26/Y (BUFX3)                                         0.28      19.47 f
+  c/U30/Y (OAI31X1)                                       0.34      19.81 r
+  c/sa_commit_valid_o_reg[0]/D (DFFXL)                    0.00      19.81 r
+  data arrival time                                                 19.81
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/sa_commit_valid_o_reg[0]/CK (DFFXL)                   0.00      20.00 r
+  library setup time                                     -0.12      19.88
+  data required time                                                19.88
+  --------------------------------------------------------------------------
+  data required time                                                19.88
+  data arrival time                                                -19.81
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.07
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/selected_pattern_flat_o_reg[6]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U3336/Y (OAI31X2)                                     0.34      13.79 r
+  a/U2433/Y (NAND2X4)                                     0.12      13.91 f
+  a/U2445/Y (CLKINVX4)                                    0.07      13.98 r
+  a/U2653/Y (OR2X4)                                       0.18      14.16 r
+  a/U147/Y (INVX8)                                        0.08      14.24 f
+  a/U2677/Y (NAND4X4)                                     0.25      14.49 r
+  a/U2676/Y (OAI221X4)                                    0.51      15.01 f
+  a/U2345/Y (INVX8)                                       0.13      15.14 r
+  a/U2509/Y (NAND4X2)                                     0.19      15.33 f
+  a/U1408/Y (INVX1)                                       0.19      15.51 r
+  a/U3544/Y (OR2X2)                                       0.20      15.72 r
+  a/U1407/Y (CLKINVX3)                                    0.12      15.84 f
+  a/U9/Y (OAI2BB1X1)                                      0.32      16.16 r
+  a/U3626/Y (CLKINVX3)                                    0.11      16.27 f
+  a/U2508/Y (OR2X4)                                       0.24      16.51 f
+  a/U1430/Y (AND3X2)                                      0.35      16.86 f
+  a/U1860/Y (NAND3X4)                                     0.19      17.05 r
+  a/U2675/Y (NAND4X4)                                     0.24      17.30 f
+  a/U3640/Y (OAI31X2)                                     0.19      17.49 r
+  a/U2630/Y (INVX4)                                       0.11      17.60 f
+  a/U2628/Y (AND4X4)                                      0.28      17.88 f
+  a/U2680/Y (NAND3X4)                                     0.25      18.12 r
+  a/U2678/Y (NAND4X4)                                     0.17      18.29 f
+  a/U38/Y (BUFX20)                                        0.18      18.47 f
+  a/repairable_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.47 f
+  c/candidate_repairable_i (recam_dss_v2_early_core)      0.00      18.47 f
+  c/U199/Y (OR2X2)                                        0.37      18.85 f
+  c/U173/Y (NAND4X2)                                      0.19      19.03 r
+  c/U169/Y (BUFX8)                                        0.20      19.23 r
+  c/U152/Y (INVX8)                                        0.06      19.29 f
+  c/U113/Y (BUFX20)                                       0.14      19.44 f
+  c/U124/Y (OAI22XL)                                      0.35      19.79 r
+  c/selected_pattern_flat_o_reg[6]/D (DFFHQXL)            0.00      19.79 r
+  data arrival time                                                 19.79
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/selected_pattern_flat_o_reg[6]/CK (DFFHQXL)           0.00      20.00 r
+  library setup time                                     -0.14      19.86
+  data required time                                                19.86
+  --------------------------------------------------------------------------
+  data required time                                                19.86
+  data arrival time                                                -19.79
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.07
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/selected_pattern_flat_o_reg[4]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U3336/Y (OAI31X2)                                     0.34      13.79 r
+  a/U2433/Y (NAND2X4)                                     0.12      13.91 f
+  a/U2445/Y (CLKINVX4)                                    0.07      13.98 r
+  a/U2653/Y (OR2X4)                                       0.18      14.16 r
+  a/U147/Y (INVX8)                                        0.08      14.24 f
+  a/U2677/Y (NAND4X4)                                     0.25      14.49 r
+  a/U2676/Y (OAI221X4)                                    0.51      15.01 f
+  a/U2345/Y (INVX8)                                       0.13      15.14 r
+  a/U2509/Y (NAND4X2)                                     0.19      15.33 f
+  a/U1408/Y (INVX1)                                       0.19      15.51 r
+  a/U3544/Y (OR2X2)                                       0.20      15.72 r
+  a/U1407/Y (CLKINVX3)                                    0.12      15.84 f
+  a/U9/Y (OAI2BB1X1)                                      0.32      16.16 r
+  a/U3626/Y (CLKINVX3)                                    0.11      16.27 f
+  a/U2508/Y (OR2X4)                                       0.24      16.51 f
+  a/U1430/Y (AND3X2)                                      0.35      16.86 f
+  a/U1860/Y (NAND3X4)                                     0.19      17.05 r
+  a/U2675/Y (NAND4X4)                                     0.24      17.30 f
+  a/U3640/Y (OAI31X2)                                     0.19      17.49 r
+  a/U2630/Y (INVX4)                                       0.11      17.60 f
+  a/U2628/Y (AND4X4)                                      0.28      17.88 f
+  a/U2680/Y (NAND3X4)                                     0.25      18.12 r
+  a/U2678/Y (NAND4X4)                                     0.17      18.29 f
+  a/U38/Y (BUFX20)                                        0.18      18.47 f
+  a/repairable_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.47 f
+  c/candidate_repairable_i (recam_dss_v2_early_core)      0.00      18.47 f
+  c/U199/Y (OR2X2)                                        0.37      18.85 f
+  c/U173/Y (NAND4X2)                                      0.19      19.03 r
+  c/U169/Y (BUFX8)                                        0.20      19.23 r
+  c/U152/Y (INVX8)                                        0.06      19.29 f
+  c/U113/Y (BUFX20)                                       0.14      19.44 f
+  c/U126/Y (OAI22XL)                                      0.35      19.79 r
+  c/selected_pattern_flat_o_reg[4]/D (DFFHQXL)            0.00      19.79 r
+  data arrival time                                                 19.79
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/selected_pattern_flat_o_reg[4]/CK (DFFHQXL)           0.00      20.00 r
+  library setup time                                     -0.14      19.86
+  data required time                                                19.86
+  --------------------------------------------------------------------------
+  data required time                                                19.86
+  data arrival time                                                -19.79
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.07
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/selected_donor_flat_o_reg[3]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U3336/Y (OAI31X2)                                     0.34      13.79 r
+  a/U2433/Y (NAND2X4)                                     0.12      13.91 f
+  a/U2445/Y (CLKINVX4)                                    0.07      13.98 r
+  a/U2653/Y (OR2X4)                                       0.18      14.16 r
+  a/U147/Y (INVX8)                                        0.08      14.24 f
+  a/U2677/Y (NAND4X4)                                     0.25      14.49 r
+  a/U2676/Y (OAI221X4)                                    0.51      15.01 f
+  a/U2345/Y (INVX8)                                       0.13      15.14 r
+  a/U2509/Y (NAND4X2)                                     0.19      15.33 f
+  a/U1408/Y (INVX1)                                       0.19      15.51 r
+  a/U3544/Y (OR2X2)                                       0.20      15.72 r
+  a/U1407/Y (CLKINVX3)                                    0.12      15.84 f
+  a/U9/Y (OAI2BB1X1)                                      0.32      16.16 r
+  a/U3626/Y (CLKINVX3)                                    0.11      16.27 f
+  a/U2508/Y (OR2X4)                                       0.24      16.51 f
+  a/U1430/Y (AND3X2)                                      0.35      16.86 f
+  a/U1860/Y (NAND3X4)                                     0.19      17.05 r
+  a/U2675/Y (NAND4X4)                                     0.24      17.30 f
+  a/U3640/Y (OAI31X2)                                     0.19      17.49 r
+  a/U2630/Y (INVX4)                                       0.11      17.60 f
+  a/U2628/Y (AND4X4)                                      0.28      17.88 f
+  a/U2680/Y (NAND3X4)                                     0.25      18.12 r
+  a/U2678/Y (NAND4X4)                                     0.17      18.29 f
+  a/U38/Y (BUFX20)                                        0.18      18.47 f
+  a/repairable_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.47 f
+  c/candidate_repairable_i (recam_dss_v2_early_core)      0.00      18.47 f
+  c/U199/Y (OR2X2)                                        0.37      18.85 f
+  c/U173/Y (NAND4X2)                                      0.19      19.03 r
+  c/U169/Y (BUFX8)                                        0.20      19.23 r
+  c/U152/Y (INVX8)                                        0.06      19.29 f
+  c/U113/Y (BUFX20)                                       0.14      19.44 f
+  c/U123/Y (OAI22XL)                                      0.35      19.79 r
+  c/selected_donor_flat_o_reg[3]/D (DFFHQXL)              0.00      19.79 r
+  data arrival time                                                 19.79
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/selected_donor_flat_o_reg[3]/CK (DFFHQXL)             0.00      20.00 r
+  library setup time                                     -0.14      19.86
+  data required time                                                19.86
+  --------------------------------------------------------------------------
+  data required time                                                19.86
+  data arrival time                                                -19.79
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.07
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/selected_donor_flat_o_reg[2]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U3336/Y (OAI31X2)                                     0.34      13.79 r
+  a/U2433/Y (NAND2X4)                                     0.12      13.91 f
+  a/U2445/Y (CLKINVX4)                                    0.07      13.98 r
+  a/U2653/Y (OR2X4)                                       0.18      14.16 r
+  a/U147/Y (INVX8)                                        0.08      14.24 f
+  a/U2677/Y (NAND4X4)                                     0.25      14.49 r
+  a/U2676/Y (OAI221X4)                                    0.51      15.01 f
+  a/U2345/Y (INVX8)                                       0.13      15.14 r
+  a/U2509/Y (NAND4X2)                                     0.19      15.33 f
+  a/U1408/Y (INVX1)                                       0.19      15.51 r
+  a/U3544/Y (OR2X2)                                       0.20      15.72 r
+  a/U1407/Y (CLKINVX3)                                    0.12      15.84 f
+  a/U9/Y (OAI2BB1X1)                                      0.32      16.16 r
+  a/U3626/Y (CLKINVX3)                                    0.11      16.27 f
+  a/U2508/Y (OR2X4)                                       0.24      16.51 f
+  a/U1430/Y (AND3X2)                                      0.35      16.86 f
+  a/U1860/Y (NAND3X4)                                     0.19      17.05 r
+  a/U2675/Y (NAND4X4)                                     0.24      17.30 f
+  a/U3640/Y (OAI31X2)                                     0.19      17.49 r
+  a/U2630/Y (INVX4)                                       0.11      17.60 f
+  a/U2628/Y (AND4X4)                                      0.28      17.88 f
+  a/U2680/Y (NAND3X4)                                     0.25      18.12 r
+  a/U2678/Y (NAND4X4)                                     0.17      18.29 f
+  a/U38/Y (BUFX20)                                        0.18      18.47 f
+  a/repairable_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.47 f
+  c/candidate_repairable_i (recam_dss_v2_early_core)      0.00      18.47 f
+  c/U199/Y (OR2X2)                                        0.37      18.85 f
+  c/U173/Y (NAND4X2)                                      0.19      19.03 r
+  c/U169/Y (BUFX8)                                        0.20      19.23 r
+  c/U152/Y (INVX8)                                        0.06      19.29 f
+  c/U113/Y (BUFX20)                                       0.14      19.44 f
+  c/U122/Y (OAI22XL)                                      0.35      19.79 r
+  c/selected_donor_flat_o_reg[2]/D (DFFHQXL)              0.00      19.79 r
+  data arrival time                                                 19.79
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/selected_donor_flat_o_reg[2]/CK (DFFHQXL)             0.00      20.00 r
+  library setup time                                     -0.14      19.86
+  data required time                                                19.86
+  --------------------------------------------------------------------------
+  data required time                                                19.86
+  data arrival time                                                -19.79
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.07
+
+
+  Startpoint: c/sa_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: c/borrow_flat_o_reg[1]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_v2_early_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  c/sa_q_reg[1]/CK (DFFHQX4)                              0.00       0.00 r
+  c/sa_q_reg[1]/Q (DFFHQX4)                               0.22       0.22 f
+  c/U102/Y (INVX4)                                        0.24       0.46 r
+  c/U167/Y (INVX4)                                        0.10       0.56 f
+  c/U184/Y (OR2X2)                                        0.32       0.88 f
+  c/U115/Y (NAND2X2)                                      0.14       1.02 r
+  c/U197/Y (OAI2BB1X4)                                    0.33       1.35 r
+  c/current_config_id_o[1] (recam_dss_v2_early_core)      0.00       1.35 r
+  a/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.35 r
+  a/U1828/Y (INVX4)                                       0.10       1.45 f
+  a/U1578/Y (AND3X2)                                      0.30       1.75 f
+  a/U2594/Y (OR2X4)                                       0.27       2.02 f
+  a/U2700/Y (OR2X4)                                       0.26       2.28 f
+  a/U1602/Y (BUFX8)                                       0.18       2.46 f
+  a/U539/Y (NAND3X2)                                      0.21       2.67 r
+  a/U62/Y (BUFX16)                                        0.20       2.87 r
+  a/U71/Y (OAI22X1)                                       0.18       3.05 f
+  a/U70/Y (BUFX8)                                         0.19       3.24 f
+  a/U1774/Y (XOR2X1)                                      0.26       3.50 f
+  a/U917/Y (INVX1)                                        0.29       3.79 r
+  a/U316/Y (NAND4X2)                                      0.18       3.97 f
+  a/U2667/Y (OAI222X2)                                    0.46       4.42 r
+  a/U307/Y (INVX4)                                        0.13       4.56 f
+  a/U133/Y (NAND4X2)                                      0.28       4.84 r
+  a/U132/Y (INVX4)                                        0.20       5.04 f
+  a/U2671/Y (OR2X4)                                       0.35       5.39 f
+  a/U60/Y (INVX12)                                        0.29       5.68 r
+  a/U2984/Y (OAI211X2)                                    0.17       5.86 f
+  a/U2570/Y (OR2X4)                                       0.29       6.14 f
+  a/U267/Y (INVX4)                                        0.13       6.27 r
+  a/U2614/Y (NAND3X4)                                     0.16       6.43 f
+  a/U2596/Y (CLKINVX8)                                    0.18       6.61 r
+  a/U1577/Y (MX2X4)                                       0.33       6.94 r
+  a/U2120/Y (XOR2X2)                                      0.28       7.22 r
+  a/U2524/Y (AND4X4)                                      0.24       7.46 r
+  a/U2541/Y (NAND4X2)                                     0.17       7.63 f
+  a/U2566/Y (OR4X4)                                       0.50       8.13 f
+  a/U2523/Y (AND4X4)                                      0.29       8.42 f
+  a/U3035/Y (OAI31X2)                                     0.12       8.53 r
+  a/U2668/Y (OR2X4)                                       0.22       8.75 r
+  a/U2623/Y (OAI2BB1X4)                                   0.32       9.07 r
+  a/U662/Y (INVX4)                                        0.13       9.20 f
+  a/U653/Y (OR2X2)                                        0.36       9.56 f
+  a/U2708/Y (CLKINVX8)                                    0.18       9.73 r
+  a/U611/Y (MXI2X2)                                       0.31      10.04 r
+  a/U3052/Y (XOR2X2)                                      0.49      10.53 r
+  a/U1785/Y (NAND4X2)                                     0.17      10.70 f
+  a/U2567/Y (OR4X4)                                       0.38      11.08 f
+  a/U866/Y (NAND3X2)                                      0.24      11.31 r
+  a/U2624/Y (OAI2BB2X4)                                   0.17      11.48 f
+  a/U1899/Y (INVX8)                                       0.08      11.56 r
+  a/U2672/Y (NAND4X4)                                     0.18      11.74 f
+  a/U1898/Y (INVX8)                                       0.17      11.91 r
+  a/U2670/Y (BUFX20)                                      0.15      12.06 r
+  a/U3215/Y (MXI2X2)                                      0.20      12.25 f
+  a/U3216/Y (CLKINVX3)                                    0.16      12.41 r
+  a/U2094/Y (XOR2X1)                                      0.39      12.80 r
+  a/U2573/Y (NAND4X2)                                     0.26      13.06 f
+  a/U3332/Y (OR2X2)                                       0.39      13.44 f
+  a/U3336/Y (OAI31X2)                                     0.34      13.79 r
+  a/U2433/Y (NAND2X4)                                     0.12      13.91 f
+  a/U2445/Y (CLKINVX4)                                    0.07      13.98 r
+  a/U2653/Y (OR2X4)                                       0.18      14.16 r
+  a/U147/Y (INVX8)                                        0.08      14.24 f
+  a/U2677/Y (NAND4X4)                                     0.25      14.49 r
+  a/U2676/Y (OAI221X4)                                    0.51      15.01 f
+  a/U2345/Y (INVX8)                                       0.13      15.14 r
+  a/U2509/Y (NAND4X2)                                     0.19      15.33 f
+  a/U1408/Y (INVX1)                                       0.19      15.51 r
+  a/U3544/Y (OR2X2)                                       0.20      15.72 r
+  a/U1407/Y (CLKINVX3)                                    0.12      15.84 f
+  a/U9/Y (OAI2BB1X1)                                      0.32      16.16 r
+  a/U3626/Y (CLKINVX3)                                    0.11      16.27 f
+  a/U2508/Y (OR2X4)                                       0.24      16.51 f
+  a/U1430/Y (AND3X2)                                      0.35      16.86 f
+  a/U1860/Y (NAND3X4)                                     0.19      17.05 r
+  a/U2675/Y (NAND4X4)                                     0.24      17.30 f
+  a/U3640/Y (OAI31X2)                                     0.19      17.49 r
+  a/U2630/Y (INVX4)                                       0.11      17.60 f
+  a/U2628/Y (AND4X4)                                      0.28      17.88 f
+  a/U2680/Y (NAND3X4)                                     0.25      18.12 r
+  a/U2678/Y (NAND4X4)                                     0.17      18.29 f
+  a/U38/Y (BUFX20)                                        0.18      18.47 f
+  a/repairable_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.47 f
+  c/candidate_repairable_i (recam_dss_v2_early_core)      0.00      18.47 f
+  c/U199/Y (OR2X2)                                        0.37      18.85 f
+  c/U173/Y (NAND4X2)                                      0.19      19.03 r
+  c/U169/Y (BUFX8)                                        0.20      19.23 r
+  c/U152/Y (INVX8)                                        0.06      19.29 f
+  c/U113/Y (BUFX20)                                       0.14      19.44 f
+  c/U121/Y (OAI22XL)                                      0.35      19.79 r
+  c/borrow_flat_o_reg[1]/D (DFFHQXL)                      0.00      19.79 r
+  data arrival time                                                 19.79
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  c/borrow_flat_o_reg[1]/CK (DFFHQXL)                     0.00      20.00 r
+  library setup time                                     -0.14      19.86
+  data required time                                                19.86
+  --------------------------------------------------------------------------
+  data required time                                                19.86
+  data arrival time                                                -19.79
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.07
+
+
+1

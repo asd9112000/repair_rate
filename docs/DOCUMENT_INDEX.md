@@ -18,6 +18,7 @@
 | [HIERARCHICAL_RECAM.md](HIERARCHICAL_RECAM.md) | Current | hierarchical-device | WoW hierarchy、CLI、輸入、輸出與 device-level 指標 |
 | [EXPERIMENTS.md](EXPERIMENTS.md) | Current | cross-cutting | 實驗方法、可重現性、sweep、plotting、結果比較規則 |
 | [REPORTS.md](REPORTS.md) | Current | cross-cutting | `reports/` scope、run artifact 與輸出位置規則 |
+| [EXPERIMENT_CATALOG.md](EXPERIMENT_CATALOG.md) | Current | cross-cutting | 正式實驗 workflow 的入口指令、資料定位與 plot/table input 導航 |
 | [SRAM_RECAM_ARCHITECTURE_GUIDE.md](SRAM_RECAM_ARCHITECTURE_GUIDE.md) | Current | sram-group | SRAM-RECAM storage、search、latency、area、runtime variants |
 | [handoff/MODERATE_REPAIR_STUDY_HANDOFF.md](handoff/MODERATE_REPAIR_STUDY_HANDOFF.md) | Handoff | moderate-study | 特定研究階段的狀態、結果摘要與交接 |
 | [handoff/EXPERIMENT_WORKFLOW_HANDOFF.md](handoff/EXPERIMENT_WORKFLOW_HANDOFF.md) | Handoff | experiment-workflow | C++ core、Python runner、manifest 與 scope-first reports workflow 的交接 |

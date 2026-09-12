@@ -1,0 +1,3 @@
+#include "Vrecam_physical_resource_ledger_checker.h"
+#include <iostream>
+int main(){Vrecam_physical_resource_ledger_checker d; d.resource_borrower_flat_i=0; d.resource_released_i=0; d.eval(); if(!d.ledger_state_valid_o||d.resource_available_o) return 1; d.resource_released_i=15; d.eval(); if(!d.ledger_state_valid_o||d.resource_available_o!=15) return 1; for(int i=0;i<4;i++){d.resource_released_i=15;d.resource_borrower_flat_i=1u<<(2*i);d.eval();if(!d.ledger_state_valid_o||((d.resource_available_o>>i)&1))return 1;d.resource_released_i=15^(1u<<i);d.eval();if(d.ledger_state_valid_o)return 1;d.resource_released_i=15;d.resource_borrower_flat_i=3u<<(2*i);d.eval();if(d.ledger_state_valid_o)return 1;}std::cout<<"PHASE3F_LEDGER_FUNCTIONAL_REGRESSION PASS\n";}

@@ -1,0 +1,896 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : recam_2r2c_analyzer
+Version: W-2024.09-SP2
+Date   : Thu Sep 10 03:29:50 2026
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: pattern_id_o[1]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1078/Y (BUFX8)                          0.25       0.25 f
+  U1097/Y (NOR2X4)                         0.18       0.43 r
+  U1231/Y (NAND2X1)                        0.23       0.66 f
+  U1232/Y (OAI2BB1X4)                      0.28       0.94 f
+  U1082/Y (NAND2X2)                        0.22       1.15 r
+  U1294/Y (OR2X4)                          0.21       1.37 r
+  U1071/Y (CLKBUFX8)                       0.24       1.60 r
+  U147/Y (MXI2X1)                          0.38       1.98 r
+  U1400/Y (XOR2X1)                         0.50       2.48 r
+  U1401/Y (NOR2X2)                         0.11       2.59 f
+  U1404/Y (NAND4X2)                        0.20       2.79 r
+  U1405/Y (INVX1)                          0.19       2.98 f
+  U1406/Y (NAND2X1)                        0.30       3.28 r
+  U1445/Y (NAND4X4)                        0.24       3.52 f
+  U1464/Y (NAND3X2)                        0.16       3.68 r
+  U1465/Y (OR2X4)                          0.36       4.04 r
+  U125/Y (MXI2X2)                          0.37       4.40 r
+  U1482/Y (XOR2X1)                         0.38       4.78 f
+  U1483/Y (NOR2X2)                         0.25       5.03 r
+  U1080/Y (NAND4X4)                        0.16       5.19 f
+  U1491/Y (NAND2X4)                        0.34       5.52 r
+  U1606/Y (NAND4X4)                        0.15       5.67 f
+  U709/Y (BUFX12)                          0.20       5.87 f
+  U378/Y (BUFX12)                          0.17       6.05 f
+  U1094/Y (MXI2X4)                         0.18       6.22 r
+  U1662/Y (XOR2X1)                         0.39       6.61 r
+  U372/Y (NAND4X1)                         0.18       6.79 f
+  U1672/Y (NAND4BX2)                       0.34       7.13 f
+  U1673/Y (NAND3X4)                        0.37       7.50 r
+  U1674/Y (NAND2X4)                        0.27       7.77 f
+  U84/Y (MXI2X2)                           0.29       8.06 r
+  U1678/Y (XOR2X1)                         0.42       8.48 r
+  U1681/Y (NAND2X1)                        0.20       8.68 f
+  U1692/Y (NOR2X4)                         0.16       8.84 r
+  U1693/Y (NAND2BX4)                       0.14       8.98 f
+  U1716/Y (NAND4X4)                        0.14       9.12 r
+  U337/Y (BUFX12)                          0.19       9.31 r
+  U1133/Y (NAND3BX4)                       0.23       9.55 r
+  U66/Y (CLKBUFX8)                         0.26       9.81 r
+  U1847/Y (AOI2BB1X4)                      0.43      10.24 r
+  U53/Y (INVX2)                            0.21      10.45 f
+  U1858/Y (AOI21X1)                        0.46      10.91 r
+  U1862/Y (NAND4X4)                        0.33      11.23 f
+  U1863/Y (NAND2X2)                        0.27      11.51 r
+  U1867/Y (OR3X4)                          0.37      11.87 r
+  U1878/Y (INVX4)                          0.06      11.93 f
+  U1880/Y (NAND2X2)                        0.15      12.08 r
+  U1910/Y (NAND4X4)                        0.33      12.41 f
+  U1946/Y (NAND4X4)                        0.39      12.80 r
+  U1994/Y (NAND2X4)                        0.12      12.92 f
+  U1995/Y (INVX8)                          0.18      13.10 r
+  U2168/Y (NAND3X1)                        0.19      13.29 f
+  U2175/Y (NAND4X2)                        0.25      13.54 r
+  U499/Y (BUFX4)                           0.28      13.82 r
+  U2177/Y (NOR2X2)                         0.08      13.90 f
+  U2179/Y (AND2X4)                         0.31      14.21 f
+  U27/Y (INVXL)                            0.23      14.44 r
+  U2221/Y (NAND4X1)                        0.23      14.67 f
+  U493/Y (NAND2X2)                         0.32      14.99 r
+  pattern_id_o[1] (out)                    0.00      14.99 r
+  data arrival time                                  14.99
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.99
+  -----------------------------------------------------------
+  slack (MET)                                         0.01
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: pattern_id_o[2]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1021/Y (CLKINVX3)                       0.20       0.20 r
+  U988/Y (INVX4)                           0.12       0.32 f
+  U1209/Y (NAND2X4)                        0.28       0.60 r
+  U1210/Y (XOR2X2)                         0.44       1.03 r
+  U1211/Y (NAND3X2)                        0.15       1.19 f
+  U1212/Y (NOR2X4)                         0.16       1.35 r
+  U1213/Y (NAND2X4)                        0.17       1.52 f
+  U1272/Y (NAND4X4)                        0.23       1.76 r
+  U1285/Y (NAND4X4)                        0.30       2.05 f
+  U1160/Y (MXI2X2)                         0.33       2.38 r
+  U1371/Y (XOR2X1)                         0.34       2.72 f
+  U1372/Y (NOR2X1)                         0.30       3.02 r
+  U1382/Y (NAND4X2)                        0.21       3.23 f
+  U1383/Y (NAND2X2)                        0.15       3.38 r
+  U1384/Y (NAND2BX4)                       0.23       3.61 r
+  U407/Y (BUFX12)                          0.19       3.80 r
+  U1501/Y (NAND2X4)                        0.16       3.96 f
+  U1077/Y (BUFX4)                          0.21       4.16 f
+  U126/Y (MXI2X2)                          0.24       4.40 r
+  U1546/Y (XOR2X1)                         0.42       4.83 r
+  U1548/Y (NAND4X1)                        0.20       5.02 f
+  U1551/Y (OR3X2)                          0.44       5.47 f
+  U1552/Y (NAND2X4)                        0.22       5.69 r
+  U1553/Y (NAND2X4)                        0.10       5.79 f
+  U713/Y (BUFX8)                           0.18       5.98 f
+  U103/Y (MXI2X2)                          0.26       6.23 r
+  U1554/Y (XOR2X2)                         0.40       6.63 r
+  U1556/Y (NOR2X2)                         0.08       6.71 f
+  U1056/Y (NAND4X2)                        0.16       6.87 r
+  U1602/Y (NAND3X4)                        0.33       7.20 f
+  U1607/Y (NAND2X4)                        0.24       7.44 r
+  U1072/Y (BUFX8)                          0.22       7.65 r
+  U1755/Y (MXI2X4)                         0.19       7.85 r
+  U1756/Y (XOR2X1)                         0.38       8.23 r
+  U1760/Y (NAND2X1)                        0.16       8.39 f
+  U1761/Y (OR4X4)                          0.58       8.97 f
+  U1765/Y (NAND4X4)                        0.35       9.32 r
+  U1766/Y (NOR2X4)                         0.09       9.42 f
+  U1767/Y (NAND2X4)                        0.20       9.62 r
+  U336/Y (BUFX12)                          0.19       9.81 r
+  U68/Y (AOI2BB1X2)                        0.34      10.15 r
+  U54/Y (AND2X2)                           0.33      10.47 r
+  U330/Y (INVX4)                           0.16      10.63 f
+  U524/Y (NAND2X2)                         0.23      10.85 r
+  U522/Y (MXI2X1)                          0.29      11.15 r
+  U518/Y (XOR2X1)                          0.41      11.56 r
+  U250/Y (AND2X2)                          0.38      11.94 r
+  U1093/Y (CLKINVX3)                       0.16      12.10 f
+  U1999/Y (NAND2X2)                        0.14      12.24 r
+  U507/Y (OAI22X1)                         0.14      12.38 f
+  U2000/Y (OAI2BB1X1)                      0.31      12.69 f
+  U502/Y (NAND2X2)                         0.29      12.98 r
+  U2037/Y (AOI2BB1X4)                      0.25      13.23 r
+  U2038/Y (OAI2BB1X4)                      0.19      13.42 f
+  U318/Y (CLKINVX3)                        0.12      13.54 r
+  U2167/Y (NAND3BX4)                       0.12      13.66 f
+  U2176/Y (NOR3X4)                         0.47      14.13 r
+  U2180/Y (OR2X4)                          0.26      14.39 r
+  U494/Y (NOR2X2)                          0.07      14.46 f
+  U2181/Y (AOI211X4)                       0.52      14.99 r
+  pattern_id_o[2] (out)                    0.00      14.99 r
+  data arrival time                                  14.99
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.99
+  -----------------------------------------------------------
+  slack (MET)                                         0.01
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: pattern_id_o[0]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1078/Y (BUFX8)                          0.25       0.25 f
+  U1097/Y (NOR2X4)                         0.18       0.43 r
+  U1231/Y (NAND2X1)                        0.23       0.66 f
+  U1232/Y (OAI2BB1X4)                      0.28       0.94 f
+  U1082/Y (NAND2X2)                        0.22       1.15 r
+  U1294/Y (OR2X4)                          0.21       1.37 r
+  U1071/Y (CLKBUFX8)                       0.24       1.60 r
+  U147/Y (MXI2X1)                          0.38       1.98 r
+  U1400/Y (XOR2X1)                         0.50       2.48 r
+  U1401/Y (NOR2X2)                         0.11       2.59 f
+  U1404/Y (NAND4X2)                        0.20       2.79 r
+  U1405/Y (INVX1)                          0.19       2.98 f
+  U1406/Y (NAND2X1)                        0.30       3.28 r
+  U1445/Y (NAND4X4)                        0.24       3.52 f
+  U1464/Y (NAND3X2)                        0.16       3.68 r
+  U1465/Y (OR2X4)                          0.36       4.04 r
+  U125/Y (MXI2X2)                          0.37       4.40 r
+  U1482/Y (XOR2X1)                         0.38       4.78 f
+  U1483/Y (NOR2X2)                         0.25       5.03 r
+  U1080/Y (NAND4X4)                        0.16       5.19 f
+  U1491/Y (NAND2X4)                        0.34       5.52 r
+  U1606/Y (NAND4X4)                        0.15       5.67 f
+  U709/Y (BUFX12)                          0.20       5.87 f
+  U378/Y (BUFX12)                          0.17       6.05 f
+  U1094/Y (MXI2X4)                         0.18       6.22 r
+  U1662/Y (XOR2X1)                         0.39       6.61 r
+  U372/Y (NAND4X1)                         0.18       6.79 f
+  U1672/Y (NAND4BX2)                       0.34       7.13 f
+  U1673/Y (NAND3X4)                        0.37       7.50 r
+  U1674/Y (NAND2X4)                        0.27       7.77 f
+  U84/Y (MXI2X2)                           0.29       8.06 r
+  U1678/Y (XOR2X1)                         0.42       8.48 r
+  U1681/Y (NAND2X1)                        0.20       8.68 f
+  U1692/Y (NOR2X4)                         0.16       8.84 r
+  U1693/Y (NAND2BX4)                       0.14       8.98 f
+  U1716/Y (NAND4X4)                        0.14       9.12 r
+  U337/Y (BUFX12)                          0.19       9.31 r
+  U1133/Y (NAND3BX4)                       0.23       9.55 r
+  U66/Y (CLKBUFX8)                         0.26       9.81 r
+  U58/Y (NAND2X2)                          0.19      10.00 f
+  U1947/Y (NOR2X1)                         0.74      10.73 r
+  U528/Y (INVX4)                           0.26      10.99 f
+  U51/Y (OAI2BB1X1)                        0.40      11.39 f
+  U523/Y (INVX1)                           0.20      11.59 r
+  U520/Y (AOI21X1)                         0.16      11.75 f
+  U517/Y (AND4X2)                          0.29      12.04 f
+  U1969/Y (NAND2X4)                        0.23      12.27 r
+  U1991/Y (NAND4X4)                        0.26      12.53 f
+  U1993/Y (NOR2X4)                         0.27      12.80 r
+  U255/Y (NAND2X1)                         0.31      13.11 f
+  U2140/Y (AOI2BB1X2)                      0.34      13.45 f
+  U2141/Y (OAI2BB1X4)                      0.27      13.71 r
+  U2216/Y (NOR2X2)                         0.09      13.81 f
+  U2217/Y (AND2X4)                         0.33      14.14 f
+  U1187/Y (INVX1)                          0.18      14.32 r
+  U2222/Y (AOI21X1)                        0.16      14.47 f
+  U256/Y (OAI2BB1X1)                       0.51      14.98 r
+  pattern_id_o[0] (out)                    0.00      14.98 r
+  data arrival time                                  14.98
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.98
+  -----------------------------------------------------------
+  slack (MET)                                         0.02
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: repairable_o
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1078/Y (BUFX8)                          0.25       0.25 f
+  U1097/Y (NOR2X4)                         0.18       0.43 r
+  U1231/Y (NAND2X1)                        0.23       0.66 f
+  U1232/Y (OAI2BB1X4)                      0.28       0.94 f
+  U1082/Y (NAND2X2)                        0.22       1.15 r
+  U1294/Y (OR2X4)                          0.21       1.37 r
+  U1071/Y (CLKBUFX8)                       0.24       1.60 r
+  U147/Y (MXI2X1)                          0.38       1.98 r
+  U1400/Y (XOR2X1)                         0.50       2.48 r
+  U1401/Y (NOR2X2)                         0.11       2.59 f
+  U1404/Y (NAND4X2)                        0.20       2.79 r
+  U1405/Y (INVX1)                          0.19       2.98 f
+  U1406/Y (NAND2X1)                        0.30       3.28 r
+  U1445/Y (NAND4X4)                        0.24       3.52 f
+  U1464/Y (NAND3X2)                        0.16       3.68 r
+  U1465/Y (OR2X4)                          0.36       4.04 r
+  U125/Y (MXI2X2)                          0.37       4.40 r
+  U1482/Y (XOR2X1)                         0.38       4.78 f
+  U1483/Y (NOR2X2)                         0.25       5.03 r
+  U1080/Y (NAND4X4)                        0.16       5.19 f
+  U1491/Y (NAND2X4)                        0.34       5.52 r
+  U1606/Y (NAND4X4)                        0.15       5.67 f
+  U709/Y (BUFX12)                          0.20       5.87 f
+  U378/Y (BUFX12)                          0.17       6.05 f
+  U1094/Y (MXI2X4)                         0.18       6.22 r
+  U1662/Y (XOR2X1)                         0.39       6.61 r
+  U372/Y (NAND4X1)                         0.18       6.79 f
+  U1672/Y (NAND4BX2)                       0.34       7.13 f
+  U1673/Y (NAND3X4)                        0.37       7.50 r
+  U1674/Y (NAND2X4)                        0.27       7.77 f
+  U84/Y (MXI2X2)                           0.29       8.06 r
+  U1678/Y (XOR2X1)                         0.42       8.48 r
+  U1681/Y (NAND2X1)                        0.20       8.68 f
+  U1692/Y (NOR2X4)                         0.16       8.84 r
+  U1693/Y (NAND2BX4)                       0.14       8.98 f
+  U1716/Y (NAND4X4)                        0.14       9.12 r
+  U337/Y (BUFX12)                          0.19       9.31 r
+  U1834/Y (NAND4BX4)                       0.33       9.64 r
+  U1166/Y (MXI2X1)                         0.44      10.08 r
+  U1836/Y (XOR2X1)                         0.40      10.48 f
+  U1837/Y (NOR2X2)                         0.25      10.72 r
+  U1845/Y (NAND4X4)                        0.22      10.94 f
+  U2033/Y (NAND2X1)                        0.30      11.24 r
+  U249/Y (OR2XL)                           0.57      11.81 r
+  U2058/Y (NAND2X2)                        0.19      11.99 f
+  U44/Y (NOR2X1)                           0.53      12.53 r
+  U2091/Y (INVX1)                          0.27      12.80 f
+  U2095/Y (OAI21XL)                        0.40      13.19 r
+  U33/Y (AOI21X1)                          0.28      13.47 f
+  U2096/Y (NAND4X2)                        0.30      13.77 r
+  U1085/Y (NOR2X2)                         0.12      13.88 f
+  U2166/Y (AND2X4)                         0.29      14.18 f
+  U2180/Y (OR2X4)                          0.26      14.44 f
+  U2220/Y (NAND4BX2)                       0.38      14.81 f
+  repairable_o (out)                       0.00      14.81 f
+  data arrival time                                  14.81
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.81
+  -----------------------------------------------------------
+  slack (MET)                                         0.19
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: matrix_flat_o[5]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1078/Y (BUFX8)                          0.25       0.25 f
+  U1097/Y (NOR2X4)                         0.18       0.43 r
+  U1231/Y (NAND2X1)                        0.23       0.66 f
+  U1232/Y (OAI2BB1X4)                      0.28       0.94 f
+  U1082/Y (NAND2X2)                        0.22       1.15 r
+  U1294/Y (OR2X4)                          0.21       1.37 r
+  U1071/Y (CLKBUFX8)                       0.24       1.60 r
+  U147/Y (MXI2X1)                          0.38       1.98 r
+  U1400/Y (XOR2X1)                         0.50       2.48 r
+  U1401/Y (NOR2X2)                         0.11       2.59 f
+  U1404/Y (NAND4X2)                        0.20       2.79 r
+  U1405/Y (INVX1)                          0.19       2.98 f
+  U1406/Y (NAND2X1)                        0.30       3.28 r
+  U1445/Y (NAND4X4)                        0.24       3.52 f
+  U1464/Y (NAND3X2)                        0.16       3.68 r
+  U1465/Y (OR2X4)                          0.36       4.04 r
+  U125/Y (MXI2X2)                          0.37       4.40 r
+  U1482/Y (XOR2X1)                         0.38       4.78 f
+  U1483/Y (NOR2X2)                         0.25       5.03 r
+  U1080/Y (NAND4X4)                        0.16       5.19 f
+  U1491/Y (NAND2X4)                        0.34       5.52 r
+  U1606/Y (NAND4X4)                        0.15       5.67 f
+  U709/Y (BUFX12)                          0.20       5.87 f
+  U378/Y (BUFX12)                          0.17       6.05 f
+  U1094/Y (MXI2X4)                         0.18       6.22 r
+  U1662/Y (XOR2X1)                         0.39       6.61 r
+  U372/Y (NAND4X1)                         0.18       6.79 f
+  U1672/Y (NAND4BX2)                       0.34       7.13 f
+  U1673/Y (NAND3X4)                        0.37       7.50 r
+  U1674/Y (NAND2X4)                        0.27       7.77 f
+  U84/Y (MXI2X2)                           0.29       8.06 r
+  U1678/Y (XOR2X1)                         0.42       8.48 r
+  U1681/Y (NAND2X1)                        0.20       8.68 f
+  U1692/Y (NOR2X4)                         0.16       8.84 r
+  U1693/Y (NAND2BX4)                       0.14       8.98 f
+  U1716/Y (NAND4X4)                        0.14       9.12 r
+  U337/Y (BUFX12)                          0.19       9.31 r
+  U1133/Y (NAND3BX4)                       0.23       9.55 r
+  U66/Y (CLKBUFX8)                         0.26       9.81 r
+  U1847/Y (AOI2BB1X4)                      0.43      10.24 r
+  U53/Y (INVX2)                            0.21      10.45 f
+  U1858/Y (AOI21X1)                        0.46      10.91 r
+  U1862/Y (NAND4X4)                        0.33      11.23 f
+  U1863/Y (NAND2X2)                        0.27      11.51 r
+  U1867/Y (OR3X4)                          0.37      11.87 r
+  U1878/Y (INVX4)                          0.06      11.93 f
+  U1880/Y (NAND2X2)                        0.15      12.08 r
+  U1910/Y (NAND4X4)                        0.33      12.41 f
+  U1946/Y (NAND4X4)                        0.39      12.80 r
+  U1994/Y (NAND2X4)                        0.12      12.92 f
+  U1995/Y (INVX8)                          0.18      13.10 r
+  U1118/Y (CLKINVX3)                       0.16      13.26 f
+  U23/Y (OAI31XL)                          1.37      14.63 r
+  matrix_flat_o[5] (out)                   0.00      14.63 r
+  data arrival time                                  14.63
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.63
+  -----------------------------------------------------------
+  slack (MET)                                         0.37
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: matrix_flat_o[10]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1021/Y (CLKINVX3)                       0.20       0.20 r
+  U988/Y (INVX4)                           0.12       0.32 f
+  U1209/Y (NAND2X4)                        0.28       0.60 r
+  U1210/Y (XOR2X2)                         0.44       1.03 r
+  U1211/Y (NAND3X2)                        0.15       1.19 f
+  U1212/Y (NOR2X4)                         0.16       1.35 r
+  U1213/Y (NAND2X4)                        0.17       1.52 f
+  U1272/Y (NAND4X4)                        0.23       1.76 r
+  U1285/Y (NAND4X4)                        0.30       2.05 f
+  U1160/Y (MXI2X2)                         0.33       2.38 r
+  U1371/Y (XOR2X1)                         0.34       2.72 f
+  U1372/Y (NOR2X1)                         0.30       3.02 r
+  U1382/Y (NAND4X2)                        0.21       3.23 f
+  U1383/Y (NAND2X2)                        0.15       3.38 r
+  U1384/Y (NAND2BX4)                       0.23       3.61 r
+  U407/Y (BUFX12)                          0.19       3.80 r
+  U1501/Y (NAND2X4)                        0.16       3.96 f
+  U1077/Y (BUFX4)                          0.21       4.16 f
+  U126/Y (MXI2X2)                          0.24       4.40 r
+  U1546/Y (XOR2X1)                         0.42       4.83 r
+  U1548/Y (NAND4X1)                        0.20       5.02 f
+  U1551/Y (OR3X2)                          0.44       5.47 f
+  U1552/Y (NAND2X4)                        0.22       5.69 r
+  U1553/Y (NAND2X4)                        0.10       5.79 f
+  U713/Y (BUFX8)                           0.18       5.98 f
+  U103/Y (MXI2X2)                          0.26       6.23 r
+  U1554/Y (XOR2X2)                         0.40       6.63 r
+  U1556/Y (NOR2X2)                         0.08       6.71 f
+  U1056/Y (NAND4X2)                        0.16       6.87 r
+  U1602/Y (NAND3X4)                        0.33       7.20 f
+  U1607/Y (NAND2X4)                        0.24       7.44 r
+  U1072/Y (BUFX8)                          0.22       7.65 r
+  U1755/Y (MXI2X4)                         0.19       7.85 r
+  U1756/Y (XOR2X1)                         0.38       8.23 r
+  U1760/Y (NAND2X1)                        0.16       8.39 f
+  U1761/Y (OR4X4)                          0.58       8.97 f
+  U1765/Y (NAND4X4)                        0.35       9.32 r
+  U1766/Y (NOR2X4)                         0.09       9.42 f
+  U1767/Y (NAND2X4)                        0.20       9.62 r
+  U334/Y (BUFX12)                          0.19       9.81 r
+  U1917/Y (MXI2X1)                         0.37      10.18 r
+  U331/Y (XOR2X1)                          0.50      10.68 r
+  U1918/Y (AND4X4)                         0.26      10.94 r
+  U1175/Y (NAND4BX4)                       0.16      11.10 f
+  U1174/Y (NAND4X4)                        0.34      11.44 r
+  U1923/Y (NAND4BX4)                       0.29      11.73 f
+  U1948/Y (NAND2BX4)                       0.27      11.99 f
+  U1956/Y (OAI21X4)                        0.20      12.19 r
+  U1969/Y (NAND2X4)                        0.18      12.37 f
+  U1991/Y (NAND4X4)                        0.26      12.63 r
+  U509/Y (NAND2X1)                         0.16      12.79 f
+  U35/Y (OR2X2)                            0.30      13.09 f
+  U2072/Y (OAI21X4)                        0.19      13.28 r
+  U2182/Y (INVX1)                          0.13      13.42 f
+  U24/Y (OAI21XL)                          1.01      14.43 r
+  matrix_flat_o[10] (out)                  0.00      14.43 r
+  data arrival time                                  14.43
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.43
+  -----------------------------------------------------------
+  slack (MET)                                         0.57
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: matrix_flat_o[15]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1021/Y (CLKINVX3)                       0.20       0.20 r
+  U988/Y (INVX4)                           0.12       0.32 f
+  U1209/Y (NAND2X4)                        0.28       0.60 r
+  U1210/Y (XOR2X2)                         0.44       1.03 r
+  U1211/Y (NAND3X2)                        0.15       1.19 f
+  U1212/Y (NOR2X4)                         0.16       1.35 r
+  U1213/Y (NAND2X4)                        0.17       1.52 f
+  U1272/Y (NAND4X4)                        0.23       1.76 r
+  U1285/Y (NAND4X4)                        0.30       2.05 f
+  U1160/Y (MXI2X2)                         0.33       2.38 r
+  U1371/Y (XOR2X1)                         0.34       2.72 f
+  U1372/Y (NOR2X1)                         0.30       3.02 r
+  U1382/Y (NAND4X2)                        0.21       3.23 f
+  U1383/Y (NAND2X2)                        0.15       3.38 r
+  U1384/Y (NAND2BX4)                       0.23       3.61 r
+  U407/Y (BUFX12)                          0.19       3.80 r
+  U1501/Y (NAND2X4)                        0.16       3.96 f
+  U1077/Y (BUFX4)                          0.21       4.16 f
+  U126/Y (MXI2X2)                          0.24       4.40 r
+  U1546/Y (XOR2X1)                         0.42       4.83 r
+  U1548/Y (NAND4X1)                        0.20       5.02 f
+  U1551/Y (OR3X2)                          0.44       5.47 f
+  U1552/Y (NAND2X4)                        0.22       5.69 r
+  U1553/Y (NAND2X4)                        0.10       5.79 f
+  U713/Y (BUFX8)                           0.18       5.98 f
+  U103/Y (MXI2X2)                          0.26       6.23 r
+  U1554/Y (XOR2X2)                         0.40       6.63 r
+  U1556/Y (NOR2X2)                         0.08       6.71 f
+  U1056/Y (NAND4X2)                        0.16       6.87 r
+  U1602/Y (NAND3X4)                        0.33       7.20 f
+  U1607/Y (NAND2X4)                        0.24       7.44 r
+  U1072/Y (BUFX8)                          0.22       7.65 r
+  U1755/Y (MXI2X4)                         0.19       7.85 r
+  U1756/Y (XOR2X1)                         0.38       8.23 r
+  U1760/Y (NAND2X1)                        0.16       8.39 f
+  U1761/Y (OR4X4)                          0.58       8.97 f
+  U1765/Y (NAND4X4)                        0.35       9.32 r
+  U1766/Y (NOR2X4)                         0.09       9.42 f
+  U1767/Y (NAND2X4)                        0.20       9.62 r
+  U333/Y (BUFX8)                           0.23       9.85 r
+  U1794/Y (AOI2BB2X4)                      0.25      10.10 r
+  U247/Y (XOR2XL)                          0.50      10.59 r
+  U1799/Y (NOR2X2)                         0.13      10.72 f
+  U1809/Y (NAND4X4)                        0.29      11.02 r
+  U52/Y (NAND2X2)                          0.21      11.23 f
+  U1183/Y (INVX1)                          0.21      11.44 r
+  U1906/Y (NAND2X2)                        0.10      11.55 f
+  U1089/Y (NOR2X2)                         0.23      11.78 r
+  U47/Y (OAI2BB1X2)                        0.39      12.18 r
+  U511/Y (NAND4X1)                         0.30      12.48 f
+  U2111/Y (NOR2BX4)                        0.23      12.71 r
+  U34/Y (INVX1)                            0.18      12.89 f
+  U1066/Y (OAI22X4)                        0.33      13.22 r
+  U2193/Y (INVX1)                          0.14      13.36 f
+  U25/Y (OAI21XL)                          1.01      14.37 r
+  matrix_flat_o[15] (out)                  0.00      14.37 r
+  data arrival time                                  14.37
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.37
+  -----------------------------------------------------------
+  slack (MET)                                         0.63
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: candidate_valid_o[0]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1021/Y (CLKINVX3)                       0.20       0.20 r
+  U988/Y (INVX4)                           0.12       0.32 f
+  U1209/Y (NAND2X4)                        0.28       0.60 r
+  U1210/Y (XOR2X2)                         0.44       1.03 r
+  U1211/Y (NAND3X2)                        0.15       1.19 f
+  U1212/Y (NOR2X4)                         0.16       1.35 r
+  U1213/Y (NAND2X4)                        0.17       1.52 f
+  U1272/Y (NAND4X4)                        0.23       1.76 r
+  U1285/Y (NAND4X4)                        0.30       2.05 f
+  U1160/Y (MXI2X2)                         0.33       2.38 r
+  U1371/Y (XOR2X1)                         0.34       2.72 f
+  U1372/Y (NOR2X1)                         0.30       3.02 r
+  U1382/Y (NAND4X2)                        0.21       3.23 f
+  U1383/Y (NAND2X2)                        0.15       3.38 r
+  U1384/Y (NAND2BX4)                       0.23       3.61 r
+  U407/Y (BUFX12)                          0.19       3.80 r
+  U1501/Y (NAND2X4)                        0.16       3.96 f
+  U1077/Y (BUFX4)                          0.21       4.16 f
+  U126/Y (MXI2X2)                          0.24       4.40 r
+  U1546/Y (XOR2X1)                         0.42       4.83 r
+  U1548/Y (NAND4X1)                        0.20       5.02 f
+  U1551/Y (OR3X2)                          0.44       5.47 f
+  U1552/Y (NAND2X4)                        0.22       5.69 r
+  U1553/Y (NAND2X4)                        0.10       5.79 f
+  U713/Y (BUFX8)                           0.18       5.98 f
+  U103/Y (MXI2X2)                          0.26       6.23 r
+  U1554/Y (XOR2X2)                         0.40       6.63 r
+  U1556/Y (NOR2X2)                         0.08       6.71 f
+  U1056/Y (NAND4X2)                        0.16       6.87 r
+  U1602/Y (NAND3X4)                        0.33       7.20 f
+  U1607/Y (NAND2X4)                        0.24       7.44 r
+  U1072/Y (BUFX8)                          0.22       7.65 r
+  U1755/Y (MXI2X4)                         0.19       7.85 r
+  U1756/Y (XOR2X1)                         0.38       8.23 r
+  U1760/Y (NAND2X1)                        0.16       8.39 f
+  U1761/Y (OR4X4)                          0.58       8.97 f
+  U1765/Y (NAND4X4)                        0.35       9.32 r
+  U1766/Y (NOR2X4)                         0.09       9.42 f
+  U1767/Y (NAND2X4)                        0.20       9.62 r
+  U334/Y (BUFX12)                          0.19       9.81 r
+  U1917/Y (MXI2X1)                         0.37      10.18 r
+  U331/Y (XOR2X1)                          0.50      10.68 r
+  U1918/Y (AND4X4)                         0.26      10.94 r
+  U1175/Y (NAND4BX4)                       0.16      11.10 f
+  U1174/Y (NAND4X4)                        0.34      11.44 r
+  U1923/Y (NAND4BX4)                       0.29      11.73 f
+  U1948/Y (NAND2BX4)                       0.27      11.99 f
+  U1956/Y (OAI21X4)                        0.20      12.19 r
+  U1969/Y (NAND2X4)                        0.18      12.37 f
+  U1991/Y (NAND4X4)                        0.26      12.63 r
+  U1993/Y (NOR2X4)                         0.14      12.77 f
+  U255/Y (NAND2X1)                         0.38      13.15 r
+  U2140/Y (AOI2BB1X2)                      0.32      13.47 r
+  U2141/Y (OAI2BB1X4)                      0.20      13.68 f
+  U30/Y (OR2X2)                            0.32      13.99 f
+  U2218/Y (NOR2X4)                         0.32      14.31 r
+  candidate_valid_o[0] (out)               0.00      14.31 r
+  data arrival time                                  14.31
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.31
+  -----------------------------------------------------------
+  slack (MET)                                         0.69
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: candidate_valid_o[3]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1021/Y (CLKINVX3)                       0.20       0.20 r
+  U988/Y (INVX4)                           0.12       0.32 f
+  U1209/Y (NAND2X4)                        0.28       0.60 r
+  U1210/Y (XOR2X2)                         0.44       1.03 r
+  U1211/Y (NAND3X2)                        0.15       1.19 f
+  U1212/Y (NOR2X4)                         0.16       1.35 r
+  U1213/Y (NAND2X4)                        0.17       1.52 f
+  U1272/Y (NAND4X4)                        0.23       1.76 r
+  U1285/Y (NAND4X4)                        0.30       2.05 f
+  U1160/Y (MXI2X2)                         0.33       2.38 r
+  U1371/Y (XOR2X1)                         0.34       2.72 f
+  U1372/Y (NOR2X1)                         0.30       3.02 r
+  U1382/Y (NAND4X2)                        0.21       3.23 f
+  U1383/Y (NAND2X2)                        0.15       3.38 r
+  U1384/Y (NAND2BX4)                       0.23       3.61 r
+  U407/Y (BUFX12)                          0.19       3.80 r
+  U1501/Y (NAND2X4)                        0.16       3.96 f
+  U1077/Y (BUFX4)                          0.21       4.16 f
+  U126/Y (MXI2X2)                          0.24       4.40 r
+  U1546/Y (XOR2X1)                         0.42       4.83 r
+  U1548/Y (NAND4X1)                        0.20       5.02 f
+  U1551/Y (OR3X2)                          0.44       5.47 f
+  U1552/Y (NAND2X4)                        0.22       5.69 r
+  U1553/Y (NAND2X4)                        0.10       5.79 f
+  U713/Y (BUFX8)                           0.18       5.98 f
+  U103/Y (MXI2X2)                          0.26       6.23 r
+  U1554/Y (XOR2X2)                         0.40       6.63 r
+  U1556/Y (NOR2X2)                         0.08       6.71 f
+  U1056/Y (NAND4X2)                        0.16       6.87 r
+  U1602/Y (NAND3X4)                        0.33       7.20 f
+  U1607/Y (NAND2X4)                        0.24       7.44 r
+  U1072/Y (BUFX8)                          0.22       7.65 r
+  U1755/Y (MXI2X4)                         0.19       7.85 r
+  U1756/Y (XOR2X1)                         0.38       8.23 r
+  U1760/Y (NAND2X1)                        0.16       8.39 f
+  U1761/Y (OR4X4)                          0.58       8.97 f
+  U1765/Y (NAND4X4)                        0.35       9.32 r
+  U1766/Y (NOR2X4)                         0.09       9.42 f
+  U1767/Y (NAND2X4)                        0.20       9.62 r
+  U334/Y (BUFX12)                          0.19       9.81 r
+  U1917/Y (MXI2X1)                         0.37      10.18 r
+  U331/Y (XOR2X1)                          0.50      10.68 r
+  U1918/Y (AND4X4)                         0.26      10.94 r
+  U1175/Y (NAND4BX4)                       0.16      11.10 f
+  U1174/Y (NAND4X4)                        0.34      11.44 r
+  U1923/Y (NAND4BX4)                       0.29      11.73 f
+  U1948/Y (NAND2BX4)                       0.27      11.99 f
+  U1956/Y (OAI21X4)                        0.20      12.19 r
+  U1969/Y (NAND2X4)                        0.18      12.37 f
+  U1991/Y (NAND4X4)                        0.26      12.63 r
+  U1993/Y (NOR2X4)                         0.14      12.77 f
+  U255/Y (NAND2X1)                         0.38      13.15 r
+  U2134/Y (AOI2BB1X2)                      0.32      13.47 r
+  U2135/Y (OAI2BB1X4)                      0.20      13.67 f
+  U1189/Y (NOR2X1)                         0.28      13.95 r
+  U2179/Y (AND2X4)                         0.35      14.30 r
+  candidate_valid_o[3] (out)               0.00      14.30 r
+  data arrival time                                  14.30
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.30
+  -----------------------------------------------------------
+  slack (MET)                                         0.70
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: candidate_valid_o[2]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  pivot_valid_i[0] (in)                    0.00       0.00 f
+  U1078/Y (BUFX8)                          0.25       0.25 f
+  U1097/Y (NOR2X4)                         0.18       0.43 r
+  U1231/Y (NAND2X1)                        0.23       0.66 f
+  U1232/Y (OAI2BB1X4)                      0.28       0.94 f
+  U1082/Y (NAND2X2)                        0.22       1.15 r
+  U1294/Y (OR2X4)                          0.21       1.37 r
+  U1071/Y (CLKBUFX8)                       0.24       1.60 r
+  U147/Y (MXI2X1)                          0.38       1.98 r
+  U1400/Y (XOR2X1)                         0.50       2.48 r
+  U1401/Y (NOR2X2)                         0.11       2.59 f
+  U1404/Y (NAND4X2)                        0.20       2.79 r
+  U1405/Y (INVX1)                          0.19       2.98 f
+  U1406/Y (NAND2X1)                        0.30       3.28 r
+  U1445/Y (NAND4X4)                        0.24       3.52 f
+  U1464/Y (NAND3X2)                        0.16       3.68 r
+  U1465/Y (OR2X4)                          0.36       4.04 r
+  U125/Y (MXI2X2)                          0.37       4.40 r
+  U1482/Y (XOR2X1)                         0.38       4.78 f
+  U1483/Y (NOR2X2)                         0.25       5.03 r
+  U1080/Y (NAND4X4)                        0.16       5.19 f
+  U1491/Y (NAND2X4)                        0.34       5.52 r
+  U1606/Y (NAND4X4)                        0.15       5.67 f
+  U709/Y (BUFX12)                          0.20       5.87 f
+  U378/Y (BUFX12)                          0.17       6.05 f
+  U1094/Y (MXI2X4)                         0.18       6.22 r
+  U1662/Y (XOR2X1)                         0.39       6.61 r
+  U372/Y (NAND4X1)                         0.18       6.79 f
+  U1672/Y (NAND4BX2)                       0.34       7.13 f
+  U1673/Y (NAND3X4)                        0.37       7.50 r
+  U1674/Y (NAND2X4)                        0.27       7.77 f
+  U84/Y (MXI2X2)                           0.29       8.06 r
+  U1678/Y (XOR2X1)                         0.42       8.48 r
+  U1681/Y (NAND2X1)                        0.20       8.68 f
+  U1692/Y (NOR2X4)                         0.16       8.84 r
+  U1693/Y (NAND2BX4)                       0.14       8.98 f
+  U1716/Y (NAND4X4)                        0.14       9.12 r
+  U337/Y (BUFX12)                          0.19       9.31 r
+  U1133/Y (NAND3BX4)                       0.23       9.55 r
+  U66/Y (CLKBUFX8)                         0.26       9.81 r
+  U1847/Y (AOI2BB1X4)                      0.43      10.24 r
+  U53/Y (INVX2)                            0.21      10.45 f
+  U1858/Y (AOI21X1)                        0.46      10.91 r
+  U1862/Y (NAND4X4)                        0.33      11.23 f
+  U1863/Y (NAND2X2)                        0.27      11.51 r
+  U1867/Y (OR3X4)                          0.37      11.87 r
+  U1878/Y (INVX4)                          0.06      11.93 f
+  U1880/Y (NAND2X2)                        0.15      12.08 r
+  U1910/Y (NAND4X4)                        0.33      12.41 f
+  U2071/Y (NAND2X4)                        0.24      12.66 r
+  U40/Y (INVX1)                            0.13      12.79 f
+  U264/Y (NAND2X2)                         0.21      13.00 r
+  U1087/Y (NOR2X1)                         0.16      13.16 f
+  U1086/Y (NAND2X2)                        0.21      13.37 r
+  U2096/Y (NAND4X2)                        0.22      13.59 f
+  U2097/Y (OR3X4)                          0.32      13.91 f
+  U2098/Y (NOR2X4)                         0.36      14.27 r
+  candidate_valid_o[2] (out)               0.00      14.27 r
+  data arrival time                                  14.27
+
+  clock recam_boundary_clk (rise edge)    15.00      15.00
+  clock network delay (ideal)              0.00      15.00
+  output external delay                    0.00      15.00
+  data required time                                 15.00
+  -----------------------------------------------------------
+  data required time                                 15.00
+  data arrival time                                 -14.27
+  -----------------------------------------------------------
+  slack (MET)                                         0.73
+
+
+1

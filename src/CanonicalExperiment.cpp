@@ -234,6 +234,9 @@ std::vector<CanonicalConfigurationResult> runCanonicalFour(
     sramConfig.spareCols = static_cast<std::uint32_t>(
         config.sharingConfig.spareColumns);
     sramConfig.dataWordBits = config.hierarchicalConfig.dataWordBits;
+    sramConfig.minimumAddressEntryBits =
+        config.hierarchicalConfig.globalWordAddressEntryBits(
+            config.sharingConfig);
     const std::size_t onlineEntries =
         config.hierarchicalConfig.onlineGlobalReuseEntries.value_or(
             static_cast<std::size_t>(config.sharingConfig.spareRows +

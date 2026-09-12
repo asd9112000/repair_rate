@@ -1,0 +1,455 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : recam_early_solution_selector
+Version: W-2024.09-SP2
+Date   : Thu Sep 10 11:53:31 2026
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_config_id_o[2]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U111/Y (AOI22XL)                         0.37       5.93 f
+  U90/Y (NAND2X1)                          0.56       6.49 r
+  selected_config_id_o[2] (out)            0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_config_id_o[1]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U110/Y (AOI22XL)                         0.37       5.93 f
+  U89/Y (NAND2X1)                          0.56       6.49 r
+  selected_config_id_o[1] (out)            0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_config_id_o[0]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U109/Y (AOI22XL)                         0.37       5.93 f
+  U88/Y (NAND2X1)                          0.56       6.49 r
+  selected_config_id_o[0] (out)            0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_pattern_id_o[3]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U115/Y (AOI22XL)                         0.37       5.93 f
+  U87/Y (NAND2X1)                          0.56       6.49 r
+  selected_pattern_id_o[3] (out)           0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_pattern_id_o[2]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U114/Y (AOI22XL)                         0.37       5.93 f
+  U86/Y (NAND2X1)                          0.56       6.49 r
+  selected_pattern_id_o[2] (out)           0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_pattern_id_o[1]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U113/Y (AOI22XL)                         0.37       5.93 f
+  U85/Y (NAND2X1)                          0.56       6.49 r
+  selected_pattern_id_o[1] (out)           0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_pattern_id_o[0]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U112/Y (AOI22XL)                         0.37       5.93 f
+  U84/Y (NAND2X1)                          0.56       6.49 r
+  selected_pattern_id_o[0] (out)           0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_candidate_valid_o[9]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U108/Y (AOI22XL)                         0.37       5.93 f
+  U83/Y (NAND2X1)                          0.56       6.49 r
+  selected_candidate_valid_o[9] (out)      0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_candidate_valid_o[8]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U107/Y (AOI22XL)                         0.37       5.93 f
+  U82/Y (NAND2X1)                          0.56       6.49 r
+  selected_candidate_valid_o[8] (out)      0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+  Startpoint: config_pattern_map_i[5]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: selected_candidate_valid_o[7]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_early_solution_selector
+                     tsmc18_wl10           slow
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock recam_boundary_clk (rise edge)     0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  input external delay                     0.00       0.00 f
+  config_pattern_map_i[5] (in)             0.00       0.00 f
+  U69/Y (NAND3X1)                          0.47       0.47 r
+  U71/Y (NAND4X1)                          0.41       0.88 f
+  U138/Y (INVX1)                           0.38       1.25 r
+  U137/Y (BUFX3)                           0.44       1.70 r
+  U136/Y (NOR2XL)                          0.23       1.92 f
+  U94/Y (NAND4X1)                          0.50       2.42 r
+  U97/Y (INVXL)                            0.81       3.23 f
+  U135/Y (NOR3XL)                          0.60       3.83 r
+  U116/Y (NAND4X1)                         0.59       4.43 f
+  U96/Y (INVX1)                            1.13       5.56 r
+  U106/Y (AOI22XL)                         0.37       5.93 f
+  U81/Y (NAND2X1)                          0.56       6.49 r
+  selected_candidate_valid_o[7] (out)      0.00       6.49 r
+  data arrival time                                   6.49
+
+  clock recam_boundary_clk (rise edge)    20.00      20.00
+  clock network delay (ideal)              0.00      20.00
+  output external delay                    0.00      20.00
+  data required time                                 20.00
+  -----------------------------------------------------------
+  data required time                                 20.00
+  data arrival time                                  -6.49
+  -----------------------------------------------------------
+  slack (MET)                                        13.51
+
+
+1

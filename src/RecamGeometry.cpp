@@ -82,6 +82,12 @@ void RecamGeometryConfig::validate() const
             "RECAM dimensions, channels, and word width must be positive, "
             "and Rs/Cs cannot both be zero");
     }
+    if (minimumAddressEntryBits.has_value() &&
+        *minimumAddressEntryBits == 0)
+    {
+        throw std::invalid_argument(
+            "Minimum Address CAM entry width must be positive when configured");
+    }
 }
 
 RecamGeometry deriveRecamGeometry(const RecamGeometryConfig &config)
@@ -129,6 +135,11 @@ RecamGeometry deriveRecamGeometry(const RecamGeometryConfig &config)
         result.channelAddressBits;
     result.addressEntryBits = std::max(
         result.addressOfflineEntryBits, result.addressOnlineEntryBits);
+    if (config.minimumAddressEntryBits.has_value())
+    {
+        result.addressEntryBits = std::max(
+            result.addressEntryBits, *config.minimumAddressEntryBits);
+    }
     result.hybridOfflineEntryBits =
         1 + result.pointerBits + 1 + result.lineAddressBits;
     result.hybridOnlineEntryBits =

@@ -1,0 +1,63 @@
+Loading db file '/cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db'
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Warning: Design has unannotated primary inputs. (PWR-414)
+Warning: Design has unannotated sequential cell outputs. (PWR-415)
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : repair_decode_area_engine_ENTRY_NUM14
+Version: W-2024.09-SP2
+Date   : Wed Sep  9 14:42:42 2026
+****************************************
+
+
+Library(s) Used:
+
+    slow (File: /cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db)
+
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+Design        Wire Load Model            Library
+------------------------------------------------
+repair_decode_area_engine_ENTRY_NUM14
+                       tsmc18_wl10       slow
+
+
+Global Operating Voltage = 1.62 
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1pW
+
+
+Attributes
+----------
+i - Including register clock pin internal power
+
+
+  Cell Internal Power  =   5.3413 mW   (69%)
+  Net Switching Power  =   2.4353 mW   (31%)
+                         ---------
+Total Dynamic Power    =   7.7766 mW  (100%)
+
+Cell Leakage Power     =   9.4080 uW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      2.5248            0.0000            0.0000            2.5248  (  32.43%)  i
+register           1.3312        3.3066e-03        1.6740e+06            1.3362  (  17.16%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational      1.4853            2.4320        7.7341e+06            3.9250  (  50.41%)
+--------------------------------------------------------------------------------------------------
+Total              5.3413 mW         2.4353 mW     9.4080e+06 pW         7.7860 mW
+1

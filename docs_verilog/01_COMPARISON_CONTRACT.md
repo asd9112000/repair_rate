@@ -101,6 +101,10 @@ sequential area
 
 cell count
 
+mapped leaf-cell count
+
+NAND2X1-equivalent gate count (GE), including the NAND2X1 area basis
+
 此外盡可能提供 module-level breakdown：
 
 fault storage
@@ -318,3 +322,22 @@ RS / CS sweep 應依 DATE architecture 實際設定決定。
 - `reports/` 中的 analytical area／latency proxy 不得填入 `results/` 的 synthesis 或
   RTL cycle 欄位；回灌 simulator 的 RTL 數值必須能追溯到 configuration、tool、
   library、constraint、RTL commit 與原始 log。
+
+---
+
+# 17. Directional Multi-Config Analyzer as a comparison consumer
+
+The 2×2 Directional Multi-Config Analyzer specified in
+[03_ANALYZER_RTL_HANDOFF.md](03_ANALYZER_RTL_HANDOFF.md) is a concrete consumer
+of this comparison methodology.  Its shared Pivot CAM, tagged Hybrid storage,
+counter table, selector, ledger, and pending-repair buffer must be synthesized
+as complete functionally equivalent blocks under the same standard-cell
+library, constraints, and reporting rules as other compared designs.
+
+Do not presume SRAM-like storage is smaller than a CAM implementation.  Report
+area and critical path for the complete selected configuration, and retain the
+logical entry/metadata-bit accounting required by Sections 9--14.
+
+This contract does not define the analyzer's ConfigID, PatternID, transpose,
+or policy semantics; those are defined by the analyzer handoff and simulator
+golden-model contract.

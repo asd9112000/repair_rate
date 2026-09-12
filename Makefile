@@ -8,7 +8,7 @@
 .PHONY:  sl_r sl_b
 .PHONY:  sl_sram_r sl_sram_b
 .PHONY:  dynamic_sharing_b dynamic_sharing_r dynamic_sram_recam_b dynamic_sram_recam_r hierarchical_recam_b hierarchical_recam_r
-.PHONY:  test test_recam_overflow test_recam_paper_faithful test_remap_validator test_dynamic_spare_sharing_foundation test_dynamic_spare_sharing_policy test_solution_take_policy test_dynamic_spare_sharing_layout test_layout_2x2_regression test_dynamic_repair_rate_sweep test_dynamic_remap_output test_bira_latency test_fault_address_bist test_recam_common_models test_sram_recam_model test_sram_fault_collection_fifo test_sram_recam_dynamic_equivalence test_hierarchical_recam test_hierarchical_fault_models test_canonical_experiment test_canonical_sweep
+.PHONY:  test test_recam_overflow test_recam_paper_faithful test_remap_validator test_dynamic_spare_sharing_foundation test_dynamic_spare_sharing_policy test_solution_take_policy test_dynamic_spare_sharing_layout test_layout_2x2_regression test_directional_multi_config_analyzer test_dynamic_repair_rate_sweep test_dynamic_remap_output test_bira_latency test_dss_post_bist_latency test_dss_post_bist_latency_sweep test_phase4j_policy_tradeoff test_phase4k_group_dominance_analysis test_fault_address_bist test_recam_common_models test_sram_recam_model test_sram_fault_collection_fifo test_sram_recam_dynamic_equivalence test_hierarchical_recam test_hierarchical_fault_models test_canonical_experiment test_canonical_sweep
 .PHONY:  validate_remap_b validate_remap
 .PHONY:  analyze_redundantrate analyze_spareline analyze_spareline_sram sim_DynamicSpareSharing
 
@@ -44,8 +44,13 @@ TEST_SRCS = tests/recam_cam_overflow_test.cpp \
 	tests/dynamic_spare_sharing_foundation_test.cpp \
 	tests/dynamic_spare_sharing_policy_test.cpp \
 	tests/solution_take_policy_test.cpp \
+	tests/directional_multi_config_analyzer_test.cpp \
 	tests/dynamic_spare_sharing_layout_test.cpp \
 	tests/bira_latency_test.cpp \
+	tests/dss_post_bist_latency_test.cpp \
+	tests/dss_post_bist_latency_sweep_test.cpp \
+	tests/phase4j_policy_tradeoff_test.cpp \
+	tests/phase4k_group_dominance_analysis_test.cpp \
 	tests/fault_address_bist_test.cpp \
 	tests/recam_common_models_test.cpp \
 	tests/sram_recam_model_test.cpp \
@@ -76,8 +81,13 @@ REMAP_VALIDATOR_TEST_TARGET = $(TESTDIR)/remap_validator_test
 DYNAMIC_FOUNDATION_TEST_TARGET = $(TESTDIR)/dynamic_spare_sharing_foundation_test
 DYNAMIC_POLICY_TEST_TARGET = $(TESTDIR)/dynamic_spare_sharing_policy_test
 SOLUTION_TAKE_TEST_TARGET = $(TESTDIR)/solution_take_policy_test
+DIRECTIONAL_MULTI_CONFIG_TEST_TARGET = $(TESTDIR)/directional_multi_config_analyzer_test
 DYNAMIC_LAYOUT_TEST_TARGET = $(TESTDIR)/dynamic_spare_sharing_layout_test
 BIRA_LATENCY_TEST_TARGET = $(TESTDIR)/bira_latency_test
+DSS_POST_BIST_LATENCY_TEST_TARGET = $(TESTDIR)/dss_post_bist_latency_test
+DSS_POST_BIST_LATENCY_SWEEP_TEST_TARGET = $(TESTDIR)/dss_post_bist_latency_sweep_test
+PHASE4J_POLICY_TRADEOFF_TEST_TARGET = $(TESTDIR)/phase4j_policy_tradeoff_test
+PHASE4K_GROUP_DOMINANCE_ANALYSIS_TEST_TARGET = $(TESTDIR)/phase4k_group_dominance_analysis_test
 FAULT_ADDRESS_BIST_TEST_TARGET = $(TESTDIR)/fault_address_bist_test
 RECAM_COMMON_MODELS_TEST_TARGET = $(TESTDIR)/recam_common_models_test
 SRAM_RECAM_MODEL_TEST_TARGET = $(TESTDIR)/sram_recam_model_test
@@ -211,6 +221,12 @@ $(SOLUTION_TAKE_TEST_TARGET): $(TEST_OBJDIR)/solution_take_policy_test.o $(OBJS)
 test_solution_take_policy: $(SOLUTION_TAKE_TEST_TARGET)
 	./$(SOLUTION_TAKE_TEST_TARGET)
 
+$(DIRECTIONAL_MULTI_CONFIG_TEST_TARGET): $(TEST_OBJDIR)/directional_multi_config_analyzer_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_directional_multi_config_analyzer: $(DIRECTIONAL_MULTI_CONFIG_TEST_TARGET)
+	./$(DIRECTIONAL_MULTI_CONFIG_TEST_TARGET)
+
 $(DYNAMIC_LAYOUT_TEST_TARGET): $(TEST_OBJDIR)/dynamic_spare_sharing_layout_test.o $(OBJS) | $(TESTDIR)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
 
@@ -224,6 +240,30 @@ $(BIRA_LATENCY_TEST_TARGET): $(TEST_OBJDIR)/bira_latency_test.o $(OBJS) | $(TEST
 
 test_bira_latency: $(BIRA_LATENCY_TEST_TARGET)
 	./$(BIRA_LATENCY_TEST_TARGET)
+
+$(DSS_POST_BIST_LATENCY_TEST_TARGET): $(TEST_OBJDIR)/dss_post_bist_latency_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_dss_post_bist_latency: $(DSS_POST_BIST_LATENCY_TEST_TARGET)
+	./$(DSS_POST_BIST_LATENCY_TEST_TARGET)
+
+$(DSS_POST_BIST_LATENCY_SWEEP_TEST_TARGET): $(TEST_OBJDIR)/dss_post_bist_latency_sweep_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_dss_post_bist_latency_sweep: $(DSS_POST_BIST_LATENCY_SWEEP_TEST_TARGET)
+	./$(DSS_POST_BIST_LATENCY_SWEEP_TEST_TARGET)
+
+$(PHASE4J_POLICY_TRADEOFF_TEST_TARGET): $(TEST_OBJDIR)/phase4j_policy_tradeoff_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_phase4j_policy_tradeoff: $(PHASE4J_POLICY_TRADEOFF_TEST_TARGET)
+	./$(PHASE4J_POLICY_TRADEOFF_TEST_TARGET)
+
+$(PHASE4K_GROUP_DOMINANCE_ANALYSIS_TEST_TARGET): $(TEST_OBJDIR)/phase4k_group_dominance_analysis_test.o | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $< -o $@
+
+test_phase4k_group_dominance_analysis: $(PHASE4K_GROUP_DOMINANCE_ANALYSIS_TEST_TARGET)
+	./$(PHASE4K_GROUP_DOMINANCE_ANALYSIS_TEST_TARGET)
 
 $(FAULT_ADDRESS_BIST_TEST_TARGET): $(TEST_OBJDIR)/fault_address_bist_test.o $(OBJS) | $(TESTDIR)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
@@ -288,7 +328,7 @@ test_dynamic_remap_output: $(DYNAMIC_SHARING_TARGET) $(REMAP_VALIDATOR_TARGET)
 	python3 tests/dynamic_remap_output_test.py \
 		./$(DYNAMIC_SHARING_TARGET) ./$(REMAP_VALIDATOR_TARGET)
 
-test: test_recam_overflow test_recam_paper_faithful test_remap_validator test_dynamic_spare_sharing_foundation test_dynamic_spare_sharing_policy test_solution_take_policy test_dynamic_spare_sharing_layout test_bira_latency test_fault_address_bist test_recam_common_models test_sram_recam_model test_sram_fault_collection_fifo test_sram_recam_dynamic_equivalence test_hierarchical_recam test_hierarchical_fault_models test_canonical_experiment test_canonical_sweep test_dynamic_repair_rate_sweep test_dynamic_remap_output
+test: test_recam_overflow test_recam_paper_faithful test_remap_validator test_dynamic_spare_sharing_foundation test_dynamic_spare_sharing_policy test_solution_take_policy test_dynamic_spare_sharing_layout test_directional_multi_config_analyzer test_bira_latency test_dss_post_bist_latency test_dss_post_bist_latency_sweep test_fault_address_bist test_recam_common_models test_sram_recam_model test_sram_fault_collection_fifo test_sram_recam_dynamic_equivalence test_hierarchical_recam test_hierarchical_fault_models test_canonical_experiment test_canonical_sweep test_dynamic_repair_rate_sweep test_dynamic_remap_output
 
 validate_remap: $(REMAP_VALIDATOR_TARGET)
 	./$(REMAP_VALIDATOR_TARGET) \
@@ -317,9 +357,9 @@ basic_pe_r: $(BASIC_PE_TARGET)
 	./$(BASIC_PE_TARGET) $(s) $(s) > $(REPORTDIR)/basicPEarray/basicPEarray.log
 
 rdr_r: $(RDR_TARGET)
-	@mkdir -p $(REPORTDIR)/legacy/redundant_rate
+	@mkdir -p $(REPORTDIR)/RedundantRate
 	./$(RDR_TARGET) $(s) $(s) $(if $(rptName),--rptName $(rptName)) \
-		> $(REPORTDIR)/legacy/redundant_rate/RedundantRate.log
+		> $(REPORTDIR)/RedundantRate/RedundantRate.log
 
 sl_r: $(SL_TARGET)
 	@mkdir -p $(REPORTDIR)/legacy/sharedline

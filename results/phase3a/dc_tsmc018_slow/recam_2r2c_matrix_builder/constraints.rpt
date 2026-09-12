@@ -1,0 +1,134 @@
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : recam_2r2c_matrix_builder
+Version: W-2024.09-SP2
+Date   : Wed Sep  9 17:05:40 2026
+****************************************
+
+
+   max_delay/setup ('recam_boundary_clk' group)
+
+                             Required        Actual
+   Endpoint                 Path Delay     Path Delay        Slack
+   -----------------------------------------------------------------
+   matrix_flat_o[3]            20.00          38.17 r       -18.17  (VIOLATED)
+   matrix_flat_o[7]            20.00          38.16 r       -18.16  (VIOLATED)
+   matrix_flat_o[9]            20.00          38.16 r       -18.16  (VIOLATED)
+   matrix_flat_o[6]            20.00          38.16 r       -18.16  (VIOLATED)
+   matrix_flat_o[5]            20.00          38.16 r       -18.16  (VIOLATED)
+   matrix_flat_o[11]           20.00          38.16 r       -18.16  (VIOLATED)
+   matrix_flat_o[13]           20.00          38.15 f       -18.15  (VIOLATED)
+   matrix_flat_o[14]           20.00          38.15 f       -18.15  (VIOLATED)
+   matrix_flat_o[4]            20.00          38.15 r       -18.15  (VIOLATED)
+   matrix_flat_o[8]            20.00          38.14 r       -18.14  (VIOLATED)
+   matrix_flat_o[10]           20.00          38.12 r       -18.12  (VIOLATED)
+   matrix_flat_o[15]           20.00          38.12 r       -18.12  (VIOLATED)
+   matrix_flat_o[12]           20.00          38.11 f       -18.11  (VIOLATED)
+   matrix_flat_o[2]            20.00          38.07 r       -18.07  (VIOLATED)
+   matrix_flat_o[1]            20.00          38.07 r       -18.07  (VIOLATED)
+
+
+   max_transition
+
+                             Required        Actual
+   Net                      Transition     Transition        Slack
+   -----------------------------------------------------------------
+   n1696                        3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1665/AN         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1640/AN         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1582/A0         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1561/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1558/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1555/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1552/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1549/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1544/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1541/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1538/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1535/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1531/A1         3.00           5.23          -2.23  (VIOLATED)
+       PIN :   U1666/Y          3.00           5.23          -2.23  (VIOLATED)
+   n1667                        3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1525/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1523/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1521/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1518/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1516/B          3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1514/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1510/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1508/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1505/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1503/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1500/B1         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1526/Y          3.00           3.74          -0.74  (VIOLATED)
+   n1391                        3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1290/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1288/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1286/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1283/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1281/B          3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1279/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1275/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1273/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1271/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1269/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1266/B0         3.00           3.74          -0.74  (VIOLATED)
+       PIN :   U1291/Y          3.00           3.74          -0.74  (VIOLATED)
+
+   -----------------------------------------------------------------
+   Total                      3                  -3.70  
+
+   max_fanout
+
+                             Required        Actual
+   Net                        Fanout         Fanout          Slack
+   -----------------------------------------------------------------
+   N387                        10.00          22.00         -12.00  (VIOLATED)
+   n1696                       10.00          13.00          -3.00  (VIOLATED)
+   n1604                       10.00          12.00          -2.00  (VIOLATED)
+   n1943                       10.00          12.00          -2.00  (VIOLATED)
+   hybrid_valid_i[2]           10.00          11.00          -1.00  (VIOLATED)
+   n1329                       10.00          11.00          -1.00  (VIOLATED)
+   n1390                       10.00          11.00          -1.00  (VIOLATED)
+   n1391                       10.00          11.00          -1.00  (VIOLATED)
+   n1575                       10.00          11.00          -1.00  (VIOLATED)
+   n1629                       10.00          11.00          -1.00  (VIOLATED)
+   n1667                       10.00          11.00          -1.00  (VIOLATED)
+   n1698                       10.00          11.00          -1.00  (VIOLATED)
+   n1748                       10.00          11.00          -1.00  (VIOLATED)
+   n1773                       10.00          11.00          -1.00  (VIOLATED)
+   n1914                       10.00          11.00          -1.00  (VIOLATED)
+   n1979                       10.00          11.00          -1.00  (VIOLATED)
+   n2011                       10.00          11.00          -1.00  (VIOLATED)
+
+   -----------------------------------------------------------------
+   Total                      17                -32.00  
+
+   max_capacitance
+
+                             Required        Actual
+   Net                      Capacitance    Capacitance       Slack
+   -----------------------------------------------------------------
+   N387                         0.15           0.31          -0.16  (VIOLATED)
+   n1696                        0.15           0.18          -0.03  (VIOLATED)
+   n1604                        0.15           0.18          -0.03  (VIOLATED)
+   n1943                        0.15           0.17          -0.02  (VIOLATED)
+   n1979                        0.15           0.16          -0.01  (VIOLATED)
+   n1390                        0.15           0.16          -0.01  (VIOLATED)
+   n1629                        0.15           0.16          -0.01  (VIOLATED)
+   n1773                        0.15           0.16          -0.01  (VIOLATED)
+   n2011                        0.15           0.16          -0.01  (VIOLATED)
+   n1575                        0.15           0.16          -0.01  (VIOLATED)
+   n1667                        0.15           0.16          -0.01  (VIOLATED)
+   n1391                        0.15           0.16          -0.01  (VIOLATED)
+   n1329                        0.15           0.16          -0.01  (VIOLATED)
+   n1698                        0.15           0.16          -0.01  (VIOLATED)
+   n1914                        0.15           0.16          -0.01  (VIOLATED)
+   n1748                        0.15           0.15           0.00  (VIOLATED: increase significant digits)
+
+   -----------------------------------------------------------------
+   Total                      16                 -0.33  
+
+1

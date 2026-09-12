@@ -9,6 +9,10 @@ foreach required {TOP SOURCES REPORT_DIR} {
 set top $::env(TOP)
 set sources [split $::env(SOURCES) ":"]
 set report_dir $::env(REPORT_DIR)
+set flow "GENERIC"
+if {[info exists ::env(FLOW)]} {
+    set flow $::env(FLOW)
+}
 file mkdir $report_dir
 
 foreach source_file $sources {
@@ -26,14 +30,28 @@ if {[info exists ::env(PARAMS)] && $::env(PARAMS) ne ""} {
 }
 
 yosys hierarchy -check -top $top
+if {$flow eq "ELABORATION"} {
+    yosys tee -o "$report_dir/$top.stat.txt" stat -top $top
+    yosys write_json "$report_dir/$top.hierarchy.json"
+    yosys write_json "$report_dir/$top.json"
+} else {
 yosys proc
 yosys opt
 yosys memory
 yosys opt
-yosys flatten
-yosys techmap
-yosys opt
-yosys abc
-yosys clean
-yosys tee -o "$report_dir/$top.stat.txt" stat -top $top
-yosys write_json "$report_dir/$top.json"
+yosys write_json "$report_dir/$top.hierarchy.json"
+if {$flow eq "STRUCTURAL"} {
+    yosys tee -o "$report_dir/$top.stat.txt" stat -top $top
+    yosys write_json "$report_dir/$top.json"
+} elseif {$flow eq "GENERIC"} {
+    yosys flatten
+    yosys techmap
+    yosys opt
+    yosys abc
+    yosys clean
+    yosys tee -o "$report_dir/$top.stat.txt" stat -top $top
+    yosys write_json "$report_dir/$top.json"
+} else {
+    error "unsupported FLOW '$flow'"
+}
+}

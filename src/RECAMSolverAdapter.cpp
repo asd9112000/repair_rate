@@ -388,6 +388,19 @@ RepairAttemptResult RECAMSolverAdapter::solve(
     result.hybridCamEntriesActive = pe.hybridCAM->hybridCAMEntries.size();
     result.hybridCamEntriesPeak = pe.hybridCAM->peakEntries;
     result.hybridCamWriteOperations = pe.hybridCAM->writeOperations;
+    result.hybridRecords.reserve(pe.hybridCAM->hybridCAMEntries.size());
+    for (const HybridCAMEntry &entry : pe.hybridCAM->hybridCAMEntries)
+    {
+        if (!entry.enable || entry.faultPtr == nullptr)
+        {
+            continue;
+        }
+        result.hybridRecords.push_back(HybridRecordSnapshot{
+            entry.faultPtr->r,
+            entry.faultPtr->c,
+            entry.pointer,
+            entry.descriptorRowIsDiff});
+    }
     result.hybridCamEntriesProvisioned = provisionedHybridCapacity;
     result.bufferCamEntriesActive = pe.bufferCAM->bufferFaults.size();
     result.bufferCamEntriesProvisioned = static_cast<std::size_t>(

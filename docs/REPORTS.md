@@ -42,7 +42,7 @@ reports/
 |---|---|
 | SharedLine | `reports/legacy/sharedline/` |
 | SharedLine SRAM | `reports/legacy/sharedline_sram/` |
-| RedundantRate | `reports/legacy/redundant_rate/` |
+| RedundantRate | `reports/RedundantRate/`（legacy compatibility output） |
 | Dynamic Spare Sharing | `reports/group/dynamic_spare_sharing/<run-id>/` |
 | SRAM-RECAM group comparison | `reports/group/sram_recam/` |
 | Hierarchical RECAM | `reports/device/hierarchical_recam/` |

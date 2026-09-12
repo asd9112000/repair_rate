@@ -1,0 +1,907 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : recam_2r2c_analyzer
+Version: W-2024.09-SP2
+Date   : Wed Sep  9 20:47:34 2026
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: pattern_id_o[0]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1467/Y (XOR3X4)                         0.59       0.97 r
+  matrix_builder/U1384/Y (CLKINVX8)                       0.19       1.16 f
+  matrix_builder/U1349/Y (OR2X4)                          0.28       1.44 f
+  matrix_builder/U286/Y (INVX2)                           0.10       1.54 r
+  matrix_builder/U1470/Y (OR2X4)                          0.27       1.81 r
+  matrix_builder/U139/Y (INVX8)                           0.14       1.95 f
+  matrix_builder/U135/Y (OR2X4)                           0.25       2.20 f
+  matrix_builder/U523/Y (XOR2X1)                          0.44       2.63 r
+  matrix_builder/U150/Y (NAND4X2)                         0.25       2.89 f
+  matrix_builder/U487/Y (INVX1)                           0.24       3.13 r
+  matrix_builder/U782/Y (NAND4X2)                         0.18       3.31 f
+  matrix_builder/U1759/Y (OAI31X2)                        0.34       3.65 r
+  matrix_builder/U1091/Y (INVX4)                          0.14       3.79 f
+  matrix_builder/U1460/Y (NAND3X4)                        0.15       3.94 r
+  matrix_builder/U1606/Y (NAND4X4)                        0.22       4.15 f
+  matrix_builder/U1605/Y (INVX8)                          0.13       4.29 r
+  matrix_builder/U1116/Y (BUFX20)                         0.15       4.44 r
+  matrix_builder/U1847/Y (OAI22X2)                        0.15       4.59 f
+  matrix_builder/U126/Y (INVX4)                           0.14       4.73 r
+  matrix_builder/U579/Y (XOR2X2)                          0.27       5.00 f
+  matrix_builder/U807/Y (AND3X4)                          0.23       5.23 f
+  matrix_builder/U1849/Y (NAND3X4)                        0.17       5.40 r
+  matrix_builder/U1300/Y (NAND4X4)                        0.15       5.54 f
+  matrix_builder/U1850/Y (OAI2BB1X4)                      0.15       5.69 r
+  matrix_builder/U1608/Y (BUFX20)                         0.16       5.85 r
+  matrix_builder/U210/Y (NAND3X2)                         0.15       6.00 f
+  matrix_builder/U643/Y (BUFX12)                          0.20       6.20 f
+  matrix_builder/U913/Y (AOI32X2)                         0.26       6.45 r
+  matrix_builder/U1925/Y (OAI211X2)                       0.17       6.62 f
+  matrix_builder/U1930/Y (AOI211X2)                       0.27       6.90 r
+  matrix_builder/U1931/Y (OAI221X2)                       0.24       7.13 f
+  matrix_builder/U1250/Y (CLKINVX8)                       0.10       7.24 r
+  matrix_builder/U1044/Y (NAND4X4)                        0.13       7.37 f
+  matrix_builder/U195/Y (NAND3BX2)                        0.34       7.70 f
+  matrix_builder/U1275/Y (NAND2BX4)                       0.25       7.96 r
+  matrix_builder/U1493/Y (INVX8)                          0.10       8.06 f
+  matrix_builder/U2007/Y (NAND3X1)                        0.20       8.26 r
+  matrix_builder/U871/Y (BUFX8)                           0.16       8.42 r
+  matrix_builder/U1195/Y (OR2X4)                          0.14       8.56 r
+  matrix_builder/U832/Y (AND2X2)                          0.22       8.79 r
+  matrix_builder/U896/Y (NAND2X4)                         0.09       8.88 f
+  matrix_builder/matrix_flat_o[9] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       8.88 f
+  pattern_analyzer/matrix_flat_i[9] (recam_2r2c_pattern_analyzer)
+                                                          0.00       8.88 f
+  pattern_analyzer/U12/Y (OR3X4)                          0.27       9.14 f
+  pattern_analyzer/U8/Y (NOR3X4)                          0.19       9.33 r
+  pattern_analyzer/candidate_valid_o[2] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.33 r
+  U2/Y (BUFX12)                                           0.19       9.52 r
+  pattern_encoder/candidate_valid_i[2] (recam_2r2c_pattern_encoder)
+                                                          0.00       9.52 r
+  pattern_encoder/U12/Y (INVX8)                           0.05       9.57 f
+  pattern_encoder/U17/Y (OR2X4)                           0.23       9.80 f
+  pattern_encoder/U13/Y (NAND3X4)                         0.19      10.00 r
+  pattern_encoder/pattern_id_o[0] (recam_2r2c_pattern_encoder)
+                                                          0.00      10.00 r
+  pattern_id_o[0] (out)                                   0.00      10.00 r
+  data arrival time                                                 10.00
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                -10.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: pattern_id_o[2]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1467/Y (XOR3X4)                         0.59       0.97 r
+  matrix_builder/U1384/Y (CLKINVX8)                       0.19       1.16 f
+  matrix_builder/U1349/Y (OR2X4)                          0.28       1.44 f
+  matrix_builder/U286/Y (INVX2)                           0.10       1.54 r
+  matrix_builder/U1470/Y (OR2X4)                          0.27       1.81 r
+  matrix_builder/U139/Y (INVX8)                           0.14       1.95 f
+  matrix_builder/U135/Y (OR2X4)                           0.25       2.20 f
+  matrix_builder/U523/Y (XOR2X1)                          0.44       2.63 r
+  matrix_builder/U150/Y (NAND4X2)                         0.25       2.89 f
+  matrix_builder/U487/Y (INVX1)                           0.24       3.13 r
+  matrix_builder/U782/Y (NAND4X2)                         0.18       3.31 f
+  matrix_builder/U1759/Y (OAI31X2)                        0.34       3.65 r
+  matrix_builder/U1091/Y (INVX4)                          0.14       3.79 f
+  matrix_builder/U1460/Y (NAND3X4)                        0.15       3.94 r
+  matrix_builder/U1606/Y (NAND4X4)                        0.22       4.15 f
+  matrix_builder/U1605/Y (INVX8)                          0.13       4.29 r
+  matrix_builder/U1092/Y (BUFX20)                         0.14       4.43 r
+  matrix_builder/U271/Y (OAI22X4)                         0.15       4.58 f
+  matrix_builder/U581/Y (CLKINVX3)                        0.13       4.71 r
+  matrix_builder/U209/Y (XOR2X2)                          0.34       5.05 r
+  matrix_builder/U1526/Y (NAND4X4)                        0.13       5.18 f
+  matrix_builder/U577/Y (INVX4)                           0.14       5.32 r
+  matrix_builder/U1849/Y (NAND3X4)                        0.13       5.45 f
+  matrix_builder/U1300/Y (NAND4X4)                        0.18       5.62 r
+  matrix_builder/U1850/Y (OAI2BB1X4)                      0.10       5.72 f
+  matrix_builder/U1608/Y (BUFX20)                         0.16       5.88 f
+  matrix_builder/U210/Y (NAND3X2)                         0.18       6.06 r
+  matrix_builder/U643/Y (BUFX12)                          0.19       6.25 r
+  matrix_builder/U1003/Y (INVX8)                          0.06       6.31 f
+  matrix_builder/U1002/Y (INVX8)                          0.10       6.41 r
+  matrix_builder/U1494/Y (OR2X4)                          0.19       6.60 r
+  matrix_builder/U920/Y (NOR2X4)                          0.08       6.68 f
+  matrix_builder/U1933/Y (AOI31X2)                        0.28       6.95 r
+  matrix_builder/U1935/Y (NAND4BX4)                       0.16       7.11 f
+  matrix_builder/U1949/Y (NOR4X4)                         0.28       7.39 r
+  matrix_builder/U316/Y (NAND4X2)                         0.20       7.59 f
+  matrix_builder/U1611/Y (NAND3X4)                        0.18       7.77 r
+  matrix_builder/U315/Y (BUFX16)                          0.17       7.94 r
+  matrix_builder/U1592/Y (INVX8)                          0.09       8.03 f
+  matrix_builder/U1576/Y (OAI31X2)                        0.37       8.41 r
+  matrix_builder/U217/Y (INVX4)                           0.16       8.57 f
+  matrix_builder/U918/Y (OR2X4)                           0.25       8.82 f
+  matrix_builder/U1580/Y (NAND4X4)                        0.25       9.07 r
+  matrix_builder/matrix_flat_o[11] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       9.07 r
+  pattern_analyzer/matrix_flat_i[11] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.07 r
+  pattern_analyzer/U6/Y (NOR3X4)                          0.12       9.19 f
+  pattern_analyzer/U13/Y (AND3X4)                         0.22       9.41 f
+  pattern_analyzer/candidate_valid_o[0] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.41 f
+  U6/Y (BUFX12)                                           0.17       9.58 f
+  pattern_encoder/candidate_valid_i[0] (recam_2r2c_pattern_encoder)
+                                                          0.00       9.58 f
+  pattern_encoder/U3/Y (NAND2BX4)                         0.18       9.76 f
+  pattern_encoder/U20/Y (NOR2X4)                          0.24      10.00 r
+  pattern_encoder/pattern_id_o[2] (recam_2r2c_pattern_encoder)
+                                                          0.00      10.00 r
+  pattern_id_o[2] (out)                                   0.00      10.00 r
+  data arrival time                                                 10.00
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                -10.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: pattern_id_o[1]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1467/Y (XOR3X4)                         0.59       0.97 r
+  matrix_builder/U1384/Y (CLKINVX8)                       0.19       1.16 f
+  matrix_builder/U1349/Y (OR2X4)                          0.28       1.44 f
+  matrix_builder/U286/Y (INVX2)                           0.10       1.54 r
+  matrix_builder/U1470/Y (OR2X4)                          0.27       1.81 r
+  matrix_builder/U139/Y (INVX8)                           0.14       1.95 f
+  matrix_builder/U135/Y (OR2X4)                           0.25       2.20 f
+  matrix_builder/U523/Y (XOR2X1)                          0.44       2.63 r
+  matrix_builder/U150/Y (NAND4X2)                         0.25       2.89 f
+  matrix_builder/U487/Y (INVX1)                           0.24       3.13 r
+  matrix_builder/U782/Y (NAND4X2)                         0.18       3.31 f
+  matrix_builder/U1759/Y (OAI31X2)                        0.34       3.65 r
+  matrix_builder/U1091/Y (INVX4)                          0.14       3.79 f
+  matrix_builder/U1460/Y (NAND3X4)                        0.15       3.94 r
+  matrix_builder/U1606/Y (NAND4X4)                        0.22       4.15 f
+  matrix_builder/U1605/Y (INVX8)                          0.13       4.29 r
+  matrix_builder/U1116/Y (BUFX20)                         0.15       4.44 r
+  matrix_builder/U1847/Y (OAI22X2)                        0.15       4.59 f
+  matrix_builder/U126/Y (INVX4)                           0.14       4.73 r
+  matrix_builder/U579/Y (XOR2X2)                          0.27       5.00 f
+  matrix_builder/U807/Y (AND3X4)                          0.23       5.23 f
+  matrix_builder/U1849/Y (NAND3X4)                        0.17       5.40 r
+  matrix_builder/U1300/Y (NAND4X4)                        0.15       5.54 f
+  matrix_builder/U1850/Y (OAI2BB1X4)                      0.15       5.69 r
+  matrix_builder/U1608/Y (BUFX20)                         0.16       5.85 r
+  matrix_builder/U210/Y (NAND3X2)                         0.15       6.00 f
+  matrix_builder/U643/Y (BUFX12)                          0.20       6.20 f
+  matrix_builder/U913/Y (AOI32X2)                         0.26       6.45 r
+  matrix_builder/U1925/Y (OAI211X2)                       0.17       6.62 f
+  matrix_builder/U1930/Y (AOI211X2)                       0.27       6.90 r
+  matrix_builder/U1931/Y (OAI221X2)                       0.24       7.13 f
+  matrix_builder/U1250/Y (CLKINVX8)                       0.10       7.24 r
+  matrix_builder/U1044/Y (NAND4X4)                        0.13       7.37 f
+  matrix_builder/U195/Y (NAND3BX2)                        0.34       7.70 f
+  matrix_builder/U1275/Y (NAND2BX4)                       0.25       7.96 r
+  matrix_builder/U1493/Y (INVX8)                          0.10       8.06 f
+  matrix_builder/U2007/Y (NAND3X1)                        0.20       8.26 r
+  matrix_builder/U871/Y (BUFX8)                           0.16       8.42 r
+  matrix_builder/U1195/Y (OR2X4)                          0.14       8.56 r
+  matrix_builder/U832/Y (AND2X2)                          0.22       8.79 r
+  matrix_builder/U896/Y (NAND2X4)                         0.09       8.88 f
+  matrix_builder/matrix_flat_o[9] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       8.88 f
+  pattern_analyzer/matrix_flat_i[9] (recam_2r2c_pattern_analyzer)
+                                                          0.00       8.88 f
+  pattern_analyzer/U12/Y (OR3X4)                          0.27       9.14 f
+  pattern_analyzer/U8/Y (NOR3X4)                          0.19       9.33 r
+  pattern_analyzer/candidate_valid_o[2] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.33 r
+  U2/Y (BUFX12)                                           0.19       9.52 r
+  pattern_encoder/candidate_valid_i[2] (recam_2r2c_pattern_encoder)
+                                                          0.00       9.52 r
+  pattern_encoder/U12/Y (INVX8)                           0.05       9.57 f
+  pattern_encoder/U19/Y (AOI31X2)                         0.25       9.82 r
+  pattern_encoder/pattern_id_o[1] (recam_2r2c_pattern_encoder)
+                                                          0.00       9.82 r
+  U23/Y (BUFX8)                                           0.17       9.99 r
+  pattern_id_o[1] (out)                                   0.00       9.99 r
+  data arrival time                                                  9.99
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                 -9.99
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.01
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: repairable_o
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1467/Y (XOR3X4)                         0.59       0.97 r
+  matrix_builder/U1384/Y (CLKINVX8)                       0.19       1.16 f
+  matrix_builder/U1349/Y (OR2X4)                          0.28       1.44 f
+  matrix_builder/U286/Y (INVX2)                           0.10       1.54 r
+  matrix_builder/U1470/Y (OR2X4)                          0.27       1.81 r
+  matrix_builder/U139/Y (INVX8)                           0.14       1.95 f
+  matrix_builder/U135/Y (OR2X4)                           0.25       2.20 f
+  matrix_builder/U523/Y (XOR2X1)                          0.44       2.63 r
+  matrix_builder/U150/Y (NAND4X2)                         0.25       2.89 f
+  matrix_builder/U487/Y (INVX1)                           0.24       3.13 r
+  matrix_builder/U782/Y (NAND4X2)                         0.18       3.31 f
+  matrix_builder/U1759/Y (OAI31X2)                        0.34       3.65 r
+  matrix_builder/U1091/Y (INVX4)                          0.14       3.79 f
+  matrix_builder/U1460/Y (NAND3X4)                        0.15       3.94 r
+  matrix_builder/U1606/Y (NAND4X4)                        0.22       4.15 f
+  matrix_builder/U1605/Y (INVX8)                          0.13       4.29 r
+  matrix_builder/U1116/Y (BUFX20)                         0.15       4.44 r
+  matrix_builder/U1847/Y (OAI22X2)                        0.15       4.59 f
+  matrix_builder/U126/Y (INVX4)                           0.14       4.73 r
+  matrix_builder/U579/Y (XOR2X2)                          0.27       5.00 f
+  matrix_builder/U807/Y (AND3X4)                          0.23       5.23 f
+  matrix_builder/U1849/Y (NAND3X4)                        0.17       5.40 r
+  matrix_builder/U1300/Y (NAND4X4)                        0.15       5.54 f
+  matrix_builder/U1850/Y (OAI2BB1X4)                      0.15       5.69 r
+  matrix_builder/U1608/Y (BUFX20)                         0.16       5.85 r
+  matrix_builder/U210/Y (NAND3X2)                         0.15       6.00 f
+  matrix_builder/U643/Y (BUFX12)                          0.20       6.20 f
+  matrix_builder/U913/Y (AOI32X2)                         0.26       6.45 r
+  matrix_builder/U1925/Y (OAI211X2)                       0.17       6.62 f
+  matrix_builder/U1930/Y (AOI211X2)                       0.27       6.90 r
+  matrix_builder/U1931/Y (OAI221X2)                       0.24       7.13 f
+  matrix_builder/U1250/Y (CLKINVX8)                       0.10       7.24 r
+  matrix_builder/U1044/Y (NAND4X4)                        0.13       7.37 f
+  matrix_builder/U195/Y (NAND3BX2)                        0.34       7.70 f
+  matrix_builder/U1275/Y (NAND2BX4)                       0.25       7.96 r
+  matrix_builder/U1493/Y (INVX8)                          0.10       8.06 f
+  matrix_builder/U1303/Y (OR2X4)                          0.27       8.33 f
+  matrix_builder/U878/Y (INVX4)                           0.11       8.44 r
+  matrix_builder/U1546/Y (OR2X4)                          0.17       8.61 r
+  matrix_builder/U1503/Y (NAND4X4)                        0.15       8.76 f
+  matrix_builder/U1609/Y (NAND4X4)                        0.30       9.07 r
+  matrix_builder/matrix_flat_o[13] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       9.07 r
+  pattern_analyzer/matrix_flat_i[13] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.07 r
+  pattern_analyzer/U7/Y (NAND3BX4)                        0.22       9.28 r
+  pattern_analyzer/U9/Y (NOR3X4)                          0.09       9.37 f
+  pattern_analyzer/candidate_valid_o[1] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.37 f
+  U1/Y (BUFX12)                                           0.16       9.53 f
+  pattern_encoder/candidate_valid_i[1] (recam_2r2c_pattern_encoder)
+                                                          0.00       9.53 f
+  pattern_encoder/U11/Y (INVX8)                           0.10       9.63 r
+  pattern_encoder/U7/Y (AND2X4)                           0.18       9.80 r
+  pattern_encoder/U10/Y (NAND4X4)                         0.17       9.97 f
+  pattern_encoder/repairable_o (recam_2r2c_pattern_encoder)
+                                                          0.00       9.97 f
+  repairable_o (out)                                      0.00       9.97 f
+  data arrival time                                                  9.97
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                 -9.97
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: candidate_valid_o[5]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1467/Y (XOR3X4)                         0.59       0.97 r
+  matrix_builder/U1384/Y (CLKINVX8)                       0.19       1.16 f
+  matrix_builder/U1349/Y (OR2X4)                          0.28       1.44 f
+  matrix_builder/U286/Y (INVX2)                           0.10       1.54 r
+  matrix_builder/U1470/Y (OR2X4)                          0.27       1.81 r
+  matrix_builder/U139/Y (INVX8)                           0.14       1.95 f
+  matrix_builder/U135/Y (OR2X4)                           0.25       2.20 f
+  matrix_builder/U523/Y (XOR2X1)                          0.44       2.63 r
+  matrix_builder/U150/Y (NAND4X2)                         0.25       2.89 f
+  matrix_builder/U487/Y (INVX1)                           0.24       3.13 r
+  matrix_builder/U782/Y (NAND4X2)                         0.18       3.31 f
+  matrix_builder/U1759/Y (OAI31X2)                        0.34       3.65 r
+  matrix_builder/U1091/Y (INVX4)                          0.14       3.79 f
+  matrix_builder/U1460/Y (NAND3X4)                        0.15       3.94 r
+  matrix_builder/U1606/Y (NAND4X4)                        0.22       4.15 f
+  matrix_builder/U1605/Y (INVX8)                          0.13       4.29 r
+  matrix_builder/U1116/Y (BUFX20)                         0.15       4.44 r
+  matrix_builder/U1847/Y (OAI22X2)                        0.15       4.59 f
+  matrix_builder/U126/Y (INVX4)                           0.14       4.73 r
+  matrix_builder/U579/Y (XOR2X2)                          0.27       5.00 f
+  matrix_builder/U807/Y (AND3X4)                          0.23       5.23 f
+  matrix_builder/U1849/Y (NAND3X4)                        0.17       5.40 r
+  matrix_builder/U1300/Y (NAND4X4)                        0.15       5.54 f
+  matrix_builder/U1850/Y (OAI2BB1X4)                      0.15       5.69 r
+  matrix_builder/U1608/Y (BUFX20)                         0.16       5.85 r
+  matrix_builder/U210/Y (NAND3X2)                         0.15       6.00 f
+  matrix_builder/U643/Y (BUFX12)                          0.20       6.20 f
+  matrix_builder/U913/Y (AOI32X2)                         0.26       6.45 r
+  matrix_builder/U1925/Y (OAI211X2)                       0.17       6.62 f
+  matrix_builder/U1930/Y (AOI211X2)                       0.27       6.90 r
+  matrix_builder/U1931/Y (OAI221X2)                       0.24       7.13 f
+  matrix_builder/U1250/Y (CLKINVX8)                       0.10       7.24 r
+  matrix_builder/U1044/Y (NAND4X4)                        0.13       7.37 f
+  matrix_builder/U195/Y (NAND3BX2)                        0.34       7.70 f
+  matrix_builder/U1275/Y (NAND2BX4)                       0.25       7.96 r
+  matrix_builder/U1493/Y (INVX8)                          0.10       8.06 f
+  matrix_builder/U1191/Y (NAND3X2)                        0.21       8.27 r
+  matrix_builder/U1031/Y (INVX2)                          0.11       8.38 f
+  matrix_builder/U1030/Y (NAND4X1)                        0.29       8.67 r
+  matrix_builder/U1241/Y (NAND3X4)                        0.26       8.94 f
+  matrix_builder/matrix_flat_o[1] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       8.94 f
+  pattern_analyzer/matrix_flat_i[1] (recam_2r2c_pattern_analyzer)
+                                                          0.00       8.94 f
+  pattern_analyzer/U11/Y (NOR4X4)                         0.29       9.22 r
+  pattern_analyzer/U2/Y (BUFX8)                           0.19       9.42 r
+  pattern_analyzer/candidate_valid_o[5] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.42 r
+  U18/Y (BUFX1)                                           0.52       9.93 r
+  candidate_valid_o[5] (out)                              0.00       9.93 r
+  data arrival time                                                  9.93
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                 -9.93
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.07
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: candidate_valid_o[4]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1403/Y (AND2X4)                         0.16       0.54 r
+  matrix_builder/U1273/Y (XOR2X4)                         0.22       0.76 r
+  matrix_builder/U463/Y (AND2X2)                          0.28       1.04 r
+  matrix_builder/U791/Y (NAND4X4)                         0.16       1.20 f
+  matrix_builder/U1255/Y (NOR2X4)                         0.16       1.36 r
+  matrix_builder/U787/Y (INVX4)                           0.07       1.43 f
+  matrix_builder/U788/Y (CLKINVX8)                        0.10       1.53 r
+  matrix_builder/U1670/Y (NOR2X4)                         0.07       1.60 f
+  matrix_builder/U1672/Y (OAI21X4)                        0.17       1.76 r
+  matrix_builder/U1673/Y (NAND2BX4)                       0.24       2.01 r
+  matrix_builder/U1345/Y (INVX8)                          0.11       2.12 f
+  matrix_builder/U266/Y (OAI32X4)                         0.55       2.66 r
+  matrix_builder/U265/Y (INVX4)                           0.08       2.75 f
+  matrix_builder/U79/Y (XOR2X2)                           0.27       3.01 f
+  matrix_builder/U1236/Y (AND4X4)                         0.29       3.30 f
+  matrix_builder/U1533/Y (NAND3X4)                        0.19       3.49 r
+  matrix_builder/U1258/Y (INVX2)                          0.08       3.57 f
+  matrix_builder/U1601/Y (OR2X4)                          0.27       3.84 f
+  matrix_builder/U111/Y (INVX4)                           0.08       3.92 r
+  matrix_builder/U1591/Y (OR2X4)                          0.28       4.20 r
+  matrix_builder/U538/Y (OR2X2)                           0.22       4.42 r
+  matrix_builder/U537/Y (CLKINVX3)                        0.11       4.52 f
+  matrix_builder/U488/Y (OR2X2)                           0.27       4.79 f
+  matrix_builder/U1465/Y (XOR2X4)                         0.20       4.99 f
+  matrix_builder/U1557/Y (OR2X4)                          0.28       5.27 f
+  matrix_builder/U1389/Y (NOR2X4)                         0.22       5.49 r
+  matrix_builder/U679/Y (NAND3X2)                         0.13       5.62 f
+  matrix_builder/U183/Y (NAND3X2)                         0.24       5.86 r
+  matrix_builder/U182/Y (NAND3X4)                         0.15       6.01 f
+  matrix_builder/U127/Y (BUFX20)                          0.18       6.18 f
+  matrix_builder/U867/Y (OAI32X1)                         0.49       6.67 r
+  matrix_builder/U30/Y (INVX4)                            0.08       6.76 f
+  matrix_builder/U1542/Y (XOR2X4)                         0.28       7.04 r
+  matrix_builder/U1053/Y (AND3X4)                         0.22       7.26 r
+  matrix_builder/U124/Y (NAND4BBX4)                       0.15       7.40 f
+  matrix_builder/U1960/Y (OAI211X2)                       0.30       7.71 r
+  matrix_builder/U798/Y (BUFX8)                           0.18       7.89 r
+  matrix_builder/U1316/Y (OAI31X2)                        0.14       8.03 f
+  matrix_builder/U870/Y (BUFX12)                          0.20       8.23 f
+  matrix_builder/U1071/Y (INVX8)                          0.14       8.37 r
+  matrix_builder/U869/Y (NAND3X4)                         0.12       8.49 f
+  matrix_builder/U900/Y (OR2X2)                           0.31       8.80 f
+  matrix_builder/U769/Y (NAND3X2)                         0.21       9.02 r
+  matrix_builder/matrix_flat_o[8] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       9.02 r
+  pattern_analyzer/matrix_flat_i[8] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.02 r
+  pattern_analyzer/U3/Y (NOR4X4)                          0.14       9.16 f
+  pattern_analyzer/candidate_valid_o[4] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.16 f
+  U20/Y (BUFX8)                                           0.18       9.34 f
+  U19/Y (CLKBUFXL)                                        0.59       9.92 f
+  candidate_valid_o[4] (out)                              0.00       9.92 f
+  data arrival time                                                  9.92
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                 -9.92
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.08
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: candidate_valid_o[3]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1403/Y (AND2X4)                         0.16       0.54 r
+  matrix_builder/U1273/Y (XOR2X4)                         0.22       0.76 r
+  matrix_builder/U463/Y (AND2X2)                          0.28       1.04 r
+  matrix_builder/U791/Y (NAND4X4)                         0.16       1.20 f
+  matrix_builder/U1255/Y (NOR2X4)                         0.16       1.36 r
+  matrix_builder/U787/Y (INVX4)                           0.07       1.43 f
+  matrix_builder/U788/Y (CLKINVX8)                        0.10       1.53 r
+  matrix_builder/U1670/Y (NOR2X4)                         0.07       1.60 f
+  matrix_builder/U1672/Y (OAI21X4)                        0.17       1.76 r
+  matrix_builder/U1673/Y (NAND2BX4)                       0.24       2.01 r
+  matrix_builder/U1345/Y (INVX8)                          0.11       2.12 f
+  matrix_builder/U266/Y (OAI32X4)                         0.55       2.66 r
+  matrix_builder/U265/Y (INVX4)                           0.08       2.75 f
+  matrix_builder/U79/Y (XOR2X2)                           0.27       3.01 f
+  matrix_builder/U1236/Y (AND4X4)                         0.29       3.30 f
+  matrix_builder/U1533/Y (NAND3X4)                        0.19       3.49 r
+  matrix_builder/U1290/Y (NAND2X2)                        0.13       3.62 f
+  matrix_builder/U1293/Y (NOR2X4)                         0.15       3.77 r
+  matrix_builder/U1784/Y (NOR4X4)                         0.09       3.86 f
+  matrix_builder/U1137/Y (BUFX12)                         0.18       4.04 f
+  matrix_builder/U1798/Y (OAI211X2)                       0.29       4.34 r
+  matrix_builder/U1308/Y (CLKINVX4)                       0.14       4.47 f
+  matrix_builder/U1326/Y (INVX8)                          0.10       4.58 r
+  matrix_builder/U715/Y (INVX4)                           0.11       4.68 f
+  matrix_builder/U1599/Y (OR2X4)                          0.28       4.96 f
+  matrix_builder/U14/Y (CLKINVX8)                         0.07       5.04 r
+  matrix_builder/U270/Y (OAI31X2)                         0.12       5.15 f
+  matrix_builder/U196/Y (BUFX8)                           0.16       5.31 f
+  matrix_builder/U118/Y (OR2X1)                           0.34       5.66 f
+  matrix_builder/U1862/Y (OAI211X2)                       0.34       5.99 r
+  matrix_builder/U1495/Y (BUFX12)                         0.22       6.21 r
+  matrix_builder/U821/Y (NOR2X2)                          0.14       6.35 f
+  matrix_builder/U658/Y (AOI2BB1X1)                       0.32       6.67 r
+  matrix_builder/U7/Y (OAI22X2)                           0.18       6.85 f
+  matrix_builder/U1869/Y (AOI211X2)                       0.32       7.17 r
+  matrix_builder/U1870/Y (OAI211X2)                       0.25       7.42 f
+  matrix_builder/U1957/Y (OAI21X4)                        0.22       7.63 r
+  matrix_builder/U1958/Y (NAND2X4)                        0.11       7.75 f
+  matrix_builder/U1569/Y (OAI2BB1X4)                      0.26       8.01 r
+  matrix_builder/U1069/Y (NAND3X2)                        0.23       8.24 f
+  matrix_builder/U1041/Y (AND4X2)                         0.36       8.59 f
+  matrix_builder/U1314/Y (OAI22X4)                        0.23       8.83 r
+  matrix_builder/matrix_flat_o[15] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       8.83 r
+  U13/Y (BUFX12)                                          0.19       9.02 r
+  pattern_analyzer/matrix_flat_i[15] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.02 r
+  pattern_analyzer/U10/Y (NOR4X4)                         0.11       9.13 f
+  pattern_analyzer/candidate_valid_o[3] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.13 f
+  U4/Y (BUFX8)                                            0.17       9.30 f
+  U15/Y (CLKBUFXL)                                        0.58       9.88 f
+  candidate_valid_o[3] (out)                              0.00       9.88 f
+  data arrival time                                                  9.88
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                 -9.88
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.12
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: candidate_valid_o[1]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1467/Y (XOR3X4)                         0.59       0.97 r
+  matrix_builder/U1384/Y (CLKINVX8)                       0.19       1.16 f
+  matrix_builder/U1349/Y (OR2X4)                          0.28       1.44 f
+  matrix_builder/U286/Y (INVX2)                           0.10       1.54 r
+  matrix_builder/U1470/Y (OR2X4)                          0.27       1.81 r
+  matrix_builder/U139/Y (INVX8)                           0.14       1.95 f
+  matrix_builder/U135/Y (OR2X4)                           0.25       2.20 f
+  matrix_builder/U523/Y (XOR2X1)                          0.44       2.63 r
+  matrix_builder/U150/Y (NAND4X2)                         0.25       2.89 f
+  matrix_builder/U487/Y (INVX1)                           0.24       3.13 r
+  matrix_builder/U782/Y (NAND4X2)                         0.18       3.31 f
+  matrix_builder/U1759/Y (OAI31X2)                        0.34       3.65 r
+  matrix_builder/U1091/Y (INVX4)                          0.14       3.79 f
+  matrix_builder/U1460/Y (NAND3X4)                        0.15       3.94 r
+  matrix_builder/U1606/Y (NAND4X4)                        0.22       4.15 f
+  matrix_builder/U1605/Y (INVX8)                          0.13       4.29 r
+  matrix_builder/U1116/Y (BUFX20)                         0.15       4.44 r
+  matrix_builder/U1847/Y (OAI22X2)                        0.15       4.59 f
+  matrix_builder/U126/Y (INVX4)                           0.14       4.73 r
+  matrix_builder/U579/Y (XOR2X2)                          0.27       5.00 f
+  matrix_builder/U807/Y (AND3X4)                          0.23       5.23 f
+  matrix_builder/U1849/Y (NAND3X4)                        0.17       5.40 r
+  matrix_builder/U1300/Y (NAND4X4)                        0.15       5.54 f
+  matrix_builder/U1850/Y (OAI2BB1X4)                      0.15       5.69 r
+  matrix_builder/U1608/Y (BUFX20)                         0.16       5.85 r
+  matrix_builder/U210/Y (NAND3X2)                         0.15       6.00 f
+  matrix_builder/U643/Y (BUFX12)                          0.20       6.20 f
+  matrix_builder/U913/Y (AOI32X2)                         0.26       6.45 r
+  matrix_builder/U1925/Y (OAI211X2)                       0.17       6.62 f
+  matrix_builder/U1930/Y (AOI211X2)                       0.27       6.90 r
+  matrix_builder/U1931/Y (OAI221X2)                       0.24       7.13 f
+  matrix_builder/U1250/Y (CLKINVX8)                       0.10       7.24 r
+  matrix_builder/U1044/Y (NAND4X4)                        0.13       7.37 f
+  matrix_builder/U195/Y (NAND3BX2)                        0.34       7.70 f
+  matrix_builder/U1275/Y (NAND2BX4)                       0.25       7.96 r
+  matrix_builder/U1493/Y (INVX8)                          0.10       8.06 f
+  matrix_builder/U1303/Y (OR2X4)                          0.27       8.33 f
+  matrix_builder/U878/Y (INVX4)                           0.11       8.44 r
+  matrix_builder/U1546/Y (OR2X4)                          0.17       8.61 r
+  matrix_builder/U1503/Y (NAND4X4)                        0.15       8.76 f
+  matrix_builder/U1609/Y (NAND4X4)                        0.30       9.07 r
+  matrix_builder/matrix_flat_o[13] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       9.07 r
+  pattern_analyzer/matrix_flat_i[13] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.07 r
+  pattern_analyzer/U7/Y (NAND3BX4)                        0.22       9.28 r
+  pattern_analyzer/U9/Y (NOR3X4)                          0.09       9.37 f
+  pattern_analyzer/candidate_valid_o[1] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.37 f
+  U1/Y (BUFX12)                                           0.16       9.53 f
+  U7/Y (BUFX3)                                            0.22       9.75 f
+  candidate_valid_o[1] (out)                              0.00       9.75 f
+  data arrival time                                                  9.75
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                 -9.75
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.25
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: candidate_valid_o[0]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1403/Y (AND2X4)                         0.16       0.54 r
+  matrix_builder/U1273/Y (XOR2X4)                         0.22       0.76 r
+  matrix_builder/U463/Y (AND2X2)                          0.28       1.04 r
+  matrix_builder/U791/Y (NAND4X4)                         0.16       1.20 f
+  matrix_builder/U1255/Y (NOR2X4)                         0.16       1.36 r
+  matrix_builder/U787/Y (INVX4)                           0.07       1.43 f
+  matrix_builder/U788/Y (CLKINVX8)                        0.10       1.53 r
+  matrix_builder/U1670/Y (NOR2X4)                         0.07       1.60 f
+  matrix_builder/U1672/Y (OAI21X4)                        0.17       1.76 r
+  matrix_builder/U1673/Y (NAND2BX4)                       0.24       2.01 r
+  matrix_builder/U1345/Y (INVX8)                          0.11       2.12 f
+  matrix_builder/U266/Y (OAI32X4)                         0.55       2.66 r
+  matrix_builder/U265/Y (INVX4)                           0.08       2.75 f
+  matrix_builder/U79/Y (XOR2X2)                           0.27       3.01 f
+  matrix_builder/U1236/Y (AND4X4)                         0.29       3.30 f
+  matrix_builder/U1533/Y (NAND3X4)                        0.19       3.49 r
+  matrix_builder/U1258/Y (INVX2)                          0.08       3.57 f
+  matrix_builder/U1601/Y (OR2X4)                          0.27       3.84 f
+  matrix_builder/U111/Y (INVX4)                           0.08       3.92 r
+  matrix_builder/U1591/Y (OR2X4)                          0.28       4.20 r
+  matrix_builder/U538/Y (OR2X2)                           0.22       4.42 r
+  matrix_builder/U537/Y (CLKINVX3)                        0.11       4.52 f
+  matrix_builder/U488/Y (OR2X2)                           0.27       4.79 f
+  matrix_builder/U1465/Y (XOR2X4)                         0.20       4.99 f
+  matrix_builder/U1557/Y (OR2X4)                          0.28       5.27 f
+  matrix_builder/U1389/Y (NOR2X4)                         0.22       5.49 r
+  matrix_builder/U679/Y (NAND3X2)                         0.13       5.62 f
+  matrix_builder/U183/Y (NAND3X2)                         0.24       5.86 r
+  matrix_builder/U182/Y (NAND3X4)                         0.15       6.01 f
+  matrix_builder/U127/Y (BUFX20)                          0.18       6.18 f
+  matrix_builder/U867/Y (OAI32X1)                         0.49       6.67 r
+  matrix_builder/U30/Y (INVX4)                            0.08       6.76 f
+  matrix_builder/U1542/Y (XOR2X4)                         0.28       7.04 r
+  matrix_builder/U1053/Y (AND3X4)                         0.22       7.26 r
+  matrix_builder/U124/Y (NAND4BBX4)                       0.15       7.40 f
+  matrix_builder/U1960/Y (OAI211X2)                       0.30       7.71 r
+  matrix_builder/U798/Y (BUFX8)                           0.18       7.89 r
+  matrix_builder/U1316/Y (OAI31X2)                        0.14       8.03 f
+  matrix_builder/U870/Y (BUFX12)                          0.20       8.23 f
+  matrix_builder/U1589/Y (NAND3X2)                        0.24       8.47 r
+  matrix_builder/U751/Y (BUFX3)                           0.22       8.70 r
+  matrix_builder/U1245/Y (INVX4)                          0.06       8.76 f
+  matrix_builder/U2034/Y (OAI2BB1X2)                      0.16       8.92 r
+  matrix_builder/U876/Y (NAND4X4)                         0.18       9.10 f
+  matrix_builder/matrix_flat_o[14] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       9.10 f
+  pattern_analyzer/matrix_flat_i[14] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.10 f
+  pattern_analyzer/U6/Y (NOR3X4)                          0.18       9.28 r
+  pattern_analyzer/U13/Y (AND3X4)                         0.23       9.51 r
+  pattern_analyzer/candidate_valid_o[0] (recam_2r2c_pattern_analyzer)
+                                                          0.00       9.51 r
+  U6/Y (BUFX12)                                           0.17       9.68 r
+  candidate_valid_o[0] (out)                              0.00       9.68 r
+  data arrival time                                                  9.68
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                 -9.68
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.32
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: matrix_flat_o[12]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_2r2c_analyzer
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  matrix_builder/pivot_valid_i[0] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       0.00 r
+  matrix_builder/U793/Y (CLKINVX8)                        0.13       0.13 f
+  matrix_builder/U81/Y (INVX12)                           0.25       0.38 r
+  matrix_builder/U1403/Y (AND2X4)                         0.16       0.54 r
+  matrix_builder/U1273/Y (XOR2X4)                         0.22       0.76 r
+  matrix_builder/U463/Y (AND2X2)                          0.28       1.04 r
+  matrix_builder/U791/Y (NAND4X4)                         0.16       1.20 f
+  matrix_builder/U1255/Y (NOR2X4)                         0.16       1.36 r
+  matrix_builder/U787/Y (INVX4)                           0.07       1.43 f
+  matrix_builder/U788/Y (CLKINVX8)                        0.10       1.53 r
+  matrix_builder/U1670/Y (NOR2X4)                         0.07       1.60 f
+  matrix_builder/U1672/Y (OAI21X4)                        0.17       1.76 r
+  matrix_builder/U1673/Y (NAND2BX4)                       0.24       2.01 r
+  matrix_builder/U1345/Y (INVX8)                          0.11       2.12 f
+  matrix_builder/U266/Y (OAI32X4)                         0.55       2.66 r
+  matrix_builder/U265/Y (INVX4)                           0.08       2.75 f
+  matrix_builder/U79/Y (XOR2X2)                           0.27       3.01 f
+  matrix_builder/U1236/Y (AND4X4)                         0.29       3.30 f
+  matrix_builder/U1533/Y (NAND3X4)                        0.19       3.49 r
+  matrix_builder/U1258/Y (INVX2)                          0.08       3.57 f
+  matrix_builder/U1601/Y (OR2X4)                          0.27       3.84 f
+  matrix_builder/U111/Y (INVX4)                           0.08       3.92 r
+  matrix_builder/U1591/Y (OR2X4)                          0.28       4.20 r
+  matrix_builder/U538/Y (OR2X2)                           0.22       4.42 r
+  matrix_builder/U537/Y (CLKINVX3)                        0.11       4.52 f
+  matrix_builder/U488/Y (OR2X2)                           0.27       4.79 f
+  matrix_builder/U1465/Y (XOR2X4)                         0.20       4.99 f
+  matrix_builder/U1557/Y (OR2X4)                          0.28       5.27 f
+  matrix_builder/U1389/Y (NOR2X4)                         0.22       5.49 r
+  matrix_builder/U679/Y (NAND3X2)                         0.13       5.62 f
+  matrix_builder/U183/Y (NAND3X2)                         0.24       5.86 r
+  matrix_builder/U182/Y (NAND3X4)                         0.15       6.01 f
+  matrix_builder/U127/Y (BUFX20)                          0.18       6.18 f
+  matrix_builder/U867/Y (OAI32X1)                         0.49       6.67 r
+  matrix_builder/U30/Y (INVX4)                            0.08       6.76 f
+  matrix_builder/U1542/Y (XOR2X4)                         0.28       7.04 r
+  matrix_builder/U1053/Y (AND3X4)                         0.22       7.26 r
+  matrix_builder/U124/Y (NAND4BBX4)                       0.15       7.40 f
+  matrix_builder/U1960/Y (OAI211X2)                       0.30       7.71 r
+  matrix_builder/U798/Y (BUFX8)                           0.18       7.89 r
+  matrix_builder/U1316/Y (OAI31X2)                        0.14       8.03 f
+  matrix_builder/U870/Y (BUFX12)                          0.20       8.23 f
+  matrix_builder/U1071/Y (INVX8)                          0.14       8.37 r
+  matrix_builder/U82/Y (NAND3X4)                          0.09       8.46 f
+  matrix_builder/U120/Y (AND2X4)                          0.28       8.75 f
+  matrix_builder/U1054/Y (OAI22X4)                        0.24       8.99 r
+  matrix_builder/matrix_flat_o[12] (recam_2r2c_matrix_builder_ADDR_W10_HYBRID_ENTRY_NUM4)
+                                                          0.00       8.99 r
+  U3/Y (DLY1X1)                                           0.67       9.66 r
+  matrix_flat_o[12] (out)                                 0.00       9.66 r
+  data arrival time                                                  9.66
+
+  clock recam_boundary_clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  output external delay                                   0.00      10.00
+  data required time                                                10.00
+  --------------------------------------------------------------------------
+  data required time                                                10.00
+  data arrival time                                                 -9.66
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.34
+
+
+1

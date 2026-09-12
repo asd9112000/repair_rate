@@ -17,7 +17,7 @@ import seaborn as sns
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_CSV_FILE = PROJECT_ROOT / "reports/legacy/redundant_rate/RedundantRate.csv"
+DEFAULT_CSV_FILE = PROJECT_ROOT / "reports/RedundantRate/RedundantRate.csv"
 REQUIRED_COLUMNS = ("Row", "Column", "Fault", "AverageExtraLines")
 OUTPUT_STEM = "redundant_rate_visualization"
 OUTPUT_DPI = 300
@@ -29,12 +29,12 @@ def configure_plot_style() -> None:
         context="paper",
         style="whitegrid",
         font="DejaVu Sans",
-        font_scale=1.2,
+        font_scale=1.8,
         rc={
             "axes.edgecolor": "0.25",
-            "axes.linewidth": 0.8,
+            "axes.linewidth": 1.2,
             "grid.color": "0.86",
-            "grid.linewidth": 0.6,
+            "grid.linewidth": 0.8,
             "legend.frameon": False,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
@@ -119,18 +119,18 @@ def plot_redundant_rate(df: pd.DataFrame, output_dir: Path) -> None:
             color=colors[index],
             marker=markers[index % len(markers)],
             linestyle=line_styles[index % len(line_styles)],
-            markersize=5.0,
-            linewidth=1.7,
+            markersize=8,
+            linewidth=4,
             label=str(spare_line),
         )
 
     ax.set_title(
-        "Average Extra Lines vs. Fault Count\n"
-        r"Equal row/column spare configuration: $R_s = C_s$",
+        "Remaining Spare Lines vs. Fault Count\n",
+        # r"Equal row/column spare configuration: $R_s = C_s$",
         pad=10,
     )
     ax.set_xlabel("Number of Faults")
-    ax.set_ylabel("Average Number of Extra Lines")
+    ax.set_ylabel("Remaining Spare Lines")
     ax.set_xticks(fault_nums)
     ax.set_ylim(bottom=0.0)
     ax.grid(axis="x", visible=False)

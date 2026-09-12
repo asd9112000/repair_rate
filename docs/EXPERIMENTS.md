@@ -140,6 +140,27 @@ spare lines，再選 lexicographically smallest `(A,B,C,D)` solution IDs。
 組合數、EARLY remaining resources 與 compressed-state bits；`summary.csv` 記錄
 greedy loss 與 selector 統計。selector work 是軟體候選檢查次數，不是硬體 cycle。
 
+#### 2×2 Directional Multi-Config Analyzer validation
+
+The new 2×2 directional analyzer is a distinct validation scope from the
+existing general/1×4 `TileSolutionState` policy representation.  It exposes
+seven physical `ConfigID` resource envelopes and retains a one-based
+lowest-valid `PatternID` per configuration (`0` is invalid).  Its group result
+is conceptually `ConfigPatternMap[subarray][config]`; ConfigID is implicit in
+the coordinate and must not be stored again in each cell.
+
+For this 2×2 scope, equivalence checks must verify shared pivot/counter
+semantics, complete R/C transpose behavior, lowest-valid-Pattern selection,
+and reconstruction from ordered `PivotPayload + ConfigID + PatternID`.
+`CAMReusePending` remains outside conventional PatternID/GROUP selection.
+Report per-config Hybrid logical occupancy and configuration-union occupancy
+for RTL sizing.  Preserve EARLY/GROUP repair-rate comparison, `greedy_loss`,
+and `PhysicalResourceLedger` conservation; GROUP searches ConfigID
+combinations, not all internal PatternID combinations.
+
+The detailed RTL implementation contract is
+[`../docs_verilog/03_ANALYZER_RTL_HANDOFF.md`](../docs_verilog/03_ANALYZER_RTL_HANDOFF.md).
+
 壓縮狀態的分析位元數為：
 
 ```text

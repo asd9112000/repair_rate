@@ -1,5 +1,13 @@
 # Solution Take Policy Research Handoff
 
+> Status: Historical retained-state design for the legacy/general solution-take
+> path and 1×4 work.  For the new **2×2 Directional Multi-Config Analyzer**,
+> its `TileSolutionState` / matrix-address / valid-bitmap retained-state model
+> is superseded by `PivotPayload + ConfigPatternMap + CAMReusePending`; see
+> [`../../docs_verilog/03_ANALYZER_RTL_HANDOFF.md`](../../docs_verilog/03_ANALYZER_RTL_HANDOFF.md)
+> and D-003.  The historical policy discussion below is not deleted and does
+> not change existing 1×4 experiment semantics.
+
 ## 1. 本階段研究問題
 
 目前 Dynamic Spare Sharing 使用四個 repair tiles / subarrays：

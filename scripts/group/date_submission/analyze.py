@@ -13,6 +13,7 @@ from pathlib import Path
 
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/date-submission-matplotlib")
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 
 
 POLICY_ROWS = {
@@ -20,7 +21,8 @@ POLICY_ROWS = {
     ("directional", 1, 1): ("directional_m1", "Limited DSS ($m=1$)"),
     ("directional", 2, 2): ("directional_m2", "Proposed DSS ($m=2$)"),
 }
-POLICY_ORDER = ("no_sharing", "directional_m1", "directional_m2")
+BASELINE_POLICY = "no_sharing"
+PLOT_POLICY_ORDER = ("no_sharing", "directional_m1", "directional_m2")
 STYLE = {
     "no_sharing": ("#4D4D4D", "o", "--"),
     "directional_m1": ("#0072B2", "s", "-"),
@@ -78,149 +80,219 @@ def policy_id(row: dict[str, str]) -> str | None:
 
 def configure_plot() -> None:
     plt.rcParams.update({
-        "font.size": 9, "axes.titlesize": 10, "axes.labelsize": 9,
-        "legend.fontsize": 8, "xtick.labelsize": 8, "ytick.labelsize": 8,
+        "font.size": 14, "axes.titlesize": 18, "axes.labelsize": 18,
+        "legend.fontsize": 14, "xtick.labelsize": 14, "ytick.labelsize": 14,
         "lines.linewidth": 1.6, "lines.markersize": 5,
         "pdf.fonttype": 42, "ps.fonttype": 42,
     })
 
 
-def save_figure(fig, root: Path, stem: str) -> None:
-    fig.tight_layout()
-    fig.savefig(root / f"{stem}.png", dpi=300)
+def save_figure(fig, root: Path, stem: str, *, tight_layout: bool = True) -> None:
+    root.mkdir(parents=True, exist_ok=True)
+    if tight_layout:
+        fig.tight_layout()
+    fig.savefig(root / f"{stem}.svg")
     fig.savefig(root / f"{stem}.pdf")
     plt.close(fig)
 
 
+def configured_spares(config: dict) -> list[int]:
+    return [int(value) for value in config.get("spare_counts", [config["fixed"]["rs"]])]
+
+
+def spare_label(spare: int) -> str:
+    return f"Rs=Cs={spare}"
+
+
+def figure_directory(root: Path, spare: int, spares: list[int]) -> Path:
+    return root / "figures" if len(spares) == 1 else root / "figures" / f"rs{spare}_cs{spare}"
+
+
+def figure_stem(stem: str, spare: int, spares: list[int]) -> str:
+    return stem if len(spares) == 1 else f"{stem}_rs{spare}_cs{spare}"
+
+
+def relative_gain_percent(improved_rate: float, baseline_rate: float) -> float | None:
+    if baseline_rate == 0:
+        return None
+    return 100 * (improved_rate - baseline_rate) / baseline_rate
+
+
 def collect_repair(root: Path, config: dict) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
-    totals = defaultdict(lambda: {"successes": 0, "runs": 0, "seeds": set(), "util": []})
-    for path in sorted((root / "raw/repair_rate").glob("*/summary.csv")):
+    totals = defaultdict(lambda: {
+        "successes": 0, "runs": 0, "seeds": set(), "util": [], "seed_rates": {},
+    })
+    for path in sorted((root / "raw/repair_rate").rglob("summary.csv")):
         for row in read_csv(path):
             pid = policy_id(row)
-            if pid is None:
+            if pid not in PLOT_POLICY_ORDER:
                 continue
-            key = (int(row["fault_count"]), pid)
+            spare = int(row["Rs"])
+            if int(row["Cs"]) != spare:
+                raise RuntimeError("DATE spare sweep requires symmetric Rs=Cs")
+            key = (spare, int(row["fault_count"]), pid)
             runs = int(row["runs"])
             totals[key]["successes"] += round(float(row["repair_rate"]) * runs)
             totals[key]["runs"] += runs
-            totals[key]["seeds"].add(int(row["seed"]))
+            seed = int(row["seed"])
+            totals[key]["seeds"].add(seed)
             totals[key]["util"].append(float(row["average_spare_utilization"]))
+            totals[key]["seed_rates"].setdefault(seed, []).append(100 * float(row["repair_rate"]))
 
     expected_faults = config["fault_counts_per_group"]
     expected_seeds = set(config["active_profile_config"]["seeds"])
     missing = []
     long_rows = []
-    for faults in expected_faults:
-        for pid in POLICY_ORDER:
-            item = totals.get((faults, pid))
-            if not item or item["seeds"] != expected_seeds:
-                missing.append(f"f={faults},policy={pid}")
-                continue
-            successes, runs = item["successes"], item["runs"]
-            low, high = wilson(successes, runs)
-            long_rows.append({
-                "fault_count": faults, "policy_id": pid,
-                "label": POLICY_ROWS[next(key for key, value in POLICY_ROWS.items() if value[0] == pid)][1],
-                "seed_count": len(item["seeds"]), "total_runs": runs,
-                "successes": successes, "repair_rate_percent": 100 * successes / runs,
-                "ci95_low_percent": 100 * low, "ci95_high_percent": 100 * high,
-                "average_spare_utilization_percent": 100 * sum(item["util"]) / len(item["util"]),
-            })
+    spares = configured_spares(config)
+    for spare in spares:
+        for faults in expected_faults:
+            for pid in PLOT_POLICY_ORDER:
+                item = totals.get((spare, faults, pid))
+                if not item or item["seeds"] != expected_seeds:
+                    missing.append(f"rs={spare},f={faults},policy={pid}")
+                    continue
+                successes, runs = item["successes"], item["runs"]
+                low, high = wilson(successes, runs)
+                seed_rates = [sum(item["seed_rates"][seed]) / len(item["seed_rates"][seed])
+                              for seed in sorted(item["seed_rates"])]
+                long_rows.append({
+                    "Rs": spare, "Cs": spare, "spare_label": spare_label(spare),
+                    "fault_count": faults, "policy_id": pid,
+                    "label": next(value[1] for value in POLICY_ROWS.values() if value[0] == pid),
+                    "seed_count": len(item["seeds"]), "total_runs": runs,
+                    "successes": successes, "repair_rate_percent": 100 * successes / runs,
+                    "ci95_low_percent": 100 * low, "ci95_high_percent": 100 * high,
+                    "average_spare_utilization_percent": 100 * sum(item["util"]) / len(item["util"]),
+                    "seed_repair_rate_percent": seed_rates,
+                })
     if missing:
         raise RuntimeError("incomplete Figure 1 grid: " + "; ".join(missing))
 
-    by_key = {(row["fault_count"], row["policy_id"]): row for row in long_rows}
+    by_key = {(row["Rs"], row["fault_count"], row["policy_id"]): row for row in long_rows}
     wide_rows = []
-    for faults in expected_faults:
-        b = by_key[(faults, "no_sharing")]
-        m1 = by_key[(faults, "directional_m1")]
-        m2 = by_key[(faults, "directional_m2")]
-        wide_rows.append({
-            "fault_count": faults,
-            "baseline_mean": b["repair_rate_percent"],
-            "baseline_error": (b["ci95_high_percent"] - b["ci95_low_percent"]) / 2,
-            "m1_mean": m1["repair_rate_percent"],
-            "m1_error": (m1["ci95_high_percent"] - m1["ci95_low_percent"]) / 2,
-            "m2_mean": m2["repair_rate_percent"],
-            "m2_error": (m2["ci95_high_percent"] - m2["ci95_low_percent"]) / 2,
-            "m1_gain_pp": m1["repair_rate_percent"] - b["repair_rate_percent"],
-            "m2_gain_pp": m2["repair_rate_percent"] - b["repair_rate_percent"],
-            "baseline_ci95_low": b["ci95_low_percent"],
-            "baseline_ci95_high": b["ci95_high_percent"],
-            "m1_ci95_low": m1["ci95_low_percent"], "m1_ci95_high": m1["ci95_high_percent"],
-            "m2_ci95_low": m2["ci95_low_percent"], "m2_ci95_high": m2["ci95_high_percent"],
-            "total_samples_per_curve": b["total_runs"],
-        })
+    for spare in spares:
+        for faults in expected_faults:
+            baseline = by_key[(spare, faults, "no_sharing")]
+            m1 = by_key[(spare, faults, "directional_m1")]
+            m2 = by_key[(spare, faults, "directional_m2")]
+            wide_rows.append({
+                "Rs": spare, "Cs": spare, "fault_count": faults,
+                "m1_gain_pp": float(m1["repair_rate_percent"]) - float(baseline["repair_rate_percent"]),
+                "m2_gain_pp": float(m2["repair_rate_percent"]) - float(baseline["repair_rate_percent"]),
+            })
     return long_rows, wide_rows
 
 
-def plot_repair(root: Path, long_rows: list[dict[str, object]], wide_rows: list[dict[str, object]]) -> None:
-    plots = root / "figures"
-    plots.mkdir(exist_ok=True)
-    fig, axis = plt.subplots(figsize=(6.7, 4.2))
-    for pid in POLICY_ORDER:
-        rows = [row for row in long_rows if row["policy_id"] == pid]
-        color, marker, line = STYLE[pid]
-        y = [float(row["repair_rate_percent"]) for row in rows]
-        yerr = [[y[i] - float(row["ci95_low_percent"]) for i, row in enumerate(rows)],
-                [float(row["ci95_high_percent"]) - y[i] for i, row in enumerate(rows)]]
-        axis.errorbar([row["fault_count"] for row in rows], y, yerr=yerr,
-                      color=color, marker=marker, linestyle=line,
-                      capsize=2.2, label=str(rows[0]["label"]))
-    axis.set_title("Repair Rate vs. Number of Faults per 2×2 Group")
-    axis.set_xlabel("Number of Faults per 2×2 Group")
-    axis.set_ylabel("Repair Rate (%)")
-    axis.set_ylim(0, 100)
-    axis.grid(True, linestyle=":", alpha=0.65)
-    axis.legend(frameon=False)
-    save_figure(fig, plots, "fig1_repair_rate_vs_faults")
+def plot_repair(root: Path, long_rows: list[dict[str, object]], wide_rows: list[dict[str, object]], spares: list[int]) -> None:
+    for spare in spares:
+        plots = figure_directory(root, spare, spares)
+        selected_long = [row for row in long_rows if row["Rs"] == spare]
+        fig, axis = plt.subplots(figsize=(6.7, 4.2))
+        color, marker, line = STYLE[BASELINE_POLICY]
+        axis.plot([row["fault_count"] for row in selected_long],
+                  [float(row["repair_rate_percent"]) for row in selected_long],
+                  color=color, marker=marker, linestyle=line, label="RECAM / No Sharing")
+        axis.set_title(f"Average Repair Rate vs. Number of Faults per 2×2 Group ({spare_label(spare)})")
+        axis.set_xlabel("Number of Faults per 2×2 Group")
+        axis.set_ylabel("Average Repair Rate (%)")
+        axis.set_ylim(0, 100)
+        axis.grid(True, linestyle=":", alpha=0.65)
+        axis.legend(frameon=False)
+        save_figure(fig, plots, figure_stem("fig1_repair_rate_vs_faults_average", spare, spares))
 
-    fig, axis = plt.subplots(figsize=(6.7, 4.2))
-    for pid, field, label in (("directional_m1", "m1_gain_pp", "Limited DSS ($m=1$)"),
-                              ("directional_m2", "m2_gain_pp", "Proposed DSS ($m=2$)")):
-        color, marker, line = STYLE[pid]
-        values = [float(row[field]) for row in wide_rows]
-        axis.plot([row["fault_count"] for row in wide_rows], values,
-                  color=color, marker=marker, linestyle=line, label=label)
-        maximum = max(range(len(values)), key=values.__getitem__)
-        is_proposed_max = pid == "directional_m2"
-        text_offset = (-8, -22) if is_proposed_max else (5, 8)
-        axis.annotate(f"{values[maximum]:.2f} pp @ {wide_rows[maximum]['fault_count']}",
-                      (wide_rows[maximum]["fault_count"], values[maximum]),
-                      xytext=text_offset, textcoords="offset points", fontsize=8,
-                      ha="right" if is_proposed_max else "left")
-    axis.axhline(0, color="#777777", linewidth=0.8)
-    axis.set_title("Repair-Rate Improvement of Dynamic Spare Sharing")
-    axis.set_xlabel("Number of Faults per 2×2 Group")
-    axis.set_ylabel("Repair-Rate Improvement (percentage points)")
-    axis.grid(True, linestyle=":", alpha=0.65)
-    axis.legend(frameon=False)
-    save_figure(fig, plots, "fig2_dss_gain_vs_faults")
+        fig, axis = plt.subplots(figsize=(6.7, 4.2))
+        positions = list(range(1, len(selected_long) + 1))
+        seed_rates = [row["seed_repair_rate_percent"] for row in selected_long]
+        box = axis.boxplot(seed_rates, positions=positions, widths=0.55, showmeans=True,
+                           patch_artist=True, medianprops={"color": "black"})
+        for patch in box["boxes"]:
+            patch.set(facecolor="#BDBDBD", alpha=0.8)
+        axis.set_xticks(positions, [row["fault_count"] for row in selected_long])
+        axis.set_title(f"Repair-Rate Distribution across Seeds ({spare_label(spare)})")
+        axis.set_xlabel("Number of Faults per 2×2 Group")
+        axis.set_ylabel("Repair Rate per Seed (%)")
+        axis.set_ylim(0, 100)
+        axis.grid(True, linestyle=":", alpha=0.65)
+        save_figure(fig, plots, figure_stem("fig1_repair_rate_vs_faults_box_plot", spare, spares))
 
-    fig, axis = plt.subplots(figsize=(6.7, 4.2))
-    for pid in POLICY_ORDER:
-        rows = [row for row in long_rows if row["policy_id"] == pid]
-        color, marker, line = STYLE[pid]
-        axis.plot([row["fault_count"] for row in rows],
-                  [row["average_spare_utilization_percent"] for row in rows],
-                  color=color, marker=marker, linestyle=line,
-                  label=str(rows[0]["label"]))
-    axis.set_title("Spare Utilization under Dynamic Spare Sharing")
-    axis.set_xlabel("Number of Faults per 2×2 Group")
-    axis.set_ylabel("Average Spare Utilization (%)")
-    axis.set_ylim(0, 100)
-    axis.set_yticks(range(0, 101, 20))
-    axis.grid(True, linestyle=":", alpha=0.65)
-    axis.legend(frameon=False)
-    save_figure(fig, plots, "fig4_spare_utilization")
+        fig, axis = plt.subplots(figsize=(6.7, 4.2))
+        axis.plot([row["fault_count"] for row in selected_long],
+                  [float(row["average_spare_utilization_percent"]) for row in selected_long],
+                  color=color, marker=marker, linestyle=line, label="RECAM / No Sharing")
+        axis.set_title(f"Spare Utilization of RECAM / No Sharing ({spare_label(spare)})")
+        axis.set_xlabel("Number of Faults per 2×2 Group")
+        axis.set_ylabel("Average Spare Utilization (%)")
+        axis.set_ylim(0, 100)
+        axis.set_yticks(range(0, 101, 20))
+        axis.grid(True, linestyle=":", alpha=0.65)
+        axis.legend(frameon=False)
+        save_figure(fig, plots, figure_stem("fig4_spare_utilization", spare, spares))
+
+
+def plot_spare_heatmaps(root: Path, long_rows: list[dict[str, object]], wide_rows: list[dict[str, object]], spares: list[int]) -> None:
+    if len(spares) < 2:
+        return
+    faults = [fault for fault in sorted({int(row["fault_count"]) for row in wide_rows})
+              if fault // 4 not in {2, 3, 15, 16}]
+    heatmap_dir = root / "figures" / "heatmaps"
+    panels = [("no_sharing", "RECAM / No Sharing"), ("directional_m1", "DSS"),
+              ("directional_m2", "Proposed DSS ($m=2)")]
+    fig, axes = plt.subplots(1, 3, figsize=(10.2, 3.4), sharey=True)
+    for axis, (pid, title) in zip(axes, panels):
+        values = {(int(row["Rs"]), int(row["fault_count"])): float(row["repair_rate_percent"])
+                  for row in long_rows if row["policy_id"] == pid}
+        matrix = [[values[(spare, fault)] for fault in faults] for spare in spares]
+        image = axis.imshow(matrix, aspect="auto", vmin=0, vmax=100, cmap="viridis")
+        for row_index, row in enumerate(matrix):
+            for column_index, value in enumerate(row):
+                color = "white" if sum(image.cmap(image.norm(value))[:3]) < 1.5 else "black"
+                axis.text(column_index, row_index, f"{value:.1f}", ha="center", va="center",
+                          color=color, fontsize=14)
+        axis.set_title(title)
+        axis.set_xticks(range(len(faults)), [f"{fault / 4:g}" for fault in faults])
+        axis.set_xlabel("Fault count")
+    axes[0].set_yticks(range(len(spares)), [spare_label(spare) for spare in spares])
+    axes[0].set_ylabel("Spare line configuration")
+    colorbar = fig.colorbar(image, ax=axes, label="Repair Rate (%)", fraction=0.035, pad=0.05)
+    colorbar.ax.yaxis.labelpad = 6
+    fig.subplots_adjust(left=0.08, right=0.84, bottom=0.20, top=0.84, wspace=0.20)
+    save_figure(fig, heatmap_dir, "heatmap_repair_rate_by_spare", tight_layout=False)
+
+    gain_cmap = LinearSegmentedColormap.from_list("white_to_vivid_red", ["#ffffff", "#FF0000"])
+    max_gain = max(float(row[field]) for row in wide_rows for field in ("m1_gain_pp", "m2_gain_pp"))
+    for field, title, stem in (
+            ("m1_gain_pp", "DSS gain", "heatmap_dss_gain_by_spare"),
+            ("m2_gain_pp", "Proposed DSS gain", "heatmap_proposed_dss_gain_by_spare")):
+        fig, axis = plt.subplots(figsize=(7.8, 3.8))
+        values = {(int(row["Rs"]), int(row["fault_count"])): float(row[field]) for row in wide_rows}
+        matrix = [[values[(spare, fault)] for fault in faults] for spare in spares]
+        image = axis.imshow(matrix, aspect="auto", vmin=0, vmax=max_gain, cmap=gain_cmap)
+        for row_index, row in enumerate(matrix):
+            for column_index, value in enumerate(row):
+                color = "white" if sum(image.cmap(image.norm(value))[:3]) < 1.5 else "black"
+                axis.text(column_index, row_index, f"{value:.1f}", ha="center", va="center",
+                          color=color, fontsize=14)
+        axis.set_title(title)
+        axis.set_xticks(range(len(faults)), [f"{fault / 4:g}" for fault in faults])
+        axis.set_xlabel("Fault count")
+        axis.set_yticks(range(len(spares)), [spare_label(spare) for spare in spares])
+        axis.set_ylabel("Spare line configuration")
+        colorbar = fig.colorbar(image, ax=axis, label="Repair-rate improvement (pp)",
+                                fraction=0.046, pad=0.06)
+        colorbar.ax.yaxis.labelpad = 8
+        fig.subplots_adjust(left=0.16, right=0.80, bottom=0.20, top=0.84)
+        save_figure(fig, heatmap_dir, stem, tight_layout=False)
 
 
 def collect_imbalance(root: Path, config: dict) -> list[dict[str, object]]:
     totals = defaultdict(lambda: {"successes": 0, "runs": 0, "seeds": set(), "meta": None})
-    for point_path in sorted((root / "raw/imbalance").glob("*/point.json")):
+    for point_path in sorted((root / "raw/imbalance").rglob("point.json")):
         meta = read_json(point_path)
+        if meta["policy_id"] != BASELINE_POLICY:
+            continue
         row = read_csv(point_path.parent / "summary.csv")[0]
-        key = (meta["distribution_id"], meta["policy_id"])
+        spare = int(meta.get("rs", config["fixed"]["rs"]))
+        key = (spare, meta["distribution_id"], meta["policy_id"])
         runs = int(row["runs"])
         totals[key]["successes"] += round(float(row["repair_rate"]) * runs)
         totals[key]["runs"] += runs
@@ -228,64 +300,62 @@ def collect_imbalance(root: Path, config: dict) -> list[dict[str, object]]:
         totals[key]["meta"] = meta
     expected_seeds = set(config["active_profile_config"]["seeds"])
     result = []
-    for distribution in config["imbalance"]["profiles"]:
-        for pid in POLICY_ORDER:
-            item = totals[(distribution["id"], pid)]
+    for spare in configured_spares(config):
+        for distribution in config["imbalance"]["profiles"]:
+            item = totals[(spare, distribution["id"], BASELINE_POLICY)]
             if item["seeds"] != expected_seeds:
-                raise RuntimeError(f"incomplete imbalance grid: {distribution['id']}/{pid}")
+                raise RuntimeError(
+                    f"incomplete imbalance grid: rs={spare}/{distribution['id']}/{BASELINE_POLICY}")
             counts = item["meta"]["fault_counts_abcd"]
             mean = sum(counts) / 4
             std = math.sqrt(sum((value - mean) ** 2 for value in counts) / 4)
             low, high = wilson(item["successes"], item["runs"])
             result.append({
+                "Rs": spare, "Cs": spare, "spare_label": spare_label(spare),
                 "distribution_id": distribution["id"], "distribution_label": distribution["label"],
                 "fault_counts_abcd": ",".join(map(str, counts)), "max_faults_per_subarray": max(counts),
                 "std_fault_count": std, "coefficient_of_variation": std / mean,
-                "policy_id": pid, "total_runs": item["runs"], "successes": item["successes"],
+                "policy_id": BASELINE_POLICY, "total_runs": item["runs"], "successes": item["successes"],
                 "repair_rate_percent": 100 * item["successes"] / item["runs"],
                 "ci95_low_percent": 100 * low, "ci95_high_percent": 100 * high,
             })
     return result
 
 
-def plot_imbalance(root: Path, rows: list[dict[str, object]]) -> None:
-    fig, axis = plt.subplots(figsize=(6.7, 4.2))
-    for pid in POLICY_ORDER:
-        selected = sorted((row for row in rows if row["policy_id"] == pid),
+def plot_imbalance(root: Path, rows: list[dict[str, object]], spares: list[int]) -> None:
+    for spare in spares:
+        fig, axis = plt.subplots(figsize=(6.7, 4.2))
+        selected = sorted((row for row in rows if row["Rs"] == spare),
                           key=lambda row: float(row["coefficient_of_variation"]))
-        color, marker, line = STYLE[pid]
-        y = [float(row["repair_rate_percent"]) for row in selected]
-        yerr = [[y[i] - float(row["ci95_low_percent"]) for i, row in enumerate(selected)],
-                [float(row["ci95_high_percent"]) - y[i] for i, row in enumerate(selected)]]
-        short_label = {"no_sharing": "No Sharing", "directional_m1": "DSS $m=1$",
-                       "directional_m2": "DSS $m=2$"}[pid]
-        axis.errorbar([row["coefficient_of_variation"] for row in selected], y, yerr=yerr,
-                      color=color, marker=marker, linestyle=line, capsize=2.2,
-                      label=short_label)
-    axis.set_title("Repair Rate under Increasing Inter-Subarray Fault Imbalance")
-    axis.set_xlabel("Fault-Count Coefficient of Variation (std / mean)")
-    axis.set_ylabel("Repair Rate (%)")
-    axis.set_ylim(0, 100)
-    axis.grid(True, linestyle=":", alpha=0.65)
-    axis.legend(frameon=False, loc="upper right", fontsize=7.5)
-    save_figure(fig, root / "figures", "fig3_repair_rate_vs_fault_imbalance")
+        color, marker, line = STYLE[BASELINE_POLICY]
+        axis.plot([row["coefficient_of_variation"] for row in selected],
+                  [float(row["repair_rate_percent"]) for row in selected],
+                  color=color, marker=marker, linestyle=line, label="RECAM / No Sharing")
+        axis.set_title(f"Average Repair Rate vs. Fault Imbalance ({spare_label(spare)})")
+        axis.set_xlabel("Fault-Count Coefficient of Variation (std / mean)")
+        axis.set_ylabel("Average Repair Rate (%)")
+        axis.set_ylim(0, 100)
+        axis.grid(True, linestyle=":", alpha=0.65)
+        axis.legend(frameon=False, loc="upper right", fontsize=14)
+        save_figure(fig, figure_directory(root, spare, spares),
+                    figure_stem("fig3_repair_rate_vs_fault_imbalance", spare, spares))
 
 
 def plot_hardware_proxy(root: Path, rows: list[dict[str, object]]) -> None:
     """Internal model plot; deliberately does not claim physical area or timing."""
     totals = defaultdict(lambda: {"area": [], "cycles": [], "p": None})
     for row in rows:
-        item = totals[row["policy"]]
+        item = totals[(row["Rs"], row["policy"])]
         item["area"].append(float(row["group_normalized_total_area_proxy"]))
         item["cycles"].append(float(row["bira_cycles_per_fault"]))
         item["p"] = row["P_A"]
     fig, axis = plt.subplots(figsize=(6.7, 4.2))
-    for policy, item in sorted(totals.items(), key=lambda pair: float(pair[1]["area"][0])):
+    for (spare, policy), item in sorted(totals.items(), key=lambda pair: float(pair[1]["area"][0])):
         area = sum(item["area"]) / len(item["area"])
         cycles = sum(item["cycles"]) / len(item["cycles"])
         axis.scatter(area, cycles, s=42)
-        axis.annotate(f"{policy} (P={item['p']})", (area, cycles),
-                      xytext=(4, 5), textcoords="offset points", fontsize=7.5)
+        axis.annotate(f"Rs=Cs={spare}: {policy} (P={item['p']})", (area, cycles),
+                      xytext=(4, 5), textcoords="offset points", fontsize=14)
     axis.set_title("Architectural SRAM-RECAM Storage–Latency Model (Non-Physical Proxy)")
     axis.set_xlabel("Normalized Storage + Comparator Area Proxy (not µm²)")
     axis.set_ylabel("Modeled BIRA Cycles per Fault")
@@ -297,7 +367,7 @@ def plot_hardware_proxy(root: Path, rows: list[dict[str, object]]) -> None:
 
 def collect_hardware(root: Path) -> list[dict[str, object]]:
     rows = []
-    for path in sorted((root / "raw/hardware_model").glob("*/sram_recam_metrics.csv")):
+    for path in sorted((root / "raw/hardware_model").rglob("sram_recam_metrics.csv")):
         rows.extend(read_csv(path))
     if not rows:
         raise RuntimeError("no SRAM-RECAM hardware-model CSV files found")
@@ -309,7 +379,7 @@ def collect_hardware(root: Path) -> list[dict[str, object]]:
         "group_runtime_physical_bits", "group_temp_buffer_bits", "group_matrix_bits",
         "group_comparator_bits", "group_normalized_total_area_proxy",
         "bira_cycles_per_fault", "runtime_lookup_rounds_avg", "runtime_hit_rounds_avg",
-        "runtime_miss_rounds_avg", "repair_rate", "cam_baseline_repair_rate",
+        "runtime_miss_rounds_avg", "repair_rate", "cam_baseline_repair_rate", "Rs", "Cs",
         "repair_result_matches_cam_baseline", "seed", "runs", "fault_count",
     ]
     return [{field: row[field] for field in fields} for row in rows]
@@ -318,10 +388,11 @@ def collect_hardware(root: Path) -> list[dict[str, object]]:
 def summarize_hardware_proxy(rows: list[dict[str, object]]) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
     grouped = defaultdict(list)
     for row in rows:
-        grouped[row["policy"]].append(row)
+        grouped[(row["Rs"], row["Cs"], row["policy"])].append(row)
     summary = []
-    for policy, selected in grouped.items():
+    for (rs, cs, policy), selected in grouped.items():
         summary.append({
+            "Rs": int(rs), "Cs": int(cs), "spare_label": f"Rs={rs}, Cs={cs}",
             "policy": policy, "effective_parallelism_P": int(selected[0]["P_A"]),
             "runtime_entries": int(selected[0]["runtime_entries"]),
             "runtime_entry_bits": int(selected[0]["runtime_entry_bits"]),
@@ -401,7 +472,9 @@ def write_captions(root: Path, config: dict, wide: list[dict[str, object]], repr
     samples = wide[0]["total_samples_per_curve"]
     captions = {
         "fig1": f"Group-scope repair rate for independent 2×2 groups with Rs=Cs=2, moderate/mixed faults, and {samples} paired samples per curve point. Error bars are Wilson 95% confidence intervals. The full 0–100% axis shows the transition region without truncation.",
+        "fig1_average": f"Group-scope average repair rate for the same Figure 1 corpus, without confidence-interval error bars. Rs=Cs=2, moderate/mixed faults, and {samples} paired samples per curve point; the y-axis spans 0–100%.",
         "fig2": "Measured percentage-point improvement over the paired No Sharing baseline using the same Figure 1 corpus. Labels mark the observed maximum for each DSS policy; no significance test is claimed.",
+        "fig2_relative": "Relative repair-rate improvement over No Sharing, calculated as (DSS − No Sharing) / No Sharing × 100. Points with a 0% No Sharing repair rate are undefined and omitted.",
         "fig3": f"Group-scope repair rate at F={representative} total faults distributed across A/B/C/D with increasing coefficient of variation. Policies use identical deterministic corpus keys for each distribution and seed; error bars are Wilson 95% confidence intervals.",
         "fig4": "Average fraction of the fixed physical spare-line budget used by each policy. Sharing changes ownership reachability but does not add spare rows or columns.",
         "supp_hardware_model": "Internal architectural-model view of normalized storage/comparator proxy versus modeled BIRA cycles. The x-axis is not physical area and this plot is not a substitute for same-library synthesis.",
@@ -497,7 +570,9 @@ KEY RESULTS:
 
 PAPER-READY FIGURES:
 - {root / 'figures/fig1_repair_rate_vs_faults.pdf'}
+- {root / 'figures/fig1_repair_rate_vs_faults_average.pdf'}
 - {root / 'figures/fig2_dss_gain_vs_faults.pdf'}
+- {root / 'figures/fig2_dss_relative_gain_vs_faults.pdf'}
 - {root / 'figures/fig3_repair_rate_vs_fault_imbalance.pdf'}
 
 SUPPORTING / INTERNAL:
@@ -511,17 +586,15 @@ def write_readme(root: Path, config: dict) -> None:
     profile = config["active_profile_config"]
     text = f"""# DATE submission 2×2 DSS artifacts
 
-This run is a **group-scope** study of independent 2×2 / four-subarray samples. It must not be averaged with hierarchical device results.
+This run is a **group-scope** study of independent 2×2 / four-subarray samples. It must not be averaged with hierarchical device results. All generated figures select only the `RECAM / No Sharing` baseline.
 
 ## Contents
 
-- `figures/fig1_repair_rate_vs_faults.*`: full-range repair rate with Wilson 95% confidence intervals.
-- `figures/fig2_dss_gain_vs_faults.*`: measured percentage-point gain over No Sharing.
-- `figures/fig3_repair_rate_vs_fault_imbalance.*`: controlled A/B/C/D count imbalance at the selected transition point.
-- `figures/fig4_spare_utilization.*`: aggregate fixed-budget spare utilization.
-- `csv/`: underlying and aggregated data; `raw/`: simulator outputs and per-point provenance.
-- `tables/`: CSV, Markdown, and LaTeX repairability table plus an explicitly incomplete hardware-cost table.
-- `explorations/paired_outcomes/`: exact per-sample contingency analysis when present.
+- `figures/fig1_repair_rate_vs_faults_average.*`: Figure 1 baseline average repair-rate line plot.
+- `figures/fig1_repair_rate_vs_faults_box_plot.*`: Figure 1 per-seed repair-rate distributions.
+- `figures/fig3_repair_rate_vs_fault_imbalance.*`: baseline average repair rate under controlled A/B/C/D count imbalance.
+- `figures/fig4_spare_utilization.*`: baseline aggregate fixed-budget spare utilization.
+- `csv/`: corresponding baseline-only aggregated data; `raw/`: simulator outputs and per-point provenance.
 
 ## Reproduction
 
@@ -532,13 +605,45 @@ python3 scripts/group/date_submission/analyze.py {root}
 
 Executables: `build/bin/DynamicSpareSharing` and `build/bin/DynamicSpareSharing_SRAM_RECAM`.
 Seeds: {profile['seeds']}; samples per seed and curve point: {profile['runs_per_seed']}.
-Fault model: moderate imbalance; spatial model: mixed; Rs=Cs=2; paper CAM reuse; local-first; max-borrows=3; legacy solution-take.
+Fault model: moderate imbalance; spatial model: mixed; Rs=Cs points: {configured_spares(config)}; paper CAM reuse; local-first; max-borrows=3; legacy solution-take.
 
-## Hardware boundary
-
-The SRAM-RECAM simulator supplies logical storage, comparator, search-round, and functional-equivalence metrics. No physical synthesis configuration is present: technology/library, CAM macro, register-table RTL, SRAM macro, clock constraint, and characterized critical delay are unavailable. Consequently Figures 5–7 in physical area/ns and a publication-ready Table 2 are not produced. Blank fields in Table 2 are intentional, not zero.
 """
     (root / "README.md").write_text(text, encoding="utf-8")
+
+
+def write_multi_spare_summary(root: Path, wide_rows: list[dict[str, object]], spares: list[int]) -> None:
+    lines = ["# DATE 2×2 DSS spare sweep summary", "",
+             "Scope: independent group-level 2×2 samples; results are not device-level metrics.", ""]
+    for spare in spares:
+        selected = [row for row in wide_rows if row["Rs"] == spare]
+        best_m1 = max(selected, key=lambda row: float(row["m1_gain_pp"]))
+        best_m2 = max(selected, key=lambda row: float(row["m2_gain_pp"]))
+        lines.append(
+            f"- Rs=Cs={spare}: max m=1 gain {float(best_m1['m1_gain_pp']):.2f} pp "
+            f"at F={best_m1['fault_count']}; max m=2 gain {float(best_m2['m2_gain_pp']):.2f} pp "
+            f"at F={best_m2['fault_count']}.")
+    lines += ["", "Per-spare figures are under `figures/rs<k>_cs<k>/`; cross-spare heatmaps are under `figures/heatmaps/`."]
+    (root / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_multi_spare_captions(root: Path, wide_rows: list[dict[str, object]], spares: list[int], config: dict) -> None:
+    representatives = config["selected_representative_fault_counts"]
+    for spare in spares:
+        selected = [row for row in wide_rows if row["Rs"] == spare]
+        samples = selected[0]["total_samples_per_curve"]
+        caption_dir = figure_directory(root, spare, spares) / "captions"
+        caption_dir.mkdir(parents=True, exist_ok=True)
+        suffix = f"rs{spare}_cs{spare}"
+        texts = {
+            "fig1": f"Group-scope repair rate for independent 2×2 groups with Rs=Cs={spare}, moderate/mixed faults, and {samples} paired samples per curve point. Error bars are Wilson 95% confidence intervals; the y-axis spans 0–100%.",
+            "fig1_average": f"Group-scope average repair rate for the same Figure 1 corpus at Rs=Cs={spare}, without confidence-interval error bars; the y-axis spans 0–100%.",
+            "fig2": f"Measured percentage-point gain over the paired No Sharing baseline for Rs=Cs={spare}; no significance test is claimed.",
+            "fig2_relative": f"Relative repair-rate improvement over No Sharing for Rs=Cs={spare}, calculated as (DSS − No Sharing) / No Sharing × 100. Points with a 0% baseline are omitted.",
+            "fig3": f"Group-scope repair rate at F={representatives[f'rs{spare}_cs{spare}']} faults/group for Rs=Cs={spare}, under controlled A/B/C/D imbalance. Error bars are Wilson 95% confidence intervals.",
+            "fig4": f"Average fraction of the fixed Rs=Cs={spare} physical spare-line budget used by each policy.",
+        }
+        for name, text in texts.items():
+            (caption_dir / f"{name}_{suffix}_caption.md").write_text(text + "\n", encoding="utf-8")
 
 
 def main() -> int:
@@ -550,37 +655,39 @@ def main() -> int:
     for directory in (root / "csv", root / "figures", root / "tables"):
         directory.mkdir(exist_ok=True)
     configure_plot()
+    spares = configured_spares(config)
     long_rows, wide_rows = collect_repair(root, config)
-    write_csv(root / "csv/fig1_repair_rate_long.csv", long_rows)
-    write_csv(root / "csv/fig1_repair_rate_summary.csv", wide_rows)
-    write_csv(root / "csv/fig2_dss_gain.csv", [
-        {key: row[key] for key in ("fault_count", "m1_gain_pp", "m2_gain_pp")}
-        for row in wide_rows])
-    write_csv(root / "csv/fig4_spare_utilization.csv", [
-        {key: row[key] for key in ("fault_count", "policy_id",
-                                    "average_spare_utilization_percent")}
-        for row in long_rows])
-    plot_repair(root, long_rows, wide_rows)
+    write_csv(root / "csv/fig1_repair_rate_long_all_spares.csv", long_rows)
+    write_csv(root / "csv/fig1_repair_rate_summary_all_spares.csv", wide_rows)
+    write_csv(root / "csv/fig4_spare_utilization_all_spares.csv", long_rows)
+    for spare in spares:
+        suffix = f"rs{spare}_cs{spare}"
+        selected_long = [row for row in long_rows if row["Rs"] == spare]
+        selected_wide = [row for row in wide_rows if row["Rs"] == spare]
+        write_csv(root / "csv" / f"fig1_repair_rate_long_{suffix}.csv", selected_long)
+        write_csv(root / "csv" / f"fig1_repair_rate_summary_{suffix}.csv", selected_wide)
+        write_csv(root / "csv" / f"fig4_spare_utilization_{suffix}.csv", selected_long)
+    if len(spares) == 1:
+        write_csv(root / "csv/fig1_repair_rate_long.csv", long_rows)
+        write_csv(root / "csv/fig1_repair_rate_summary.csv", wide_rows)
+        write_csv(root / "csv/fig4_spare_utilization.csv", long_rows)
+    plot_repair(root, long_rows, wide_rows, spares)
+    plot_spare_heatmaps(root, long_rows, wide_rows, spares)
     imbalance = collect_imbalance(root, config)
-    write_csv(root / "csv/fig3_fault_imbalance.csv", imbalance)
-    plot_imbalance(root, imbalance)
-    hardware = collect_hardware(root)
-    write_csv(root / "csv/hardware_architecture_model.csv", hardware)
-    hardware_summary, hardware_frontier = summarize_hardware_proxy(hardware)
-    write_csv(root / "csv/hardware_proxy_summary.csv", hardware_summary)
-    write_csv(root / "csv/hardware_proxy_frontier.csv", hardware_frontier)
-    plot_hardware_proxy(root, hardware)
-    make_tables(root, wide_rows, hardware)
-    write_captions(root, config, wide_rows, config["selected_representative_fault_count"])
-    write_summary(root, config, wide_rows, imbalance, hardware)
+    write_csv(root / "csv/fig3_fault_imbalance_all_spares.csv", imbalance)
+    for spare in spares:
+        write_csv(root / "csv" / f"fig3_fault_imbalance_rs{spare}_cs{spare}.csv",
+                  [row for row in imbalance if row["Rs"] == spare])
+    if len(spares) == 1:
+        write_csv(root / "csv/fig3_fault_imbalance.csv", imbalance)
+    plot_imbalance(root, imbalance, spares)
     write_readme(root, config)
-    write_completion_report(root, wide_rows)
     validation = {
         "scope": "group", "layout": "2x2", "complete_fault_grid": True,
         "complete_imbalance_grid": True,
         "paired_repair_rate_corpus": True,
         "imbalance_corpus_pairing": "same explicit A/B/C/D counts, spatial model, seed, and run count",
-        "all_sram_policies_match_cam_repair": all(row["repair_result_matches_cam_baseline"] == "1" for row in hardware),
+        "selected_policy": "RECAM / No Sharing",
         "physical_synthesis_available": False,
         "significance_test_performed": False,
         "repair_rate_interval": config["statistics"]["repair_rate_interval"],

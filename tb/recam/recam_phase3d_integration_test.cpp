@@ -1,0 +1,3 @@
+#include "Vrecam_phase3d_integration_top.h"
+#include <iostream>
+int main(){Vrecam_phase3d_integration_top d;auto t=[&](){d.clk_i=0;d.eval();d.clk_i=1;d.eval();d.clk_i=0;d.eval();};d.rst_ni=0;d.start_i=0;d.sa_role_i=0;d.pivot_valid_i=1;d.pivot_rows_flat_i=0x101;d.pivot_cols_flat_i=3;d.row_gt1_i=d.row_gt2_i=d.row_gt3_i=d.col_gt1_i=d.col_gt2_i=d.col_gt3_i=0;d.hybrid_valid_i=d.hybrid_pointer_flat_i=d.hybrid_descriptor_i=d.hybrid_differing_flat_i=0;d.conventional_overflow_i=0;t();d.rst_ni=1;d.start_i=1;t();d.start_i=0;for(int i=0;i<4;i++)t();if(!d.done_o||!d.early_solution_valid_o||d.selected_map_index_o!=0||d.selected_config_id_o!=0){std::cerr<<"integration fail\n";return 1;}std::cout<<"PHASE3C_TO_PHASE3D_INTEGRATION PASS\n";}

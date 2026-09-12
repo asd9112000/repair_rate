@@ -1,0 +1,927 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : shared_fault_collector_HYBRID_SHARED_ENTRIES14
+Version: W-2024.09-SP2
+Date   : Wed Sep  9 14:12:40 2026
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[0][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U144/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[0][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[0][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[1][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U149/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[1][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[1][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[2][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U154/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[2][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[2][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[3][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U159/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[3][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[3][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[4][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U164/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[4][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[4][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[5][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U169/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[5][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[5][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[6][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U174/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[6][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[6][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[7][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U179/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[7][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[7][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[8][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U184/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[8][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[8][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+  Startpoint: fault_col_i[3]
+              (input port clocked by clk)
+  Endpoint: counters/col_count_mem_reg[9][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 f
+  fault_col_i[3] (in)                                     0.00       0.00 f
+  U234/Y (CLKINVX16)                                      0.33       0.33 r
+  U230/Y (CLKINVX20)                                      0.25       0.58 f
+  counters/fault_col_i[3] (shared_fault_counter_ENTRY_NUM12_ROW_W10_COL_W10_COUNT_W4)
+                                                          0.00       0.58 f
+  counters/U1213/Y (CLKINVX16)                            0.23       0.81 r
+  counters/U1203/Y (CLKINVX20)                            0.24       1.05 f
+  counters/U1181/Y (XNOR2X4)                              0.24       1.29 r
+  counters/U1179/Y (NAND3X4)                              0.11       1.40 f
+  counters/U1175/Y (NOR4X4)                               0.19       1.60 r
+  counters/U1174/Y (NAND4X2)                              0.33       1.93 f
+  counters/U1153/Y (NAND3X4)                              0.20       2.13 r
+  counters/U1140/Y (NAND4BX4)                             0.24       2.37 r
+  counters/U1138/Y (NAND2X4)                              0.16       2.53 f
+  counters/U1583/Y (CLKINVX4)                             0.09       2.62 r
+  counters/U1112/Y (NAND3X4)                              0.10       2.72 f
+  counters/U1099/Y (NAND4BX4)                             0.29       3.01 f
+  counters/U1096/Y (NOR2BX4)                              0.25       3.26 f
+  counters/U1068/Y (NAND3X4)                              0.13       3.40 r
+  counters/U1055/Y (NAND4BX4)                             0.28       3.67 r
+  counters/U1052/Y (NAND2X4)                              0.16       3.84 f
+  counters/U1580/Y (CLKINVX4)                             0.09       3.93 r
+  counters/U1022/Y (NAND3X4)                              0.10       4.03 f
+  counters/U1009/Y (NAND4BX4)                             0.32       4.34 f
+  counters/U1005/Y (NOR2BX4)                              0.24       4.59 f
+  counters/U974/Y (NAND3X4)                               0.13       4.71 r
+  counters/U961/Y (NAND4BX4)                              0.30       5.01 r
+  counters/U957/Y (AND2X2)                                0.30       5.32 r
+  counters/U926/Y (NAND3X4)                               0.11       5.42 f
+  counters/U913/Y (NAND4BX4)                              0.33       5.75 f
+  counters/U909/Y (AND2X2)                                0.35       6.10 f
+  counters/U878/Y (NAND3X4)                               0.14       6.24 r
+  counters/U865/Y (NAND4BX4)                              0.32       6.56 r
+  counters/U861/Y (NAND2X4)                               0.17       6.73 f
+  counters/U1576/Y (CLKINVX4)                             0.09       6.83 r
+  counters/U828/Y (NAND3X4)                               0.10       6.92 f
+  counters/U815/Y (NAND4BX4)                              0.34       7.26 f
+  counters/U810/Y (NOR2BX4)                               0.25       7.51 f
+  counters/U776/Y (NAND3X4)                               0.13       7.64 r
+  counters/U763/Y (NAND4BX4)                              0.32       7.96 r
+  counters/U758/Y (AND2X2)                                0.31       8.27 r
+  counters/U724/Y (NAND3X4)                               0.11       8.38 f
+  counters/U711/Y (NAND4BX4)                              0.35       8.73 f
+  counters/U706/Y (AND2X2)                                0.36       9.08 f
+  counters/U672/Y (NAND3X4)                               0.14       9.23 r
+  counters/U659/Y (NAND4BX4)                              0.34       9.57 r
+  counters/U656/Y (AND2X2)                                0.63      10.19 r
+  counters/U246/Y (NOR2X4)                                0.26      10.46 f
+  counters/U240/Y (NAND2X4)                               0.17      10.62 r
+  counters/U1428/Y (CLKINVX4)                             0.19      10.82 f
+  counters/U239/Y (AOI222X2)                              0.48      11.30 r
+  counters/U227/Y (NAND4X2)                               0.41      11.71 f
+  counters/U216/Y (NAND2X4)                               0.27      11.98 r
+  counters/U202/Y (NOR2X4)                                0.11      12.09 f
+  counters/U201/Y (XOR2X4)                                0.24      12.33 f
+  counters/U200/Y (NAND2X4)                               0.12      12.45 r
+  counters/U76/Y (CLKBUFX20)                              0.21      12.66 r
+  counters/U189/Y (OAI2BB2X4)                             0.10      12.76 f
+  counters/col_count_mem_reg[9][3]/D (DFFHQX4)            0.00      12.76 f
+  data arrival time                                                 12.76
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  counters/col_count_mem_reg[9][3]/CK (DFFHQX4)           0.00      19.90 r
+  library setup time                                     -0.33      19.57
+  data required time                                                19.57
+  --------------------------------------------------------------------------
+  data required time                                                19.57
+  data arrival time                                                -12.76
+  --------------------------------------------------------------------------
+  slack (MET)                                                        6.81
+
+
+1

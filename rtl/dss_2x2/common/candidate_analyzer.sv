@@ -385,3 +385,154 @@ module candidate_analyzer #(
 endmodule
 
 `default_nettype wire
+
+// Shared-state canonical analyzer used by the directional multi-config top.
+// Unlike candidate_analyzer above, this module never classifies raw faults or
+// owns Pivot/Hybrid/counter/CAM-reuse payload.  Its inputs are one logical
+// configuration view of the single shared collector state.  Keeping the
+// legacy module above unchanged preserves the existing Phase-2 regression
+// while dss_cam_top is migrated in later H-stages.
+module shared_view_candidate_analyzer #(
+    parameter integer MAX_K = 5,
+    parameter integer HYBRID_ENTRY_NUM = 14,
+    parameter integer ROW_ADDR_WIDTH = 10,
+    parameter integer COL_ADDR_WIDTH = 10,
+    parameter integer SPARE_WIDTH = 3,
+    parameter integer PATTERN_ID_WIDTH = 4,
+    parameter integer MAX_PATTERNS = 10
+) (
+    input wire [SPARE_WIDTH-1:0] active_rows_i,
+    input wire [SPARE_WIDTH-1:0] active_cols_i,
+    input wire [MAX_K-1:0] pivot_valid_i,
+    input wire [MAX_K*ROW_ADDR_WIDTH-1:0] pivot_rows_flat_i,
+    input wire [MAX_K*COL_ADDR_WIDTH-1:0] pivot_cols_flat_i,
+    input wire [MAX_K-1:0] row_must_i,
+    input wire [MAX_K-1:0] col_must_i,
+    input wire [HYBRID_ENTRY_NUM-1:0] hybrid_valid_i,
+    input wire [HYBRID_ENTRY_NUM*ROW_ADDR_WIDTH-1:0] hybrid_rows_flat_i,
+    input wire [HYBRID_ENTRY_NUM*COL_ADDR_WIDTH-1:0] hybrid_cols_flat_i,
+    input wire [HYBRID_ENTRY_NUM*$clog2(MAX_K)-1:0] hybrid_ptrs_flat_i,
+    input wire [HYBRID_ENTRY_NUM-1:0] hybrid_descriptor_row_diff_i,
+    input wire shared_storage_overflow_i,
+    output reg repairable_o,
+    output reg [MAX_PATTERNS-1:0] candidate_valid_o,
+    output reg [PATTERN_ID_WIDTH-1:0] lowest_pattern_id_o,
+    output reg [MAX_K*MAX_K-1:0] matrix_flat_o
+);
+    localparam integer PIVOT_PTR_W = $clog2(MAX_K);
+    reg matrix [0:MAX_K-1][0:MAX_K-1];
+    reg [ROW_ADDR_WIDTH-1:0] row_dict [0:MAX_K-1];
+    reg [COL_ADDR_WIDTH-1:0] col_dict [0:MAX_K-1];
+    reg row_dict_valid [0:MAX_K-1];
+    reg col_dict_valid [0:MAX_K-1];
+    reg [MAX_K-1:0] pattern;
+    integer rows, cols, k, pivot_count, row_count, col_count;
+    integer h, p, r, c, i, candidate, mask, bit_count;
+    integer row_index, col_index;
+    reg row_match, col_match, extendable, valid;
+
+    always @* begin
+        /* verilator lint_off WIDTH */
+        rows = active_rows_i;
+        cols = active_cols_i;
+        /* verilator lint_on WIDTH */
+        k = rows + cols;
+        pivot_count = 0;
+        candidate_valid_o = {MAX_PATTERNS{1'b0}};
+        lowest_pattern_id_o = {PATTERN_ID_WIDTH{1'b0}};
+        repairable_o = 1'b0;
+        matrix_flat_o = {(MAX_K*MAX_K){1'b0}};
+        for (p = 0; p < MAX_K; p = p + 1) begin
+            row_dict[p] = {ROW_ADDR_WIDTH{1'b0}};
+            col_dict[p] = {COL_ADDR_WIDTH{1'b0}};
+            row_dict_valid[p] = 1'b0;
+            col_dict_valid[p] = 1'b0;
+            if (p < k && pivot_valid_i[p]) begin
+                row_dict[p] = pivot_rows_flat_i[p*ROW_ADDR_WIDTH +: ROW_ADDR_WIDTH];
+                col_dict[p] = pivot_cols_flat_i[p*COL_ADDR_WIDTH +: COL_ADDR_WIDTH];
+                row_dict_valid[p] = 1'b1;
+                col_dict_valid[p] = 1'b1;
+                pivot_count = pivot_count + 1;
+            end
+            for (c = 0; c < MAX_K; c = c + 1)
+                matrix[p][c] = 1'b0;
+        end
+        row_count = pivot_count;
+        col_count = pivot_count;
+        for (r = 0; r < MAX_K; r = r + 1)
+            for (c = 0; c < MAX_K; c = c + 1)
+                if (r < k && c < k)
+                    matrix[r][c] = (r == c && r < pivot_count) ||
+                        (r < pivot_count && row_must_i[r]) ||
+                        (c < pivot_count && col_must_i[c]);
+
+        extendable = pivot_count < k;
+        // Tagged Hybrid filtering is completed by the collector/config view;
+        // this block consumes only records valid for this canonical view.
+        for (h = 0; h < HYBRID_ENTRY_NUM; h = h + 1) begin
+            if (hybrid_valid_i[h]) begin
+                row_match = 1'b0; col_match = 1'b0; row_index = 0; col_index = 0;
+                for (i = 0; i < MAX_K; i = i + 1) begin
+                    if (!row_match && i < row_count &&
+                        hybrid_rows_flat_i[h*ROW_ADDR_WIDTH +: ROW_ADDR_WIDTH] == row_dict[i]) begin
+                        row_match = 1'b1; row_index = i;
+                    end
+                    if (!col_match && i < col_count &&
+                        hybrid_cols_flat_i[h*COL_ADDR_WIDTH +: COL_ADDR_WIDTH] == col_dict[i]) begin
+                        col_match = 1'b1; col_index = i;
+                    end
+                end
+                if (!extendable) begin
+                    if (row_match && col_match) matrix[row_index][col_index] = 1'b1;
+                    else if (row_match) for (i = 0; i < MAX_K; i = i + 1) if (i < k) matrix[row_index][i] = 1'b1;
+                    else if (col_match) for (i = 0; i < MAX_K; i = i + 1) if (i < k) matrix[i][col_index] = 1'b1;
+                end else if (row_match && col_match) begin
+                    matrix[row_index][col_index] = 1'b1;
+                end else if (row_match && col_count < k) begin
+                    matrix[row_index][col_count] = 1'b1;
+                    col_dict[col_count] = hybrid_cols_flat_i[h*COL_ADDR_WIDTH +: COL_ADDR_WIDTH];
+                    col_dict_valid[col_count] = 1'b1; col_count = col_count + 1;
+                end else if (col_match && row_count < k) begin
+                    matrix[row_count][col_index] = 1'b1;
+                    row_dict[row_count] = hybrid_rows_flat_i[h*ROW_ADDR_WIDTH +: ROW_ADDR_WIDTH];
+                    row_dict_valid[row_count] = 1'b1; row_count = row_count + 1;
+                end else if (row_match) begin
+                    for (i = 0; i < MAX_K; i = i + 1) if (i < k) matrix[row_index][i] = 1'b1;
+                end else if (col_match) begin
+                    for (i = 0; i < MAX_K; i = i + 1) if (i < k) matrix[i][col_index] = 1'b1;
+                end
+                if (row_count >= k && col_count >= k) extendable = 1'b0;
+            end
+        end
+        for (r = 0; r < MAX_K; r = r + 1)
+            for (c = 0; c < MAX_K; c = c + 1)
+                matrix_flat_o[r*MAX_K + c] = matrix[r][c];
+
+        candidate = 0;
+        for (mask = 0; mask < (1 << MAX_K); mask = mask + 1) begin
+            bit_count = 0; pattern = {MAX_K{1'b0}};
+            if (mask < (1 << k)) begin
+                for (i = 0; i < MAX_K; i = i + 1)
+                    if (i < k) begin
+                        pattern[i] = ((mask >> (k - 1 - i)) & 1) != 0;
+                        if (pattern[i]) bit_count = bit_count + 1;
+                    end
+                if (bit_count == cols && candidate < MAX_PATTERNS) begin
+                    valid = !shared_storage_overflow_i;
+                    for (r = 0; r < MAX_K; r = r + 1)
+                        for (c = 0; c < MAX_K; c = c + 1)
+                            if (r < k && c < k && matrix[r][c] && !(!pattern[r] || pattern[c])) valid = 1'b0;
+                    if (valid) begin
+                        candidate_valid_o[candidate] = 1'b1;
+                        if (!repairable_o)
+                            lowest_pattern_id_o = candidate[PATTERN_ID_WIDTH-1:0] + 1'b1;
+                        repairable_o = 1'b1;
+                    end
+                    candidate = candidate + 1;
+                end
+            end
+        end
+    end
+endmodule
+
+`default_nettype wire

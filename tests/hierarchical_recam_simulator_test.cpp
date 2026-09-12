@@ -124,6 +124,40 @@ void verifyPaperDerivedCapacityAndPhysicalAccounting()
             "Restricting online capacity incorrectly shrank offline RECAM CAM");
 }
 
+void verifyDramGeometryValidation()
+{
+    dynamic_spare::SimulationConfig groupConfig = baseConfig();
+    dynamic_spare::HierarchicalRecamConfig hierarchy;
+    hierarchy.validateDramConfig(groupConfig);
+
+    groupConfig.memoryColumns = 8191;
+    bool rejectedUnalignedWordGeometry = false;
+    try
+    {
+        hierarchy.validateDramConfig(groupConfig);
+    }
+    catch (const std::invalid_argument &)
+    {
+        rejectedUnalignedWordGeometry = true;
+    }
+    require(rejectedUnalignedWordGeometry,
+            "DRAM validation accepted a partial data word per row");
+
+    groupConfig = baseConfig();
+    hierarchy.architectureTotalRepairGroups = 2047;
+    bool rejectedInconsistentHierarchy = false;
+    try
+    {
+        hierarchy.validateDramConfig(groupConfig);
+    }
+    catch (const std::invalid_argument &)
+    {
+        rejectedInconsistentHierarchy = true;
+    }
+    require(rejectedInconsistentHierarchy,
+            "DRAM validation accepted inconsistent hierarchy totals");
+}
+
 void verifyNoPhysicalCamMultiplication()
 {
     dynamic_spare::DeviceRepairScheduler scheduler;
@@ -302,6 +336,8 @@ void verifySramBackendAndSerialBistTimeline()
     sramConfig.hybridReadParallelism = 2;
     sramConfig.runtimeParallelism = 2;
     sramConfig.camReuseEntries = 0;
+    sramConfig.minimumAddressEntryBits =
+        hierarchy.globalWordAddressEntryBits(sramDynamic);
     auto adapter =
         std::make_shared<dynamic_spare::SramRecamSolverAdapter>(sramConfig);
     dynamic_spare::DeviceRepairScheduler sramScheduler{
@@ -367,6 +403,7 @@ int main()
     try
     {
         verifyPaperDerivedCapacityAndPhysicalAccounting();
+        verifyDramGeometryValidation();
         verifyNoPhysicalCamMultiplication();
         verifyScratchReuseAndPersistentSolution();
         verifyGlobalContentionAndFullTags();

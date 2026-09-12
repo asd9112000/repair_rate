@@ -251,6 +251,40 @@ Neighbor spare 不可跨越中間 SA 進行 multi-hop borrowing。兩種 layout 
 共同保留 online CAM occupancy。需要研究跨 bank/domain/global capacity 時，
 必須使用 `HierarchicalRECAM`。
 
+### 8.1 Directional multi-configuration analyzer contract
+
+`DirectionalMultiConfigAnalyzer` is a functional, subarray-local golden-model
+component for the finalized 2x2 directional study.  It deliberately belongs
+to the **group-level** path: its results must not be combined with
+`HierarchicalRECAM` device-wide CAM metrics.
+
+It exposes the seven physical resource envelopes `2R2C`, `2R1C`, `3R2C`,
+`3R1C`, `1R2C`, `2R3C`, and `1R3C`.  `ConfigID` identifies one of those
+envelopes; it is not a RECAM candidate index.  The retained `PatternID` is
+one based (`0` means invalid), so that it can be reconstructed together with
+the ordered pivot payload without storing another ConfigID per map cell.
+
+The analyzer collects a single greedy pivot sequence and retains its first
+five physical addresses (`MAX_K=5`).  The per-configuration Address-CAM view
+is explicit metadata, not another payload.  Pivot entries beyond an active
+configuration's `K=Rs+Cs` are reported in that configuration's temporary
+CAM-reuse list and do not enter conventional candidate selection.  Row and
+column counts are likewise collected once; each RECAM attempt derives its
+must thresholds from those physical counts.
+
+The existing `RECAMSolverAdapter` remains the normative implementation of
+matrix construction and fault-free-area candidate validation.  The
+multi-configuration layer snapshots only pointer-free logical Hybrid records
+for sizing: it reports per-config logical occupancy and a tagged union keyed
+by physical fault, descriptor, and pivot pointer.  It must not be interpreted
+as a second device-wide online CAM model.
+
+`tests/directional_multi_config_analyzer_test.cpp` fixes the payload-prefix,
+configuration-dependent overflow, must-rule, pattern reconstruction, and
+canonical-transpose descriptor contracts.  Group-level EARLY/GROUP allocation
+and directional physical-line conflict enforcement continue to be covered by
+`tests/solution_take_policy_test.cpp` and `PhysicalResourceLedger`.
+
 ## 9. 輸出責任
 
 | Reporter | 輸出 | 架構 scope |

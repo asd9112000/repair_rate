@@ -102,6 +102,17 @@ struct CandidateRepairOption
     std::vector<BufferRepairMapping> bufferMappings;
 };
 
+// Pointer-free capture of the logical Hybrid-CAM payload.  It is diagnostic
+// state for multi-configuration sizing; it never survives as conventional
+// line-repair state.
+struct HybridRecordSnapshot
+{
+    int row = 0;
+    int column = 0;
+    int pivotPointer = 0;
+    bool descriptorRowIsDiff = false;
+};
+
 struct AnalysisLatencyBreakdown
 {
     std::uint64_t faultInformationInsertCycles = 0;
@@ -157,6 +168,7 @@ struct RepairAttemptResult
     std::size_t hybridCamEntriesActive = 0;
     std::optional<std::size_t> hybridCamEntriesPeak;
     std::size_t hybridCamWriteOperations = 0;
+    std::vector<HybridRecordSnapshot> hybridRecords;
     std::size_t hybridCamEntriesProvisioned = 0;
     std::size_t bufferCamEntriesActive = 0;
     std::size_t bufferCamEntriesProvisioned = 0;

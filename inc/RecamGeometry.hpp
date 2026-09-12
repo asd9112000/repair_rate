@@ -18,6 +18,9 @@ struct RecamGeometryConfig
     std::uint32_t channels = 1;
     std::uint32_t dataWordBits = 64;
     std::optional<std::uint32_t> onlineReuseEntries;
+    // Reserves extra mode-reused Address CAM width for a hierarchy-level
+    // online tag without changing offline RECAM fields.
+    std::optional<std::uint64_t> minimumAddressEntryBits;
 
     void validate() const;
 };

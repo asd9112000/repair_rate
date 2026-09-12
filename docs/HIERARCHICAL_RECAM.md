@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：hierarchical-device
 > 建立時間：Unknown
-> 最後修改時間：2026-09-07T00:00:00+08:00
+> 最後修改時間：2026-09-08T00:00:00+08:00
 > 本文件權威主題：WoW-v1.0 hierarchy、HierarchicalRECAM CLI、輸入、輸出與 device-level 指標
 
 ## 1. 這個程式解決什麼問題？
@@ -72,6 +72,57 @@ Capacity check：
 - Micron 明示每個 16-Mbit section 有四個 subarrays；
 - 所有 subarray 都一定是 `512×8192`；
 - `0.415%` local spare-cell ratio 是完整 BISR area。
+
+### 2.1 Global CAM/SRAM spare-word address budget
+
+Tier-2 是一個 device-wide 的 persistent data-word replacement directory；它不是
+每個 SA 各自一份 CAM。故 online lookup 必須包含能唯一識別 source word 的完整
+tag，而不能只保存 row／column 或 bank。對一個 scheduler/pool 所代表的單一 device，
+`HBMID` 是隱含 scope，不寫入 tag。
+
+在本 baseline、`data_word_bits=256` 下：
+
+| Online Address CAM field | Range | Bits |
+|---|---:|---:|
+| Enable | valid / invalid | 1 |
+| Channel-like domain | 8 | 3 |
+| Bank within domain | 4 | 2 |
+| Repair group within bank | 64 | 6 |
+| Subarray within group | 4 | 2 |
+| Row | 512 | 9 |
+| Word column | `8192 / 256 = 32` | 5 |
+| **Total entry width** |  | **28** |
+
+因此 exact online tag 為 27 bits，含 Enable 的 Address CAM entry 為 28 bits。
+`cell column` 是 13 bits，但在 data-word replacement mode 必須先轉成
+`word_column = floor(cell_column / 256)`；同一 word 的多個 faulty cells 必須
+deduplicate 為同一 CAM entry。
+
+`Rs=Cs=2` 時，`K=Rs+Cs=4`，所以 Address CAM、Hybrid CAM 與 paper-derived
+online reuse capacity 都是 4 entries，Hybrid pointer 是 `log2(K)=2` bits：
+
+| Structure / mode | Entry width | Entries | Logical storage |
+|---|---:|---:|---:|
+| Address CAM, offline collection | `1 + 9 + 13 + 1 + 1 + 2 + 2 = 29` | 4 | 116 bits |
+| Address CAM, online global lookup | `1 + 27 = 28` | 4 | 112 bits |
+| Hybrid CAM, online replacement | `Enable(1) + pointer(2) + data(256) = 259` | 4 | 1036 bits |
+
+同一份 CAM/SRAM 若在 offline 與 online mode reuse，Address entry 至少取兩種 mode
+的最大值，因此是 29 bits；Hybrid entry 是 259 bits。對較小的 `Rs/Cs` 組態，
+若 offline entry 較窄，hardware accounting 會自動保留完整 global tag 所需的最小
+Address entry 寬度。核心 logical storage 為
+`4 × 29 + 4 × 259 = 1152` bits，不包含 comparator、MUX、controller、NVM/eFuse
+load state、ECC 或 SRAM macro packing overhead。預設只有 4 個 device-wide online
+entries，表示整顆 device 最多持久保存 4 個不同 repair words；它是 paper-derived
+capacity policy，不是每個 SA 各有 4 個 spare words。
+
+`HierarchicalRecamConfig::validateDramConfig()` 會在 CLI 與 scheduler 入口檢查：
+
+- domains × banks/domain × groups/bank 是否等於 total repair groups；
+- total subarrays 是否恰為每個 group 4 個；
+- cell columns 是否可被 data-word width 整除；
+- mode-reused Address CAM 是否至少裝得下 complete global word tag；
+- Hybrid CAM 是否容納 Enable、`log2(Rs+Cs)` pointer 與 replacement word。
 
 ## 3. 實作對應
 

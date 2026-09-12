@@ -1,0 +1,635 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : shared_fault_collector_HYBRID_SHARED_ENTRIES14
+Version: W-2024.09-SP2
+Date   : Wed Sep  9 14:40:38 2026
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[11][2]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U305/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U90/Y (MX2X1)                                     1.01      21.88 f
+  reuse/cfg_mem_reg[11][2]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[11][2]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[11][1]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U305/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U89/Y (MX2X1)                                     1.01      21.88 f
+  reuse/cfg_mem_reg[11][1]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[11][1]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[11][0]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U305/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U88/Y (MX2X1)                                     1.01      21.88 f
+  reuse/cfg_mem_reg[11][0]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[11][0]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[10][6]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U294/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U101/Y (MX2X1)                                    1.01      21.88 f
+  reuse/cfg_mem_reg[10][6]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[10][6]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[10][5]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U294/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U100/Y (MX2X1)                                    1.01      21.88 f
+  reuse/cfg_mem_reg[10][5]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[10][5]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[10][4]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U294/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U99/Y (MX2X1)                                     1.01      21.88 f
+  reuse/cfg_mem_reg[10][4]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[10][4]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[10][3]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U294/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U98/Y (MX2X1)                                     1.01      21.88 f
+  reuse/cfg_mem_reg[10][3]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[10][3]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[10][2]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U294/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U97/Y (MX2X1)                                     1.01      21.88 f
+  reuse/cfg_mem_reg[10][2]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[10][2]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[10][1]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U294/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U96/Y (MX2X1)                                     1.01      21.88 f
+  reuse/cfg_mem_reg[10][1]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[10][1]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+  Startpoint: pivots/row_mem_reg[0][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: reuse/cfg_mem_reg[10][0]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  shared_fault_collector_HYBRID_SHARED_ENTRIES14
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pivots/row_mem_reg[0][1]/CK (DFFHQX4)                   0.00       0.00 r
+  pivots/row_mem_reg[0][1]/Q (DFFHQX4)                    0.42       0.42 r
+  pivots/rows_flat_o[1] (shared_pivot_cam_ROW_W10_COL_W10_MAX_K5_NUM_CFG7)
+                                                          0.00       0.42 r
+  U167/Y (XNOR2X1)                                        0.37       0.79 r
+  U165/Y (NAND3X1)                                        0.17       0.96 f
+  U162/Y (NOR3X1)                                         0.28       1.24 r
+  U161/Y (AND4X1)                                         0.51       1.75 r
+  U160/Y (NOR2BX1)                                        0.23       1.99 f
+  U158/Y (OAI21XL)                                        0.79       2.78 r
+  U157/Y (OAI22X1)                                        0.50       3.28 f
+  U156/Y (INVX1)                                          0.46       3.73 r
+  U155/Y (OAI211X1)                                       0.41       4.14 f
+  U110/Y (NAND4X1)                                        0.43       4.57 r
+  U109/Y (NAND2X1)                                        1.19       5.76 f
+  U108/Y (INVX1)                                          0.61       6.38 r
+  U100/Y (AND4X1)                                         1.76       8.13 r
+  U99/Y (NOR3X1)                                          0.54       8.68 f
+  U97/Y (NOR2X1)                                          6.19      14.86 r
+  U95/Y (OAI2BB1X1)                                       0.30      15.16 f
+  U89/Y (NAND2X1)                                         0.59      15.75 r
+  U86/Y (NOR2X1)                                          0.19      15.94 f
+  reuse/write_valid_i (cam_reuse_temp_buffer_ENTRY_NUM12_ROW_W10_COL_W10_NUM_CFG7)
+                                                          0.00      15.94 f
+  reuse/U426/Y (NAND2X1)                                  0.54      16.48 r
+  reuse/U425/Y (INVX1)                                    0.43      16.92 f
+  reuse/U423/Y (NAND2X1)                                  0.46      17.37 r
+  reuse/U421/Y (NOR2X1)                                   0.43      17.80 f
+  reuse/U294/Y (NAND2X1)                                  3.07      20.87 r
+  reuse/U95/Y (MX2X1)                                     1.01      21.88 f
+  reuse/cfg_mem_reg[10][0]/D (DFFHQX4)                    0.00      21.88 f
+  data arrival time                                                 21.88
+
+  clock clk (rise edge)                                  20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  clock uncertainty                                      -0.10      19.90
+  reuse/cfg_mem_reg[10][0]/CK (DFFHQX4)                   0.00      19.90 r
+  library setup time                                     -0.34      19.56
+  data required time                                                19.56
+  --------------------------------------------------------------------------
+  data required time                                                19.56
+  data arrival time                                                -21.88
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.32
+
+
+1

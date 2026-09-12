@@ -236,6 +236,7 @@ SramRecamGeometry deriveGeometry(const SramRecamConfig &config)
     commonConfig.channels = config.channels;
     commonConfig.dataWordBits = config.dataWordBits;
     commonConfig.onlineReuseEntries = config.camReuseEntries;
+    commonConfig.minimumAddressEntryBits = config.minimumAddressEntryBits;
     static_cast<dynamic_spare::RecamGeometry &>(result) =
         dynamic_spare::deriveRecamGeometry(commonConfig);
 

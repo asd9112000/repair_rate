@@ -1,0 +1,1161 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : recam_role_aware_config_scheduler
+Version: W-2024.09-SP2
+Date   : Thu Sep 10 05:09:48 2026
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: pivot_valid_i[1]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_pattern_id_o[3]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[1] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2486/Y (INVX8)                         0.09       0.09 f
+  shared_analyzer/U2512/Y (OAI33X2)                       0.44       0.53 r
+  shared_analyzer/U2100/Y (BUFX8)                         0.20       0.73 r
+  shared_analyzer/U8/Y (INVX8)                            0.07       0.80 f
+  shared_analyzer/U2513/Y (OAI22X2)                       0.36       1.16 r
+  shared_analyzer/U2196/Y (INVX4)                         0.12       1.28 f
+  shared_analyzer/U2225/Y (OR2X4)                         0.25       1.53 f
+  shared_analyzer/U752/Y (OAI2BB1X2)                      0.12       1.65 r
+  shared_analyzer/U1683/Y (OAI2BB1X4)                     0.22       1.87 r
+  shared_analyzer/U1613/Y (INVX4)                         0.07       1.94 f
+  shared_analyzer/U2491/Y (OAI222X2)                      0.37       2.31 r
+  shared_analyzer/U44/Y (BUFX2)                           0.33       2.64 r
+  shared_analyzer/U2231/Y (NAND4X4)                       0.19       2.83 f
+  shared_analyzer/U2479/Y (OR2X4)                         0.29       3.13 f
+  shared_analyzer/U2478/Y (OR2X4)                         0.36       3.48 f
+  shared_analyzer/U1647/Y (OR2X1)                         0.40       3.89 f
+  shared_analyzer/U514/Y (INVX1)                          0.37       4.26 r
+  shared_analyzer/U661/Y (OAI22X1)                        0.21       4.46 f
+  shared_analyzer/U1602/Y (AOI211X4)                      0.55       5.01 r
+  shared_analyzer/U2418/Y (NAND4X4)                       0.16       5.16 f
+  shared_analyzer/U2417/Y (NAND4X4)                       0.25       5.41 r
+  shared_analyzer/U2348/Y (OR2X4)                         0.26       5.67 r
+  shared_analyzer/U2117/Y (CLKINVX8)                      0.12       5.79 f
+  shared_analyzer/U2149/Y (MXI2X2)                        0.29       6.08 r
+  shared_analyzer/U2921/Y (XOR2X2)                        0.30       6.38 f
+  shared_analyzer/U2371/Y (OR4X4)                         0.43       6.82 f
+  shared_analyzer/U2301/Y (OR4X4)                         0.45       7.27 f
+  shared_analyzer/U2485/Y (AND4X4)                        0.28       7.55 f
+  shared_analyzer/U2484/Y (NAND4X4)                       0.24       7.79 r
+  shared_analyzer/U2375/Y (INVX8)                         0.06       7.85 f
+  shared_analyzer/U2475/Y (NAND3X4)                       0.12       7.97 r
+  shared_analyzer/U121/Y (BUFX12)                         0.17       8.14 r
+  shared_analyzer/U2414/Y (INVX8)                         0.08       8.21 f
+  shared_analyzer/U33/Y (MXI2X4)                          0.16       8.37 f
+  shared_analyzer/U32/Y (BUFX8)                           0.19       8.56 f
+  shared_analyzer/U899/Y (XOR2X2)                         0.26       8.82 f
+  shared_analyzer/U393/Y (INVX1)                          0.16       8.98 r
+  shared_analyzer/U2993/Y (NAND4X1)                       0.22       9.20 f
+  shared_analyzer/U2372/Y (OR4X4)                         0.45       9.65 f
+  shared_analyzer/U2298/Y (NAND3X4)                       0.19       9.83 r
+  shared_analyzer/U423/Y (INVX4)                          0.10       9.93 f
+  shared_analyzer/U2304/Y (NAND3X4)                       0.26      10.19 r
+  shared_analyzer/U2303/Y (INVX8)                         0.13      10.32 f
+  shared_analyzer/U3029/Y (MXI2X2)                        0.30      10.62 r
+  shared_analyzer/U1287/Y (XOR2X4)                        0.38      10.99 r
+  shared_analyzer/U2209/Y (NAND3X1)                       0.18      11.18 f
+  shared_analyzer/U2365/Y (OR4X4)                         0.41      11.58 f
+  shared_analyzer/U2482/Y (NAND4X4)                       0.23      11.82 r
+  shared_analyzer/U1638/Y (CLKINVX8)                      0.08      11.90 f
+  shared_analyzer/U1696/Y (NAND3X1)                       0.19      12.09 r
+  shared_analyzer/U69/Y (BUFX8)                           0.17      12.26 r
+  shared_analyzer/U1694/Y (INVX16)                        0.23      12.49 f
+  shared_analyzer/U2276/Y (MXI2X1)                        0.34      12.83 r
+  shared_analyzer/U450/Y (INVX1)                          0.19      13.02 f
+  shared_analyzer/U1994/Y (XOR2X1)                        0.39      13.41 r
+  shared_analyzer/U2214/Y (NAND4X2)                       0.16      13.57 f
+  shared_analyzer/U2421/Y (OR4X4)                         0.58      14.16 f
+  shared_analyzer/U2481/Y (NAND4X4)                       0.25      14.41 r
+  shared_analyzer/U2137/Y (INVX4)                         0.07      14.48 f
+  shared_analyzer/U2488/Y (OAI211X4)                      0.61      15.09 r
+  shared_analyzer/U2377/Y (OR2X4)                         0.25      15.34 r
+  shared_analyzer/U2487/Y (NAND4X4)                       0.18      15.52 f
+  shared_analyzer/U2309/Y (OAI221X4)                      0.60      16.12 r
+  shared_analyzer/U2212/Y (INVX4)                         0.13      16.25 f
+  shared_analyzer/U2188/Y (OAI2BB1X2)                     0.29      16.54 f
+  shared_analyzer/U3316/Y (CLKINVX3)                      0.08      16.62 r
+  shared_analyzer/U3317/Y (OR2X2)                         0.24      16.87 r
+  shared_analyzer/U2199/Y (AOI2BB2X4)                     0.20      17.07 r
+  shared_analyzer/U1221/Y (NAND4X2)                       0.19      17.25 f
+  shared_analyzer/U355/Y (INVX2)                          0.19      17.44 r
+  shared_analyzer/U3320/Y (OR2X2)                         0.26      17.70 r
+  shared_analyzer/U50/Y (CLKINVX4)                        0.08      17.78 f
+  shared_analyzer/U2198/Y (AOI221X2)                      0.34      18.12 r
+  shared_analyzer/U2489/Y (NAND4X4)                       0.33      18.45 f
+  shared_analyzer/U1651/Y (AND4X2)                        0.35      18.80 f
+  shared_analyzer/U1672/Y (NAND4X2)                       0.22      19.03 r
+  shared_analyzer/U2317/Y (OR2X4)                         0.26      19.28 r
+  shared_analyzer/U2492/Y (NAND3X4)                       0.17      19.46 f
+  shared_analyzer/U2380/Y (OAI211X4)                      0.54      20.00 r
+  shared_analyzer/pattern_id_o[3] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      20.00 r
+  current_pattern_id_o[3] (out)                           0.00      20.00 r
+  data arrival time                                                 20.00
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -20.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: pivot_valid_i[1]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_solution_valid_o
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[1] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2486/Y (INVX8)                         0.09       0.09 f
+  shared_analyzer/U2512/Y (OAI33X2)                       0.44       0.53 r
+  shared_analyzer/U2100/Y (BUFX8)                         0.20       0.73 r
+  shared_analyzer/U8/Y (INVX8)                            0.07       0.80 f
+  shared_analyzer/U2513/Y (OAI22X2)                       0.36       1.16 r
+  shared_analyzer/U2196/Y (INVX4)                         0.12       1.28 f
+  shared_analyzer/U2225/Y (OR2X4)                         0.25       1.53 f
+  shared_analyzer/U752/Y (OAI2BB1X2)                      0.12       1.65 r
+  shared_analyzer/U1683/Y (OAI2BB1X4)                     0.22       1.87 r
+  shared_analyzer/U1613/Y (INVX4)                         0.07       1.94 f
+  shared_analyzer/U2491/Y (OAI222X2)                      0.37       2.31 r
+  shared_analyzer/U44/Y (BUFX2)                           0.33       2.64 r
+  shared_analyzer/U2231/Y (NAND4X4)                       0.19       2.83 f
+  shared_analyzer/U2479/Y (OR2X4)                         0.29       3.13 f
+  shared_analyzer/U2478/Y (OR2X4)                         0.36       3.48 f
+  shared_analyzer/U1647/Y (OR2X1)                         0.40       3.89 f
+  shared_analyzer/U514/Y (INVX1)                          0.37       4.26 r
+  shared_analyzer/U661/Y (OAI22X1)                        0.21       4.46 f
+  shared_analyzer/U1602/Y (AOI211X4)                      0.55       5.01 r
+  shared_analyzer/U2418/Y (NAND4X4)                       0.16       5.16 f
+  shared_analyzer/U2417/Y (NAND4X4)                       0.25       5.41 r
+  shared_analyzer/U2348/Y (OR2X4)                         0.26       5.67 r
+  shared_analyzer/U2117/Y (CLKINVX8)                      0.12       5.79 f
+  shared_analyzer/U2149/Y (MXI2X2)                        0.29       6.08 r
+  shared_analyzer/U2921/Y (XOR2X2)                        0.30       6.38 f
+  shared_analyzer/U2371/Y (OR4X4)                         0.43       6.82 f
+  shared_analyzer/U2301/Y (OR4X4)                         0.45       7.27 f
+  shared_analyzer/U2485/Y (AND4X4)                        0.28       7.55 f
+  shared_analyzer/U2484/Y (NAND4X4)                       0.24       7.79 r
+  shared_analyzer/U2375/Y (INVX8)                         0.06       7.85 f
+  shared_analyzer/U2475/Y (NAND3X4)                       0.12       7.97 r
+  shared_analyzer/U121/Y (BUFX12)                         0.17       8.14 r
+  shared_analyzer/U2414/Y (INVX8)                         0.08       8.21 f
+  shared_analyzer/U33/Y (MXI2X4)                          0.16       8.37 f
+  shared_analyzer/U32/Y (BUFX8)                           0.19       8.56 f
+  shared_analyzer/U899/Y (XOR2X2)                         0.26       8.82 f
+  shared_analyzer/U393/Y (INVX1)                          0.16       8.98 r
+  shared_analyzer/U2993/Y (NAND4X1)                       0.22       9.20 f
+  shared_analyzer/U2372/Y (OR4X4)                         0.45       9.65 f
+  shared_analyzer/U2298/Y (NAND3X4)                       0.19       9.83 r
+  shared_analyzer/U423/Y (INVX4)                          0.10       9.93 f
+  shared_analyzer/U2304/Y (NAND3X4)                       0.26      10.19 r
+  shared_analyzer/U2303/Y (INVX8)                         0.13      10.32 f
+  shared_analyzer/U3029/Y (MXI2X2)                        0.30      10.62 r
+  shared_analyzer/U1287/Y (XOR2X4)                        0.38      10.99 r
+  shared_analyzer/U2209/Y (NAND3X1)                       0.18      11.18 f
+  shared_analyzer/U2365/Y (OR4X4)                         0.41      11.58 f
+  shared_analyzer/U2482/Y (NAND4X4)                       0.23      11.82 r
+  shared_analyzer/U1638/Y (CLKINVX8)                      0.08      11.90 f
+  shared_analyzer/U1696/Y (NAND3X1)                       0.19      12.09 r
+  shared_analyzer/U69/Y (BUFX8)                           0.17      12.26 r
+  shared_analyzer/U1694/Y (INVX16)                        0.23      12.49 f
+  shared_analyzer/U2276/Y (MXI2X1)                        0.34      12.83 r
+  shared_analyzer/U450/Y (INVX1)                          0.19      13.02 f
+  shared_analyzer/U1994/Y (XOR2X1)                        0.39      13.41 r
+  shared_analyzer/U2214/Y (NAND4X2)                       0.16      13.57 f
+  shared_analyzer/U2421/Y (OR4X4)                         0.58      14.16 f
+  shared_analyzer/U2481/Y (NAND4X4)                       0.25      14.41 r
+  shared_analyzer/U2137/Y (INVX4)                         0.07      14.48 f
+  shared_analyzer/U2488/Y (OAI211X4)                      0.61      15.09 r
+  shared_analyzer/U2377/Y (OR2X4)                         0.25      15.34 r
+  shared_analyzer/U2487/Y (NAND4X4)                       0.18      15.52 f
+  shared_analyzer/U2309/Y (OAI221X4)                      0.60      16.12 r
+  shared_analyzer/U2212/Y (INVX4)                         0.13      16.25 f
+  shared_analyzer/U2188/Y (OAI2BB1X2)                     0.29      16.54 f
+  shared_analyzer/U3316/Y (CLKINVX3)                      0.08      16.62 r
+  shared_analyzer/U3317/Y (OR2X2)                         0.24      16.87 r
+  shared_analyzer/U2199/Y (AOI2BB2X4)                     0.20      17.07 r
+  shared_analyzer/U1221/Y (NAND4X2)                       0.19      17.25 f
+  shared_analyzer/U355/Y (INVX2)                          0.19      17.44 r
+  shared_analyzer/U3320/Y (OR2X2)                         0.26      17.70 r
+  shared_analyzer/U50/Y (CLKINVX4)                        0.08      17.78 f
+  shared_analyzer/U2198/Y (AOI221X2)                      0.34      18.12 r
+  shared_analyzer/U2489/Y (NAND4X4)                       0.33      18.45 f
+  shared_analyzer/U1651/Y (AND4X2)                        0.35      18.80 f
+  shared_analyzer/U1672/Y (NAND4X2)                       0.22      19.03 r
+  shared_analyzer/U2317/Y (OR2X4)                         0.26      19.28 r
+  shared_analyzer/U2492/Y (NAND3X4)                       0.17      19.46 f
+  shared_analyzer/U2096/Y (NAND3X2)                       0.26      19.72 r
+  shared_analyzer/U2001/Y (CLKBUFX8)                      0.26      19.97 r
+  shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.97 r
+  current_solution_valid_o (out)                          0.00      19.97 r
+  data arrival time                                                 19.97
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -19.97
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+  Startpoint: pivot_valid_i[1]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_repairable_o
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[1] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2486/Y (INVX8)                         0.09       0.09 f
+  shared_analyzer/U2512/Y (OAI33X2)                       0.44       0.53 r
+  shared_analyzer/U2100/Y (BUFX8)                         0.20       0.73 r
+  shared_analyzer/U8/Y (INVX8)                            0.07       0.80 f
+  shared_analyzer/U2513/Y (OAI22X2)                       0.36       1.16 r
+  shared_analyzer/U2196/Y (INVX4)                         0.12       1.28 f
+  shared_analyzer/U2225/Y (OR2X4)                         0.25       1.53 f
+  shared_analyzer/U752/Y (OAI2BB1X2)                      0.12       1.65 r
+  shared_analyzer/U1683/Y (OAI2BB1X4)                     0.22       1.87 r
+  shared_analyzer/U1613/Y (INVX4)                         0.07       1.94 f
+  shared_analyzer/U2491/Y (OAI222X2)                      0.37       2.31 r
+  shared_analyzer/U44/Y (BUFX2)                           0.33       2.64 r
+  shared_analyzer/U2231/Y (NAND4X4)                       0.19       2.83 f
+  shared_analyzer/U2479/Y (OR2X4)                         0.29       3.13 f
+  shared_analyzer/U2478/Y (OR2X4)                         0.36       3.48 f
+  shared_analyzer/U1647/Y (OR2X1)                         0.40       3.89 f
+  shared_analyzer/U514/Y (INVX1)                          0.37       4.26 r
+  shared_analyzer/U661/Y (OAI22X1)                        0.21       4.46 f
+  shared_analyzer/U1602/Y (AOI211X4)                      0.55       5.01 r
+  shared_analyzer/U2418/Y (NAND4X4)                       0.16       5.16 f
+  shared_analyzer/U2417/Y (NAND4X4)                       0.25       5.41 r
+  shared_analyzer/U2348/Y (OR2X4)                         0.26       5.67 r
+  shared_analyzer/U2117/Y (CLKINVX8)                      0.12       5.79 f
+  shared_analyzer/U2149/Y (MXI2X2)                        0.29       6.08 r
+  shared_analyzer/U2921/Y (XOR2X2)                        0.30       6.38 f
+  shared_analyzer/U2371/Y (OR4X4)                         0.43       6.82 f
+  shared_analyzer/U2301/Y (OR4X4)                         0.45       7.27 f
+  shared_analyzer/U2485/Y (AND4X4)                        0.28       7.55 f
+  shared_analyzer/U2484/Y (NAND4X4)                       0.24       7.79 r
+  shared_analyzer/U2375/Y (INVX8)                         0.06       7.85 f
+  shared_analyzer/U2475/Y (NAND3X4)                       0.12       7.97 r
+  shared_analyzer/U121/Y (BUFX12)                         0.17       8.14 r
+  shared_analyzer/U2414/Y (INVX8)                         0.08       8.21 f
+  shared_analyzer/U33/Y (MXI2X4)                          0.16       8.37 f
+  shared_analyzer/U32/Y (BUFX8)                           0.19       8.56 f
+  shared_analyzer/U899/Y (XOR2X2)                         0.26       8.82 f
+  shared_analyzer/U393/Y (INVX1)                          0.16       8.98 r
+  shared_analyzer/U2993/Y (NAND4X1)                       0.22       9.20 f
+  shared_analyzer/U2372/Y (OR4X4)                         0.45       9.65 f
+  shared_analyzer/U2298/Y (NAND3X4)                       0.19       9.83 r
+  shared_analyzer/U423/Y (INVX4)                          0.10       9.93 f
+  shared_analyzer/U2304/Y (NAND3X4)                       0.26      10.19 r
+  shared_analyzer/U2303/Y (INVX8)                         0.13      10.32 f
+  shared_analyzer/U3029/Y (MXI2X2)                        0.30      10.62 r
+  shared_analyzer/U1287/Y (XOR2X4)                        0.38      10.99 r
+  shared_analyzer/U2209/Y (NAND3X1)                       0.18      11.18 f
+  shared_analyzer/U2365/Y (OR4X4)                         0.41      11.58 f
+  shared_analyzer/U2482/Y (NAND4X4)                       0.23      11.82 r
+  shared_analyzer/U1638/Y (CLKINVX8)                      0.08      11.90 f
+  shared_analyzer/U1696/Y (NAND3X1)                       0.19      12.09 r
+  shared_analyzer/U69/Y (BUFX8)                           0.17      12.26 r
+  shared_analyzer/U1694/Y (INVX16)                        0.23      12.49 f
+  shared_analyzer/U2276/Y (MXI2X1)                        0.34      12.83 r
+  shared_analyzer/U450/Y (INVX1)                          0.19      13.02 f
+  shared_analyzer/U1994/Y (XOR2X1)                        0.39      13.41 r
+  shared_analyzer/U2214/Y (NAND4X2)                       0.16      13.57 f
+  shared_analyzer/U2421/Y (OR4X4)                         0.58      14.16 f
+  shared_analyzer/U2481/Y (NAND4X4)                       0.25      14.41 r
+  shared_analyzer/U2137/Y (INVX4)                         0.07      14.48 f
+  shared_analyzer/U2488/Y (OAI211X4)                      0.61      15.09 r
+  shared_analyzer/U2377/Y (OR2X4)                         0.25      15.34 r
+  shared_analyzer/U2487/Y (NAND4X4)                       0.18      15.52 f
+  shared_analyzer/U2309/Y (OAI221X4)                      0.60      16.12 r
+  shared_analyzer/U2212/Y (INVX4)                         0.13      16.25 f
+  shared_analyzer/U2188/Y (OAI2BB1X2)                     0.29      16.54 f
+  shared_analyzer/U3316/Y (CLKINVX3)                      0.08      16.62 r
+  shared_analyzer/U3317/Y (OR2X2)                         0.24      16.87 r
+  shared_analyzer/U2199/Y (AOI2BB2X4)                     0.20      17.07 r
+  shared_analyzer/U1221/Y (NAND4X2)                       0.19      17.25 f
+  shared_analyzer/U355/Y (INVX2)                          0.19      17.44 r
+  shared_analyzer/U3320/Y (OR2X2)                         0.26      17.70 r
+  shared_analyzer/U50/Y (CLKINVX4)                        0.08      17.78 f
+  shared_analyzer/U2198/Y (AOI221X2)                      0.34      18.12 r
+  shared_analyzer/U2489/Y (NAND4X4)                       0.33      18.45 f
+  shared_analyzer/U1651/Y (AND4X2)                        0.35      18.80 f
+  shared_analyzer/U1672/Y (NAND4X2)                       0.22      19.03 r
+  shared_analyzer/U2317/Y (OR2X4)                         0.26      19.28 r
+  shared_analyzer/U2492/Y (NAND3X4)                       0.17      19.46 f
+  shared_analyzer/U2096/Y (NAND3X2)                       0.26      19.72 r
+  shared_analyzer/U2000/Y (CLKBUFX8)                      0.26      19.97 r
+  shared_analyzer/repairable_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.97 r
+  current_repairable_o (out)                              0.00      19.97 r
+  data arrival time                                                 19.97
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -19.97
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_pattern_id_o[2]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[0] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2378/Y (NAND2X4)                       0.21       0.21 f
+  shared_analyzer/U2499/Y (OR2X4)                         0.29       0.50 f
+  shared_analyzer/U2092/Y (BUFX20)                        0.16       0.66 f
+  shared_analyzer/U1866/Y (BUFX20)                        0.14       0.80 f
+  shared_analyzer/U1621/Y (OAI22XL)                       0.40       1.20 r
+  shared_analyzer/U1620/Y (INVX12)                        0.31       1.51 f
+  shared_analyzer/U579/Y (XOR2X1)                         0.35       1.86 r
+  shared_analyzer/U1619/Y (NAND3X2)                       0.13       1.99 f
+  shared_analyzer/U1618/Y (OR4X4)                         0.50       2.49 f
+  shared_analyzer/U909/Y (NAND4X2)                        0.19       2.67 r
+  shared_analyzer/U1629/Y (OR2X4)                         0.24       2.91 r
+  shared_analyzer/U2472/Y (NAND4X4)                       0.18       3.09 f
+  shared_analyzer/U2469/Y (OR2X4)                         0.30       3.39 f
+  shared_analyzer/U2384/Y (OR2X4)                         0.37       3.76 f
+  shared_analyzer/U1616/Y (INVX8)                         0.18       3.94 r
+  shared_analyzer/U2500/Y (OR2X4)                         0.19       4.12 r
+  shared_analyzer/U68/Y (BUFX20)                          0.14       4.27 r
+  shared_analyzer/U2244/Y (OR2X4)                         0.22       4.48 r
+  shared_analyzer/U34/Y (NAND4X1)                         0.21       4.70 f
+  shared_analyzer/U2430/Y (OR4X4)                         0.51       5.20 f
+  shared_analyzer/U2429/Y (NAND4X4)                       0.20       5.40 r
+  shared_analyzer/U464/Y (INVX4)                          0.10       5.50 f
+  shared_analyzer/U2128/Y (NAND2X4)                       0.13       5.63 r
+  shared_analyzer/U2364/Y (OR2X4)                         0.26       5.89 r
+  shared_analyzer/U2230/Y (INVX8)                         0.12       6.00 f
+  shared_analyzer/U496/Y (MX2X2)                          0.35       6.35 r
+  shared_analyzer/U2702/Y (XOR2X2)                        0.36       6.71 r
+  shared_analyzer/U437/Y (INVX1)                          0.12       6.83 f
+  shared_analyzer/U1655/Y (OR2X4)                         0.22       7.05 f
+  shared_analyzer/U2710/Y (OAI31X2)                       0.33       7.39 r
+  shared_analyzer/U46/Y (BUFX8)                           0.16       7.55 r
+  shared_analyzer/U1608/Y (OR2X4)                         0.18       7.73 r
+  shared_analyzer/U169/Y (INVX4)                          0.07       7.80 f
+  shared_analyzer/U2103/Y (NAND2BX4)                      0.12       7.92 r
+  shared_analyzer/U2200/Y (OAI2BB1X4)                     0.29       8.21 r
+  shared_analyzer/U2155/Y (INVX8)                         0.07       8.29 f
+  shared_analyzer/U2313/Y (OR2X4)                         0.30       8.59 f
+  shared_analyzer/U2216/Y (INVX8)                         0.16       8.75 r
+  shared_analyzer/U2468/Y (OR4X4)                         0.26       9.01 r
+  shared_analyzer/U2462/Y (NAND3X4)                       0.18       9.19 f
+  shared_analyzer/U37/Y (CLKINVX8)                        0.09       9.28 r
+  shared_analyzer/U74/Y (NAND4X1)                         0.24       9.52 f
+  shared_analyzer/U73/Y (BUFX8)                           0.22       9.74 f
+  shared_analyzer/U2382/Y (INVX8)                         0.16       9.91 r
+  shared_analyzer/U626/Y (MXI2X1)                         0.27      10.18 r
+  shared_analyzer/U55/Y (BUFX4)                           0.21      10.39 r
+  shared_analyzer/U548/Y (XOR2X1)                         0.34      10.73 f
+  shared_analyzer/U477/Y (INVX1)                          0.18      10.91 r
+  shared_analyzer/U2218/Y (NAND3X1)                       0.19      11.10 f
+  shared_analyzer/U2228/Y (OR4X4)                         0.41      11.51 f
+  shared_analyzer/U2470/Y (NAND4X4)                       0.23      11.74 r
+  shared_analyzer/U2386/Y (OR2X4)                         0.26      12.00 r
+  shared_analyzer/U2465/Y (INVX8)                         0.13      12.13 f
+  shared_analyzer/U115/Y (MXI2X2)                         0.20      12.33 f
+  shared_analyzer/U122/Y (BUFX4)                          0.20      12.53 f
+  shared_analyzer/U486/Y (INVX1)                          0.16      12.68 r
+  shared_analyzer/U485/Y (XOR2X1)                         0.35      13.03 r
+  shared_analyzer/U483/Y (AND2X2)                         0.22      13.25 r
+  shared_analyzer/U620/Y (NAND4X2)                        0.14      13.39 f
+  shared_analyzer/U2431/Y (OR4X4)                         0.49      13.88 f
+  shared_analyzer/U2428/Y (NAND4X4)                       0.25      14.14 r
+  shared_analyzer/U2353/Y (OR2XL)                         0.34      14.47 r
+  shared_analyzer/U1004/Y (XOR2X2)                        0.45      14.92 r
+  shared_analyzer/U2392/Y (AOI222X4)                      0.32      15.25 f
+  shared_analyzer/U2471/Y (OR2X4)                         0.26      15.51 f
+  shared_analyzer/U2090/Y (OAI221X4)                      0.60      16.11 r
+  shared_analyzer/U2088/Y (OAI2BB1X4)                     0.27      16.38 r
+  shared_analyzer/U3302/Y (CLKINVX3)                      0.11      16.49 f
+  shared_analyzer/U925/Y (AOI2BB2X1)                      0.34      16.83 f
+  shared_analyzer/U1652/Y (AND3X4)                        0.20      17.03 f
+  shared_analyzer/U2183/Y (AND2X4)                        0.19      17.22 f
+  shared_analyzer/U2258/Y (NAND4X4)                       0.21      17.43 r
+  shared_analyzer/U76/Y (CLKINVX8)                        0.09      17.52 f
+  shared_analyzer/U75/Y (OR2X1)                           0.38      17.90 f
+  shared_analyzer/U3361/Y (CLKINVX3)                      0.12      18.02 r
+  shared_analyzer/U2249/Y (AOI2BB1X4)                     0.09      18.11 f
+  shared_analyzer/U2247/Y (NAND4X4)                       0.17      18.27 r
+  shared_analyzer/U1219/Y (AND2X2)                        0.23      18.50 r
+  shared_analyzer/U2192/Y (NAND4X2)                       0.20      18.70 f
+  shared_analyzer/U2369/Y (OR2X4)                         0.31      19.00 f
+  shared_analyzer/U14/Y (NAND3X2)                         0.23      19.23 r
+  shared_analyzer/U85/Y (INVX4)                           0.10      19.33 f
+  shared_analyzer/U2101/Y (NOR4BX2)                       0.38      19.71 r
+  shared_analyzer/U1656/Y (INVX4)                         0.22      19.93 f
+  shared_analyzer/pattern_id_o[2] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.93 f
+  current_pattern_id_o[2] (out)                           0.00      19.93 f
+  data arrival time                                                 19.93
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -19.93
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.07
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_pattern_id_o[1]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[0] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2378/Y (NAND2X4)                       0.21       0.21 f
+  shared_analyzer/U2499/Y (OR2X4)                         0.29       0.50 f
+  shared_analyzer/U2092/Y (BUFX20)                        0.16       0.66 f
+  shared_analyzer/U1866/Y (BUFX20)                        0.14       0.80 f
+  shared_analyzer/U1621/Y (OAI22XL)                       0.40       1.20 r
+  shared_analyzer/U1620/Y (INVX12)                        0.31       1.51 f
+  shared_analyzer/U579/Y (XOR2X1)                         0.35       1.86 r
+  shared_analyzer/U1619/Y (NAND3X2)                       0.13       1.99 f
+  shared_analyzer/U1618/Y (OR4X4)                         0.50       2.49 f
+  shared_analyzer/U909/Y (NAND4X2)                        0.19       2.67 r
+  shared_analyzer/U1629/Y (OR2X4)                         0.24       2.91 r
+  shared_analyzer/U2472/Y (NAND4X4)                       0.18       3.09 f
+  shared_analyzer/U2469/Y (OR2X4)                         0.30       3.39 f
+  shared_analyzer/U2384/Y (OR2X4)                         0.37       3.76 f
+  shared_analyzer/U1616/Y (INVX8)                         0.18       3.94 r
+  shared_analyzer/U2500/Y (OR2X4)                         0.19       4.12 r
+  shared_analyzer/U68/Y (BUFX20)                          0.14       4.27 r
+  shared_analyzer/U2244/Y (OR2X4)                         0.22       4.48 r
+  shared_analyzer/U34/Y (NAND4X1)                         0.21       4.70 f
+  shared_analyzer/U2430/Y (OR4X4)                         0.51       5.20 f
+  shared_analyzer/U2429/Y (NAND4X4)                       0.20       5.40 r
+  shared_analyzer/U464/Y (INVX4)                          0.10       5.50 f
+  shared_analyzer/U2128/Y (NAND2X4)                       0.13       5.63 r
+  shared_analyzer/U2364/Y (OR2X4)                         0.26       5.89 r
+  shared_analyzer/U2230/Y (INVX8)                         0.12       6.00 f
+  shared_analyzer/U496/Y (MX2X2)                          0.35       6.35 r
+  shared_analyzer/U2702/Y (XOR2X2)                        0.36       6.71 r
+  shared_analyzer/U437/Y (INVX1)                          0.12       6.83 f
+  shared_analyzer/U1655/Y (OR2X4)                         0.22       7.05 f
+  shared_analyzer/U2710/Y (OAI31X2)                       0.33       7.39 r
+  shared_analyzer/U46/Y (BUFX8)                           0.16       7.55 r
+  shared_analyzer/U1608/Y (OR2X4)                         0.18       7.73 r
+  shared_analyzer/U169/Y (INVX4)                          0.07       7.80 f
+  shared_analyzer/U2103/Y (NAND2BX4)                      0.12       7.92 r
+  shared_analyzer/U2200/Y (OAI2BB1X4)                     0.29       8.21 r
+  shared_analyzer/U2155/Y (INVX8)                         0.07       8.29 f
+  shared_analyzer/U2313/Y (OR2X4)                         0.30       8.59 f
+  shared_analyzer/U2216/Y (INVX8)                         0.16       8.75 r
+  shared_analyzer/U2468/Y (OR4X4)                         0.26       9.01 r
+  shared_analyzer/U2462/Y (NAND3X4)                       0.18       9.19 f
+  shared_analyzer/U37/Y (CLKINVX8)                        0.09       9.28 r
+  shared_analyzer/U74/Y (NAND4X1)                         0.24       9.52 f
+  shared_analyzer/U73/Y (BUFX8)                           0.22       9.74 f
+  shared_analyzer/U2382/Y (INVX8)                         0.16       9.91 r
+  shared_analyzer/U626/Y (MXI2X1)                         0.27      10.18 r
+  shared_analyzer/U55/Y (BUFX4)                           0.21      10.39 r
+  shared_analyzer/U548/Y (XOR2X1)                         0.34      10.73 f
+  shared_analyzer/U477/Y (INVX1)                          0.18      10.91 r
+  shared_analyzer/U2218/Y (NAND3X1)                       0.19      11.10 f
+  shared_analyzer/U2228/Y (OR4X4)                         0.41      11.51 f
+  shared_analyzer/U2470/Y (NAND4X4)                       0.23      11.74 r
+  shared_analyzer/U2386/Y (OR2X4)                         0.26      12.00 r
+  shared_analyzer/U2465/Y (INVX8)                         0.13      12.13 f
+  shared_analyzer/U115/Y (MXI2X2)                         0.20      12.33 f
+  shared_analyzer/U122/Y (BUFX4)                          0.20      12.53 f
+  shared_analyzer/U486/Y (INVX1)                          0.16      12.68 r
+  shared_analyzer/U485/Y (XOR2X1)                         0.35      13.03 r
+  shared_analyzer/U483/Y (AND2X2)                         0.22      13.25 r
+  shared_analyzer/U620/Y (NAND4X2)                        0.14      13.39 f
+  shared_analyzer/U2431/Y (OR4X4)                         0.49      13.88 f
+  shared_analyzer/U2428/Y (NAND4X4)                       0.25      14.14 r
+  shared_analyzer/U2353/Y (OR2XL)                         0.34      14.47 r
+  shared_analyzer/U1004/Y (XOR2X2)                        0.37      14.84 f
+  shared_analyzer/U2392/Y (AOI222X4)                      0.51      15.35 r
+  shared_analyzer/U2471/Y (OR2X4)                         0.20      15.55 r
+  shared_analyzer/U2090/Y (OAI221X4)                      0.43      15.98 f
+  shared_analyzer/U83/Y (OR2X2)                           0.30      16.28 f
+  shared_analyzer/U2349/Y (OR2X4)                         0.29      16.57 f
+  shared_analyzer/U1215/Y (AOI2BB2X1)                     0.34      16.91 f
+  shared_analyzer/U1213/Y (AND4X2)                        0.33      17.24 f
+  shared_analyzer/U113/Y (NAND4X4)                        0.22      17.46 r
+  shared_analyzer/U112/Y (INVX4)                          0.07      17.53 f
+  shared_analyzer/U78/Y (OR2X4)                           0.26      17.79 f
+  shared_analyzer/U77/Y (NAND4X4)                         0.16      17.96 r
+  shared_analyzer/U2322/Y (OR4X4)                         0.29      18.25 r
+  shared_analyzer/U2321/Y (CLKINVX8)                      0.17      18.42 f
+  shared_analyzer/U1398/Y (NOR2X2)                        0.31      18.73 r
+  shared_analyzer/U1672/Y (NAND4X2)                       0.23      18.96 f
+  shared_analyzer/U2317/Y (OR2X4)                         0.33      19.29 f
+  shared_analyzer/U2492/Y (NAND3X4)                       0.23      19.52 r
+  shared_analyzer/U2307/Y (NAND4X2)                       0.20      19.72 f
+  shared_analyzer/U133/Y (BUFX12)                         0.20      19.92 f
+  shared_analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.92 f
+  current_pattern_id_o[1] (out)                           0.00      19.92 f
+  data arrival time                                                 19.92
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -19.92
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.08
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_pattern_id_o[0]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[0] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2378/Y (NAND2X4)                       0.21       0.21 f
+  shared_analyzer/U2499/Y (OR2X4)                         0.29       0.50 f
+  shared_analyzer/U2092/Y (BUFX20)                        0.16       0.66 f
+  shared_analyzer/U1866/Y (BUFX20)                        0.14       0.80 f
+  shared_analyzer/U1621/Y (OAI22XL)                       0.40       1.20 r
+  shared_analyzer/U1620/Y (INVX12)                        0.31       1.51 f
+  shared_analyzer/U579/Y (XOR2X1)                         0.35       1.86 r
+  shared_analyzer/U1619/Y (NAND3X2)                       0.13       1.99 f
+  shared_analyzer/U1618/Y (OR4X4)                         0.50       2.49 f
+  shared_analyzer/U909/Y (NAND4X2)                        0.19       2.67 r
+  shared_analyzer/U1629/Y (OR2X4)                         0.24       2.91 r
+  shared_analyzer/U2472/Y (NAND4X4)                       0.18       3.09 f
+  shared_analyzer/U2469/Y (OR2X4)                         0.30       3.39 f
+  shared_analyzer/U2384/Y (OR2X4)                         0.37       3.76 f
+  shared_analyzer/U1616/Y (INVX8)                         0.18       3.94 r
+  shared_analyzer/U2500/Y (OR2X4)                         0.19       4.12 r
+  shared_analyzer/U68/Y (BUFX20)                          0.14       4.27 r
+  shared_analyzer/U2244/Y (OR2X4)                         0.22       4.48 r
+  shared_analyzer/U34/Y (NAND4X1)                         0.21       4.70 f
+  shared_analyzer/U2430/Y (OR4X4)                         0.51       5.20 f
+  shared_analyzer/U2429/Y (NAND4X4)                       0.20       5.40 r
+  shared_analyzer/U464/Y (INVX4)                          0.10       5.50 f
+  shared_analyzer/U2128/Y (NAND2X4)                       0.13       5.63 r
+  shared_analyzer/U2364/Y (OR2X4)                         0.26       5.89 r
+  shared_analyzer/U2230/Y (INVX8)                         0.12       6.00 f
+  shared_analyzer/U496/Y (MX2X2)                          0.35       6.35 r
+  shared_analyzer/U2702/Y (XOR2X2)                        0.36       6.71 r
+  shared_analyzer/U437/Y (INVX1)                          0.12       6.83 f
+  shared_analyzer/U1655/Y (OR2X4)                         0.22       7.05 f
+  shared_analyzer/U2710/Y (OAI31X2)                       0.33       7.39 r
+  shared_analyzer/U46/Y (BUFX8)                           0.16       7.55 r
+  shared_analyzer/U1608/Y (OR2X4)                         0.18       7.73 r
+  shared_analyzer/U169/Y (INVX4)                          0.07       7.80 f
+  shared_analyzer/U2103/Y (NAND2BX4)                      0.12       7.92 r
+  shared_analyzer/U2200/Y (OAI2BB1X4)                     0.29       8.21 r
+  shared_analyzer/U2155/Y (INVX8)                         0.07       8.29 f
+  shared_analyzer/U2313/Y (OR2X4)                         0.30       8.59 f
+  shared_analyzer/U2216/Y (INVX8)                         0.16       8.75 r
+  shared_analyzer/U2468/Y (OR4X4)                         0.26       9.01 r
+  shared_analyzer/U2462/Y (NAND3X4)                       0.18       9.19 f
+  shared_analyzer/U37/Y (CLKINVX8)                        0.09       9.28 r
+  shared_analyzer/U74/Y (NAND4X1)                         0.24       9.52 f
+  shared_analyzer/U73/Y (BUFX8)                           0.22       9.74 f
+  shared_analyzer/U2382/Y (INVX8)                         0.16       9.91 r
+  shared_analyzer/U626/Y (MXI2X1)                         0.27      10.18 r
+  shared_analyzer/U55/Y (BUFX4)                           0.21      10.39 r
+  shared_analyzer/U548/Y (XOR2X1)                         0.34      10.73 f
+  shared_analyzer/U477/Y (INVX1)                          0.18      10.91 r
+  shared_analyzer/U2218/Y (NAND3X1)                       0.19      11.10 f
+  shared_analyzer/U2228/Y (OR4X4)                         0.41      11.51 f
+  shared_analyzer/U2470/Y (NAND4X4)                       0.23      11.74 r
+  shared_analyzer/U2386/Y (OR2X4)                         0.26      12.00 r
+  shared_analyzer/U2465/Y (INVX8)                         0.13      12.13 f
+  shared_analyzer/U115/Y (MXI2X2)                         0.20      12.33 f
+  shared_analyzer/U122/Y (BUFX4)                          0.20      12.53 f
+  shared_analyzer/U486/Y (INVX1)                          0.16      12.68 r
+  shared_analyzer/U485/Y (XOR2X1)                         0.35      13.03 r
+  shared_analyzer/U483/Y (AND2X2)                         0.22      13.25 r
+  shared_analyzer/U620/Y (NAND4X2)                        0.14      13.39 f
+  shared_analyzer/U2431/Y (OR4X4)                         0.49      13.88 f
+  shared_analyzer/U2428/Y (NAND4X4)                       0.25      14.14 r
+  shared_analyzer/U2353/Y (OR2XL)                         0.34      14.47 r
+  shared_analyzer/U1004/Y (XOR2X2)                        0.37      14.84 f
+  shared_analyzer/U2392/Y (AOI222X4)                      0.51      15.35 r
+  shared_analyzer/U2471/Y (OR2X4)                         0.20      15.55 r
+  shared_analyzer/U2090/Y (OAI221X4)                      0.43      15.98 f
+  shared_analyzer/U83/Y (OR2X2)                           0.30      16.28 f
+  shared_analyzer/U2349/Y (OR2X4)                         0.29      16.57 f
+  shared_analyzer/U1215/Y (AOI2BB2X1)                     0.34      16.91 f
+  shared_analyzer/U1213/Y (AND4X2)                        0.33      17.24 f
+  shared_analyzer/U113/Y (NAND4X4)                        0.22      17.46 r
+  shared_analyzer/U112/Y (INVX4)                          0.07      17.53 f
+  shared_analyzer/U78/Y (OR2X4)                           0.26      17.79 f
+  shared_analyzer/U77/Y (NAND4X4)                         0.16      17.96 r
+  shared_analyzer/U2322/Y (OR4X4)                         0.29      18.25 r
+  shared_analyzer/U2321/Y (CLKINVX8)                      0.17      18.42 f
+  shared_analyzer/U1398/Y (NOR2X2)                        0.31      18.73 r
+  shared_analyzer/U1672/Y (NAND4X2)                       0.23      18.96 f
+  shared_analyzer/U2317/Y (OR2X4)                         0.33      19.29 f
+  shared_analyzer/U1649/Y (NAND4XL)                       0.32      19.61 r
+  shared_analyzer/U2097/Y (CLKBUFX8)                      0.28      19.89 r
+  shared_analyzer/pattern_id_o[0] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.89 r
+  current_pattern_id_o[0] (out)                           0.00      19.89 r
+  data arrival time                                                 19.89
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -19.89
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.11
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_candidate_valid_o[9]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[0] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2378/Y (NAND2X4)                       0.21       0.21 f
+  shared_analyzer/U2499/Y (OR2X4)                         0.29       0.50 f
+  shared_analyzer/U2092/Y (BUFX20)                        0.16       0.66 f
+  shared_analyzer/U1866/Y (BUFX20)                        0.14       0.80 f
+  shared_analyzer/U1621/Y (OAI22XL)                       0.40       1.20 r
+  shared_analyzer/U1620/Y (INVX12)                        0.31       1.51 f
+  shared_analyzer/U579/Y (XOR2X1)                         0.35       1.86 r
+  shared_analyzer/U1619/Y (NAND3X2)                       0.13       1.99 f
+  shared_analyzer/U1618/Y (OR4X4)                         0.50       2.49 f
+  shared_analyzer/U909/Y (NAND4X2)                        0.19       2.67 r
+  shared_analyzer/U1629/Y (OR2X4)                         0.24       2.91 r
+  shared_analyzer/U2472/Y (NAND4X4)                       0.18       3.09 f
+  shared_analyzer/U2469/Y (OR2X4)                         0.30       3.39 f
+  shared_analyzer/U2384/Y (OR2X4)                         0.37       3.76 f
+  shared_analyzer/U1616/Y (INVX8)                         0.18       3.94 r
+  shared_analyzer/U2500/Y (OR2X4)                         0.19       4.12 r
+  shared_analyzer/U68/Y (BUFX20)                          0.14       4.27 r
+  shared_analyzer/U2244/Y (OR2X4)                         0.22       4.48 r
+  shared_analyzer/U34/Y (NAND4X1)                         0.21       4.70 f
+  shared_analyzer/U2430/Y (OR4X4)                         0.51       5.20 f
+  shared_analyzer/U2429/Y (NAND4X4)                       0.20       5.40 r
+  shared_analyzer/U464/Y (INVX4)                          0.10       5.50 f
+  shared_analyzer/U2128/Y (NAND2X4)                       0.13       5.63 r
+  shared_analyzer/U2364/Y (OR2X4)                         0.26       5.89 r
+  shared_analyzer/U2230/Y (INVX8)                         0.12       6.00 f
+  shared_analyzer/U496/Y (MX2X2)                          0.35       6.35 r
+  shared_analyzer/U2702/Y (XOR2X2)                        0.36       6.71 r
+  shared_analyzer/U437/Y (INVX1)                          0.12       6.83 f
+  shared_analyzer/U1655/Y (OR2X4)                         0.22       7.05 f
+  shared_analyzer/U2710/Y (OAI31X2)                       0.33       7.39 r
+  shared_analyzer/U46/Y (BUFX8)                           0.16       7.55 r
+  shared_analyzer/U1608/Y (OR2X4)                         0.18       7.73 r
+  shared_analyzer/U169/Y (INVX4)                          0.07       7.80 f
+  shared_analyzer/U2103/Y (NAND2BX4)                      0.12       7.92 r
+  shared_analyzer/U2200/Y (OAI2BB1X4)                     0.29       8.21 r
+  shared_analyzer/U2155/Y (INVX8)                         0.07       8.29 f
+  shared_analyzer/U2313/Y (OR2X4)                         0.30       8.59 f
+  shared_analyzer/U2216/Y (INVX8)                         0.16       8.75 r
+  shared_analyzer/U2468/Y (OR4X4)                         0.26       9.01 r
+  shared_analyzer/U2462/Y (NAND3X4)                       0.18       9.19 f
+  shared_analyzer/U37/Y (CLKINVX8)                        0.09       9.28 r
+  shared_analyzer/U74/Y (NAND4X1)                         0.24       9.52 f
+  shared_analyzer/U73/Y (BUFX8)                           0.22       9.74 f
+  shared_analyzer/U2382/Y (INVX8)                         0.16       9.91 r
+  shared_analyzer/U626/Y (MXI2X1)                         0.27      10.18 r
+  shared_analyzer/U55/Y (BUFX4)                           0.21      10.39 r
+  shared_analyzer/U548/Y (XOR2X1)                         0.41      10.80 r
+  shared_analyzer/U477/Y (INVX1)                          0.14      10.93 f
+  shared_analyzer/U2218/Y (NAND3X1)                       0.20      11.13 r
+  shared_analyzer/U2228/Y (OR4X4)                         0.24      11.37 r
+  shared_analyzer/U2470/Y (NAND4X4)                       0.20      11.58 f
+  shared_analyzer/U2386/Y (OR2X4)                         0.33      11.90 f
+  shared_analyzer/U1677/Y (OAI2BB1X1)                     0.53      12.43 f
+  shared_analyzer/U142/Y (INVX4)                          0.29      12.72 r
+  shared_analyzer/U1333/Y (NOR2X2)                        0.19      12.91 f
+  shared_analyzer/U2782/Y (OR4X2)                         0.47      13.38 f
+  shared_analyzer/U2783/Y (OR2X2)                         0.35      13.73 f
+  shared_analyzer/U2821/Y (CLKINVX3)                      0.09      13.82 r
+  shared_analyzer/U2220/Y (OR2X4)                         0.15      13.97 r
+  shared_analyzer/U2822/Y (OR2X2)                         0.30      14.27 r
+  shared_analyzer/U2823/Y (CLKINVX3)                      0.09      14.36 f
+  shared_analyzer/U2824/Y (OR2X2)                         0.31      14.67 f
+  shared_analyzer/U2825/Y (OR2X2)                         0.39      15.06 f
+  shared_analyzer/U2318/Y (OR2X4)                         0.25      15.32 f
+  shared_analyzer/U2836/Y (NAND3X1)                       0.34      15.66 r
+  shared_analyzer/U1074/Y (INVX1)                         0.24      15.89 f
+  shared_analyzer/U1332/Y (AND3X2)                        0.39      16.29 f
+  shared_analyzer/U3349/Y (AOI222X1)                      0.55      16.84 r
+  shared_analyzer/U3350/Y (AND4X2)                        0.31      17.15 r
+  shared_analyzer/U3351/Y (NAND4X1)                       0.28      17.43 f
+  shared_analyzer/U111/Y (NOR2XL)                         0.57      18.01 r
+  shared_analyzer/U3371/Y (NAND3X1)                       0.19      18.20 f
+  shared_analyzer/U3372/Y (OR4X2)                         0.49      18.70 f
+  shared_analyzer/U3373/Y (CLKINVX3)                      0.36      19.06 r
+  shared_analyzer/candidate_valid_o[9] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.06 r
+  current_candidate_valid_o[9] (out)                      0.00      19.06 r
+  data arrival time                                                 19.06
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -19.06
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.94
+
+
+  Startpoint: pivot_valid_i[1]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_candidate_valid_o[1]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[1] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2486/Y (INVX8)                         0.09       0.09 f
+  shared_analyzer/U2512/Y (OAI33X2)                       0.44       0.53 r
+  shared_analyzer/U2100/Y (BUFX8)                         0.20       0.73 r
+  shared_analyzer/U8/Y (INVX8)                            0.07       0.80 f
+  shared_analyzer/U2513/Y (OAI22X2)                       0.36       1.16 r
+  shared_analyzer/U2196/Y (INVX4)                         0.12       1.28 f
+  shared_analyzer/U2225/Y (OR2X4)                         0.25       1.53 f
+  shared_analyzer/U752/Y (OAI2BB1X2)                      0.12       1.65 r
+  shared_analyzer/U1683/Y (OAI2BB1X4)                     0.22       1.87 r
+  shared_analyzer/U1613/Y (INVX4)                         0.07       1.94 f
+  shared_analyzer/U2491/Y (OAI222X2)                      0.37       2.31 r
+  shared_analyzer/U44/Y (BUFX2)                           0.33       2.64 r
+  shared_analyzer/U2231/Y (NAND4X4)                       0.19       2.83 f
+  shared_analyzer/U2479/Y (OR2X4)                         0.29       3.13 f
+  shared_analyzer/U2478/Y (OR2X4)                         0.36       3.48 f
+  shared_analyzer/U1647/Y (OR2X1)                         0.40       3.89 f
+  shared_analyzer/U514/Y (INVX1)                          0.37       4.26 r
+  shared_analyzer/U661/Y (OAI22X1)                        0.21       4.46 f
+  shared_analyzer/U1602/Y (AOI211X4)                      0.55       5.01 r
+  shared_analyzer/U2418/Y (NAND4X4)                       0.16       5.16 f
+  shared_analyzer/U2417/Y (NAND4X4)                       0.25       5.41 r
+  shared_analyzer/U2348/Y (OR2X4)                         0.26       5.67 r
+  shared_analyzer/U2117/Y (CLKINVX8)                      0.12       5.79 f
+  shared_analyzer/U2149/Y (MXI2X2)                        0.29       6.08 r
+  shared_analyzer/U2921/Y (XOR2X2)                        0.30       6.38 f
+  shared_analyzer/U2371/Y (OR4X4)                         0.43       6.82 f
+  shared_analyzer/U2301/Y (OR4X4)                         0.45       7.27 f
+  shared_analyzer/U2485/Y (AND4X4)                        0.28       7.55 f
+  shared_analyzer/U2484/Y (NAND4X4)                       0.24       7.79 r
+  shared_analyzer/U2375/Y (INVX8)                         0.06       7.85 f
+  shared_analyzer/U2475/Y (NAND3X4)                       0.12       7.97 r
+  shared_analyzer/U121/Y (BUFX12)                         0.17       8.14 r
+  shared_analyzer/U2414/Y (INVX8)                         0.08       8.21 f
+  shared_analyzer/U33/Y (MXI2X4)                          0.16       8.37 f
+  shared_analyzer/U32/Y (BUFX8)                           0.19       8.56 f
+  shared_analyzer/U899/Y (XOR2X2)                         0.26       8.82 f
+  shared_analyzer/U393/Y (INVX1)                          0.16       8.98 r
+  shared_analyzer/U2993/Y (NAND4X1)                       0.22       9.20 f
+  shared_analyzer/U2372/Y (OR4X4)                         0.45       9.65 f
+  shared_analyzer/U2298/Y (NAND3X4)                       0.19       9.83 r
+  shared_analyzer/U423/Y (INVX4)                          0.10       9.93 f
+  shared_analyzer/U2304/Y (NAND3X4)                       0.26      10.19 r
+  shared_analyzer/U2303/Y (INVX8)                         0.13      10.32 f
+  shared_analyzer/U3029/Y (MXI2X2)                        0.30      10.62 r
+  shared_analyzer/U1287/Y (XOR2X4)                        0.38      10.99 r
+  shared_analyzer/U2209/Y (NAND3X1)                       0.18      11.18 f
+  shared_analyzer/U2365/Y (OR4X4)                         0.41      11.58 f
+  shared_analyzer/U2482/Y (NAND4X4)                       0.23      11.82 r
+  shared_analyzer/U1638/Y (CLKINVX8)                      0.08      11.90 f
+  shared_analyzer/U1696/Y (NAND3X1)                       0.19      12.09 r
+  shared_analyzer/U69/Y (BUFX8)                           0.17      12.26 r
+  shared_analyzer/U1694/Y (INVX16)                        0.23      12.49 f
+  shared_analyzer/U2276/Y (MXI2X1)                        0.34      12.83 r
+  shared_analyzer/U450/Y (INVX1)                          0.19      13.02 f
+  shared_analyzer/U1994/Y (XOR2X1)                        0.39      13.41 r
+  shared_analyzer/U2214/Y (NAND4X2)                       0.16      13.57 f
+  shared_analyzer/U2421/Y (OR4X4)                         0.58      14.16 f
+  shared_analyzer/U2481/Y (NAND4X4)                       0.25      14.41 r
+  shared_analyzer/U2137/Y (INVX4)                         0.07      14.48 f
+  shared_analyzer/U2488/Y (OAI211X4)                      0.61      15.09 r
+  shared_analyzer/U2377/Y (OR2X4)                         0.25      15.34 r
+  shared_analyzer/U2487/Y (NAND4X4)                       0.18      15.52 f
+  shared_analyzer/U2309/Y (OAI221X4)                      0.60      16.12 r
+  shared_analyzer/U2212/Y (INVX4)                         0.13      16.25 f
+  shared_analyzer/U2188/Y (OAI2BB1X2)                     0.29      16.54 f
+  shared_analyzer/U3316/Y (CLKINVX3)                      0.08      16.62 r
+  shared_analyzer/U3317/Y (OR2X2)                         0.24      16.87 r
+  shared_analyzer/U2199/Y (AOI2BB2X4)                     0.20      17.07 r
+  shared_analyzer/U1221/Y (NAND4X2)                       0.19      17.25 f
+  shared_analyzer/U355/Y (INVX2)                          0.19      17.44 r
+  shared_analyzer/U3320/Y (OR2X2)                         0.26      17.70 r
+  shared_analyzer/U50/Y (CLKINVX4)                        0.08      17.78 f
+  shared_analyzer/U2198/Y (AOI221X2)                      0.34      18.12 r
+  shared_analyzer/U2489/Y (NAND4X4)                       0.33      18.45 f
+  shared_analyzer/U1664/Y (INVX2)                         0.53      18.98 r
+  shared_analyzer/candidate_valid_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.98 r
+  current_candidate_valid_o[1] (out)                      0.00      18.98 r
+  data arrival time                                                 18.98
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -18.98
+  --------------------------------------------------------------------------
+  slack (MET)                                                        1.02
+
+
+  Startpoint: pivot_valid_i[1]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_candidate_valid_o[0]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[1] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2486/Y (INVX8)                         0.09       0.09 f
+  shared_analyzer/U2512/Y (OAI33X2)                       0.44       0.53 r
+  shared_analyzer/U2100/Y (BUFX8)                         0.20       0.73 r
+  shared_analyzer/U8/Y (INVX8)                            0.07       0.80 f
+  shared_analyzer/U2513/Y (OAI22X2)                       0.36       1.16 r
+  shared_analyzer/U2196/Y (INVX4)                         0.12       1.28 f
+  shared_analyzer/U2225/Y (OR2X4)                         0.25       1.53 f
+  shared_analyzer/U752/Y (OAI2BB1X2)                      0.12       1.65 r
+  shared_analyzer/U1683/Y (OAI2BB1X4)                     0.22       1.87 r
+  shared_analyzer/U1613/Y (INVX4)                         0.07       1.94 f
+  shared_analyzer/U2491/Y (OAI222X2)                      0.37       2.31 r
+  shared_analyzer/U44/Y (BUFX2)                           0.33       2.64 r
+  shared_analyzer/U2231/Y (NAND4X4)                       0.19       2.83 f
+  shared_analyzer/U2479/Y (OR2X4)                         0.29       3.13 f
+  shared_analyzer/U2478/Y (OR2X4)                         0.36       3.48 f
+  shared_analyzer/U1647/Y (OR2X1)                         0.40       3.89 f
+  shared_analyzer/U514/Y (INVX1)                          0.37       4.26 r
+  shared_analyzer/U661/Y (OAI22X1)                        0.21       4.46 f
+  shared_analyzer/U1602/Y (AOI211X4)                      0.55       5.01 r
+  shared_analyzer/U2418/Y (NAND4X4)                       0.16       5.16 f
+  shared_analyzer/U2417/Y (NAND4X4)                       0.25       5.41 r
+  shared_analyzer/U2348/Y (OR2X4)                         0.26       5.67 r
+  shared_analyzer/U2117/Y (CLKINVX8)                      0.12       5.79 f
+  shared_analyzer/U2149/Y (MXI2X2)                        0.29       6.08 r
+  shared_analyzer/U2921/Y (XOR2X2)                        0.30       6.38 f
+  shared_analyzer/U2371/Y (OR4X4)                         0.43       6.82 f
+  shared_analyzer/U2301/Y (OR4X4)                         0.45       7.27 f
+  shared_analyzer/U2485/Y (AND4X4)                        0.28       7.55 f
+  shared_analyzer/U2484/Y (NAND4X4)                       0.24       7.79 r
+  shared_analyzer/U2375/Y (INVX8)                         0.06       7.85 f
+  shared_analyzer/U2475/Y (NAND3X4)                       0.12       7.97 r
+  shared_analyzer/U121/Y (BUFX12)                         0.17       8.14 r
+  shared_analyzer/U2414/Y (INVX8)                         0.08       8.21 f
+  shared_analyzer/U33/Y (MXI2X4)                          0.16       8.37 f
+  shared_analyzer/U32/Y (BUFX8)                           0.19       8.56 f
+  shared_analyzer/U899/Y (XOR2X2)                         0.26       8.82 f
+  shared_analyzer/U393/Y (INVX1)                          0.16       8.98 r
+  shared_analyzer/U2993/Y (NAND4X1)                       0.22       9.20 f
+  shared_analyzer/U2372/Y (OR4X4)                         0.45       9.65 f
+  shared_analyzer/U2298/Y (NAND3X4)                       0.19       9.83 r
+  shared_analyzer/U423/Y (INVX4)                          0.10       9.93 f
+  shared_analyzer/U2304/Y (NAND3X4)                       0.26      10.19 r
+  shared_analyzer/U2303/Y (INVX8)                         0.13      10.32 f
+  shared_analyzer/U3029/Y (MXI2X2)                        0.30      10.62 r
+  shared_analyzer/U1287/Y (XOR2X4)                        0.38      10.99 r
+  shared_analyzer/U2209/Y (NAND3X1)                       0.18      11.18 f
+  shared_analyzer/U2365/Y (OR4X4)                         0.41      11.58 f
+  shared_analyzer/U2482/Y (NAND4X4)                       0.23      11.82 r
+  shared_analyzer/U1638/Y (CLKINVX8)                      0.08      11.90 f
+  shared_analyzer/U1696/Y (NAND3X1)                       0.19      12.09 r
+  shared_analyzer/U69/Y (BUFX8)                           0.17      12.26 r
+  shared_analyzer/U1694/Y (INVX16)                        0.23      12.49 f
+  shared_analyzer/U2276/Y (MXI2X1)                        0.34      12.83 r
+  shared_analyzer/U450/Y (INVX1)                          0.19      13.02 f
+  shared_analyzer/U1994/Y (XOR2X1)                        0.39      13.41 r
+  shared_analyzer/U2214/Y (NAND4X2)                       0.16      13.57 f
+  shared_analyzer/U2421/Y (OR4X4)                         0.58      14.16 f
+  shared_analyzer/U2481/Y (NAND4X4)                       0.25      14.41 r
+  shared_analyzer/U2137/Y (INVX4)                         0.07      14.48 f
+  shared_analyzer/U2488/Y (OAI211X4)                      0.61      15.09 r
+  shared_analyzer/U2443/Y (OR2X4)                         0.25      15.34 r
+  shared_analyzer/U2367/Y (INVX4)                         0.05      15.38 f
+  shared_analyzer/U2366/Y (OR2X4)                         0.22      15.60 f
+  shared_analyzer/U2435/Y (OAI32X4)                       0.63      16.23 r
+  shared_analyzer/U1630/Y (OR2X4)                         0.17      16.41 r
+  shared_analyzer/U320/Y (INVX4)                          0.07      16.48 f
+  shared_analyzer/U2328/Y (NAND3X4)                       0.18      16.66 r
+  shared_analyzer/U2182/Y (INVX4)                         0.07      16.72 f
+  shared_analyzer/U2095/Y (AOI222X4)                      0.67      17.40 r
+  shared_analyzer/U2094/Y (NAND4X4)                       0.16      17.56 f
+  shared_analyzer/U3346/Y (CLKINVX3)                      0.09      17.64 r
+  shared_analyzer/U1342/Y (AND3X2)                        0.39      18.04 r
+  shared_analyzer/U2422/Y (NAND4X4)                       0.29      18.33 f
+  shared_analyzer/U2204/Y (INVX2)                         0.58      18.91 r
+  shared_analyzer/candidate_valid_o[0] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.91 r
+  current_candidate_valid_o[0] (out)                      0.00      18.91 r
+  data arrival time                                                 18.91
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -18.91
+  --------------------------------------------------------------------------
+  slack (MET)                                                        1.09
+
+
+  Startpoint: pivot_valid_i[0]
+              (input port clocked by recam_boundary_clk)
+  Endpoint: current_candidate_valid_o[3]
+            (output port clocked by recam_boundary_clk)
+  Path Group: recam_boundary_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_role_aware_config_scheduler
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_boundary_clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  input external delay                                    0.00       0.00 r
+  pivot_valid_i[0] (in)                                   0.00       0.00 r
+  shared_analyzer/pivot_valid_i[0] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       0.00 r
+  shared_analyzer/U2378/Y (NAND2X4)                       0.21       0.21 f
+  shared_analyzer/U2499/Y (OR2X4)                         0.29       0.50 f
+  shared_analyzer/U2092/Y (BUFX20)                        0.16       0.66 f
+  shared_analyzer/U1866/Y (BUFX20)                        0.14       0.80 f
+  shared_analyzer/U1621/Y (OAI22XL)                       0.40       1.20 r
+  shared_analyzer/U1620/Y (INVX12)                        0.31       1.51 f
+  shared_analyzer/U579/Y (XOR2X1)                         0.35       1.86 r
+  shared_analyzer/U1619/Y (NAND3X2)                       0.13       1.99 f
+  shared_analyzer/U1618/Y (OR4X4)                         0.50       2.49 f
+  shared_analyzer/U909/Y (NAND4X2)                        0.19       2.67 r
+  shared_analyzer/U1629/Y (OR2X4)                         0.24       2.91 r
+  shared_analyzer/U2472/Y (NAND4X4)                       0.18       3.09 f
+  shared_analyzer/U2469/Y (OR2X4)                         0.30       3.39 f
+  shared_analyzer/U2384/Y (OR2X4)                         0.37       3.76 f
+  shared_analyzer/U1616/Y (INVX8)                         0.18       3.94 r
+  shared_analyzer/U2500/Y (OR2X4)                         0.19       4.12 r
+  shared_analyzer/U68/Y (BUFX20)                          0.14       4.27 r
+  shared_analyzer/U2244/Y (OR2X4)                         0.22       4.48 r
+  shared_analyzer/U34/Y (NAND4X1)                         0.21       4.70 f
+  shared_analyzer/U2430/Y (OR4X4)                         0.51       5.20 f
+  shared_analyzer/U2429/Y (NAND4X4)                       0.20       5.40 r
+  shared_analyzer/U464/Y (INVX4)                          0.10       5.50 f
+  shared_analyzer/U2128/Y (NAND2X4)                       0.13       5.63 r
+  shared_analyzer/U2364/Y (OR2X4)                         0.26       5.89 r
+  shared_analyzer/U2230/Y (INVX8)                         0.12       6.00 f
+  shared_analyzer/U496/Y (MX2X2)                          0.35       6.35 r
+  shared_analyzer/U2702/Y (XOR2X2)                        0.36       6.71 r
+  shared_analyzer/U437/Y (INVX1)                          0.12       6.83 f
+  shared_analyzer/U1655/Y (OR2X4)                         0.22       7.05 f
+  shared_analyzer/U2710/Y (OAI31X2)                       0.33       7.39 r
+  shared_analyzer/U46/Y (BUFX8)                           0.16       7.55 r
+  shared_analyzer/U1608/Y (OR2X4)                         0.18       7.73 r
+  shared_analyzer/U169/Y (INVX4)                          0.07       7.80 f
+  shared_analyzer/U2103/Y (NAND2BX4)                      0.12       7.92 r
+  shared_analyzer/U2200/Y (OAI2BB1X4)                     0.29       8.21 r
+  shared_analyzer/U2155/Y (INVX8)                         0.07       8.29 f
+  shared_analyzer/U2313/Y (OR2X4)                         0.30       8.59 f
+  shared_analyzer/U2216/Y (INVX8)                         0.16       8.75 r
+  shared_analyzer/U2468/Y (OR4X4)                         0.26       9.01 r
+  shared_analyzer/U2462/Y (NAND3X4)                       0.18       9.19 f
+  shared_analyzer/U37/Y (CLKINVX8)                        0.09       9.28 r
+  shared_analyzer/U74/Y (NAND4X1)                         0.24       9.52 f
+  shared_analyzer/U73/Y (BUFX8)                           0.22       9.74 f
+  shared_analyzer/U2382/Y (INVX8)                         0.16       9.91 r
+  shared_analyzer/U626/Y (MXI2X1)                         0.27      10.18 r
+  shared_analyzer/U55/Y (BUFX4)                           0.21      10.39 r
+  shared_analyzer/U548/Y (XOR2X1)                         0.34      10.73 f
+  shared_analyzer/U477/Y (INVX1)                          0.18      10.91 r
+  shared_analyzer/U2218/Y (NAND3X1)                       0.19      11.10 f
+  shared_analyzer/U2228/Y (OR4X4)                         0.41      11.51 f
+  shared_analyzer/U2470/Y (NAND4X4)                       0.23      11.74 r
+  shared_analyzer/U2386/Y (OR2X4)                         0.26      12.00 r
+  shared_analyzer/U2465/Y (INVX8)                         0.13      12.13 f
+  shared_analyzer/U115/Y (MXI2X2)                         0.20      12.33 f
+  shared_analyzer/U122/Y (BUFX4)                          0.20      12.53 f
+  shared_analyzer/U486/Y (INVX1)                          0.16      12.68 r
+  shared_analyzer/U485/Y (XOR2X1)                         0.35      13.03 r
+  shared_analyzer/U483/Y (AND2X2)                         0.22      13.25 r
+  shared_analyzer/U620/Y (NAND4X2)                        0.14      13.39 f
+  shared_analyzer/U2431/Y (OR4X4)                         0.49      13.88 f
+  shared_analyzer/U2428/Y (NAND4X4)                       0.25      14.14 r
+  shared_analyzer/U2353/Y (OR2XL)                         0.34      14.47 r
+  shared_analyzer/U1004/Y (XOR2X2)                        0.45      14.92 r
+  shared_analyzer/U2392/Y (AOI222X4)                      0.32      15.25 f
+  shared_analyzer/U2471/Y (OR2X4)                         0.26      15.51 f
+  shared_analyzer/U2090/Y (OAI221X4)                      0.60      16.11 r
+  shared_analyzer/U2088/Y (OAI2BB1X4)                     0.27      16.38 r
+  shared_analyzer/U3302/Y (CLKINVX3)                      0.11      16.49 f
+  shared_analyzer/U925/Y (AOI2BB2X1)                      0.34      16.83 f
+  shared_analyzer/U1652/Y (AND3X4)                        0.20      17.03 f
+  shared_analyzer/U2183/Y (AND2X4)                        0.19      17.22 f
+  shared_analyzer/U2258/Y (NAND4X4)                       0.21      17.43 r
+  shared_analyzer/U76/Y (CLKINVX8)                        0.09      17.52 f
+  shared_analyzer/U75/Y (OR2X1)                           0.38      17.90 f
+  shared_analyzer/U365/Y (AND4X2)                         0.32      18.21 f
+  shared_analyzer/U2370/Y (NAND4X4)                       0.25      18.47 r
+  shared_analyzer/U3375/Y (CLKINVX3)                      0.38      18.84 f
+  shared_analyzer/candidate_valid_o[3] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      18.84 f
+  current_candidate_valid_o[3] (out)                      0.00      18.84 f
+  data arrival time                                                 18.84
+
+  clock recam_boundary_clk (rise edge)                   20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  output external delay                                   0.00      20.00
+  data required time                                                20.00
+  --------------------------------------------------------------------------
+  data required time                                                20.00
+  data arrival time                                                -18.84
+  --------------------------------------------------------------------------
+  slack (MET)                                                        1.16
+
+
+1

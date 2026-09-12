@@ -34,20 +34,20 @@ for fault_num in {4..16}; do
     make gen_fault f="${fault_num}" s=250
 
     # Loop through s_line values 2 to 6
-    for s_line in {2..6}; do
+    for s_line in {2..4}; do
         # Run rdr_r with the current s_line and fault_num, and set rptName accordingly
         make rdr_r s="${s_line}" rptName="${s_line}_${s_line}_${fault_num}"
     done
 done
 
 # Collect RepairReportR_C_F.rpt files into one CSV summary.
-report_dir="reports/legacy/redundant_rate"
+report_dir="reports/RedundantRate"
 csv_file="${report_dir}/RedundantRate.csv"
 csv_rows=$(mktemp)
 trap 'rm -f "${csv_rows}"' EXIT
 mkdir -p "${report_dir}"
 
-for row_count in {2..6}; do
+for row_count in {2..4}; do
     col_count=${row_count}
     for fault_count in {4..16}; do
         report_file="${report_dir}/RepairReport${row_count}_${col_count}_${fault_count}.rpt"

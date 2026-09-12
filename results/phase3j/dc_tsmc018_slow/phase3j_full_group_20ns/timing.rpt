@@ -1,0 +1,1277 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : recam_phase3j_full_group_top
+Version: W-2024.09-SP2
+Date   : Thu Sep 10 18:16:49 2026
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[68]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U112/Y (AND4X4)             0.29      14.14 f
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.28      14.42 r
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.09      14.51 f
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.60      15.11 r
+  d/scheduler/shared_analyzer/U2365/Y (OR2X4)             0.23      15.34 r
+  d/scheduler/shared_analyzer/U2475/Y (NAND4X4)           0.21      15.54 f
+  d/scheduler/shared_analyzer/U2451/Y (OAI221X4)          0.69      16.23 r
+  d/scheduler/shared_analyzer/U2208/Y (INVX8)             0.08      16.31 f
+  d/scheduler/shared_analyzer/U2376/Y (OAI2BB1X4)         0.23      16.54 f
+  d/scheduler/shared_analyzer/U1332/Y (AND2X2)            0.23      16.77 f
+  d/scheduler/shared_analyzer/U2377/Y (OR4X4)             0.52      17.29 f
+  d/scheduler/shared_analyzer/U1718/Y (CLKINVX8)          0.07      17.37 r
+  d/scheduler/shared_analyzer/U3228/Y (OR2X2)             0.29      17.66 r
+  d/scheduler/shared_analyzer/U26/Y (INVX4)               0.06      17.72 f
+  d/scheduler/shared_analyzer/U3459/Y (AOI211X2)          0.32      18.04 r
+  d/scheduler/shared_analyzer/U2221/Y (NAND4X4)           0.20      18.24 f
+  d/scheduler/shared_analyzer/U3474/Y (CLKINVX3)          0.17      18.42 r
+  d/scheduler/shared_analyzer/U3475/Y (OR2X2)             0.24      18.66 r
+  d/scheduler/shared_analyzer/U1395/Y (INVX1)             0.14      18.79 f
+  d/scheduler/shared_analyzer/U31/Y (NAND4X2)             0.19      18.99 r
+  d/scheduler/shared_analyzer/U111/Y (NAND4XL)            0.33      19.32 f
+  d/scheduler/shared_analyzer/pattern_id_o[2] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.32 f
+  d/scheduler/U6/Y (CLKINVX4)                             0.21      19.52 r
+  d/scheduler/U34/Y (OAI22X1)                             0.18      19.71 f
+  d/scheduler/config_pattern_map_o_reg[68]/D (DFFHQXL)
+                                                          0.00      19.71 f
+  data arrival time                                                 19.71
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[68]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.71
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.01
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[65]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U65/Y (NAND3X2)             0.22      14.07 r
+  d/scheduler/shared_analyzer/U113/Y (OR2X4)              0.17      14.23 r
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.25      14.48 f
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.13      14.61 r
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.43      15.04 f
+  d/scheduler/shared_analyzer/U2247/Y (OR2X4)             0.28      15.32 f
+  d/scheduler/shared_analyzer/U1268/Y (INVX1)             0.15      15.47 r
+  d/scheduler/shared_analyzer/U3199/Y (OR2X2)             0.23      15.70 r
+  d/scheduler/shared_analyzer/U2104/Y (INVX1)             0.13      15.83 f
+  d/scheduler/shared_analyzer/U2207/Y (NAND4X2)           0.30      16.14 r
+  d/scheduler/shared_analyzer/U1110/Y (INVX1)             0.25      16.38 f
+  d/scheduler/shared_analyzer/U363/Y (OAI221X1)           0.42      16.80 r
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.30      17.10 r
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.18      17.29 f
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.13      17.42 r
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.28      17.70 r
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.25      17.95 f
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.52      18.47 f
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.57 r
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.13      18.70 f
+  d/scheduler/shared_analyzer/U2445/Y (NAND4X4)           0.21      18.91 r
+  d/scheduler/shared_analyzer/U108/Y (NAND4XL)            0.28      19.19 f
+  d/scheduler/shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.19 f
+  d/scheduler/U5/Y (INVX12)                               0.34      19.54 r
+  d/scheduler/U150/Y (OAI22X1)                            0.17      19.71 f
+  d/scheduler/config_pattern_map_o_reg[65]/D (DFFHQXL)
+                                                          0.00      19.71 f
+  data arrival time                                                 19.71
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[65]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.71
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.01
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[69]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U48/Y (AND3X4)              0.24       1.26 r
+  d/scheduler/shared_analyzer/U1079/Y (OR2X2)             0.31       1.57 r
+  d/scheduler/shared_analyzer/U1081/Y (CLKINVX3)          0.27       1.84 f
+  d/scheduler/shared_analyzer/U2452/Y (XOR3X4)            0.58       2.42 r
+  d/scheduler/shared_analyzer/U1017/Y (INVX1)             0.13       2.56 f
+  d/scheduler/shared_analyzer/U1016/Y (NAND3X2)           0.23       2.78 r
+  d/scheduler/shared_analyzer/U193/Y (INVX2)              0.08       2.86 f
+  d/scheduler/shared_analyzer/U2485/Y (OR2X4)             0.36       3.22 f
+  d/scheduler/shared_analyzer/U2440/Y (OR2X4)             0.30       3.53 f
+  d/scheduler/shared_analyzer/U1003/Y (CLKINVX3)          0.25       3.78 r
+  d/scheduler/shared_analyzer/U2311/Y (OAI22X4)           0.15       3.93 f
+  d/scheduler/shared_analyzer/U5/Y (INVX2)                0.17       4.10 r
+  d/scheduler/shared_analyzer/U2483/Y (NAND4X4)           0.32       4.42 f
+  d/scheduler/shared_analyzer/U2390/Y (INVX8)             0.22       4.64 r
+  d/scheduler/shared_analyzer/U2155/Y (OR2X2)             0.45       5.09 r
+  d/scheduler/shared_analyzer/U744/Y (OR2X2)              0.42       5.51 r
+  d/scheduler/shared_analyzer/U2593/Y (AND4X2)            0.31       5.82 r
+  d/scheduler/shared_analyzer/U2276/Y (NAND4X2)           0.25       6.06 f
+  d/scheduler/shared_analyzer/U2196/Y (NAND4X4)           0.28       6.34 r
+  d/scheduler/shared_analyzer/U2143/Y (OR2X4)             0.21       6.56 r
+  d/scheduler/shared_analyzer/U2604/Y (OAI2BB1X2)         0.31       6.86 r
+  d/scheduler/shared_analyzer/U2605/Y (CLKINVX3)          0.27       7.14 f
+  d/scheduler/shared_analyzer/U2417/Y (OAI222X4)          0.61       7.75 r
+  d/scheduler/shared_analyzer/U2619/Y (CLKINVX3)          0.11       7.86 f
+  d/scheduler/shared_analyzer/U1551/Y (NOR2X2)            0.31       8.17 r
+  d/scheduler/shared_analyzer/U2621/Y (OAI31X2)           0.22       8.39 f
+  d/scheduler/shared_analyzer/U2424/Y (OR2X4)             0.30       8.69 f
+  d/scheduler/shared_analyzer/U2426/Y (OR2X4)             0.24       8.92 f
+  d/scheduler/shared_analyzer/U2425/Y (OAI2BB1X4)         0.24       9.17 f
+  d/scheduler/shared_analyzer/U1209/Y (INVX4)             0.20       9.37 r
+  d/scheduler/shared_analyzer/U2263/Y (NAND2BX4)          0.24       9.61 r
+  d/scheduler/shared_analyzer/U2371/Y (INVX8)             0.10       9.71 f
+  d/scheduler/shared_analyzer/U965/Y (OR4X2)              0.55      10.25 f
+  d/scheduler/shared_analyzer/U2432/Y (NAND3X4)           0.27      10.52 r
+  d/scheduler/shared_analyzer/U2385/Y (INVX8)             0.07      10.59 f
+  d/scheduler/shared_analyzer/U2384/Y (NAND3X4)           0.22      10.81 r
+  d/scheduler/shared_analyzer/U2331/Y (OR2X4)             0.18      10.99 r
+  d/scheduler/shared_analyzer/U2686/Y (OAI2BB1X2)         0.40      11.39 r
+  d/scheduler/shared_analyzer/U153/Y (OR2X4)              0.30      11.69 r
+  d/scheduler/shared_analyzer/U1866/Y (CLKINVX3)          0.20      11.89 f
+  d/scheduler/shared_analyzer/U2354/Y (OR4X4)             0.54      12.43 f
+  d/scheduler/shared_analyzer/U2479/Y (NAND4X4)           0.24      12.67 r
+  d/scheduler/shared_analyzer/U341/Y (OAI2BB1X2)          0.33      13.00 r
+  d/scheduler/shared_analyzer/U359/Y (CLKINVX3)           0.29      13.29 f
+  d/scheduler/shared_analyzer/U1537/Y (NOR2X2)            0.34      13.63 r
+  d/scheduler/shared_analyzer/U874/Y (OR4X2)              0.30      13.93 r
+  d/scheduler/shared_analyzer/U2291/Y (OR2X4)             0.20      14.13 r
+  d/scheduler/shared_analyzer/U2279/Y (AND4X4)            0.26      14.39 r
+  d/scheduler/shared_analyzer/U2105/Y (NAND3X4)           0.19      14.57 f
+  d/scheduler/shared_analyzer/U2325/Y (OAI2BB1X4)         0.34      14.92 f
+  d/scheduler/shared_analyzer/U60/Y (CLKINVX8)            0.10      15.02 r
+  d/scheduler/shared_analyzer/U2433/Y (OAI222X2)          0.24      15.26 f
+  d/scheduler/shared_analyzer/U2373/Y (NAND4X4)           0.30      15.56 r
+  d/scheduler/shared_analyzer/U2322/Y (INVX2)             0.13      15.69 f
+  d/scheduler/shared_analyzer/U2248/Y (AOI31X2)           0.20      15.89 r
+  d/scheduler/shared_analyzer/U3257/Y (OR2X2)             0.32      16.21 r
+  d/scheduler/shared_analyzer/U28/Y (INVX8)               0.10      16.31 f
+  d/scheduler/shared_analyzer/U2277/Y (OR2X4)             0.25      16.56 f
+  d/scheduler/shared_analyzer/U3378/Y (OR2X2)             0.27      16.83 f
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.28      17.11 f
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.20      17.31 r
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.12      17.43 f
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.32      17.75 f
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.28      18.03 r
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.31      18.34 r
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.44 f
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.29      18.73 r
+  d/scheduler/shared_analyzer/U3476/Y (NAND4X1)           0.26      19.00 f
+  d/scheduler/shared_analyzer/U107/Y (OAI31X2)            0.40      19.40 r
+  d/scheduler/shared_analyzer/pattern_id_o[3] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.40 r
+  d/scheduler/U4/Y (INVX4)                                0.14      19.54 f
+  d/scheduler/U155/Y (OAI22X1)                            0.32      19.86 r
+  d/scheduler/config_pattern_map_o_reg[69]/D (DFFHQXL)
+                                                          0.00      19.86 r
+  data arrival time                                                 19.86
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[69]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.13      19.87
+  data required time                                                19.87
+  --------------------------------------------------------------------------
+  data required time                                                19.87
+  data arrival time                                                -19.86
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.01
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[64]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U65/Y (NAND3X2)             0.22      14.07 r
+  d/scheduler/shared_analyzer/U113/Y (OR2X4)              0.17      14.23 r
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.25      14.48 f
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.13      14.61 r
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.43      15.04 f
+  d/scheduler/shared_analyzer/U2247/Y (OR2X4)             0.28      15.32 f
+  d/scheduler/shared_analyzer/U1268/Y (INVX1)             0.15      15.47 r
+  d/scheduler/shared_analyzer/U3199/Y (OR2X2)             0.23      15.70 r
+  d/scheduler/shared_analyzer/U2104/Y (INVX1)             0.13      15.83 f
+  d/scheduler/shared_analyzer/U2207/Y (NAND4X2)           0.30      16.14 r
+  d/scheduler/shared_analyzer/U1110/Y (INVX1)             0.25      16.38 f
+  d/scheduler/shared_analyzer/U363/Y (OAI221X1)           0.42      16.80 r
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.30      17.10 r
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.18      17.29 f
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.13      17.42 r
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.28      17.70 r
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.25      17.95 f
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.52      18.47 f
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.57 r
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.13      18.70 f
+  d/scheduler/shared_analyzer/U2445/Y (NAND4X4)           0.21      18.91 r
+  d/scheduler/shared_analyzer/U108/Y (NAND4XL)            0.28      19.19 f
+  d/scheduler/shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.19 f
+  d/scheduler/U5/Y (INVX12)                               0.34      19.54 r
+  d/scheduler/U148/Y (OAI22X1)                            0.17      19.71 f
+  d/scheduler/config_pattern_map_o_reg[64]/D (DFFHQXL)
+                                                          0.00      19.71 f
+  data arrival time                                                 19.71
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[64]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.71
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.02
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[45]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U65/Y (NAND3X2)             0.22      14.07 r
+  d/scheduler/shared_analyzer/U113/Y (OR2X4)              0.17      14.23 r
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.25      14.48 f
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.13      14.61 r
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.43      15.04 f
+  d/scheduler/shared_analyzer/U2247/Y (OR2X4)             0.28      15.32 f
+  d/scheduler/shared_analyzer/U1268/Y (INVX1)             0.15      15.47 r
+  d/scheduler/shared_analyzer/U3199/Y (OR2X2)             0.23      15.70 r
+  d/scheduler/shared_analyzer/U2104/Y (INVX1)             0.13      15.83 f
+  d/scheduler/shared_analyzer/U2207/Y (NAND4X2)           0.30      16.14 r
+  d/scheduler/shared_analyzer/U1110/Y (INVX1)             0.25      16.38 f
+  d/scheduler/shared_analyzer/U363/Y (OAI221X1)           0.42      16.80 r
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.30      17.10 r
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.18      17.29 f
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.13      17.42 r
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.28      17.70 r
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.25      17.95 f
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.52      18.47 f
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.57 r
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.13      18.70 f
+  d/scheduler/shared_analyzer/U2445/Y (NAND4X4)           0.21      18.91 r
+  d/scheduler/shared_analyzer/U108/Y (NAND4XL)            0.28      19.19 f
+  d/scheduler/shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.19 f
+  d/scheduler/U5/Y (INVX12)                               0.34      19.54 r
+  d/scheduler/U112/Y (OAI22X1)                            0.16      19.70 f
+  d/scheduler/config_pattern_map_o_reg[45]/D (DFFHQXL)
+                                                          0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[45]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.29      19.71
+  data required time                                                19.71
+  --------------------------------------------------------------------------
+  data required time                                                19.71
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.02
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[24]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U65/Y (NAND3X2)             0.22      14.07 r
+  d/scheduler/shared_analyzer/U113/Y (OR2X4)              0.17      14.23 r
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.25      14.48 f
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.13      14.61 r
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.43      15.04 f
+  d/scheduler/shared_analyzer/U2247/Y (OR2X4)             0.28      15.32 f
+  d/scheduler/shared_analyzer/U1268/Y (INVX1)             0.15      15.47 r
+  d/scheduler/shared_analyzer/U3199/Y (OR2X2)             0.23      15.70 r
+  d/scheduler/shared_analyzer/U2104/Y (INVX1)             0.13      15.83 f
+  d/scheduler/shared_analyzer/U2207/Y (NAND4X2)           0.30      16.14 r
+  d/scheduler/shared_analyzer/U1110/Y (INVX1)             0.25      16.38 f
+  d/scheduler/shared_analyzer/U363/Y (OAI221X1)           0.42      16.80 r
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.30      17.10 r
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.18      17.29 f
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.13      17.42 r
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.28      17.70 r
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.25      17.95 f
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.52      18.47 f
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.57 r
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.13      18.70 f
+  d/scheduler/shared_analyzer/U2445/Y (NAND4X4)           0.21      18.91 r
+  d/scheduler/shared_analyzer/U108/Y (NAND4XL)            0.28      19.19 f
+  d/scheduler/shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.19 f
+  d/scheduler/U5/Y (INVX12)                               0.34      19.54 r
+  d/scheduler/U74/Y (OAI22X1)                             0.16      19.70 f
+  d/scheduler/config_pattern_map_o_reg[24]/D (DFFHQXL)
+                                                          0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[24]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[44]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U65/Y (NAND3X2)             0.22      14.07 r
+  d/scheduler/shared_analyzer/U113/Y (OR2X4)              0.17      14.23 r
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.25      14.48 f
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.13      14.61 r
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.43      15.04 f
+  d/scheduler/shared_analyzer/U2247/Y (OR2X4)             0.28      15.32 f
+  d/scheduler/shared_analyzer/U1268/Y (INVX1)             0.15      15.47 r
+  d/scheduler/shared_analyzer/U3199/Y (OR2X2)             0.23      15.70 r
+  d/scheduler/shared_analyzer/U2104/Y (INVX1)             0.13      15.83 f
+  d/scheduler/shared_analyzer/U2207/Y (NAND4X2)           0.30      16.14 r
+  d/scheduler/shared_analyzer/U1110/Y (INVX1)             0.25      16.38 f
+  d/scheduler/shared_analyzer/U363/Y (OAI221X1)           0.42      16.80 r
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.30      17.10 r
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.18      17.29 f
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.13      17.42 r
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.28      17.70 r
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.25      17.95 f
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.52      18.47 f
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.57 r
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.13      18.70 f
+  d/scheduler/shared_analyzer/U2445/Y (NAND4X4)           0.21      18.91 r
+  d/scheduler/shared_analyzer/U108/Y (NAND4XL)            0.28      19.19 f
+  d/scheduler/shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.19 f
+  d/scheduler/U5/Y (INVX12)                               0.34      19.54 r
+  d/scheduler/U110/Y (OAI22X1)                            0.16      19.70 f
+  d/scheduler/config_pattern_map_o_reg[44]/D (DFFHQXL)
+                                                          0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[44]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[25]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U65/Y (NAND3X2)             0.22      14.07 r
+  d/scheduler/shared_analyzer/U113/Y (OR2X4)              0.17      14.23 r
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.25      14.48 f
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.13      14.61 r
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.43      15.04 f
+  d/scheduler/shared_analyzer/U2247/Y (OR2X4)             0.28      15.32 f
+  d/scheduler/shared_analyzer/U1268/Y (INVX1)             0.15      15.47 r
+  d/scheduler/shared_analyzer/U3199/Y (OR2X2)             0.23      15.70 r
+  d/scheduler/shared_analyzer/U2104/Y (INVX1)             0.13      15.83 f
+  d/scheduler/shared_analyzer/U2207/Y (NAND4X2)           0.30      16.14 r
+  d/scheduler/shared_analyzer/U1110/Y (INVX1)             0.25      16.38 f
+  d/scheduler/shared_analyzer/U363/Y (OAI221X1)           0.42      16.80 r
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.30      17.10 r
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.18      17.29 f
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.13      17.42 r
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.28      17.70 r
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.25      17.95 f
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.52      18.47 f
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.57 r
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.13      18.70 f
+  d/scheduler/shared_analyzer/U2445/Y (NAND4X4)           0.21      18.91 r
+  d/scheduler/shared_analyzer/U108/Y (NAND4XL)            0.28      19.19 f
+  d/scheduler/shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.19 f
+  d/scheduler/U5/Y (INVX12)                               0.34      19.54 r
+  d/scheduler/U76/Y (OAI22X1)                             0.16      19.70 f
+  d/scheduler/config_pattern_map_o_reg[25]/D (DFFHQXL)
+                                                          0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[25]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[5]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U65/Y (NAND3X2)             0.22      14.07 r
+  d/scheduler/shared_analyzer/U113/Y (OR2X4)              0.17      14.23 r
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.25      14.48 f
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.13      14.61 r
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.43      15.04 f
+  d/scheduler/shared_analyzer/U2247/Y (OR2X4)             0.28      15.32 f
+  d/scheduler/shared_analyzer/U1268/Y (INVX1)             0.15      15.47 r
+  d/scheduler/shared_analyzer/U3199/Y (OR2X2)             0.23      15.70 r
+  d/scheduler/shared_analyzer/U2104/Y (INVX1)             0.13      15.83 f
+  d/scheduler/shared_analyzer/U2207/Y (NAND4X2)           0.30      16.14 r
+  d/scheduler/shared_analyzer/U1110/Y (INVX1)             0.25      16.38 f
+  d/scheduler/shared_analyzer/U363/Y (OAI221X1)           0.42      16.80 r
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.30      17.10 r
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.18      17.29 f
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.13      17.42 r
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.28      17.70 r
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.25      17.95 f
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.52      18.47 f
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.57 r
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.13      18.70 f
+  d/scheduler/shared_analyzer/U2445/Y (NAND4X4)           0.21      18.91 r
+  d/scheduler/shared_analyzer/U108/Y (NAND4XL)            0.28      19.19 f
+  d/scheduler/shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.19 f
+  d/scheduler/U5/Y (INVX12)                               0.34      19.54 r
+  d/scheduler/U39/Y (OAI22X1)                             0.16      19.70 f
+  d/scheduler/config_pattern_map_o_reg[5]/D (DFFHQXL)     0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[5]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+  Startpoint: d/scheduler/scan_index_reg_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: d/scheduler/config_pattern_map_o_reg[4]
+            (rising edge-triggered flip-flop clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_phase3j_full_group_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  d/scheduler/scan_index_reg_reg[1]/CK (DFFHQX4)          0.00       0.00 r
+  d/scheduler/scan_index_reg_reg[1]/Q (DFFHQX4)           0.39       0.39 r
+  d/scheduler/U10/Y (CLKINVX3)                            0.19       0.57 f
+  d/scheduler/U217/Y (OAI2BB1X2)                          0.34       0.91 f
+  d/scheduler/U3/Y (CLKINVX8)                             0.11       1.02 r
+  d/scheduler/shared_analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00       1.02 r
+  d/scheduler/shared_analyzer/U46/Y (INVX8)               0.06       1.09 f
+  d/scheduler/shared_analyzer/U1770/Y (AND2X4)            0.21       1.30 f
+  d/scheduler/shared_analyzer/U2476/Y (OAI22X4)           0.21       1.51 r
+  d/scheduler/shared_analyzer/U1087/Y (INVX1)             0.13       1.63 f
+  d/scheduler/shared_analyzer/U1502/Y (OR2X2)             0.38       2.02 f
+  d/scheduler/shared_analyzer/U1547/Y (CLKINVX3)          0.13       2.15 r
+  d/scheduler/shared_analyzer/U115/Y (OAI2BB1X4)          0.24       2.38 r
+  d/scheduler/shared_analyzer/U2407/Y (OR2X4)             0.18       2.56 r
+  d/scheduler/shared_analyzer/U2406/Y (OAI2BB1X1)         0.13       2.68 f
+  d/scheduler/shared_analyzer/U2484/Y (OAI2BB1X4)         0.22       2.90 f
+  d/scheduler/shared_analyzer/U2469/Y (BUFX20)            0.16       3.07 f
+  d/scheduler/shared_analyzer/U2464/Y (INVX8)             0.13       3.20 r
+  d/scheduler/shared_analyzer/U2463/Y (OR2X4)             0.18       3.38 r
+  d/scheduler/shared_analyzer/U481/Y (CLKINVX3)           0.08       3.45 f
+  d/scheduler/shared_analyzer/U2473/Y (OR2X4)             0.23       3.69 f
+  d/scheduler/shared_analyzer/U2467/Y (OAI222X2)          0.35       4.04 r
+  d/scheduler/shared_analyzer/U2466/Y (OR2X4)             0.34       4.37 r
+  d/scheduler/shared_analyzer/U2360/Y (INVX8)             0.07       4.44 f
+  d/scheduler/shared_analyzer/U2375/Y (NAND3X4)           0.25       4.69 r
+  d/scheduler/shared_analyzer/U2294/Y (INVX8)             0.10       4.79 f
+  d/scheduler/shared_analyzer/U2293/Y (OR2X4)             0.24       5.03 f
+  d/scheduler/shared_analyzer/U447/Y (CLKINVX3)           0.17       5.20 r
+  d/scheduler/shared_analyzer/U625/Y (OR2X2)              0.27       5.47 r
+  d/scheduler/shared_analyzer/U826/Y (XOR2X2)             0.30       5.78 f
+  d/scheduler/shared_analyzer/U2362/Y (AND2X4)            0.23       6.01 f
+  d/scheduler/shared_analyzer/U2442/Y (NAND4X4)           0.15       6.16 r
+  d/scheduler/shared_analyzer/U2441/Y (NAND3X4)           0.17       6.33 f
+  d/scheduler/shared_analyzer/U16/Y (INVX8)               0.12       6.45 r
+  d/scheduler/shared_analyzer/U15/Y (NAND3X4)             0.12       6.57 f
+  d/scheduler/shared_analyzer/U2381/Y (OR2X4)             0.30       6.87 f
+  d/scheduler/shared_analyzer/U2254/Y (CLKINVX8)          0.17       7.04 r
+  d/scheduler/shared_analyzer/U2468/Y (MXI2X4)            0.20       7.24 r
+  d/scheduler/shared_analyzer/U2064/Y (XOR2X1)            0.42       7.66 r
+  d/scheduler/shared_analyzer/U56/Y (NAND3X2)             0.14       7.80 f
+  d/scheduler/shared_analyzer/U2364/Y (OR4X4)             0.44       8.23 f
+  d/scheduler/shared_analyzer/U2363/Y (OR4X4)             0.32       8.55 f
+  d/scheduler/shared_analyzer/U100/Y (INVX4)              0.12       8.67 r
+  d/scheduler/shared_analyzer/U99/Y (NOR3X4)              0.07       8.75 f
+  d/scheduler/shared_analyzer/U2924/Y (OAI31X2)           0.14       8.89 r
+  d/scheduler/shared_analyzer/U144/Y (INVX4)              0.09       8.98 f
+  d/scheduler/shared_analyzer/U145/Y (CLKINVX8)           0.08       9.06 r
+  d/scheduler/shared_analyzer/U2471/Y (OR2X4)             0.16       9.22 r
+  d/scheduler/shared_analyzer/U1726/Y (OAI2BB1X2)         0.22       9.44 r
+  d/scheduler/shared_analyzer/U67/Y (BUFX8)               0.16       9.60 r
+  d/scheduler/shared_analyzer/U2449/Y (INVX8)             0.08       9.68 f
+  d/scheduler/shared_analyzer/U2299/Y (OR2X4)             0.26       9.94 f
+  d/scheduler/shared_analyzer/U52/Y (CLKINVX8)            0.13      10.06 r
+  d/scheduler/shared_analyzer/U2980/Y (AOI211X2)          0.10      10.16 f
+  d/scheduler/shared_analyzer/U2380/Y (OR4X4)             0.45      10.61 f
+  d/scheduler/shared_analyzer/U1725/Y (INVX8)             0.09      10.70 r
+  d/scheduler/shared_analyzer/U2171/Y (NAND3X4)           0.17      10.87 f
+  d/scheduler/shared_analyzer/U2178/Y (INVX8)             0.17      11.04 r
+  d/scheduler/shared_analyzer/U2370/Y (OR2X4)             0.29      11.33 r
+  d/scheduler/shared_analyzer/U2298/Y (CLKINVX8)          0.12      11.45 f
+  d/scheduler/shared_analyzer/U2359/Y (OR2X4)             0.30      11.75 f
+  d/scheduler/shared_analyzer/U1867/Y (INVX8)             0.17      11.92 r
+  d/scheduler/shared_analyzer/U679/Y (MX2X2)              0.38      12.30 r
+  d/scheduler/shared_analyzer/U584/Y (XOR2X1)             0.32      12.62 f
+  d/scheduler/shared_analyzer/U583/Y (NOR2X2)             0.23      12.85 r
+  d/scheduler/shared_analyzer/U505/Y (NAND3X1)            0.17      13.02 f
+  d/scheduler/shared_analyzer/U3016/Y (OR4X2)             0.53      13.55 f
+  d/scheduler/shared_analyzer/U2319/Y (OR2X4)             0.30      13.85 f
+  d/scheduler/shared_analyzer/U65/Y (NAND3X2)             0.22      14.07 r
+  d/scheduler/shared_analyzer/U113/Y (OR2X4)              0.17      14.23 r
+  d/scheduler/shared_analyzer/U3176/Y (OAI211X2)          0.25      14.48 f
+  d/scheduler/shared_analyzer/U2462/Y (INVX4)             0.13      14.61 r
+  d/scheduler/shared_analyzer/U2461/Y (OAI211X4)          0.43      15.04 f
+  d/scheduler/shared_analyzer/U2247/Y (OR2X4)             0.28      15.32 f
+  d/scheduler/shared_analyzer/U1268/Y (INVX1)             0.15      15.47 r
+  d/scheduler/shared_analyzer/U3199/Y (OR2X2)             0.23      15.70 r
+  d/scheduler/shared_analyzer/U2104/Y (INVX1)             0.13      15.83 f
+  d/scheduler/shared_analyzer/U2207/Y (NAND4X2)           0.30      16.14 r
+  d/scheduler/shared_analyzer/U1110/Y (INVX1)             0.25      16.38 f
+  d/scheduler/shared_analyzer/U363/Y (OAI221X1)           0.42      16.80 r
+  d/scheduler/shared_analyzer/U2391/Y (AND4X4)            0.30      17.10 r
+  d/scheduler/shared_analyzer/U2382/Y (NAND4X4)           0.18      17.29 f
+  d/scheduler/shared_analyzer/U1389/Y (CLKINVX3)          0.13      17.42 r
+  d/scheduler/shared_analyzer/U3455/Y (OR2X2)             0.28      17.70 r
+  d/scheduler/shared_analyzer/U3467/Y (NAND4X1)           0.25      17.95 f
+  d/scheduler/shared_analyzer/U2222/Y (OR4X4)             0.52      18.47 f
+  d/scheduler/shared_analyzer/U2232/Y (CLKINVX8)          0.10      18.57 r
+  d/scheduler/shared_analyzer/U1426/Y (NOR2X4)            0.13      18.70 f
+  d/scheduler/shared_analyzer/U2445/Y (NAND4X4)           0.21      18.91 r
+  d/scheduler/shared_analyzer/U108/Y (NAND4XL)            0.28      19.19 f
+  d/scheduler/shared_analyzer/solution_valid_o (recam_shared_config_analyzer_ROW_ADDR_W9_COL_ADDR_W5_DIFF_ADDR_W9_HYBRID_ENTRIES7)
+                                                          0.00      19.19 f
+  d/scheduler/U5/Y (INVX12)                               0.34      19.54 r
+  d/scheduler/U37/Y (OAI22X1)                             0.16      19.70 f
+  d/scheduler/config_pattern_map_o_reg[4]/D (DFFHQXL)     0.00      19.70 f
+  data arrival time                                                 19.70
+
+  clock recam_clk (rise edge)                            20.00      20.00
+  clock network delay (ideal)                             0.00      20.00
+  d/scheduler/config_pattern_map_o_reg[4]/CK (DFFHQXL)
+                                                          0.00      20.00 r
+  library setup time                                     -0.28      19.72
+  data required time                                                19.72
+  --------------------------------------------------------------------------
+  data required time                                                19.72
+  data arrival time                                                -19.70
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+1

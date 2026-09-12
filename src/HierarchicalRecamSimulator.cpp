@@ -49,6 +49,29 @@ std::size_t checkedAdd(
     return left + right;
 }
 
+std::uint32_t ceilLog2(std::uint64_t value)
+{
+    std::uint32_t bits = 0;
+    for (--value; value != 0; value >>= 1)
+    {
+        ++bits;
+    }
+    return bits;
+}
+
+std::uint64_t deriveGlobalWordAddressEntryBits(
+    const HierarchicalRecamConfig &hierarchicalConfig,
+    const SimulationConfig &groupConfig)
+{
+    const std::uint64_t wordsPerRow =
+        groupConfig.memoryColumns / hierarchicalConfig.dataWordBits;
+    return 1 + ceilLog2(hierarchicalConfig.architectureDomains) +
+        ceilLog2(hierarchicalConfig.architectureBanksPerDomain) +
+        ceilLog2(hierarchicalConfig.architectureGroupsPerBank) +
+        ceilLog2(kSubarrayCount) + ceilLog2(groupConfig.memoryRows) +
+        ceilLog2(wordsPerRow);
+}
+
 std::uint64_t checkedAddCycles(
     std::uint64_t left,
     std::uint64_t right)
@@ -479,18 +502,78 @@ void HierarchicalRecamConfig::validate() const
     {
         throw std::invalid_argument("bist_cycles_per_word must be positive");
     }
-    if (architectureTotalSubarrays == 0 ||
+    if (architectureDomains == 0 || architectureBanksPerDomain == 0 ||
+        architectureGroupsPerBank == 0 || architectureTotalSubarrays == 0 ||
         architectureTotalRepairGroups == 0)
     {
         throw std::invalid_argument(
-            "Architecture subarray/group counts must be positive");
+            "Architecture hierarchy and subarray/group counts must be positive");
     }
-    if (architectureTotalRepairGroups >
-        architectureTotalSubarrays / kSubarrayCount)
+    if (architectureTotalSubarrays % kSubarrayCount != 0 ||
+        architectureTotalRepairGroups !=
+            architectureTotalSubarrays / kSubarrayCount)
     {
         throw std::invalid_argument(
-            "Architecture has fewer subarrays than its 4-SA repair groups");
+            "Architecture total subarrays must equal four per repair group");
     }
+    const std::size_t groupsPerDomain = checkedMultiply(
+        architectureDomains, architectureBanksPerDomain,
+        "Architecture domains and banks overflow");
+    const std::size_t groupsPerDevice = checkedMultiply(
+        groupsPerDomain, architectureGroupsPerBank,
+        "Architecture repair-group count overflows");
+    if (groupsPerDevice != architectureTotalRepairGroups)
+    {
+        throw std::invalid_argument(
+            "Architecture domains, banks, and groups do not match total repair groups");
+    }
+}
+
+void HierarchicalRecamConfig::validateDramConfig(
+    const SimulationConfig &groupConfig) const
+{
+    validate();
+    groupConfig.validate();
+    if (groupConfig.memoryColumns % dataWordBits != 0)
+    {
+        throw std::invalid_argument(
+            "DRAM cell columns must be divisible by data_word_bits for "
+            "word-granularity CAM reuse");
+    }
+
+    RecamGeometryConfig geometryConfig;
+    geometryConfig.rows = groupConfig.memoryRows;
+    geometryConfig.columns = groupConfig.memoryColumns;
+    geometryConfig.spareRows = static_cast<std::uint32_t>(groupConfig.spareRows);
+    geometryConfig.spareColumns = static_cast<std::uint32_t>(groupConfig.spareColumns);
+    geometryConfig.dataWordBits = dataWordBits;
+    geometryConfig.onlineReuseEntries = onlineGlobalReuseEntries;
+    geometryConfig.minimumAddressEntryBits =
+        globalWordAddressEntryBits(groupConfig);
+    const RecamGeometry geometry = deriveRecamGeometry(geometryConfig);
+
+    const std::uint64_t globalOnlineAddressBits =
+        globalWordAddressEntryBits(groupConfig);
+    if (geometry.addressEntryBits < globalOnlineAddressBits)
+    {
+        throw std::invalid_argument(
+            "Mode-reused Address CAM entry is too narrow for the complete "
+            "global word address tag");
+    }
+    const std::uint64_t requiredHybridOnlineBits =
+        1 + geometry.pointerBits + dataWordBits;
+    if (geometry.hybridEntryBits < requiredHybridOnlineBits)
+    {
+        throw std::logic_error(
+            "Mode-reused Hybrid CAM entry is too narrow for enable, pointer, "
+            "and replacement data word");
+    }
+}
+
+std::uint64_t HierarchicalRecamConfig::globalWordAddressEntryBits(
+    const SimulationConfig &groupConfig) const
+{
+    return deriveGlobalWordAddressEntryBits(*this, groupConfig);
 }
 
 double GlobalCamMetrics::utilization() const noexcept
@@ -548,8 +631,7 @@ DeviceRepairResult DeviceRepairScheduler::run(
     const SimulationConfig &groupConfig,
     const HierarchicalRecamConfig &hierarchicalConfig) const
 {
-    groupConfig.validate();
-    hierarchicalConfig.validate();
+    hierarchicalConfig.validateDramConfig(groupConfig);
 
     DeviceRepairResult device;
     device.storageTechnology = groupConfig.storageMode ==
@@ -649,6 +731,13 @@ DeviceRepairResult DeviceRepairScheduler::run(
             throw std::invalid_argument(
                 "Device scheduler backend hardware/storage mismatch");
         }
+        if (backendHardware_->geometry.addressEntryBits <
+            hierarchicalConfig.globalWordAddressEntryBits(groupConfig))
+        {
+            throw std::invalid_argument(
+                "Backend Address CAM/SRAM entry is too narrow for the "
+                "complete global word address tag");
+        }
         device.hardware.biraPerEngine = *backendHardware_;
     }
     else
@@ -669,6 +758,8 @@ DeviceRepairResult DeviceRepairScheduler::run(
         geometry.dataWordBits = hierarchicalConfig.dataWordBits;
         geometry.onlineReuseEntries = static_cast<std::uint32_t>(
             onlineGlobalReuseEntries);
+        geometry.minimumAddressEntryBits =
+            hierarchicalConfig.globalWordAddressEntryBits(groupConfig);
         device.hardware.biraPerEngine = deriveCamHardwareMetrics(geometry);
     }
     device.hardware.totalBiraStorageBits = checkedMultiply(

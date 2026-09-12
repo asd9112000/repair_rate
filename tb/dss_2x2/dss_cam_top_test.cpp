@@ -117,6 +117,11 @@ void runCase(
 int main(int argc, char **argv)
 {
     Verilated::commandArgs(argc, argv);
+    const std::string selectedCase = argc > 1 ? argv[1] : "";
+    const auto shouldRun = [&selectedCase](const std::string &name) {
+        return selectedCase.empty() || selectedCase == name;
+    };
+    bool ranCase = false;
     Vdss_cam_top dut;
     dut.rst_ni = 0;
     dut.clear_i = 0;
@@ -126,33 +131,54 @@ int main(int argc, char **argv)
     dut.rst_ni = 1;
 
     const std::array<unsigned, 4> zeros{{0, 0, 0, 0}};
-    runCase(dut, "normal_empty", {}, true, zeros, zeros, zeros, zeros, 0, 0);
-    runCase(dut, "single_fault", {{0, 10, 20}}, true,
+    if (shouldRun("normal_empty")) {
+        ranCase = true;
+        runCase(dut, "normal_empty", {}, true, zeros, zeros, zeros, zeros, 0, 0);
+    }
+    if (shouldRun("single_fault")) {
+        ranCase = true;
+        runCase(dut, "single_fault", {{0, 10, 20}}, true,
             zeros, zeros, {{1, 0, 0, 0}}, zeros, 0, 0);
-    runCase(dut, "row_dominant", {{0, 7, 1}, {0, 7, 2}, {0, 7, 3}}, true,
+    }
+    if (shouldRun("row_dominant")) {
+        ranCase = true;
+        runCase(dut, "row_dominant", {{0, 7, 1}, {0, 7, 2}, {0, 7, 3}}, true,
             zeros, zeros, {{1, 0, 0, 0}}, zeros, 0, 0);
-    runCase(dut, "column_dominant", {{1, 1, 9}, {1, 2, 9}, {1, 3, 9}}, true,
+    }
+    if (shouldRun("column_dominant")) {
+        ranCase = true;
+        runCase(dut, "column_dominant", {{1, 1, 9}, {1, 2, 9}, {1, 3, 9}}, true,
             zeros, {{0, 3, 0, 0}}, zeros, {{0, 1, 0, 0}}, 0, 0);
+    }
 
     std::vector<Fault> sharingRequired;
     for (unsigned index = 0; index < 9; ++index)
         sharingRequired.push_back({0, 100 + index, 200 + index});
-    runCase(dut, "sharing_required", sharingRequired, true,
+    if (shouldRun("sharing_required")) {
+        ranCase = true;
+        runCase(dut, "sharing_required", sharingRequired, true,
             {{1, 0, 0, 0}}, zeros,
             {{2, 0, 0, 0}}, {{3, 0, 0, 0}}, 0, 1);
+    }
 
     std::vector<Fault> overflow;
     for (unsigned index = 0; index < 10; ++index)
         overflow.push_back({0, 300 + index, 500 + index});
-    runCase(dut, "unrepairable_overflow", overflow, false,
+    if (shouldRun("unrepairable_overflow")) {
+        ranCase = true;
+        runCase(dut, "unrepairable_overflow", overflow, false,
             zeros, zeros, zeros, zeros, 0, 0);
+    }
 
     std::vector<Fault> donorBoundary = sharingRequired;
     donorBoundary.insert(donorBoundary.end(), {
         {1, 1, 10}, {1, 2, 10}, {1, 3, 10},
         {1, 4, 20}, {1, 5, 20}, {1, 6, 20}});
-    runCase(dut, "boundary_donor_busy", donorBoundary, false,
+    if (shouldRun("boundary_donor_busy")) {
+        ranCase = true;
+        runCase(dut, "boundary_donor_busy", donorBoundary, false,
             zeros, zeros, zeros, zeros, 0, 0);
+    }
 
     const std::array<std::vector<std::pair<unsigned, unsigned>>, 4> run23{{
         {{{1004, 895}, {1005, 896}, {539, 110}, {662, 185},
@@ -168,10 +194,18 @@ int main(int argc, char **argv)
     for (unsigned sa = 0; sa < 4; ++sa)
         for (const auto &address : run23[sa])
             run23Faults.push_back({sa, address.first, address.second});
-    runCase(dut, "cpp_run23", run23Faults, true,
+    if (shouldRun("cpp_run23")) {
+        ranCase = true;
+        runCase(dut, "cpp_run23", run23Faults, true,
             {{0, 1, 0, 0}}, {{4, 6, 0, 3}},
             {{2, 3, 2, 1}}, {{2, 2, 2, 1}}, 1, 0);
+    }
 
-    std::cout << "dss_cam_top_test PASS\n";
+    require(ranCase, "unknown test case: " + selectedCase);
+
+    std::cout << "dss_cam_top_test PASS";
+    if (!selectedCase.empty())
+        std::cout << " (" << selectedCase << ")";
+    std::cout << '\n';
     return 0;
 }

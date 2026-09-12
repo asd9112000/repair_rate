@@ -137,10 +137,17 @@ struct HierarchicalRecamConfig
 
     // Hardware accounting uses the frozen WoW-v1.0 geometry by default even
     // when a test or scaled experiment processes only a subset of its groups.
+    std::size_t architectureDomains = 8;
+    std::size_t architectureBanksPerDomain = 4;
+    std::size_t architectureGroupsPerBank = 64;
     std::size_t architectureTotalSubarrays = 8192;
     std::size_t architectureTotalRepairGroups = 2048;
 
     void validate() const;
+    // Checks the hierarchy together with the per-SA DRAM and word geometry.
+    void validateDramConfig(const SimulationConfig &groupConfig) const;
+    std::uint64_t globalWordAddressEntryBits(
+        const SimulationConfig &groupConfig) const;
 };
 
 struct RepairGroupInput

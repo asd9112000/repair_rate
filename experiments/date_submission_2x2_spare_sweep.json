@@ -1,0 +1,59 @@
+{
+  "schema_version": "date-submission-2x2-spare-sweep-v1",
+  "scope": "group",
+  "simulators": {
+    "repair": "build/bin/DynamicSpareSharing",
+    "sram_recam": "build/bin/DynamicSpareSharing_SRAM_RECAM"
+  },
+  "spare_counts": [2, 3, 4, 5],
+  "fixed": {
+    "layout": "2x2",
+    "rs": 2,
+    "cs": 2,
+    "fault_model": "moderate",
+    "spatial_model": "mixed",
+    "memory_rows": 512,
+    "memory_columns": 8192,
+    "data_width_bits": 16,
+    "row_address_width_bits": 9,
+    "column_address_width_bits": 13,
+    "paper_cam_reuse": true,
+    "local_first": true,
+    "max_borrows": 3,
+    "solution_take": "legacy"
+  },
+  "fault_counts_per_group": [8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64],
+  "policies": [
+    {"id": "no_sharing", "label": "RECAM / No Sharing", "topology": "none", "shared_lines": 0},
+    {"id": "directional_m1", "label": "Limited DSS (m = 1)", "topology": "directional", "shared_lines": 1},
+    {"id": "directional_m2", "label": "Proposed DSS (m = 2)", "topology": "directional", "shared_lines": 2}
+  ],
+  "imbalance": {
+    "representative_candidates": [20, 22, 24, 26, 28, 30, 32],
+    "profiles": [
+      {"id": "balanced", "label": "Balanced", "weights": [0.25, 0.25, 0.25, 0.25]},
+      {"id": "moderate", "label": "Moderate imbalance", "weights": [0.15, 0.25, 0.25, 0.35]},
+      {"id": "high", "label": "High imbalance", "weights": [0.10, 0.15, 0.25, 0.50]},
+      {"id": "extreme", "label": "Extreme imbalance", "weights": [0.05, 0.05, 0.15, 0.75]}
+    ]
+  },
+  "hardware_model": {
+    "fault_count_source": "figure1_representative_per_spare",
+    "topology": "directional",
+    "shared_lines": 2,
+    "matrix_policy": "shadow",
+    "search_policies": ["serial", "chunk2", "chunk4", "chunk8", "wide"],
+    "word_bits": 16,
+    "runtime_requests": 1000,
+    "runtime_hit_rate": 0.5
+  },
+  "profiles": {
+    "smoke": {"seeds": [20260820], "runs_per_seed": 20},
+    "confirm": {"seeds": [20260820, 20260821, 20260822], "runs_per_seed": 1000}
+  },
+  "statistics": {
+    "repair_rate_interval": "Wilson score 95% confidence interval",
+    "gain_unit": "percentage points",
+    "significance_test": "not performed"
+  }
+}

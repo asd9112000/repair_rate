@@ -66,6 +66,7 @@ struct SramRecamConfig
     // nullopt implements the paper capacity K=Rs+Cs.  Dynamic integration
     // sets an explicit value to reproduce --buffer 0/N exactly.
     std::optional<std::uint32_t> camReuseEntries;
+    std::optional<std::uint64_t> minimumAddressEntryBits;
 
     void validate() const;
 };

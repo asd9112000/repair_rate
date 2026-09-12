@@ -520,8 +520,7 @@ int main(int argc, char *argv[])
                         groupConfig.sharedColumns};
         }
         groupConfig.dataWidthBits = hierarchicalConfig.dataWordBits;
-        groupConfig.validate();
-        hierarchicalConfig.validate();
+        hierarchicalConfig.validateDramConfig(groupConfig);
 
         std::vector<RepairGroupInput> inputs;
         if (simplifiedFaultFile.has_value() ||
