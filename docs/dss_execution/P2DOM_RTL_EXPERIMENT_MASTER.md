@@ -33,6 +33,15 @@ not an RTL-cycle measurement. Its PPA is retained DC evidence from
 | D | add one earlier-failed dominance entry | EXP-C and prefix rule | P95/P99 search benefit with PPA recorded | planned; NOT_AUTHORIZED_TO_RUN |
 | E | 2 then 4 entries only if D benefits | EXP-D semantics | measured Pareto point, not intuition | planned; NOT_AUTHORIZED_TO_RUN |
 
+## OPT1 execution record (2026-09-18)
+
+`recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core`
+is now a separate raw-map OPT1 wrapper. It preserves the 480-bit child history
+and filters only later safe-class representatives. Its dedicated Verilator
+equivalence command passed group172, the effect-only counterexample, and 1,000
+seed-20260918 maps with zero compared-output mismatches. No OPT1 synthesis was
+run. The detailed record is `P2DOM_2X2_OPT1_CLASSCOLLAPSE_CLOSURE.md`.
+
 Initially useful dominance depths are B/C/D (1/2/3): depth A has one root and
 cannot receive a distinct earlier prefix. Implementation must re-audit this.
 
