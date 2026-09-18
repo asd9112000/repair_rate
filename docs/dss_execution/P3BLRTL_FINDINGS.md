@@ -35,3 +35,83 @@ DESIGN_IMPLICATION: GROUP_GLOBAL has delayed all-or-nothing commit while EARLY r
 SYNTHESIS_IMPLICATION: Commit shadow/validation is an integrated-top cost absent from core-only synthesis.
 PAPER_RELEVANCE: Makes the fair external boundary explicit despite intentional policy timing differences.
 ```
+
+## P3BLRTLA-F04
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: Integrated 2×2 GROUP_GLOBAL requires four distinct SA snapshots (816 registered bits).
+EVIDENCE: integrated_shell.v snapshot registers; integrated equivalence test GROUP_SNAPSHOT_ALIAS_ERRORS=0; P3BLRTLA state accounting.
+```
+
+## P3BLRTLA-F05
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: One shared analyzer produces the map through 16 sequential requests, defined as 4 SA × 4 configuration/action interpretations.
+EVIDENCE: candidate_map_producer.v; producer and integrated regressions; P3BLRTLA integrated closure.
+```
+
+## P3BLRTLA-F06
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: The baseline retains a raw 480-bit valid/release/borrow candidate/effect map, and the DFS keeps its own captured 480-bit copy.
+EVIDENCE: candidate_map_producer.v; canonical GLOBAL core; P3BLRTLA state accounting.
+```
+
+## P3BLRTLA-F07
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: OPT0 and OPT1 are separately elaborated; no runtime optimization-selection mux exists.
+EVIDENCE: integrated_shell.v generate block; SYN-B synthesis-readiness report; integrated equivalence OPT0_OPT1_SEMANTIC_MISMATCHES=0.
+```
+
+## P3BLRTLA-F08
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: GLOBAL uses externally atomic shadow-staged commit: A/B/C/D update private shadow, then one publish edge changes persistent resources.
+EVIDENCE: atomic_group_commit.v; atomic-commit regression ATOMICITY_VIOLATIONS=0 and PARTIAL_COMMIT_VISIBILITY_ERRORS=0; P3BLRTLA latency audit.
+```
+
+## P3BLRTLA-F09
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: Integrated registered logical state is 2042 bits; the value excludes transient combinational data and is not synthesized area.
+EVIDENCE: P3BLRTLA state accounting invariant.
+```
+
+## P3BLRTLA-F10
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: GROUP_GLOBAL total latency is not constant because DFS search latency is data-dependent. The 34-cycle directed all-zero success is a witness, not a fixed latency.
+EVIDENCE: integrated equivalence regression INTEGRATED_DIRECTED_SUCCESS_CYCLES=34; P3BLRTLA latency audit and production DFS FSM.
+```
+
+## P3BLRTLB-F01
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: LINE1X4_SINGLE_HOP_RS2_CS2_M1_NORMALIZED_STREAMING_EARLY
+FINDING: A 2-bit SA index caused an invalid wraparound adjacency between D and A in the 1×4 Single-Hop topology.
+ROOT_CAUSE: Adjacency was derived from compact index arithmetic, allowing the terminal SA index D to wrap around to A under 2-bit arithmetic.
+INVALID_BEHAVIOR: D → A was incorrectly treated as a legal neighboring relation.
+EXPECTED_TOPOLOGY: A ↔ B ↔ C ↔ D
+EXPECTED_NON_ADJACENCY: A ↮ C; A ↮ D; B ↮ D
+CORRECTION: Replace arithmetic/wraparound-derived adjacency with explicit legal neighbor relations.
+LEGAL_EDGES: A-B; B-C; C-D
+CORRECTED_RTL: rtl/dss_1x4/policy/recam_dss_line1x4_rs2_cs2_m1_normalized_streaming_early_core.v (is_adjacent_owner)
+POST_FIX_RESULT: CPP_ORACLE_MISMATCHES=0; FINAL_OWNER_MISMATCHES=0; FAILURE_POSITION_MISMATCHES=0; END_TO_END_MISMATCHES=0
+EVIDENCE: deterministic shared C++↔RTL 1,000-case oracle corpus and integrated Verilator top test.
+```

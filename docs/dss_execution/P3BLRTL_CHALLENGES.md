@@ -23,3 +23,11 @@ CLAIM: Raw candidate state remains observable.
 POSSIBLE_CHALLENGE: Two 480-bit maps increase integrated state.
 DEFENSE: Producer retention and frozen-core capture coexist during search and are counted explicitly; OPT2/OPT3 compression was not started.
 ```
+
+```text
+ARCHITECTURE: LINE1X4_SINGLE_HOP_RS2_CS2_M1_NORMALIZED_STREAMING_EARLY
+CHALLENGE: Compact SA-ID arithmetic can accidentally introduce toroidal/wraparound connectivity that does not exist in a physical linear topology.
+DESIGN_IMPLICATION: For small fixed physical sharing graphs such as LINE1X4_SINGLE_HOP, explicit adjacency encoding is safer and more auditable than relying on modulo/index-difference arithmetic.
+VERIFICATION_IMPLICATION: Directed adjacency tests alone should include boundary nodes, and end-to-end oracle comparison is valuable because this bug passed earlier local semantic reasoning but was exposed by shared C++↔RTL corpus testing.
+CORRECTED_RTL_REFERENCE: rtl/dss_1x4/policy/recam_dss_line1x4_rs2_cs2_m1_normalized_streaming_early_core.v
+```

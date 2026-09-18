@@ -1,5 +1,11 @@
 # P3-BL-RTL-A — logical state accounting
 
+```text
+P3BLRTLA_STATUS: COMPLETE
+ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+CLOSURE_COMMIT: ffe2a97
+```
+
 | State class | Bits | Basis |
 |---|---:|---|
 | Group snapshot capture | 816 | 4 × 204-bit logical collector snapshots |
@@ -15,15 +21,20 @@
 
 ```text
 GROUP_SNAPSHOT_CAPTURE_BITS: 816
-CANDIDATE_MAP_BITS: 480
-CANDIDATE_PRODUCER_CONTROL_BITS: 7
+CANDIDATE_PRODUCER_STATE_BITS: 7
+CANDIDATE_MAP_STATE_BITS: 480
 GLOBAL_DFS_STATE_BITS: 574
-SELECTED_TUPLE_BITS: 112
+SELECTED_TUPLE_STATE_BITS: 112
 COMMIT_SHADOW_STATE_BITS: 28
-COMMIT_CONTROL_BITS: included above
 PERSISTENT_LEDGER_BITS: 16
-OTHER_CONTROL_RESULT_BITS: 9
+CONTROL_RESULT_BITS: 9
 TOTAL_LOGICAL_STATE_BITS: 2042
+
+816 + 7 + 480 + 574 + 112 + 28 + 16 + 9 = 2042
 ```
 
 The DFS value includes its required independent 480-bit captured map. Producer and DFS maps coexist during search, so they are deliberately not collapsed in total state accounting.
+
+This is registered sequential logical storage only: the 2042-bit total excludes
+transient combinational analyzer, transition, DFS-legality, and shadow-next
+signals. It is architectural accounting, not synthesized area.

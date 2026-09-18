@@ -3,6 +3,7 @@
 ```text
 P3BLRTLA_STATUS: COMPLETE
 ARCHITECTURE: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+CLOSURE_COMMIT: ffe2a97
 LAYOUT: GRID_2X2
 TOPOLOGY: DIRECTIONAL
 RS: 2
@@ -12,7 +13,36 @@ POLICY: NORMALIZED_GROUP_GLOBAL
 SCRATCH_MODE: NOSCRATCH
 ```
 
-SYN-B now spans four semantically distinct collector snapshots through one sequential shared analyzer, raw 480-bit candidate/effect map production, unchanged canonical OPT0 or separately elaborated OPT1 search, shadow-staged atomic commit, and persistent committed directional ledger state. The canonical OPT0 core was not modified.
+The implemented integrated architecture is:
+
+```text
+4 distinct SA snapshots
+→ 1 shared RECAM analyzer
+→ sequential 16-request candidate producer
+→ raw 480-bit candidate/effect maps
+→ separately elaborated OPT0 / OPT1 GLOBAL search
+→ shadow-staged atomic group commit
+→ persistent physical-resource ledger
+```
+
+The canonical OPT0 core was not modified. `USE_OPT1` is elaboration-time only;
+the integrated boundary contains no runtime optimization-selection mux.
+
+Snapshot and producer contract:
+
+```text
+GROUP_SNAPSHOT_CONTRACT: FOUR_DISTINCT_FLATTENED_SNAPSHOTS
+GROUP_SNAPSHOT_STORAGE_BITS: 816
+SHARED_ANALYZER_INSTANCE_COUNT: 1
+CANDIDATE_PRODUCTION_REQUESTS: 16
+CANDIDATE_GENERATION_CYCLES: 16
+CANDIDATE_MAP_BITS: 480
+REQUEST_DEFINITION: one analyzer evaluation for one (SA, configuration/action interpretation) pair
+REQUEST_MAPPING: 4 SA × 4 configuration/action interpretations = 16 requests
+```
+
+Each request writes the corresponding ten pattern slots into one 40-slot SA
+region of each raw valid/release/borrow map (3 × 160 = 480 bits).
 
 Functional evidence:
 
@@ -30,6 +60,7 @@ OPT1_INTEGRATED: YES
 RUNTIME_OPT_SELECTION_MUX: NO
 OPT0_REFERENCE_MISMATCHES: 0
 OPT1_REFERENCE_MISMATCHES: 0
+OPT0_OPT1_SEMANTIC_MISMATCHES: 0
 ATOMIC_GROUP_COMMIT_IMPLEMENTED: YES
 ATOMICITY_VIOLATIONS: 0
 PARTIAL_COMMIT_VISIBILITY_ERRORS: 0
@@ -41,5 +72,49 @@ SYN_A_REFERENCE_REGRESSION: PASS
 SYN_B_SYNTHESIS_READY: YES
 STRICT_READABLE_VERILOG_GATE: BLOCKED_BY_LOCAL_RUNTIME (Python 3.8 rejects the skill runtime's built-in generic annotations before RTL analysis)
 ```
+
+Exact regression evidence (rerun for the data audit):
+
+```text
+INTEGRATED_EQUIVALENCE:
+  GROUP_SNAPSHOT_ALIAS_ERRORS: 0
+  CONFIG_ACTION_MAPPING_MISMATCHES: 0
+  CANDIDATE_VALID_MISMATCHES: 0
+  CANDIDATE_EFFECT_MISMATCHES: 0
+  CANDIDATE_MAP_MISMATCHES: 0
+  TRANSITION_ADAPTER_MISMATCHES: 0
+  OPT0_REFERENCE_MISMATCHES: 0
+  OPT1_REFERENCE_MISMATCHES: 0
+  OPT0_OPT1_SEMANTIC_MISMATCHES: 0
+  END_TO_END_MISMATCHES: 0
+  PARTIAL_COMMIT_VISIBILITY_ERRORS: 0
+  INTEGRATED_DIRECTED_SUCCESS_CYCLES: 34
+  INTEGRATED_DIRECTED_FAILURE_CYCLES: 13192
+
+ATOMIC_COMMIT:
+  ATOMICITY_VIOLATIONS: 0
+  PARTIAL_COMMIT_VISIBILITY_ERRORS: 0
+  COMMIT_ERROR_STATE_CORRUPTION: 0
+
+CANONICAL_GLOBAL:
+  DIRECTED_VECTORS: 6
+  RANDOM_VECTORS: 1000
+  RANDOM_SEED: 20260918
+  MISMATCHES: 0
+
+OPT1:
+  GROUP172: PASS
+  EFFECT_ONLY_COUNTEREXAMPLE: PASS
+  RANDOM_VECTORS: 1000
+  RANDOM_SEED: 20260918
+  MISMATCHES: 0
+
+SYN_A_EARLY_REFERENCE:
+  RS2: DIRECTED_VECTORS=6; RANDOM_VECTORS=1000; RANDOM_SEED=0x2026091A; MISMATCHES=0
+  RS3: DIRECTED_VECTORS=6; RANDOM_VECTORS=1000; RANDOM_SEED=0x2026091B; MISMATCHES=0
+```
+
+The synthesis readiness statement means the integrated source boundary is
+defined and regression-checked; it does not claim that DC has run.
 
 The follow-on phase is P3-BL-RTL-B (1x4 Single-Hop STREAMING_EARLY) only; it is not started by this closure.
