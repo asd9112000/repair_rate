@@ -4,6 +4,12 @@
 > mapped to canonical semantics in a separate column.  A dash means the
 > retained authoritative source did not freeze that field.
 
+> **P1-NAME annotation (2026-09-18):** this ledger's Canonical Streaming EARLY
+> and Canonical GLOBAL-NoScratch rows use the active names Normalized Streaming
+> EARLY and Normalized GLOBAL-NoScratch. Historical V2/Phase-3J labels below
+> remain provenance names; the authoritative mapping is
+> `CANONICAL_NAMING_MAP.md`.
+
 ## Common accepted methodology
 
 Unless an entry explicitly says otherwise:

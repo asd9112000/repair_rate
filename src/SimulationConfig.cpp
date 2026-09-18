@@ -289,16 +289,17 @@ const char *toString(SolutionTakePolicy policy) noexcept
         case SolutionTakePolicy::LocalFirst: return "local_first";
         case SolutionTakePolicy::Early: return "early";
         case SolutionTakePolicy::GroupCompressed: return "group_compressed_legacy";
-        case SolutionTakePolicy::GroupNoScratchV2: return "group_no_scratch_v2";
+        case SolutionTakePolicy::GroupNoScratchV2:
+            return "normalized_early_deferred";
         case SolutionTakePolicy::GroupGreedyRtlCanonical:
-            return "group_greedy_rtl_canonical";
+            return "normalized_streaming_early";
         case SolutionTakePolicy::GroupGlobal: return "group_global";
         case SolutionTakePolicy::DirectionalV2GroupGlobal:
-            return "directional_v2_group_global";
+            return "historical_directional_v2_global";
         case SolutionTakePolicy::DirectionalV2GroupGlobalCanonical:
-            return "directional_v2_group_global_canonical";
+            return "normalized_global";
         case SolutionTakePolicy::DirectionalV2Early:
-            return "directional_v2_early";
+            return "normalized_local_first";
         case SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1:
             return "one_by_four_two_pairwise_early_v1";
         case SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1:

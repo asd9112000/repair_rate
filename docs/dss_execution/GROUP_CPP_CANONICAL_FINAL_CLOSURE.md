@@ -4,6 +4,13 @@
 > Scope: frozen normalized N2/N3 14×1k group corpus only
 > Status: CLOSED
 
+> **P1-NAME annotation (2026-09-18):** Normalized GLOBAL
+> (`normalized_global`; historical input
+> `directional_v2_group_global_canonical`) is distinct from the Historical
+> directional-V2 GLOBAL oracle (`directional_v2_group_global`).  The latter
+> stays readable as immutable provenance and must not be silently labelled
+> canonical.  See `CANONICAL_NAMING_MAP.md`.
+
 ## Contract
 
 The historical `directional_v2_group_global` implementation and all frozen

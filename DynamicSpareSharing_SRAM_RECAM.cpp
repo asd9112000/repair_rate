@@ -111,7 +111,7 @@ void printUsage(const char *program)
         << "Dynamic spare sharing:\n"
         << "  --topology none|directional|global|edge\n"
         << "  --shared-lines N --local-first --max-borrows N\n"
-        << "  --solution-take legacy|early|group_no_scratch_v2|group_greedy_rtl_canonical|group_compressed_legacy|group_global|one_by_four_two_pairwise_early_v1|one_by_four_two_pairwise_pair_global_v1|one_by_four_single_hop_early_v1|one_by_four_single_hop_global_v1\n"
+        << "  --solution-take legacy|early|normalized_early_deferred|normalized_streaming_early|group_no_scratch_v2|group_greedy_rtl_canonical|group_compressed_legacy|group_global|one_by_four_two_pairwise_early_v1|one_by_four_two_pairwise_pair_global_v1|one_by_four_single_hop_early_v1|one_by_four_single_hop_global_v1\n"
         << "      'group' remains a deprecated alias for group_compressed_legacy.\n"
         << "  --buffer N | --paper-cam-reuse\n\n"
         << "SRAM_RECAM architecture:\n"
@@ -268,9 +268,10 @@ dynamic_spare::SolutionTakePolicy parseSolutionTake(
         return dynamic_spare::SolutionTakePolicy::Early;
     if (value == "group" || value == "group_compressed" || value == "group_compressed_legacy")
         return dynamic_spare::SolutionTakePolicy::GroupCompressed;
-    if (value == "group_no_scratch_v2")
+    if (value == "normalized_early_deferred" || value == "group_no_scratch_v2")
         return dynamic_spare::SolutionTakePolicy::GroupNoScratchV2;
-    if (value == "group_greedy_rtl_canonical")
+    if (value == "normalized_streaming_early" ||
+        value == "group_greedy_rtl_canonical")
         return dynamic_spare::SolutionTakePolicy::GroupGreedyRtlCanonical;
     if (value == "group_global")
         return dynamic_spare::SolutionTakePolicy::GroupGlobal;

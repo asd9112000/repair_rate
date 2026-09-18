@@ -69,9 +69,9 @@ void printUsage(const char *program)
         << "  --minimum-row-reserve N --minimum-column-reserve N\n"
         << "  --single-dimension\n"
         << "  --max-borrows N\n"
-        << "  --solution-take legacy|local_first|early|directional_m1_local_first|directional_m1_early|directional_m1_global|pairwise_row_m1_local_first|pairwise_row_m1_early|pairwise_row_m1_global|single_hop_m1_local_first|single_hop_m1_early|single_hop_m1_global|two_pairwise_m1_local_first|two_pairwise_m1_early|two_pairwise_m1_pair_global|directional_v2_early|group_no_scratch_v2|group_greedy_rtl_canonical|group_compressed_legacy|group_global|directional_v2_group_global|directional_v2_group_global_canonical|one_by_four_two_pairwise_early_v1|one_by_four_two_pairwise_pair_global_v1|one_by_four_single_hop_early_v1|one_by_four_single_hop_global_v1\n"
+        << "  --solution-take legacy|local_first|early|normalized_local_first|normalized_streaming_early|normalized_early_deferred|normalized_global|directional_m1_local_first|directional_m1_early|directional_m1_global|pairwise_row_m1_local_first|pairwise_row_m1_early|pairwise_row_m1_global|single_hop_m1_local_first|single_hop_m1_early|single_hop_m1_global|two_pairwise_m1_local_first|two_pairwise_m1_early|two_pairwise_m1_pair_global|directional_v2_early|group_no_scratch_v2|group_greedy_rtl_canonical|group_compressed_legacy|group_global|directional_v2_group_global|directional_v2_group_global_canonical|one_by_four_two_pairwise_early_v1|one_by_four_two_pairwise_pair_global_v1|one_by_four_single_hop_early_v1|one_by_four_single_hop_global_v1\n"
         << "  --canonical-policy-id ID --paper-canonical true|false --legacy-alias-of ID\n"
-        << "      'group' remains a deprecated alias for group_compressed_legacy.\n\n"
+        << "      Historical directional_v2_* aliases remain accepted; new output uses normalized_* labels.\n\n"
         << "Hardware/latency:\n"
         << "  --paper-cam-reuse        Buffer capacity = Rs+Cs (default)\n"
         << "  --buffer N               Use a fixed buffer capacity instead\n"
@@ -264,21 +264,26 @@ dynamic_spare::SolutionTakePolicy parseSolutionTake(
         return dynamic_spare::SolutionTakePolicy::Early;
     if (value == "pairwise_row_m1_global")
         return dynamic_spare::SolutionTakePolicy::GroupGlobal;
-    if (value == "directional_v2_early" ||
+    if (value == "normalized_local_first" ||
+        value == "directional_v2_early" ||
         value == "directional_m1_v2_early")
         return dynamic_spare::SolutionTakePolicy::DirectionalV2Early;
     if (value == "group" || value == "group_compressed" || value == "group_compressed_legacy")
         return dynamic_spare::SolutionTakePolicy::GroupCompressed;
-    if (value == "group_no_scratch_v2")
+    if (value == "normalized_early_deferred" ||
+        value == "group_no_scratch_v2")
         return dynamic_spare::SolutionTakePolicy::GroupNoScratchV2;
-    if (value == "group_greedy_rtl_canonical")
+    if (value == "normalized_streaming_early" ||
+        value == "group_greedy_rtl_canonical")
         return dynamic_spare::SolutionTakePolicy::GroupGreedyRtlCanonical;
     if (value == "group_global")
         return dynamic_spare::SolutionTakePolicy::GroupGlobal;
-    if (value == "directional_v2_group_global" ||
+    if (value == "historical_directional_v2_global" ||
+        value == "directional_v2_group_global" ||
         value == "directional_m1_v2_group_global")
         return dynamic_spare::SolutionTakePolicy::DirectionalV2GroupGlobal;
-    if (value == "directional_v2_group_global_canonical" ||
+    if (value == "normalized_global" ||
+        value == "directional_v2_group_global_canonical" ||
         value == "directional_m1_global_canonical")
         return dynamic_spare::SolutionTakePolicy::DirectionalV2GroupGlobalCanonical;
     if (value == "one_by_four_two_pairwise_early_v1")

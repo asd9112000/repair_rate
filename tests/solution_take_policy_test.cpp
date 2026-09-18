@@ -828,11 +828,18 @@ void verifyR1CanonicalPolicyContracts()
         faults[subarray].push_back(entry);
     }
 
-    require(std::string(toString(SolutionTakePolicy::GroupGreedyRtlCanonical)) ==
-                "group_greedy_rtl_canonical" &&
-                std::string(toString(SolutionTakePolicy::GroupGlobal)) ==
-                "group_global",
-            "R1 canonical policy names are not stable");
+    require(std::string(toString(SolutionTakePolicy::DirectionalV2Early)) ==
+                "normalized_local_first" &&
+                std::string(toString(SolutionTakePolicy::GroupNoScratchV2)) ==
+                "normalized_early_deferred" &&
+                std::string(toString(SolutionTakePolicy::GroupGreedyRtlCanonical)) ==
+                "normalized_streaming_early" &&
+                std::string(toString(SolutionTakePolicy::DirectionalV2GroupGlobal)) ==
+                "historical_directional_v2_global" &&
+                std::string(toString(
+                    SolutionTakePolicy::DirectionalV2GroupGlobalCanonical)) ==
+                "normalized_global",
+            "canonical and historical policy display names are not stable");
 
     DynamicRepairSimulator allFeasible(
         std::make_shared<V2CorpusSolver>(false, true));
