@@ -116,3 +116,30 @@ additional candidate/effect-history bits. Search latency changes from EARLY's
 maximum 16 checks to GLOBAL's minimum 4 and bounded worst case 2,625,640
 candidate visits. The mapped GLOBAL core has 616 sequential cells and
 34,834.061676 sequential area and meets 20 ns with `+0.02 ns` WNS.
+
+## P2-DOM GLOBAL DFS audit (2026-09-18)
+
+`P2DOM_GLOBAL_DFS_AUDIT.md` audited the unchanged RS2 2x2 Directional
+Normalized GLOBAL-NoScratch policy/search core at its completed-candidate-map
+to selected-tuple boundary.  Current RTL performs the frozen R,L,RB,B then
+ascending-PatternID exhaustive DFS, with neither equivalent-effect collapse nor
+dominance/duplicate-state pruning.
+
+The audit proves that a fixed-depth equivalence class must include
+`(explicit_release, actual_release, actual_borrow)`: effect-pair-only collapse
+is unsound because L and RB can have identical actual effects while only RB can
+fulfill a future-release obligation.  It also proves a monotone failed-subtree
+dominance relation on released, used, obligation, and borrow-count masks.  To
+preserve the canonical first tuple, a state may be pruned only by an earlier,
+fully explored failed state at the same depth.  A non-production reference
+model passed N2/F16/group172, the effect-only counterexample, and 1,000 fixed
+seed candidate maps with zero repairability, full selected-tuple, and
+per-depth obligation mismatches.  It measured valid-candidate-evaluation P99
+of 184 exhaustive, 90 equivalence-only, 46 dominance-only, and 37 combined.
+
+The current exhaustive worst bound remains 2,625,640 candidate visits.  Safe
+class collapse bounds an abstract eight-class frontier at 4,680 visits; this is
+a future implementation opportunity only.  No production RTL, scratch state,
+formal corpus, device sweep, or RS3 production path changed.  The decision is
+`DOMINANCE_PRUNING_SUPPORTED`, pending separate authorization for any RTL
+specification or implementation.
