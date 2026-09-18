@@ -4,6 +4,7 @@
 #include "BiraLatency.hpp"
 #include "HardwareMetrics.hpp"
 #include "SimulationConfig.hpp"
+#include "V2GroupNoScratchPolicy.hpp"
 #include "SramRecamModel.hpp"
 
 #include <array>
@@ -215,6 +216,29 @@ struct SharingMetrics
     bool repairFailureEvenAfterSharing = false;
 };
 
+// Observability for exact joint GLOBAL search.  These are software search
+// metrics, not BIRA cycles or hardware counters.
+struct GlobalSearchMetrics
+{
+    std::array<std::size_t, kSubarrayCount> candidateCounts{{0, 0, 0, 0}};
+    std::uint64_t rawCartesianProductSize = 0;
+    std::uint64_t searchNodesVisited = 0;
+    std::uint64_t partialAssignmentsPruned = 0;
+    std::uint64_t completeAssignmentsChecked = 0;
+    std::uint64_t legalCompleteAssignments = 0;
+    std::optional<std::uint64_t> firstFeasibleNodeIndex;
+    std::uint64_t runtimeMicroseconds = 0;
+    // V2 directional GLOBAL may intentionally stop after the first legal
+    // complete tuple.  The flag makes that production optimization explicit;
+    // diagnostic tests compare it against full enumeration separately.
+    bool stoppedAtFirstLegal = false;
+    bool exhaustiveEnumeration = false;
+    std::string terminationReason;
+    std::uint64_t leftDonorTransfers = 0;
+    std::uint64_t rightDonorTransfers = 0;
+    std::uint64_t middleSaDonorChoiceBranches = 0;
+};
+
 struct GroupRepairResult
 {
     std::uint64_t seed = 0;
@@ -232,6 +256,27 @@ struct GroupRepairResult
         selectedAttemptIndices;
     std::array<std::optional<std::size_t>, kSubarrayCount>
         selectedCandidateIndices;
+    std::array<std::optional<int>, kSubarrayCount> selectedConfigIds;
+    std::array<std::optional<std::size_t>, kSubarrayCount> selectedPatternIds;
+    std::array<std::optional<V2GroupAction>, kSubarrayCount> selectedV2Actions;
+    std::optional<std::size_t> firstFailureSubarray;
+    struct V2DecisionTrace
+    {
+        char role = '?';
+        std::size_t subarray = 0;
+        std::size_t roleSlot = 0;
+        int configId = -1;
+        V2GroupAction action = V2GroupAction::Local;
+        bool configFeasible = false;
+        std::optional<std::size_t> smallestPatternId;
+        std::optional<std::size_t> requiredRows;
+        std::optional<std::size_t> requiredColumns;
+        bool ledgerValid = false;
+        bool selected = false;
+        std::vector<int> ledgerOwnersBefore;
+        std::vector<int> ledgerOwnersAfter;
+    };
+    std::vector<V2DecisionTrace> v2DecisionTrace;
     // Populated only when the caller asks the simulator to retain the exact
     // four-subarray remap selected by the group allocator.  This keeps normal
     // statistical sweeps from retaining large remap snapshots.
@@ -239,6 +284,8 @@ struct GroupRepairResult
         selectedCandidateOptions;
 
     SolutionTakePolicy solutionTakePolicy = SolutionTakePolicy::Legacy;
+    ConfigContractVersion configContractVersion =
+        ConfigContractVersion::GenericRecamCandidateV1;
     std::array<std::vector<bool>, kSubarrayCount> validSolutionBitmaps;
     std::uint64_t solutionSelectionWork = 0;
     std::uint64_t feasibleCombinationCount = 0;
@@ -249,6 +296,13 @@ struct GroupRepairResult
     std::optional<bool> groupCompressedSuccess;
     bool greedyLoss = false;
     std::string solutionSelectionFailureReason;
+    std::optional<GlobalSearchMetrics> globalSearchMetrics;
+
+    // Non-allocating probe of the hierarchical device Tier-2 fallback.  These
+    // fields do not alter this group's repair selection or resource ledger.
+    bool tier2CamRequired = false;
+    std::size_t tier2UniqueTagCount = 0;
+    std::string tier2TagContractVersion = "-";
 
     bool groupRepairSuccess = false;
     bool baselineGroupRepairSuccess = false;
@@ -264,6 +318,29 @@ struct GroupRepairResult
     std::size_t usedColumns = 0;
     std::size_t unusedPhysicalRows = 0;
     std::size_t unusedPhysicalColumns = 0;
+    std::vector<int> finalLedgerOwners;
+    // Exact committed transfers retained as compact group-level diagnostics.
+    // This is required to audit future-owner borrowing without changing the
+    // paired CSV schema or reconstructing ownership from ConfigID alone.
+    struct SelectedBorrowTransfer
+    {
+        int donorSubarray = -1;
+        std::size_t borrowerSubarray = 0;
+        SpareDimension dimension = SpareDimension::Row;
+        std::size_t physicalLineId = 0;
+    };
+    std::vector<SelectedBorrowTransfer> selectedBorrowTransfers;
+    std::size_t privateRowCountPerSubarray = 0;
+    std::size_t privateColumnCountPerSubarray = 0;
+    std::size_t shareableRowCountPerSubarray = 0;
+    std::size_t totalRowSpareLinesGroup = 0;
+    std::size_t totalColumnSpareLinesGroup = 0;
+    std::size_t totalPhysicalSpareLinesGroup = 0;
+    std::size_t localRowUsed = 0;
+    std::size_t localColumnUsed = 0;
+    std::size_t ownShareableRowUsed = 0;
+    std::size_t borrowedShareableRowUsed = 0;
+    std::size_t remainingShareableRows = 0;
     AnalysisLatencyBreakdown latency;
     BiraLatencyResult biraLatency;
 

@@ -176,7 +176,6 @@ def plot_repair_rate_comparison(
             linewidth=1.5,
             label="RECAM",
         )
-        ax.set_title(f"FaultNum = {fault_num}")
         ax.set_xlim(min(spare_lines) - 0.15, max(spare_lines) + 0.15)
         ax.set_ylim(0.0, 1.0)
         ax.set_xticks(spare_lines)
@@ -231,10 +230,6 @@ def plot_absolute_improvement_heatmap(
             ),
             "extend": "both",
         },
-    )
-    ax.set_title(
-        f"Absolute Repair Rate Improvement of {architecture_label} over RECAM",
-        pad=10,
     )
     ax.set_xlabel("Number of Spare Lines")
     ax.set_ylabel("FaultNum")
@@ -298,10 +293,6 @@ def plot_relative_improvement_heatmap(
             fontsize=8,
         )
 
-    ax.set_title(
-        f"Relative Repair Rate Improvement of {architecture_label} over RECAM",
-        pad=10,
-    )
     ax.set_xlabel("Number of Spare Lines")
     ax.set_ylabel("FaultNum")
     ax.tick_params(axis="both", rotation=0)
@@ -349,8 +340,6 @@ def plot_repair_rate_heatmaps(
         **heatmap_options,
     )
 
-    axes[0].set_title(f"(a) {architecture_label}", pad=10)
-    axes[1].set_title("(b) RECAM", pad=10)
     for ax in axes:
         ax.set_xlabel("Number of Spare Lines")
         ax.tick_params(axis="both", rotation=0)

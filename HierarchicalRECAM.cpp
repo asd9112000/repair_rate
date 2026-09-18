@@ -54,7 +54,8 @@ void printUsage(const char *program)
         << "  --topology none|directional|edge|global\n"
         << "  --shared-rows N --shared-columns N\n"
         << "  --local-first --max-borrows N\n"
-        << "  --solution-take legacy|early|group  Default: legacy\n\n"
+        << "  --solution-take legacy|early|group_no_scratch_v2|group_greedy_rtl_canonical|group_compressed_legacy|group_global|one_by_four_two_pairwise_early_v1|one_by_four_two_pairwise_pair_global_v1|one_by_four_single_hop_early_v1|one_by_four_single_hop_global_v1\n"
+        << "      'group' remains a deprecated legacy-compressed alias. Default: legacy\n\n"
         << "Output:\n"
         << "  --output-dir PATH             Default: reports/hierarchical_recam\n"
         << "  --write-fault-corpus          Write resolved seven-field faults\n"
@@ -135,8 +136,22 @@ dynamic_spare::SolutionTakePolicy parseSolutionTake(
         return dynamic_spare::SolutionTakePolicy::Legacy;
     if (text == "early")
         return dynamic_spare::SolutionTakePolicy::Early;
-    if (text == "group" || text == "group_compressed")
+    if (text == "group" || text == "group_compressed" || text == "group_compressed_legacy")
         return dynamic_spare::SolutionTakePolicy::GroupCompressed;
+    if (text == "group_no_scratch_v2")
+        return dynamic_spare::SolutionTakePolicy::GroupNoScratchV2;
+    if (text == "group_greedy_rtl_canonical")
+        return dynamic_spare::SolutionTakePolicy::GroupGreedyRtlCanonical;
+    if (text == "group_global")
+        return dynamic_spare::SolutionTakePolicy::GroupGlobal;
+    if (text == "one_by_four_two_pairwise_early_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1;
+    if (text == "one_by_four_two_pairwise_pair_global_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1;
+    if (text == "one_by_four_single_hop_early_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourSingleHopEarlyV1;
+    if (text == "one_by_four_single_hop_global_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourSingleHopGlobalV1;
     throw std::invalid_argument("Unknown solution-take policy: " + text);
 }
 

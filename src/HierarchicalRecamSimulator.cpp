@@ -995,6 +995,81 @@ DeviceRepairResult DeviceRepairScheduler::run(
     return device;
 }
 
+Tier2CamFallbackMetrics characterizeTier2CamFallback(
+    const FaultGroup &faults,
+    const SimulationConfig &groupConfig,
+    std::size_t runIndex,
+    const HierarchicalRecamConfig &hierarchicalConfig)
+{
+    // Match the device path exactly: its word width is the online-directory
+    // width, rather than a group-level reporting choice.
+    SimulationConfig deviceConfig = groupConfig;
+    deviceConfig.dataWidthBits = hierarchicalConfig.dataWordBits;
+    hierarchicalConfig.validateDramConfig(deviceConfig);
+
+    DynamicRepairSimulator analyzer;
+    const SimulationConfig tier0Config = withFunctionalCamCapacity(
+        withoutSharing(deviceConfig), 0, hierarchicalConfig.dataWordBits);
+    GroupRepairResult tier0 = analyzer.run(faults, tier0Config, runIndex);
+    const GroupRepairResult *lineAnalysis = &tier0;
+
+    std::optional<GroupRepairResult> tier1;
+    if (!tier0.groupRepairSuccess &&
+        deviceConfig.topology != SharingTopology::NoSharing)
+    {
+        tier1 = analyzer.run(
+            faults,
+            withFunctionalCamCapacity(
+                deviceConfig, 0, hierarchicalConfig.dataWordBits),
+            runIndex);
+        lineAnalysis = &*tier1;
+    }
+
+    Tier2CamFallbackMetrics metrics;
+    metrics.tagContractVersion =
+        hierarchicalConfig.camReuseGranularity == CamReuseGranularity::DataWord
+            ? "GLOBAL_REPAIR_TAG_DATA_WORD_V1"
+            : "GLOBAL_REPAIR_TAG_CELL_V1";
+    if (lineAnalysis->groupRepairSuccess)
+    {
+        return metrics;
+    }
+
+    GroupRepairResult tier2 = analyzer.run(
+        faults,
+        withFunctionalCamCapacity(
+            deviceConfig, faultCount(faults), hierarchicalConfig.dataWordBits),
+        runIndex, true);
+    if (!tier2.groupRepairSuccess)
+    {
+        return metrics;
+    }
+
+    return summarizeTier2CamMappings(
+        selectedCamMappings(tier2), hierarchicalConfig.camReuseGranularity,
+        hierarchicalConfig.dataWordBits);
+}
+
+Tier2CamFallbackMetrics summarizeTier2CamMappings(
+    const std::vector<BufferRepairMapping> &mappings,
+    CamReuseGranularity granularity,
+    std::uint32_t dataWordBits)
+{
+    Tier2CamFallbackMetrics metrics;
+    metrics.tagContractVersion = granularity == CamReuseGranularity::DataWord
+        ? "GLOBAL_REPAIR_TAG_DATA_WORD_V1"
+        : "GLOBAL_REPAIR_TAG_CELL_V1";
+    std::set<GlobalRepairTag> uniqueTags;
+    for (const BufferRepairMapping &mapping : mappings)
+    {
+        uniqueTags.insert(canonicalizeForCamReuse(
+            mapping, granularity, dataWordBits));
+    }
+    metrics.uniqueTagCount = uniqueTags.size();
+    metrics.required = metrics.uniqueTagCount != 0;
+    return metrics;
+}
+
 void HierarchicalCsvReporter::writeDeviceSummary(
     const std::filesystem::path &path,
     const DeviceRepairResult &result,

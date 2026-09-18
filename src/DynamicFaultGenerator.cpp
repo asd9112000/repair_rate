@@ -59,6 +59,8 @@ std::array<std::uint64_t, kSubarrayCount> modelWeights(
             break;
         case FaultCountModel::Uniform:
             return {{1, 1, 1, 1}};
+        case FaultCountModel::MultinomialUniform:
+            break;
         case FaultCountModel::ModerateImbalance:
             return {{2, 4, 5, 9}};
         case FaultCountModel::StrongImbalance:
@@ -106,7 +108,8 @@ DynamicFaultGenerator::DynamicFaultGenerator(
     }
 }
 
-std::vector<std::size_t> DynamicFaultGenerator::countsForGroup() const
+std::vector<std::size_t> DynamicFaultGenerator::countsForGroup(
+    StableRandom &random) const
 {
     std::vector<std::size_t> counts(kSubarrayCount, 0);
     if (config_.faultCountModel == FaultCountModel::UserDefined)
@@ -116,6 +119,19 @@ std::vector<std::size_t> DynamicFaultGenerator::countsForGroup() const
         {
             counts[subarray] = static_cast<std::size_t>(
                 config_.userDefinedFaultCounts[subarray]);
+        }
+        return counts;
+    }
+
+    if (config_.faultCountModel == FaultCountModel::MultinomialUniform)
+    {
+        // Sequential categorical sampling is exactly equivalent to
+        // Multinomial(F_GROUP; 0.25, 0.25, 0.25, 0.25).  Incrementing one SA
+        // per physical group fault also makes the fixed-total invariant
+        // explicit rather than relying on a later normalization step.
+        for (std::uint64_t fault = 0; fault < config_.faultCount; ++fault)
+        {
+            ++counts[static_cast<std::size_t>(random.bounded(kSubarrayCount))];
         }
         return counts;
     }
@@ -302,7 +318,7 @@ FaultGroup DynamicFaultGenerator::generate(std::size_t runIndex)
         config_.randomSeed ^
         (0xd1b54a32d192ed03ULL *
          (static_cast<std::uint64_t>(runIndex) + 1)));
-    const std::vector<std::size_t> counts = countsForGroup();
+    const std::vector<std::size_t> counts = countsForGroup(random);
     FaultGroup group;
     for (std::size_t subarray = 0;
          subarray < kSubarrayCount; ++subarray)

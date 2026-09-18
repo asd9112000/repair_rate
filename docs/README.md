@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：cross-cutting
 > 建立時間：Unknown
-> 最後修改時間：2026-09-07T00:00:00+08:00
+> 最後修改時間：2026-09-13T06:28:23+08:00
 > 本文件權威主題：文件索引、閱讀順序與文件管理規則
 
 本專案以 C++17 模擬 RECAM、subarray spare-line sharing，以及 logic-die
@@ -29,6 +29,7 @@ BIRA/CAM reuse。現在同時保留兩類架構：
 | [handoff/MODERATE_REPAIR_STUDY_HANDOFF.md](handoff/MODERATE_REPAIR_STUDY_HANDOFF.md) | 本次 moderate smoke／screen／confirm 的目的、矩陣、code flow、結果與後續交接 |
 | [RECAM_SPEC.md](RECAM_SPEC.md) | paper-faithful RECAM fault classification、CAM、matrix 與 solver 驗證細節 |
 | [SRAM_RECAM_ARCHITECTURE_GUIDE.md](SRAM_RECAM_ARCHITECTURE_GUIDE.md) | SRAM-RECAM search、latency、area 與 runtime variants |
+| [dss_execution/00_DSS_EXECUTION_MASTER.md](dss_execution/00_DSS_EXECUTION_MASTER.md) | DSS thesis execution phase control；不取代既有 simulator 或 RTL 語義權威 |
 
 已被合併的舊規格保留在 [archive/README.md](archive/README.md)，僅供追溯，
 不再作為目前操作說明。

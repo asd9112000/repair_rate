@@ -1,0 +1,158 @@
+{
+  "CS": [
+    3
+  ],
+  "RS": [
+    3
+  ],
+  "backend": "DynamicSpareSharing",
+  "backend_identity": "/home/asd9112000/repair_rate/scripts/group/r3_formal_group_repair_rate.py",
+  "build_command": "make dynamic_sharing_b",
+  "cam_policy": {
+    "1x4": "NOT_PROVEN",
+    "2x2": "GENERIC_CPP_CAPACITY; NOT RTL-CALIBRATED"
+  },
+  "completed_utc": "2026-09-17T08:36:14.343191+00:00",
+  "corpus_replay_identity": {
+    "corpus_index": "manifest/corpus_index.csv",
+    "paired_corpus": "corpus/<point>/paired_corpus_v1.csv",
+    "replay_key": "point, group_id, seed, corpus_id, corpus_sha256"
+  },
+  "executable": "/home/asd9112000/repair_rate/build/bin/DynamicSpareSharing",
+  "executable_sha256": "c5c2b252bc1cfce10be0510809c32fe92fe82b7ef37612ca83831baa9f809420",
+  "experiment_id": "date2026_r3_formal_group_repair_rate",
+  "f_group_points": {
+    "3": [
+      8,
+      12,
+      16,
+      20,
+      24,
+      28,
+      32
+    ]
+  },
+  "fault_contract": "Multinomial(F_GROUP; 0.25,0.25,0.25,0.25), exact per group",
+  "fault_distribution_mode": "multinomial_uniform",
+  "formal": true,
+  "git_dirty_state": "M .gitignore\n M DynamicSpareSharing.cpp\n M DynamicSpareSharing_SRAM_RECAM.cpp\n M HierarchicalRECAM.cpp\n M Makefile\n M docs/DOCUMENT_INDEX.md\n M docs/EXPERIMENTS.md\n M docs/HIERARCHICAL_RECAM.md\n M docs/README.md\n M docs/REPORTS.md\n M docs/SRAM_RECAM_ARCHITECTURE_GUIDE.md\n M inc/DynamicCsvReporter.hpp\n M inc/DynamicFaultGenerator.hpp\n M inc/FaultAddress.hpp\n M inc/RepairResult.hpp\n M inc/SimulationConfig.hpp\n M scripts/README.md\n M scripts/group/date_submission/analyze.py\n M scripts/group/date_submission/analyze_imbalance.py\n M scripts/legacy/redundant_rate/plot.py\n M scripts/legacy/sharedline/plot_repair_rates.py\n M src/DynamicCsvReporter.cpp\n M src/DynamicFaultGenerator.cpp\n M src/DynamicRepairSimulator.cpp\n M src/FaultAddress.cpp\n M src/SimulationConfig.cpp\n M tb/dss_v2/recam_dss_v2_early_core_test.cpp\n M tb/dss_v2/recam_dss_v2_group_core_test.cpp\n M tests/dynamic_spare_sharing_policy_test.cpp\n M tests/fault_address_bist_test.cpp\n M tests/solution_take_policy_test.cpp\n?? 00_thesis/\n?? BistOverlapTiming.cpp\n?? Makefile.pre\n?? Misc/\n?? Modules/\n?? T1DateLatencyExperiment.cpp\n?? config.status\n?? docs/dss_execution/\n?? docs/recovery/\n?? inc/BistOverlapTimingModel.hpp\n?? inc/DssBistFaultTimeline.hpp\n?? inc/DssTimelineCorrelation.hpp\n?? inc/V2GroupNoScratchPolicy.hpp\n?? pyconfig.h\n?? results/date2026/\n?? results/date_2x2_latency/\n?? results/dss_v2_rs3cs3m1/\n?? rtl/dss_v2/rs3cs3m1/\n?? rtl/dss_v2/top/recam_dss_v2_early_overlap_core.sv\n?? rtl/dss_v2/top/recam_dss_v2_retained_analyzer_path.sv\n?? rtl/dss_v2/top/recam_dss_v2_retained_analyzer_path_spec.md\n?? rtl/dss_v2/top/recam_dss_v2_retained_collector_bank.sv\n?? rtl/dss_v2/top/recam_dss_v2_retained_collector_bank_spec.md\n?? rtl/dss_v2/top/recam_dss_v2_retained_overlap_core.sv\n?? rtl/dss_v2/top/recam_dss_v2_retained_overlap_core_spec.md\n?? rtl/recam/recam_post_must_hybrid_projector.sv\n?? rtl/recam/recam_post_must_hybrid_projector_spec.md\n?? rtl/recam/recam_post_must_projected_config_analyzer.sv\n?? rtl/recam/recam_post_must_projected_config_analyzer_spec.md\n?? scripts/README_DATE2026_SWEEP.md\n?? scripts/analysis/\n?? scripts/group/r2_repair_rate_preflight.py\n?? scripts/group/r2f_global_characterization.py\n?? scripts/group/r3_formal_group_repair_rate.py\n?? scripts/paper_style.py\n?? scripts/run_date2026_device_sweep.sh\n?? scripts/run_date2026_group_sweep.sh\n?? scripts/run_date2026_repair_sweep.sh\n?? scripts/simulation/run_dss_v2_rs3cs3m1_h4_functional.sh\n?? scripts/synthesis/dc/recam_rs3cs3m1_h5_early_sources.tcl\n?? scripts/synthesis/dc/recam_rs3cs3m1_h5_group_sources.tcl\n?? scripts/synthesis/dc/run_recam_rs3cs3m1_h5.tcl\n?? scripts/synthesis/run_dss_v2_rs3cs3m1_h5_dc.sh\n?? src/BistOverlapTimingModel.cpp\n?? src/DssBistFaultTimeline.cpp\n?? src/DssTimelineCorrelation.cpp\n?? src/V2GroupNoScratchPolicy.cpp\n?? tb/dss_v2/dss_v2_rs3cs3m1_config_analyzer_smoke_test.cpp\n?? tb/dss_v2/dss_v2_rs3cs3m1_config_table_smoke_test.cpp\n?? tb/dss_v2/dss_v2_rs3cs3m1_group_store_smoke_test.cpp\n?? tb/dss_v2/e0l_date_2x2_early_batch_test.cpp\n?? tb/dss_v2/e0l_date_2x2_group_batch_test.cpp\n?? tb/dss_v2/recam_dss_v2_early_overlap_equivalence_test.cpp\n?? tb/dss_v2/recam_dss_v2_early_overlap_equivalence_test_top.sv\n?? tb/dss_v2/recam_dss_v2_retained_collector_bank_test.cpp\n?? tb/dss_v2/recam_dss_v2_retained_collector_lockstep_test.cpp\n?? tb/dss_v2/recam_dss_v2_retained_collector_lockstep_top.sv\n?? tb/dss_v2/recam_dss_v2_retained_overlap_core_test.cpp\n?? tb/dss_v2/recam_dss_v2_rs3cs3m1_early_top_smoke_test.cpp\n?? tb/dss_v2/recam_dss_v2_rs3cs3m1_group_top_smoke_test.cpp\n?? tb/dss_v2/recam_dss_v2_rs3cs3m1_policy_equivalence_test.cpp\n?? tb/dss_v2/recam_dss_v2_rs3cs3m1_policy_equivalence_top.sv\n?? tb/recam/recam_post_must_projected_config_analyzer_test.cpp\n?? tb/recam/tb_recam_post_must_projected_config_analyzer.sv\n?? tb/recam/tb_recam_post_must_projected_config_analyzer_spec.md\n?? tests/bist_overlap_timing_model_test.cpp\n?? tests/data/\n?? tests/dss_formal_latency_preflight_test.cpp\n?? tests/dss_timeline_correlation_test.cpp\n?? tests/e0l_generate_candidate_corpus.cpp",
+  "git_revision": "3304c86acd7e8114033e684acd721bf6daace57c",
+  "global_search_contract": "demand-equivalence canonicalization + reversible A->B->C->D DFS + incremental ledger legality pruning; no cutoff; no heuristic fallback",
+  "groups_per_point": 100000,
+  "master_seed": 20260922,
+  "mode": "formal",
+  "output_root": "/home/asd9112000/repair_rate/results/date2026/repair_rate/r3_formal_group",
+  "points": {
+    "3": [
+      8,
+      12,
+      16,
+      20,
+      24,
+      28,
+      32
+    ]
+  },
+  "policy_group_evaluations": 6300000,
+  "policy_matrix": {
+    "3": [
+      {
+        "id": "local_no_sharing",
+        "layout": "2x2",
+        "share_col": 0,
+        "share_row": 0,
+        "solution": "legacy",
+        "topology": "none"
+      },
+      {
+        "id": "directional_m1_early",
+        "layout": "2x2",
+        "share_col": 1,
+        "share_row": 1,
+        "solution": "early",
+        "topology": "directional"
+      },
+      {
+        "id": "directional_m1_group_greedy",
+        "layout": "2x2",
+        "share_col": 1,
+        "share_row": 1,
+        "solution": "group_greedy_rtl_canonical",
+        "topology": "directional"
+      },
+      {
+        "id": "directional_m1_group_global",
+        "layout": "2x2",
+        "share_col": 1,
+        "share_row": 1,
+        "solution": "group_global",
+        "topology": "directional"
+      },
+      {
+        "id": "pairwise_row_m1_early",
+        "layout": "2x2",
+        "share_col": 0,
+        "share_row": 1,
+        "solution": "early",
+        "topology": "edge"
+      },
+      {
+        "id": "two_pairwise_m1_early",
+        "layout": "1x4",
+        "share_col": 0,
+        "share_row": 1,
+        "solution": "one_by_four_two_pairwise_early_v1",
+        "topology": "pair"
+      },
+      {
+        "id": "two_pairwise_m1_pair_global",
+        "layout": "1x4",
+        "share_col": 0,
+        "share_row": 1,
+        "solution": "one_by_four_two_pairwise_pair_global_v1",
+        "topology": "pair"
+      },
+      {
+        "id": "single_hop_m1_early",
+        "layout": "1x4",
+        "share_col": 0,
+        "share_row": 1,
+        "solution": "one_by_four_single_hop_early_v1",
+        "topology": "neighbor"
+      },
+      {
+        "id": "single_hop_m1_global",
+        "layout": "1x4",
+        "share_col": 0,
+        "share_row": 1,
+        "solution": "one_by_four_single_hop_global_v1",
+        "topology": "neighbor"
+      }
+    ]
+  },
+  "runner_identity": "/home/asd9112000/repair_rate/scripts/run_date2026_repair_sweep.sh",
+  "schema_version": "dss_r3_formal_group_repair_rate_v1",
+  "scope": "group",
+  "seed_contract": {
+    "n3_f12": 20263934,
+    "n3_f16": 20263938,
+    "n3_f20": 20263942,
+    "n3_f24": 20263946,
+    "n3_f28": 20263950,
+    "n3_f32": 20263954,
+    "n3_f8": 20263930
+  },
+  "share_m": 1,
+  "simulation_level": "group",
+  "started_utc": "2026-09-16T16:33:27.328171+00:00",
+  "status": "COMPLETE",
+  "timestamp_utc": "2026-09-16T16:33:27.328171+00:00",
+  "topologies": [
+    "none",
+    "directional",
+    "edge",
+    "pair",
+    "neighbor"
+  ],
+  "unique_physical_group_evaluations": 700000
+}

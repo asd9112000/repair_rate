@@ -312,7 +312,7 @@ depth/width 的 sensitivity study 前，應另明確選定 array packing policy�
 | `--shared-columns N` | `0` | 可共享／重新分配的 columns per relevant owner |
 | `--local-first` | enabled | local success 時不做不必要的 borrowed configurations |
 | `--max-borrows N` | `3` | one group 的最大 borrowed physical lines |
-| `--solution-take legacy\|early\|group` | `legacy` | 四個 SA 的 solution selection policy |
+| `--solution-take legacy\|early\|group_no_scratch_v2\|group_compressed_legacy` | `legacy` | 四個 SA 的明確 solution selection policy；舊 `group` 僅是 compressed-legacy 相容別名 |
 
 Topology：
 

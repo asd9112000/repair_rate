@@ -1,14 +1,16 @@
 .DEFAULT_GOAL := all
 
+
+.PHONY:  00_thesis
 .PHONY:  all simulators tools clean
 .PHONY:  gen_fault fault_generator_b fault_generator_rand_b
 .PHONY:  organize_fault organize_fault_b
-.PHONY:  basic_pe_b basic_pe_r
+.PHONY:  basic_pe_b basic_pe_r bist_overlap_timing_b t1_date_latency_experiment_b
 .PHONY:  rdr_b rdr_r
 .PHONY:  sl_r sl_b
 .PHONY:  sl_sram_r sl_sram_b
 .PHONY:  dynamic_sharing_b dynamic_sharing_r dynamic_sram_recam_b dynamic_sram_recam_r hierarchical_recam_b hierarchical_recam_r
-.PHONY:  test test_recam_overflow test_recam_paper_faithful test_remap_validator test_dynamic_spare_sharing_foundation test_dynamic_spare_sharing_policy test_solution_take_policy test_dynamic_spare_sharing_layout test_layout_2x2_regression test_directional_multi_config_analyzer test_dynamic_repair_rate_sweep test_dynamic_remap_output test_bira_latency test_dss_post_bist_latency test_dss_post_bist_latency_sweep test_phase4j_policy_tradeoff test_phase4k_group_dominance_analysis test_fault_address_bist test_recam_common_models test_sram_recam_model test_sram_fault_collection_fifo test_sram_recam_dynamic_equivalence test_hierarchical_recam test_hierarchical_fault_models test_canonical_experiment test_canonical_sweep
+.PHONY:  test test_recam_overflow test_recam_paper_faithful test_remap_validator test_dynamic_spare_sharing_foundation test_dynamic_spare_sharing_policy test_solution_take_policy test_dynamic_spare_sharing_layout test_layout_2x2_regression test_directional_multi_config_analyzer test_directional_v2_group_global test_directional_v2_global_known_witness test_directional_v2_global_contains_greedy test_directional_v2_global_vs_bruteforce test_canonical_global_corpus_audit test_canonical_directional_early test_canonical_global_noscratch test_dynamic_repair_rate_sweep test_dynamic_remap_output test_r3_group_plotting test_bira_latency test_dss_post_bist_latency test_dss_post_bist_latency_sweep test_phase4j_policy_tradeoff test_phase4k_group_dominance_analysis test_fault_address_bist test_bist_overlap_timing_model test_dss_timeline_correlation test_dss_formal_latency_preflight e0l_generate_candidate_corpus test_recam_common_models test_sram_recam_model test_sram_fault_collection_fifo test_sram_recam_dynamic_equivalence test_hierarchical_recam test_hierarchical_fault_models test_canonical_experiment test_canonical_sweep
 .PHONY:  validate_remap_b validate_remap
 .PHONY:  analyze_redundantrate analyze_spareline analyze_spareline_sram sim_DynamicSpareSharing
 
@@ -37,13 +39,16 @@ SRCS = $(wildcard $(SRCDIR)/*.cpp)
 OBJS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 APP_SRCS = basicPEarray.cpp RedundantRate.cpp SharedLine.cpp SharedLine_3way.cpp \
 	SharedLine_SRAM.cpp DynamicSpareSharing.cpp \
-	DynamicSpareSharing_SRAM_RECAM.cpp HierarchicalRECAM.cpp ValidateRemap.cpp
+	DynamicSpareSharing_SRAM_RECAM.cpp HierarchicalRECAM.cpp ValidateRemap.cpp \
+	BistOverlapTiming.cpp T1DateLatencyExperiment.cpp
 APP_OBJS = $(patsubst %.cpp,$(APP_OBJDIR)/%.o,$(APP_SRCS))
 TEST_SRCS = tests/recam_cam_overflow_test.cpp \
 	tests/recam_paper_faithful_test.cpp tests/remap_validator_test.cpp \
 	tests/dynamic_spare_sharing_foundation_test.cpp \
 	tests/dynamic_spare_sharing_policy_test.cpp \
 	tests/solution_take_policy_test.cpp \
+	tests/directional_v2_group_global_test.cpp \
+	tests/canonical_global_corpus_audit.cpp \
 	tests/directional_multi_config_analyzer_test.cpp \
 	tests/dynamic_spare_sharing_layout_test.cpp \
 	tests/bira_latency_test.cpp \
@@ -52,6 +57,10 @@ TEST_SRCS = tests/recam_cam_overflow_test.cpp \
 	tests/phase4j_policy_tradeoff_test.cpp \
 	tests/phase4k_group_dominance_analysis_test.cpp \
 	tests/fault_address_bist_test.cpp \
+	tests/bist_overlap_timing_model_test.cpp \
+	tests/dss_timeline_correlation_test.cpp \
+	tests/dss_formal_latency_preflight_test.cpp \
+	tests/e0l_generate_candidate_corpus.cpp \
 	tests/recam_common_models_test.cpp \
 	tests/sram_recam_model_test.cpp \
 	tests/sram_fault_collection_fifo_test.cpp \
@@ -71,6 +80,8 @@ DYNAMIC_SHARING_TARGET = $(BINDIR)/DynamicSpareSharing
 DYNAMIC_SRAM_RECAM_TARGET = $(BINDIR)/DynamicSpareSharing_SRAM_RECAM
 HIERARCHICAL_RECAM_TARGET = $(BINDIR)/HierarchicalRECAM
 REMAP_VALIDATOR_TARGET = $(BINDIR)/validate_remap
+BIST_OVERLAP_TIMING_TARGET = $(BINDIR)/BistOverlapTiming
+T1_DATE_LATENCY_EXPERIMENT_TARGET = $(BINDIR)/T1DateLatencyExperiment
 FAULT_GENERATOR_TARGET = $(BINDIR)/fault_generator
 FAULT_GENERATOR_RAND_TARGET = $(BINDIR)/fault_generator_rand_amount
 FAULT_ORGANIZER_TARGET = $(BINDIR)/fault_organizer
@@ -81,6 +92,7 @@ REMAP_VALIDATOR_TEST_TARGET = $(TESTDIR)/remap_validator_test
 DYNAMIC_FOUNDATION_TEST_TARGET = $(TESTDIR)/dynamic_spare_sharing_foundation_test
 DYNAMIC_POLICY_TEST_TARGET = $(TESTDIR)/dynamic_spare_sharing_policy_test
 SOLUTION_TAKE_TEST_TARGET = $(TESTDIR)/solution_take_policy_test
+DIRECTIONAL_V2_GROUP_GLOBAL_TEST_TARGET = $(TESTDIR)/directional_v2_group_global_test
 DIRECTIONAL_MULTI_CONFIG_TEST_TARGET = $(TESTDIR)/directional_multi_config_analyzer_test
 DYNAMIC_LAYOUT_TEST_TARGET = $(TESTDIR)/dynamic_spare_sharing_layout_test
 BIRA_LATENCY_TEST_TARGET = $(TESTDIR)/bira_latency_test
@@ -89,6 +101,10 @@ DSS_POST_BIST_LATENCY_SWEEP_TEST_TARGET = $(TESTDIR)/dss_post_bist_latency_sweep
 PHASE4J_POLICY_TRADEOFF_TEST_TARGET = $(TESTDIR)/phase4j_policy_tradeoff_test
 PHASE4K_GROUP_DOMINANCE_ANALYSIS_TEST_TARGET = $(TESTDIR)/phase4k_group_dominance_analysis_test
 FAULT_ADDRESS_BIST_TEST_TARGET = $(TESTDIR)/fault_address_bist_test
+BIST_OVERLAP_TIMING_MODEL_TEST_TARGET = $(TESTDIR)/bist_overlap_timing_model_test
+DSS_TIMELINE_CORRELATION_TEST_TARGET = $(TESTDIR)/dss_timeline_correlation_test
+DSS_FORMAL_LATENCY_PREFLIGHT_TEST_TARGET = $(TESTDIR)/dss_formal_latency_preflight_test
+E0L_CANDIDATE_CORPUS_TARGET = $(TESTDIR)/e0l_generate_candidate_corpus
 RECAM_COMMON_MODELS_TEST_TARGET = $(TESTDIR)/recam_common_models_test
 SRAM_RECAM_MODEL_TEST_TARGET = $(TESTDIR)/sram_recam_model_test
 SRAM_FAULT_FIFO_TEST_TARGET = $(TESTDIR)/sram_fault_collection_fifo_test
@@ -104,6 +120,12 @@ all: simulators tools
 simulators: basic_pe_b rdr_b sl_b sl_sram_b dynamic_sharing_b dynamic_sram_recam_b hierarchical_recam_b
 
 tools: validate_remap_b fault_generator_b fault_generator_rand_b organize_fault_b
+
+$(BIST_OVERLAP_TIMING_TARGET): $(APP_OBJDIR)/BistOverlapTiming.o $(OBJS) | $(BINDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
+
+$(T1_DATE_LATENCY_EXPERIMENT_TARGET): $(APP_OBJDIR)/T1DateLatencyExperiment.o $(OBJS) | $(BINDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
 
 $(OBJDIR) $(APP_OBJDIR) $(TEST_OBJDIR) $(BINDIR) $(TESTDIR):
 	@mkdir -p $@
@@ -179,6 +201,10 @@ hierarchical_recam_b: $(HIERARCHICAL_RECAM_TARGET)
 
 validate_remap_b: $(REMAP_VALIDATOR_TARGET)
 
+bist_overlap_timing_b: $(BIST_OVERLAP_TIMING_TARGET)
+
+t1_date_latency_experiment_b: $(T1_DATE_LATENCY_EXPERIMENT_TARGET)
+
 fault_generator_b: $(FAULT_GENERATOR_TARGET)
 
 fault_generator_rand_b: $(FAULT_GENERATOR_RAND_TARGET)
@@ -220,6 +246,59 @@ $(SOLUTION_TAKE_TEST_TARGET): $(TEST_OBJDIR)/solution_take_policy_test.o $(OBJS)
 
 test_solution_take_policy: $(SOLUTION_TAKE_TEST_TARGET)
 	./$(SOLUTION_TAKE_TEST_TARGET)
+
+$(DIRECTIONAL_V2_GROUP_GLOBAL_TEST_TARGET): $(TEST_OBJDIR)/directional_v2_group_global_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_directional_v2_group_global: $(DIRECTIONAL_V2_GROUP_GLOBAL_TEST_TARGET)
+	./$(DIRECTIONAL_V2_GROUP_GLOBAL_TEST_TARGET)
+
+test_directional_v2_global_known_witness: test_directional_v2_group_global
+
+test_directional_v2_global_contains_greedy: test_directional_v2_group_global
+
+test_directional_v2_global_vs_bruteforce: test_directional_v2_group_global
+
+$(TESTDIR)/canonical_global_corpus_audit: $(TEST_OBJDIR)/canonical_global_corpus_audit.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_canonical_global_corpus_audit: $(TESTDIR)/canonical_global_corpus_audit
+	./$(TESTDIR)/canonical_global_corpus_audit \
+		tmp/repair_rate_matrix_v2_normalized_1k \
+		tmp/canonical_global_closure
+
+test_canonical_directional_early:
+	scripts/simulation/run_verilator_test.sh recam_dss_canonical_streaming_early_core \
+		rtl/dss_canonical/policy/early/recam_dss_canonical_streaming_early_core.v \
+		tb/dss_canonical/recam_dss_canonical_streaming_early_core_test.cpp \
+		rtl/dss_v2/common/dss_v2_params_pkg.sv \
+		rtl/dss_v2/common/dss_v2_types_pkg.sv \
+		rtl/dss_v2/group/dss_v2_group_slot_decode.sv \
+		rtl/dss_v2/topology/dss_topology_2x2_directional.sv \
+		rtl/dss_v2/resource/dss_v2_resource_feasibility.sv \
+		rtl/dss_v2/rs3cs3m1/dss_v2_rs3cs3m1_config_table.sv \
+		rtl/dss_v2/rs3cs3m1/dss_v2_rs3cs3m1_topology.sv \
+		rtl/dss_v2/resource/dss_v2_resource_ledger.sv \
+		rtl/dss_v2/adapter/dss_v2_legacy_ledger_diagnostic_adapter.sv \
+		-- 2 1000
+	scripts/simulation/run_verilator_test.sh recam_dss_canonical_streaming_early_core \
+		rtl/dss_canonical/policy/early/recam_dss_canonical_streaming_early_core.v \
+		tb/dss_canonical/recam_dss_canonical_streaming_early_core_test.cpp \
+		rtl/dss_v2/common/dss_v2_params_pkg.sv \
+		rtl/dss_v2/common/dss_v2_types_pkg.sv \
+		rtl/dss_v2/group/dss_v2_group_slot_decode.sv \
+		rtl/dss_v2/topology/dss_topology_2x2_directional.sv \
+		rtl/dss_v2/resource/dss_v2_resource_feasibility.sv \
+		rtl/dss_v2/rs3cs3m1/dss_v2_rs3cs3m1_config_table.sv \
+		rtl/dss_v2/rs3cs3m1/dss_v2_rs3cs3m1_topology.sv \
+		rtl/dss_v2/resource/dss_v2_resource_ledger.sv \
+		rtl/dss_v2/adapter/dss_v2_legacy_ledger_diagnostic_adapter.sv \
+		-GRESOURCE_POINT=3 -- 3 1000
+
+test_canonical_global_noscratch:
+	scripts/simulation/run_verilator_test.sh recam_dss_canonical_global_noscratch_core \
+		rtl/dss_canonical/policy/global/recam_dss_canonical_global_noscratch_core.v \
+		tb/dss_canonical/recam_dss_canonical_global_noscratch_core_test.cpp
 
 $(DIRECTIONAL_MULTI_CONFIG_TEST_TARGET): $(TEST_OBJDIR)/directional_multi_config_analyzer_test.o $(OBJS) | $(TESTDIR)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
@@ -270,6 +349,31 @@ $(FAULT_ADDRESS_BIST_TEST_TARGET): $(TEST_OBJDIR)/fault_address_bist_test.o $(OB
 
 test_fault_address_bist: $(FAULT_ADDRESS_BIST_TEST_TARGET)
 	./$(FAULT_ADDRESS_BIST_TEST_TARGET)
+
+$(BIST_OVERLAP_TIMING_MODEL_TEST_TARGET): $(TEST_OBJDIR)/bist_overlap_timing_model_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_bist_overlap_timing_model: $(BIST_OVERLAP_TIMING_MODEL_TEST_TARGET)
+	./$(BIST_OVERLAP_TIMING_MODEL_TEST_TARGET)
+
+$(DSS_TIMELINE_CORRELATION_TEST_TARGET): $(TEST_OBJDIR)/dss_timeline_correlation_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_dss_timeline_correlation: $(DSS_TIMELINE_CORRELATION_TEST_TARGET)
+	./$(DSS_TIMELINE_CORRELATION_TEST_TARGET)
+
+$(DSS_FORMAL_LATENCY_PREFLIGHT_TEST_TARGET): $(TEST_OBJDIR)/dss_formal_latency_preflight_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_dss_formal_latency_preflight: $(DSS_FORMAL_LATENCY_PREFLIGHT_TEST_TARGET)
+	./$(DSS_FORMAL_LATENCY_PREFLIGHT_TEST_TARGET) \
+		$(TESTDIR)/s1d_date_2x2_preflight_only.csv
+
+$(E0L_CANDIDATE_CORPUS_TARGET): $(TEST_OBJDIR)/e0l_generate_candidate_corpus.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+e0l_generate_candidate_corpus: $(E0L_CANDIDATE_CORPUS_TARGET)
+	./$(E0L_CANDIDATE_CORPUS_TARGET) results/date_2x2_latency/E0L_DATE_2X2_LATENCY_V1/candidate_corpus.csv
 
 $(RECAM_COMMON_MODELS_TEST_TARGET): $(TEST_OBJDIR)/recam_common_models_test.o $(OBJS) | $(TESTDIR)
 	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
@@ -323,6 +427,9 @@ test_hierarchical_fault_models: $(HIERARCHICAL_RECAM_TARGET)
 
 test_dynamic_repair_rate_sweep: $(DYNAMIC_SHARING_TARGET)
 	python3 tests/dynamic_repair_rate_sweep_test.py ./$(DYNAMIC_SHARING_TARGET)
+
+test_r3_group_plotting:
+	python3 tests/r3_group_plotting_test.py
 
 test_dynamic_remap_output: $(DYNAMIC_SHARING_TARGET) $(REMAP_VALIDATOR_TARGET)
 	python3 tests/dynamic_remap_output_test.py \
@@ -420,3 +527,6 @@ generate_DynamicSpareSharing_table_gallery:
 
 sim_DynamicSpareSharing_SRAM_RECAM: $(DYNAMIC_SRAM_RECAM_TARGET)
 	@./scripts/group/sram_recam/sweep.sh $(ARGS)
+
+00_thesis:
+	@./00_thesis/00_my_thesis/build_thesis.sh

@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <optional>
 #include <set>
 #include <sstream>
@@ -123,6 +124,21 @@ void verifyFaultGenerator()
             }
         }
     }
+
+    config.faultCountModel =
+        dynamic_spare::FaultCountModel::MultinomialUniform;
+    dynamic_spare::DynamicFaultGenerator multinomialFirst(config);
+    dynamic_spare::DynamicFaultGenerator multinomialSecond(config);
+    const FaultGroup multinomialGroup = multinomialFirst.generate(0);
+    const auto multinomialCounts = faultCounts(multinomialGroup);
+    require(
+        std::accumulate(
+            multinomialCounts.begin(), multinomialCounts.end(),
+            std::size_t{0}) ==
+            config.faultCount,
+        "Multinomial fault generation did not preserve the fixed group total");
+    require(sameFaultGroup(multinomialGroup, multinomialSecond.generate(0)),
+            "Fixed-seed multinomial fault generation is not deterministic");
 
     config.faultCountModel = dynamic_spare::FaultCountModel::UserDefined;
     config.userDefinedFaultCounts = {{2, 4, 5, 9}};

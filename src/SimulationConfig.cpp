@@ -225,6 +225,8 @@ const char *toString(FaultCountModel model) noexcept
     {
         case FaultCountModel::FileProvided: return "file_provided";
         case FaultCountModel::Uniform: return "uniform";
+        case FaultCountModel::MultinomialUniform:
+            return "multinomial_uniform";
         case FaultCountModel::ModerateImbalance: return "moderate_imbalance";
         case FaultCountModel::StrongImbalance: return "strong_imbalance";
         case FaultCountModel::Hotspot: return "hotspot";
@@ -284,8 +286,46 @@ const char *toString(SolutionTakePolicy policy) noexcept
     switch (policy)
     {
         case SolutionTakePolicy::Legacy: return "legacy";
+        case SolutionTakePolicy::LocalFirst: return "local_first";
         case SolutionTakePolicy::Early: return "early";
-        case SolutionTakePolicy::GroupCompressed: return "group";
+        case SolutionTakePolicy::GroupCompressed: return "group_compressed_legacy";
+        case SolutionTakePolicy::GroupNoScratchV2: return "group_no_scratch_v2";
+        case SolutionTakePolicy::GroupGreedyRtlCanonical:
+            return "group_greedy_rtl_canonical";
+        case SolutionTakePolicy::GroupGlobal: return "group_global";
+        case SolutionTakePolicy::DirectionalV2GroupGlobal:
+            return "directional_v2_group_global";
+        case SolutionTakePolicy::DirectionalV2GroupGlobalCanonical:
+            return "directional_v2_group_global_canonical";
+        case SolutionTakePolicy::DirectionalV2Early:
+            return "directional_v2_early";
+        case SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1:
+            return "one_by_four_two_pairwise_early_v1";
+        case SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1:
+            return "one_by_four_two_pairwise_pair_global_v1";
+        case SolutionTakePolicy::OneByFourSingleHopEarlyV1:
+            return "one_by_four_single_hop_early_v1";
+        case SolutionTakePolicy::OneByFourSingleHopGlobalV1:
+            return "one_by_four_single_hop_global_v1";
+        case SolutionTakePolicy::OneByFourTwoPairwiseReleaseAwareEarlyV1:
+            return "one_by_four_two_pairwise_release_aware_early_v1";
+        case SolutionTakePolicy::OneByFourSingleHopReleaseAwareEarlyV1:
+            return "one_by_four_single_hop_release_aware_early_v1";
+    }
+    return "unknown";
+}
+
+const char *toString(ConfigContractVersion version) noexcept
+{
+    switch (version)
+    {
+        case ConfigContractVersion::GenericRecamCandidateV1:
+            return "generic_recam_candidate_v1";
+        case ConfigContractVersion::FrozenDate2x2M1:
+            return "frozen_date_2x2_m1";
+        case ConfigContractVersion::Rs3Cs3M1: return "rs3cs3_m1";
+        case ConfigContractVersion::HistoricalCppV2SlotMapV1:
+            return "historical_cpp_v2_slot_map_v1";
     }
     return "unknown";
 }

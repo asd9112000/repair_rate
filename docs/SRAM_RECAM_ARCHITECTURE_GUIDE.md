@@ -11,7 +11,7 @@ RECAM 的共通 fault、CAM、matrix 與 repair semantics 以
 [RECAM_SPEC.md](RECAM_SPEC.md) 為準；本文件只補充 SRAM 儲存、搜尋、延遲、面積與
 runtime 組織的差異。
 
-`--solution-take legacy|early|group` 與本文件的 SRAM search policy 是正交設定：
+`--solution-take legacy|early|group_no_scratch_v2|group_compressed_legacy` 與本文件的 SRAM search policy 是正交設定；舊 `group` 僅保留為 compressed-legacy 相容別名：
 前者決定四個 SA 如何從既有 RECAM-valid solutions 中選出 group solution；後者只
 決定 SRAM lookup/search parallelism 與 latency。相同 solution-take policy 下，
 Serial／Chunked／Wide 必須保持相同 repair result。

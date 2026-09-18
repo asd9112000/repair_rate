@@ -95,6 +95,16 @@ struct GlobalCamAllocation
     }
 };
 
+// Per-group, non-allocating characterization of the Tier-2 fallback demand.
+// It uses the device scheduler's zero-line-capacity Tier-0/Tier-1 boundary and
+// the same GlobalRepairTag canonicalization, but never reserves a global pool.
+struct Tier2CamFallbackMetrics
+{
+    bool required = false;
+    std::size_t uniqueTagCount = 0;
+    std::string tagContractVersion = "GLOBAL_REPAIR_TAG_V1";
+};
+
 class GlobalOnlineRepairPool
 {
 public:
@@ -291,6 +301,17 @@ private:
     DynamicRepairSimulator analyzer_;
     std::optional<HardwareMetrics> backendHardware_;
 };
+
+Tier2CamFallbackMetrics characterizeTier2CamFallback(
+    const FaultGroup &faults,
+    const SimulationConfig &groupConfig,
+    std::size_t runIndex,
+    const HierarchicalRecamConfig &hierarchicalConfig = {});
+
+Tier2CamFallbackMetrics summarizeTier2CamMappings(
+    const std::vector<BufferRepairMapping> &mappings,
+    CamReuseGranularity granularity,
+    std::uint32_t dataWordBits);
 
 class HierarchicalCsvReporter
 {

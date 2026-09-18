@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：cross-cutting
 > 建立時間：2026-09-02T00:00:00+08:00
-> 最後修改時間：2026-09-07T00:00:00+08:00
+> 最後修改時間：2026-09-13T06:28:23+08:00
 > 本文件權威主題：docs 內文件分類、責任分工與參數位置索引
 
 本文件只管理 `docs/` 內的文本。它是導航與責任分工文件，不取代任何架構或行為規格。
@@ -20,6 +20,7 @@
 | [REPORTS.md](REPORTS.md) | Current | cross-cutting | `reports/` scope、run artifact 與輸出位置規則 |
 | [EXPERIMENT_CATALOG.md](EXPERIMENT_CATALOG.md) | Current | cross-cutting | 正式實驗 workflow 的入口指令、資料定位與 plot/table input 導航 |
 | [SRAM_RECAM_ARCHITECTURE_GUIDE.md](SRAM_RECAM_ARCHITECTURE_GUIDE.md) | Current | sram-group | SRAM-RECAM storage、search、latency、area、runtime variants |
+| [dss_execution/00_DSS_EXECUTION_MASTER.md](dss_execution/00_DSS_EXECUTION_MASTER.md) | Current | dss-thesis-execution | 新 DSS thesis execution 的 phase authorization、cross-dependency、evidence 與 entry gates；不取代現有語義權威 |
 | [handoff/MODERATE_REPAIR_STUDY_HANDOFF.md](handoff/MODERATE_REPAIR_STUDY_HANDOFF.md) | Handoff | moderate-study | 特定研究階段的狀態、結果摘要與交接 |
 | [handoff/EXPERIMENT_WORKFLOW_HANDOFF.md](handoff/EXPERIMENT_WORKFLOW_HANDOFF.md) | Handoff | experiment-workflow | C++ core、Python runner、manifest 與 scope-first reports workflow 的交接 |
 | [archive/](archive/README.md) | Archive | historical | 已取代規格與歷史設計快照 |

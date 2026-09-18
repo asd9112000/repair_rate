@@ -20,6 +20,116 @@ namespace dynamic_spare
 namespace
 {
 
+struct PolicySemantics
+{
+    const char *solutionClass;
+    const char *candidateContract;
+    const char *priorityClass;
+    const char *searchScope;
+    bool backtracking;
+};
+
+PolicySemantics policySemantics(SolutionTakePolicy policy)
+{
+    switch (policy)
+    {
+        case SolutionTakePolicy::DirectionalV2Early:
+            return {"LOCAL_FIRST", "DIRECTIONAL_V2", "LOCAL_FIRST",
+                    "SEQUENTIAL_FIRST_LEGAL", false};
+        case SolutionTakePolicy::GroupGreedyRtlCanonical:
+            // This baseline commits one legal V2 slot per SA.  It never
+            // evaluates feasibility of a future SA before that commitment.
+            return {"EARLY", "DIRECTIONAL_V2", "RELEASE_AWARE",
+                    "SEQUENTIAL_FIRST_LEGAL", false};
+        case SolutionTakePolicy::DirectionalV2GroupGlobal:
+            return {"GLOBAL", "DIRECTIONAL_V2", "JOINT_ORACLE",
+                    "JOINT_COMPLETE_TUPLE_SEARCH", true};
+        case SolutionTakePolicy::DirectionalV2GroupGlobalCanonical:
+            return {"GLOBAL", "DIRECTIONAL_V2", "CANONICAL_R_L_RB_B",
+                    "JOINT_COMPLETE_TUPLE_WITH_RELEASE_OBLIGATIONS", true};
+        case SolutionTakePolicy::GroupGlobal:
+            return {"GLOBAL", "GENERIC_RECAM", "JOINT_ORACLE",
+                    "JOINT_GENERIC_GROUP_SEARCH", true};
+        case SolutionTakePolicy::Early:
+            return {"EARLY", "GENERIC_RECAM", "RELEASE_AWARE",
+                    "SEQUENTIAL_RANKED_COMMIT", false};
+        case SolutionTakePolicy::LocalFirst:
+            return {"LOCAL_FIRST", "GENERIC_RECAM", "LOCAL_FIRST",
+                    "SEQUENTIAL_FIRST_LEGAL", false};
+        case SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1:
+        case SolutionTakePolicy::OneByFourSingleHopEarlyV1:
+            return {"LOCAL_FIRST", "R1B_1X4", "LOCAL_FIRST",
+                    "SEQUENTIAL_FIRST_LEGAL", false};
+        case SolutionTakePolicy::OneByFourTwoPairwiseReleaseAwareEarlyV1:
+        case SolutionTakePolicy::OneByFourSingleHopReleaseAwareEarlyV1:
+            return {"EARLY", "R1B_1X4", "RELEASE_AWARE",
+                    "SEQUENTIAL_RANKED_COMMIT", false};
+        case SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1:
+            return {"PAIR_GLOBAL", "R1B_1X4", "PAIR_JOINT_ORACLE",
+                    "PAIR_COMPLETE_TUPLE_SEARCH", true};
+        case SolutionTakePolicy::OneByFourSingleHopGlobalV1:
+            return {"GLOBAL", "R1B_1X4", "JOINT_ORACLE",
+                    "JOINT_COMPLETE_TUPLE_SEARCH", true};
+        case SolutionTakePolicy::Legacy:
+            return {"LOCAL", "LOCAL", "LOCAL_ONLY", "LOCAL", false};
+        default:
+            return {"OTHER", "POLICY_SPECIFIC", "UNSPECIFIED", "POLICY_SPECIFIC", false};
+    }
+}
+
+const char *canonicalTopologyName(SharingTopology topology)
+{
+    switch (topology)
+    {
+        case SharingTopology::NoSharing: return "none";
+        case SharingTopology::Directional: return "directional";
+        case SharingTopology::GlobalPool: return "global";
+        case SharingTopology::PairwiseEdge: return "edge";
+        case SharingTopology::PairSharing: return "pair";
+        case SharingTopology::NeighborSharing: return "neighbor";
+    }
+    return "unknown";
+}
+
+void fnv1aAppend(std::uint64_t &hash, std::uint64_t value)
+{
+    for (std::size_t byte = 0; byte < sizeof(value); ++byte)
+    {
+        hash ^= static_cast<unsigned char>(value >> (byte * 8));
+        hash *= 1099511628211ULL;
+    }
+}
+
+std::string pairedCorpusHash(
+    const SimulationConfig &config,
+    const std::vector<FaultGroup> &groups)
+{
+    std::uint64_t hash = 1469598103934665603ULL;
+    fnv1aAppend(hash, config.randomSeed);
+    fnv1aAppend(hash, config.faultCount);
+    fnv1aAppend(hash, groups.size());
+    for (const FaultGroup &group : groups)
+    {
+        for (const auto &subarray : group)
+        {
+            fnv1aAppend(hash, subarray.size());
+            for (const Fault &fault : subarray)
+            {
+                fnv1aAppend(hash, static_cast<std::uint32_t>(fault.HBMID));
+                fnv1aAppend(hash, static_cast<std::uint32_t>(fault.ChannelID));
+                fnv1aAppend(hash, static_cast<std::uint32_t>(fault.BankID));
+                fnv1aAppend(hash, static_cast<std::uint32_t>(fault.SubarrayGroupID));
+                fnv1aAppend(hash, static_cast<std::uint32_t>(fault.SubarrayID));
+                fnv1aAppend(hash, static_cast<std::uint32_t>(fault.r));
+                fnv1aAppend(hash, static_cast<std::uint32_t>(fault.c));
+            }
+        }
+    }
+    std::ostringstream output;
+    output << std::hex << hash;
+    return output.str();
+}
+
 std::ofstream openCsv(const std::filesystem::path &path, bool append)
 {
     std::ofstream output(
@@ -48,6 +158,26 @@ std::string formatIndices(const std::vector<std::size_t> &indices)
             output << '|';
         }
         output << indices[index];
+    }
+    return output.str();
+}
+
+std::string formatFaultGroup(const FaultGroup &group)
+{
+    std::ostringstream output;
+    for (std::size_t subarray = 0; subarray < group.size(); ++subarray)
+    {
+        if (subarray != 0)
+            output << '|';
+        for (std::size_t index = 0; index < group[subarray].size(); ++index)
+        {
+            if (index != 0)
+                output << ';';
+            const Fault &fault = group[subarray][index];
+            output << fault.HBMID << ':' << fault.ChannelID << ':'
+                   << fault.BankID << ':' << fault.SubarrayGroupID << ':'
+                   << fault.SubarrayID << ':' << fault.r << ':' << fault.c;
+        }
     }
     return output.str();
 }
@@ -252,6 +382,182 @@ std::size_t baselineHybridEntries(const SimulationConfig &config)
 
 } // namespace
 
+std::string DynamicCsvReporter::pairedCorpusId(
+    const SimulationConfig &config,
+    const std::vector<FaultGroup> &groups)
+{
+    return std::string(kPairedCorpusSchemaVersion) + "-" +
+        pairedCorpusHash(config, groups);
+}
+
+void DynamicCsvReporter::writePairedCorpus(
+    const std::filesystem::path &path,
+    const SimulationConfig &config,
+    const std::vector<FaultGroup> &groups,
+    bool append)
+{
+    std::ofstream output = openCsv(path, append);
+    if (!append)
+    {
+        output << "schema_version,corpus_id,corpus_hash,generator_version,seed,"
+                  "simulation_level,topology,geometry,Rs,Cs,share_m,share_row,"
+                  "share_col,fault_model,group_fault_count,group_id,device_id,"
+                  "sa_local_faults\n";
+    }
+    const std::string corpusId = pairedCorpusId(config, groups);
+    const std::string hash = pairedCorpusHash(config, groups);
+    const int shareM = config.layout == GroupLayout::Line1x4
+        ? config.sharedRows : std::max(config.sharedRows, config.sharedColumns);
+    for (std::size_t groupId = 0; groupId < groups.size(); ++groupId)
+    {
+        output << kPairedCorpusSchemaVersion << ',' << corpusId << ',' << hash
+               << ",dynamic_fault_generator_v1," << config.randomSeed
+               << ",group," << toString(config.topology) << ','
+               << toString(config.layout) << ',' << config.spareRows << ','
+               << config.spareColumns << ',' << shareM << ','
+               << config.sharedRows << ',' << config.sharedColumns << ','
+               << toString(config.faultCountModel) << ',' << config.faultCount
+               << ',' << groupId << ",-," << formatFaultGroup(groups[groupId])
+               << '\n';
+    }
+}
+
+void DynamicCsvReporter::writePairedPolicyResults(
+    const std::filesystem::path &path,
+    const SimulationConfig &config,
+    const std::vector<FaultGroup> &groups,
+    const std::vector<GroupRepairResult> &runs,
+    bool append)
+{
+    if (groups.size() != runs.size())
+        throw std::invalid_argument("Paired corpus/results group count differs");
+    std::ofstream output = openCsv(path, append);
+    if (!append)
+    {
+        output << "schema_version,corpus_id,corpus_hash,group_id,canonical_policy_id,implementation_policy_id,policy_id,sharing_policy,topology,layout,share_row,share_col,N,RS,CS,F_GROUP,seed,paper_canonical,legacy_alias_of,"
+                  "solution_policy,config_contract_version,solution_class,"
+                  "candidate_contract,priority_class,search_scope,backtracking,"
+                  "tier2_cam_required,tier2_unique_tag_count,tier2_tag_contract_version,simulator_revision,"
+                  "repair_success,selected_config_A,selected_config_B,"
+                  "selected_config_C,selected_config_D,selected_pattern_A,"
+                  "selected_pattern_B,selected_pattern_C,selected_pattern_D,"
+                  "borrowed_rows,borrowed_columns,remaining_rows,remaining_columns,"
+                  "private_rows_per_SA,private_columns_per_SA,shareable_rows_per_SA,"
+                  "total_rows_group,total_columns_group,total_physical_group,"
+                  "local_row_used,local_column_used,own_shareable_row_used,"
+                  "borrowed_shareable_row_used,remaining_shareable_rows,"
+                  "cam_accounting_status,address_cam_used_entries,"
+                  "address_cam_capacity_entries,address_cam_entry_bits,"
+                  "address_cam_capacity_bits,hybrid_cam_used_entries,"
+                  "hybrid_cam_capacity_entries,hybrid_cam_entry_bits,"
+                  "hybrid_cam_capacity_bits,total_cam_capacity_bits,"
+                  "global_candidate_count_A,global_candidate_count_B,"
+                  "global_candidate_count_C,global_candidate_count_D,"
+                  "global_raw_cartesian_product_size,global_search_nodes_visited,"
+                  "global_partial_assignments_pruned,global_complete_assignments_checked,"
+                  "global_legal_complete_assignments,global_first_feasible_node_index,"
+                  "global_runtime_us,global_left_donor_transfers,"
+                  "global_right_donor_transfers,global_middle_donor_choice_branches,"
+                  "global_stopped_at_first_legal,global_exhaustive_enumeration,"
+                  "global_termination_reason\n";
+    }
+    const std::string corpusId = pairedCorpusId(config, groups);
+    const std::string corpusHash = pairedCorpusHash(config, groups);
+    for (std::size_t groupId = 0; groupId < runs.size(); ++groupId)
+    {
+        const GroupRepairResult &run = runs[groupId];
+        const bool lineLayout = config.layout == GroupLayout::Line1x4;
+        const RunHardwareMetrics hardware = aggregateHardware(run);
+        const PolicySemantics semantics = policySemantics(run.solutionTakePolicy);
+        output << kPairedCorpusSchemaVersion << ',' << corpusId << ',' << corpusHash
+               << ',' << groupId << ',' << config.canonicalPolicyId << ','
+               << toString(run.solutionTakePolicy) << ','
+               << toString(run.solutionTakePolicy) << ','
+               << toString(config.topology) << ','
+               << canonicalTopologyName(config.topology) << ','
+               << toString(config.layout) << ',' << config.sharedRows << ','
+               << config.sharedColumns << ',' << config.spareRows << ','
+               << config.spareRows << ',' << config.spareColumns << ','
+               << config.faultCount << ',' << config.randomSeed << ','
+               << (config.paperCanonical ? "true" : "false") << ','
+               << (config.legacyAliasOf.empty() ? "-" : config.legacyAliasOf) << ','
+               << toString(run.solutionTakePolicy) << ','
+               << toString(run.configContractVersion) << ','
+               << semantics.solutionClass << ',' << semantics.candidateContract
+               << ',' << semantics.priorityClass << ',' << semantics.searchScope << ','
+               << (semantics.backtracking ? "true" : "false")
+               << ',' << (run.tier2CamRequired ? 1 : 0)
+               << ',' << run.tier2UniqueTagCount
+               << ',' << run.tier2TagContractVersion
+               << ",cpp_dynamic_repair_v1,"
+               << (run.groupRepairSuccess ? 1 : 0);
+        for (const auto &configId : run.selectedConfigIds)
+            output << ',' << (configId.has_value() ? std::to_string(*configId) : "-");
+        for (const auto &patternId : run.selectedPatternIds)
+            output << ',' << (patternId.has_value() ? std::to_string(*patternId) : "-");
+        output << ',' << run.sharing.borrowedRows << ','
+               << run.sharing.borrowedColumns << ','
+               << run.unusedPhysicalRows << ',' << run.unusedPhysicalColumns
+               << ',' << run.privateRowCountPerSubarray
+               << ',' << run.privateColumnCountPerSubarray
+               << ',' << run.shareableRowCountPerSubarray
+               << ',' << run.totalRowSpareLinesGroup
+               << ',' << run.totalColumnSpareLinesGroup
+               << ',' << run.totalPhysicalSpareLinesGroup
+               << ',' << run.localRowUsed << ',' << run.localColumnUsed
+               << ',' << run.ownShareableRowUsed
+               << ',' << run.borrowedShareableRowUsed
+               << ',' << run.remainingShareableRows;
+        if (lineLayout)
+        {
+            // R1B established 1x4 repair semantics, not a topology-calibrated
+            // CAM capacity or occupancy formula.
+            output << ",NOT_PROVEN,NA,NA,NA,NA,NA,NA,NA,NA,NA";
+        }
+        else
+        {
+            const std::uint64_t addressEntryBits =
+                static_cast<std::uint64_t>(config.rowAddressWidthBits) +
+                config.columnAddressWidthBits;
+            const std::uint64_t addressCapacityBits =
+                checkedMetricMultiply(hardware.addressProvisioned, addressEntryBits);
+            const std::uint64_t hybridEntryBits =
+                config.hybridCamEntryWidthBits.value_or(0);
+            const std::uint64_t hybridCapacityBits =
+                checkedMetricMultiply(hardware.hybridProvisioned, hybridEntryBits);
+            output << ",GENERIC_CPP_CAPACITY,"
+                   << hardware.addressActive << ','
+                   << hardware.addressProvisioned << ','
+                   << addressEntryBits << ',' << addressCapacityBits << ','
+                   << hardware.hybridActive << ','
+                   << hardware.hybridProvisioned << ','
+                   << hybridEntryBits << ',' << hybridCapacityBits << ','
+                   << checkedMetricAdd(addressCapacityBits, hybridCapacityBits);
+        }
+        const GlobalSearchMetrics *search = run.globalSearchMetrics.has_value()
+            ? &*run.globalSearchMetrics : nullptr;
+        for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+            output << ',' << (search ? search->candidateCounts[subarray] : 0);
+        output << ',' << (search ? search->rawCartesianProductSize : 0)
+               << ',' << (search ? search->searchNodesVisited : 0)
+               << ',' << (search ? search->partialAssignmentsPruned : 0)
+               << ',' << (search ? search->completeAssignmentsChecked : 0)
+               << ',' << (search ? search->legalCompleteAssignments : 0)
+               << ',' << (search && search->firstFeasibleNodeIndex.has_value()
+                               ? std::to_string(*search->firstFeasibleNodeIndex)
+                               : "-1")
+               << ',' << (search ? search->runtimeMicroseconds : 0)
+               << ',' << (search ? search->leftDonorTransfers : 0)
+               << ',' << (search ? search->rightDonorTransfers : 0)
+               << ',' << (search ? search->middleSaDonorChoiceBranches : 0)
+               << ',' << (search && search->stoppedAtFirstLegal ? 1 : 0)
+               << ',' << (search && search->exhaustiveEnumeration ? 1 : 0)
+               << ',' << (search && !search->terminationReason.empty()
+                               ? search->terminationReason : "-")
+               << '\n';
+    }
+}
+
 void DynamicCsvReporter::writeAttempts(
     const std::filesystem::path &path,
     const std::vector<SimulationBatch> &batches,
@@ -402,7 +708,8 @@ void DynamicCsvReporter::writeRuns(
            "solution_selection_work,compressed_state_bits,early_success,"
            "group_compressed_success,greedy_loss,remaining_after_A,"
            "remaining_after_B,remaining_after_C,remaining_after_D,"
-           "solution_selection_failure_reason\n";
+           "solution_selection_failure_reason,tier2_cam_required,"
+           "tier2_unique_tag_count,tier2_tag_contract_version\n";
     }
 
     for (const SimulationBatch &batch : batches)
@@ -537,6 +844,9 @@ void DynamicCsvReporter::writeRuns(
                 output << ',' << formatRemaining(remaining);
             output << ',' << (group.solutionSelectionFailureReason.empty()
                     ? "-" : group.solutionSelectionFailureReason)
+                   << ',' << (group.tier2CamRequired ? 1 : 0)
+                   << ',' << group.tier2UniqueTagCount
+                   << ',' << group.tier2TagContractVersion
                    << '\n';
         }
     }
@@ -571,7 +881,9 @@ void DynamicCsvReporter::writeSummary(
            "greedy_loss_count,greedy_loss_rate,"
            "average_feasible_combinations,maximum_feasible_combinations,"
            "average_group_selector_candidates_checked,"
-           "average_compressed_state_bits\n";
+           "average_compressed_state_bits,tier2_cam_required_groups,"
+           "average_tier2_unique_tag_count,maximum_tier2_unique_tag_count,"
+           "tier2_tag_contract_version\n";
     }
 
     for (const SimulationBatch &batch : batches)
@@ -602,6 +914,10 @@ void DynamicCsvReporter::writeSummary(
         std::uint64_t provisionedMatrix = 0;
         std::uint64_t hardwareCost = 0;
         std::uint64_t peakHardwareCost = 0;
+        std::uint64_t tier2CamRequiredGroups = 0;
+        std::uint64_t tier2UniqueTagCount = 0;
+        std::uint64_t maximumTier2UniqueTagCount = 0;
+        std::string tier2TagContractVersion = "-";
         std::vector<std::uint64_t> borrowSamples;
         std::vector<std::uint64_t> cycleSamples;
 
@@ -654,6 +970,13 @@ void DynamicCsvReporter::writeSummary(
             hardwareCost += runHardwareCost;
             peakHardwareCost = std::max(
                 peakHardwareCost, runHardwareCost);
+            tier2CamRequiredGroups += group.tier2CamRequired ? 1 : 0;
+            tier2UniqueTagCount += group.tier2UniqueTagCount;
+            maximumTier2UniqueTagCount = std::max(
+                maximumTier2UniqueTagCount,
+                static_cast<std::uint64_t>(group.tier2UniqueTagCount));
+            if (group.tier2TagContractVersion != "-")
+                tier2TagContractVersion = group.tier2TagContractVersion;
         }
 
         const std::uint64_t physicalSparesPerRun =
@@ -758,6 +1081,10 @@ void DynamicCsvReporter::writeSummary(
             << ',' << maximumFeasibleCombinations
             << ',' << divide(selectorCandidatesChecked, runCount)
             << ',' << divide(compressedStateBits, runCount)
+            << ',' << tier2CamRequiredGroups
+            << ',' << divide(tier2UniqueTagCount, runCount)
+            << ',' << maximumTier2UniqueTagCount
+            << ',' << tier2TagContractVersion
             << '\n';
     }
 }

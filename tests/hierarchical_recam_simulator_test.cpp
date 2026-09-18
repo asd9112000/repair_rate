@@ -250,6 +250,41 @@ void verifySameWordDeduplication()
             "Two cells in one 256-bit repair word consumed two CAM entries");
 }
 
+void verifyTier2FallbackMetrics()
+{
+    const auto hierarchy = hierarchicalConfig(4);
+    dynamic_spare::FaultGroup noFallback{};
+    noFallback[0] = {makeFault({0, 0, 0, 0}, 0, 0, 0)};
+    const auto noDemand = dynamic_spare::characterizeTier2CamFallback(
+        noFallback, baseConfig(), 0, hierarchy);
+    require(!noDemand.required && noDemand.uniqueTagCount == 0,
+            "Local line-repair fixture incorrectly required Tier-2 CAM");
+
+    const auto oneFallback = oneCamWordGroup(0, 0, 0);
+    dynamic_spare::DynamicRepairSimulator analyzer;
+    const bool outcomeBefore = analyzer.run(
+        oneFallback.faults, baseConfig(), 0).groupRepairSuccess;
+    const auto deviceDemand = dynamic_spare::characterizeTier2CamFallback(
+        oneFallback.faults, baseConfig(), 0, hierarchy);
+    const bool outcomeAfter = analyzer.run(
+        oneFallback.faults, baseConfig(), 0).groupRepairSuccess;
+    require(deviceDemand.required && deviceDemand.uniqueTagCount == 1 &&
+                outcomeBefore == outcomeAfter,
+            "Tier-2 instrumentation changed repair outcome or missed one tag");
+
+    const auto repeated = dynamic_spare::summarizeTier2CamMappings(
+        {mappingAt(7, 10), mappingAt(7, 200)},
+        dynamic_spare::CamReuseGranularity::DataWord, 256);
+    require(repeated.required && repeated.uniqueTagCount == 1,
+            "Repeated references to one online word did not deduplicate");
+
+    const auto multiple = dynamic_spare::summarizeTier2CamMappings(
+        {mappingAt(7, 10), mappingAt(8, 10), mappingAt(8, 300)},
+        dynamic_spare::CamReuseGranularity::DataWord, 256);
+    require(multiple.required && multiple.uniqueTagCount == 3,
+            "Multiple online tags were not retained by Tier-2 metrics");
+}
+
 void verifySharingReducesCamDemand()
 {
     dynamic_spare::DeviceRepairScheduler scheduler;
@@ -408,6 +443,7 @@ int main()
         verifyScratchReuseAndPersistentSolution();
         verifyGlobalContentionAndFullTags();
         verifySameWordDeduplication();
+        verifyTier2FallbackMetrics();
         verifySharingReducesCamDemand();
         verifySramBackendAndSerialBistTimeline();
         std::cout << "Hierarchical RECAM simulator tests passed\n";

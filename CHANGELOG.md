@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-09-17 — R3 group derived-data plotting
+
+- Recorded the group-only R3 repair-rate and fault-imbalance figure contract:
+  five policy comparison views, metric-layered output directories, and
+  combined/single-panel PDF/SVG/PNG exports.
+- Fixed `BASELINE_RECAM` to a singleton tuple so policy-set concatenation no
+  longer raises a Python `TypeError`.
+- Added a lightweight plotting regression target covering policy membership,
+  Rs2/Rs3 coverage, output variants/formats, and the current
+  `QUICK_SWEEP / DEVELOPMENT / NON-FORMAL` fixture classification.
+- Compactified R3 legend labels and moved dense `all`-view legends below the
+  axes within the fixed canvas; the regression rejects legend overflow.
+- These plotting changes do not alter simulator semantics, raw CSV schema, or
+  device-level/global-CAM results.
+
 ## 2026-09-10 — Phase 3F/3G functional verification
 
 - Added read-only 12-bit PhysicalResourceLedger snapshot legality/availability

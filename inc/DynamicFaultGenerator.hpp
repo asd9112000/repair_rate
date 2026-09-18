@@ -22,7 +22,7 @@ private:
     class StableRandom;
 
     SimulationConfig config_;
-    std::vector<std::size_t> countsForGroup() const;
+    std::vector<std::size_t> countsForGroup(StableRandom &random) const;
     std::vector<Fault> faultsForSubarray(
         std::size_t count,
         std::size_t runIndex,

@@ -200,6 +200,40 @@ std::uint64_t SerialBistSchedule::arrivalCycle(
         "Serial BIST arrival-cycle overflow");
 }
 
+std::uint64_t SerialBistSchedule::subarrayStartCycle(
+    std::uint32_t subarrayId) const
+{
+    validate();
+    if (subarrayId >= subarrayCount)
+    {
+        throw std::invalid_argument(
+            "Subarray ID is outside the serial BIST group");
+    }
+    const std::uint64_t addressesPerSubarray = checkedMultiply(
+        geometry.rows, geometry.wordsPerRow(),
+        "Serial BIST subarray address-count overflow");
+    return checkedAdd(
+        groupStartCycle,
+        checkedMultiply(
+            checkedMultiply(subarrayId, addressesPerSubarray,
+                            "Serial BIST subarray scan-index overflow"),
+            cyclesPerWord, "Serial BIST subarray start-cycle overflow"),
+        "Serial BIST subarray start-cycle overflow");
+}
+
+std::uint64_t SerialBistSchedule::subarrayCompletionCycle(
+    std::uint32_t subarrayId) const
+{
+    const std::uint64_t addressesPerSubarray = checkedMultiply(
+        geometry.rows, geometry.wordsPerRow(),
+        "Serial BIST subarray address-count overflow");
+    return checkedAdd(
+        subarrayStartCycle(subarrayId),
+        checkedMultiply(addressesPerSubarray, cyclesPerWord,
+                        "Serial BIST subarray completion-cycle overflow"),
+        "Serial BIST subarray completion-cycle overflow");
+}
+
 std::uint64_t SerialBistSchedule::completionCycle() const
 {
     validate();

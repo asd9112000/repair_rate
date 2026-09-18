@@ -63,6 +63,8 @@ struct SerialBistSchedule
 
     void validate() const;
     std::uint64_t arrivalCycle(const Fault &physicalFault) const;
+    std::uint64_t subarrayStartCycle(std::uint32_t subarrayId) const;
+    std::uint64_t subarrayCompletionCycle(std::uint32_t subarrayId) const;
     std::uint64_t completionCycle() const;
 };
 

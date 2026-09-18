@@ -7,6 +7,7 @@
 #include <iostream>
 #include <limits>
 #include <optional>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <tuple>
@@ -17,6 +18,7 @@
 #include "inc/DynamicFaultGenerator.hpp"
 #include "inc/DynamicRemapReporter.hpp"
 #include "inc/DynamicRepairSimulator.hpp"
+#include "inc/HierarchicalRecamSimulator.hpp"
 #include "inc/Fault.hpp"
 #include "inc/SimplifiedFaultLoader.hpp"
 #include "inc/SimulationConfig.hpp"
@@ -52,7 +54,7 @@ void printUsage(const char *program)
         << "  --fault-step N           Fault-count interval (default: 1)\n"
         << "  --spare-min N --spare-max N   Rs=Cs range for repair sweep\n\n"
         << "Fault model:\n"
-        << "  --fault-model uniform|moderate|strong|hotspot|user\n"
+        << "  --fault-model uniform|multinomial_uniform|moderate|strong|hotspot|user\n"
         << "  --fault-counts A,B,C,D   Required for user model\n"
         << "  --spatial uniform|mixed|clustered\n"
         << "  --memory-rows N --memory-columns N\n\n"
@@ -67,7 +69,9 @@ void printUsage(const char *program)
         << "  --minimum-row-reserve N --minimum-column-reserve N\n"
         << "  --single-dimension\n"
         << "  --max-borrows N\n"
-        << "  --solution-take legacy|early|group (default: legacy)\n\n"
+        << "  --solution-take legacy|local_first|early|directional_m1_local_first|directional_m1_early|directional_m1_global|pairwise_row_m1_local_first|pairwise_row_m1_early|pairwise_row_m1_global|single_hop_m1_local_first|single_hop_m1_early|single_hop_m1_global|two_pairwise_m1_local_first|two_pairwise_m1_early|two_pairwise_m1_pair_global|directional_v2_early|group_no_scratch_v2|group_greedy_rtl_canonical|group_compressed_legacy|group_global|directional_v2_group_global|directional_v2_group_global_canonical|one_by_four_two_pairwise_early_v1|one_by_four_two_pairwise_pair_global_v1|one_by_four_single_hop_early_v1|one_by_four_single_hop_global_v1\n"
+        << "  --canonical-policy-id ID --paper-canonical true|false --legacy-alias-of ID\n"
+        << "      'group' remains a deprecated alias for group_compressed_legacy.\n\n"
         << "Hardware/latency:\n"
         << "  --paper-cam-reuse        Buffer capacity = Rs+Cs (default)\n"
         << "  --buffer N               Use a fixed buffer capacity instead\n"
@@ -207,6 +211,8 @@ dynamic_spare::FaultCountModel parseFaultModel(const std::string &value)
 {
     if (value == "uniform")
         return dynamic_spare::FaultCountModel::Uniform;
+    if (value == "multinomial_uniform")
+        return dynamic_spare::FaultCountModel::MultinomialUniform;
     if (value == "moderate")
         return dynamic_spare::FaultCountModel::ModerateImbalance;
     if (value == "strong")
@@ -244,10 +250,59 @@ dynamic_spare::SolutionTakePolicy parseSolutionTake(
 {
     if (value == "legacy")
         return dynamic_spare::SolutionTakePolicy::Legacy;
+    if (value == "local_first" || value == "pairwise_row_m1_local_first")
+        return dynamic_spare::SolutionTakePolicy::LocalFirst;
     if (value == "early")
         return dynamic_spare::SolutionTakePolicy::Early;
-    if (value == "group" || value == "group_compressed")
+    if (value == "directional_m1_local_first")
+        return dynamic_spare::SolutionTakePolicy::DirectionalV2Early;
+    if (value == "directional_m1_early")
+        return dynamic_spare::SolutionTakePolicy::GroupGreedyRtlCanonical;
+    if (value == "directional_m1_global")
+        return dynamic_spare::SolutionTakePolicy::DirectionalV2GroupGlobal;
+    if (value == "pairwise_row_m1_early")
+        return dynamic_spare::SolutionTakePolicy::Early;
+    if (value == "pairwise_row_m1_global")
+        return dynamic_spare::SolutionTakePolicy::GroupGlobal;
+    if (value == "directional_v2_early" ||
+        value == "directional_m1_v2_early")
+        return dynamic_spare::SolutionTakePolicy::DirectionalV2Early;
+    if (value == "group" || value == "group_compressed" || value == "group_compressed_legacy")
         return dynamic_spare::SolutionTakePolicy::GroupCompressed;
+    if (value == "group_no_scratch_v2")
+        return dynamic_spare::SolutionTakePolicy::GroupNoScratchV2;
+    if (value == "group_greedy_rtl_canonical")
+        return dynamic_spare::SolutionTakePolicy::GroupGreedyRtlCanonical;
+    if (value == "group_global")
+        return dynamic_spare::SolutionTakePolicy::GroupGlobal;
+    if (value == "directional_v2_group_global" ||
+        value == "directional_m1_v2_group_global")
+        return dynamic_spare::SolutionTakePolicy::DirectionalV2GroupGlobal;
+    if (value == "directional_v2_group_global_canonical" ||
+        value == "directional_m1_global_canonical")
+        return dynamic_spare::SolutionTakePolicy::DirectionalV2GroupGlobalCanonical;
+    if (value == "one_by_four_two_pairwise_early_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1;
+    if (value == "two_pairwise_m1_local_first")
+        return dynamic_spare::SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1;
+    if (value == "two_pairwise_m1_early" ||
+        value == "one_by_four_two_pairwise_release_aware_early_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourTwoPairwiseReleaseAwareEarlyV1;
+    if (value == "two_pairwise_m1_pair_global")
+        return dynamic_spare::SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1;
+    if (value == "one_by_four_two_pairwise_pair_global_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1;
+    if (value == "one_by_four_single_hop_early_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourSingleHopEarlyV1;
+    if (value == "single_hop_m1_local_first")
+        return dynamic_spare::SolutionTakePolicy::OneByFourSingleHopEarlyV1;
+    if (value == "single_hop_m1_early" ||
+        value == "one_by_four_single_hop_release_aware_early_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourSingleHopReleaseAwareEarlyV1;
+    if (value == "single_hop_m1_global")
+        return dynamic_spare::SolutionTakePolicy::OneByFourSingleHopGlobalV1;
+    if (value == "one_by_four_single_hop_global_v1")
+        return dynamic_spare::SolutionTakePolicy::OneByFourSingleHopGlobalV1;
     throw std::invalid_argument("Unknown solution-take policy: " + value);
 }
 
@@ -410,6 +465,12 @@ SimulationBatch simulateBatch(
             config.topology == dynamic_spare::SharingTopology::NoSharing
                 ? result
                 : baseline->at(run));
+        const dynamic_spare::Tier2CamFallbackMetrics tier2Metrics =
+            dynamic_spare::characterizeTier2CamFallback(
+                groups[run], config, run);
+        result.tier2CamRequired = tier2Metrics.required;
+        result.tier2UniqueTagCount = tier2Metrics.uniqueTagCount;
+        result.tier2TagContractVersion = tier2Metrics.tagContractVersion;
         discardMappingSnapshots(result);
         batch.runs.push_back(std::move(result));
     }
@@ -632,6 +693,17 @@ int main(int argc, char *argv[])
                 config.modifiers.maximumGroupBorrowedSpares = parseInt(requireValue(), option);
             else if (option == "--solution-take")
                 config.solutionTakePolicy = parseSolutionTake(requireValue());
+            else if (option == "--canonical-policy-id")
+                config.canonicalPolicyId = requireValue();
+            else if (option == "--paper-canonical")
+            {
+                const std::string value = requireValue();
+                if (value == "true") config.paperCanonical = true;
+                else if (value == "false") config.paperCanonical = false;
+                else throw std::invalid_argument("--paper-canonical requires true or false");
+            }
+            else if (option == "--legacy-alias-of")
+                config.legacyAliasOf = requireValue();
             else if (option == "--buffer")
             {
                 if (paperCamReuseSpecified)
@@ -787,8 +859,25 @@ int main(int argc, char *argv[])
                 "--repair-rate-sweep requires a fresh output directory to "
                 "avoid mixing experiment data");
         std::size_t writtenBatchCount = 0;
-        const auto emitBatch = [&](SimulationBatch batch, bool retainRuns)
+        std::size_t writtenPairedResultCount = 0;
+        std::set<std::string> writtenPairedCorpora;
+        const auto emitBatch = [&](SimulationBatch batch,
+                                   const std::vector<FaultGroup> &groups,
+                                   bool retainRuns)
         {
+            const std::string corpusId =
+                dynamic_spare::DynamicCsvReporter::pairedCorpusId(
+                    batch.config, groups);
+            if (writtenPairedCorpora.insert(corpusId).second)
+            {
+                dynamic_spare::DynamicCsvReporter::writePairedCorpus(
+                    outputDirectory / "paired_corpus_v1.csv", batch.config,
+                    groups, writtenPairedCorpora.size() != 1);
+            }
+            dynamic_spare::DynamicCsvReporter::writePairedPolicyResults(
+                outputDirectory / "paired_policy_results_v1.csv", batch.config,
+                groups, batch.runs, writtenPairedResultCount != 0);
+            ++writtenPairedResultCount;
             std::vector<SimulationBatch> oneBatch;
             oneBatch.push_back(std::move(batch));
             const bool append = writtenBatchCount != 0;
@@ -872,7 +961,7 @@ int main(int argc, char *argv[])
                         baselineConfig, groups);
                     const double baselineRepairRate = repairRate(baseline);
                     std::vector<GroupRepairResult> baselineRuns =
-                        emitBatch(std::move(baseline), true);
+                        emitBatch(std::move(baseline), groups, true);
                     for (GroupRepairResult &result : baselineRuns)
                     {
                         for (auto &attempts : result.attemptsBySubarray)
@@ -927,7 +1016,7 @@ int main(int argc, char *argv[])
                         SimulationBatch policyBatch = simulateBatch(
                             policy, groups, &baselineRuns);
                         const double policyRepairRate = repairRate(policyBatch);
-                        emitBatch(std::move(policyBatch), false);
+                        emitBatch(std::move(policyBatch), groups, false);
                         std::cout
                             << "completed fault_count=" << faultCount
                             << " spare=" << spareLines
@@ -975,7 +1064,7 @@ int main(int argc, char *argv[])
                     static_cast<std::size_t>(modelConfig.simulationRuns));
                 SimulationBatch baseline = simulateBatch(modelConfig, groups);
                 std::vector<GroupRepairResult> baselineRuns =
-                    emitBatch(std::move(baseline), true);
+                    emitBatch(std::move(baseline), groups, true);
                 for (GroupRepairResult &result : baselineRuns)
                 {
                     for (auto &attempts : result.attemptsBySubarray)
@@ -1021,7 +1110,7 @@ int main(int argc, char *argv[])
                         SimulationBatch policyBatch = simulateBatch(
                             policy, groups, &baselineRuns);
                         const double policyRepairRate = repairRate(policyBatch);
-                        emitBatch(std::move(policyBatch), false);
+                        emitBatch(std::move(policyBatch), groups, false);
                         std::cout
                             << "completed model=" << dynamic_spare::toString(model)
                             << " policy=" << dynamic_spare::toString(topology)
@@ -1106,7 +1195,7 @@ int main(int argc, char *argv[])
                     << " runtime_entries=" << remapSummary.runtimeRepairEntries
                     << '\n';
             }
-            emitBatch(std::move(batch), false);
+            emitBatch(std::move(batch), groups, false);
         }
 
         if (singleRepairRate.has_value())

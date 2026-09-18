@@ -3,7 +3,7 @@
 > 文件狀態：Current
 > 適用範圍：cross-cutting
 > 建立時間：Unknown
-> 最後修改時間：2026-09-07T00:00:00+08:00
+> 最後修改時間：2026-09-17T23:38:49+08:00
 > 本文件權威主題：實驗方法、可重現性、sweep、plotting 與結果比較規則
 
 本文件整合 dynamic spare sharing、SRAM-RECAM、sweep 與 plotting 的操作方式。
@@ -128,13 +128,37 @@ Policy modifier 包含 `--local-first`、`--minimum-row-reserve N`、
 ```text
 --solution-take legacy   保留既有 group selector，亦為預設值
 --solution-take early    A→B→C→D 依序選解，已選解不回溯
---solution-take group    保留四個 SA 的壓縮狀態後枚舉完整有效解組合
+--solution-take group_no_scratch_v2  frozen role-slot 順序，A→D 即時提交且不回溯
+--solution-take group_compressed_legacy  歷史壓縮狀態／完整有效解組合搜尋
+--solution-take directional_v2_group_global  frozen directional V2 candidate contract 的完整 group oracle；僅 N2/N3，作為 canonical directional m=1 GLOBAL 的 implementation policy
 ```
+
+舊的 `group` CLI 值僅為 `group_compressed_legacy` 的相容別名；論文／thesis
+workflow 必須明確指定上述完整名稱，不得將舊結果解讀為 V2 GROUP-NoScratch。
 
 `early` 與 `group` 都只從既有 RECAM `validSolList` 選取，不重新判斷 solution
 validity，也不改變 candidate numbering。`early` 依序最小化 borrowed lines、總
 spare lines、solution ID；`group` 對所有可行四元組最小化總 borrowed lines、總
 spare lines，再選 lexicographically smallest `(A,B,C,D)` solution IDs。
+
+`directional_v2_group_global` 不使用歷史 generic `group_global` 的 capacity
+generator。它重用 frozen V2 的 release/borrow slots、PatternID 與
+`PhysicalResourceLedger`，列舉完整 V2 local candidate product，找到第一個合法
+tuple 後停止。因此它是 `group_greedy_rtl_canonical` 的同-contract global oracle；
+historical generic GLOBAL 仍保留為不同 contract。實作與 quick-corpus validation
+見 `dss_execution/DIRECTIONAL_V2_GROUP_GLOBAL_IMPLEMENTATION.md`。
+
+Matrix V2 對 directional m=1（僅 N2/N3）使用三個不同的 policy：
+`directional_m1_local_first`（實作為 `directional_v2_early`，V2 slot order
+0,1,2,3 的 sequential commit）、`directional_m1_early`（實作為
+`group_greedy_rtl_canonical`，frozen release-aware priority 1,0,3,2），以及
+`directional_m1_global`（實作為 `directional_v2_group_global` 的
+same-contract joint oracle）。canonical policy ID 與 implementation-facing
+`solution_policy` 是不同欄位；歷史 `early`、`group_greedy_rtl_canonical` 和
+`directional_m1_group_global` 不得重新標示為另一個 canonical 結果。N4 的 V2
+ladder 是 explicit unsupported，而非 generic fallback。跨 topology 的完整
+LOCAL_FIRST／EARLY／GLOBAL contract 見
+[`dss_execution/R3_POLICY_SEMANTICS_NORMALIZATION.md`](dss_execution/R3_POLICY_SEMANTICS_NORMALIZATION.md)。
 
 `runs.csv` 記錄 valid-solution bitmap、selected solution IDs、selector work、可行
 組合數、EARLY remaining resources 與 compressed-state bits；`summary.csv` 記錄
@@ -401,6 +425,72 @@ python3 scripts/group/dynamic_spare_sharing/plot_sweep.py \
 輸出同時保留 PNG、PDF 與產圖使用的 processed CSV。Repair gain 的單位是
 percentage points，不是 relative percent。
 
+### 7.1 R3 group derived-data figures
+
+R3 derived-data plotters are a **group-level** view of `DynamicSpareSharing`
+policy sidecars. They must not be mixed with `HierarchicalRECAM` device-level
+repair-rate or global-CAM results. They do not change simulator semantics or
+the raw/derived CSV schema.
+
+```bash
+python3 scripts/plot/r3_group/plot_group_repair_rate.py \
+  --analysis-root <analysis-root>
+python3 scripts/plot/r3_group/plot_fault_imbalance.py \
+  --analysis-root <analysis-root>
+```
+
+The current checked analysis dataset is classified as
+`QUICK_SWEEP / DEVELOPMENT / NON-FORMAL`. Its figures are development
+artifacts, not formal or paper-final R3 results. Read `dataset_class` in the
+source CSV before making a result claim.
+
+The repair-rate plotter reads
+`<analysis-root>/data/repair_rate_summary.csv`. The fault-imbalance plotter
+reads `<analysis-root>/data/imbalance_summary.csv`, pools rows by
+`(RS, policy, imbalance_bin)`, and recomputes repair rate as
+`sum(successes) / sum(groups)`; it does not average per-point rates.
+
+Both plotters emit these five comparison views. `LOCAL` is always
+`local_no_sharing`.
+
+| View | Policy membership, in plotted order |
+|---|---|
+| `all` | LOCAL; Directional EARLY; Directional generic GLOBAL; Two-Pairwise EARLY; Two-Pairwise Pair-GLOBAL; Single-Hop EARLY; Single-Hop GLOBAL |
+| `topology_2_2` | LOCAL; Directional EARLY; Directional generic GLOBAL |
+| `topology_1_4` | LOCAL; Two-Pairwise EARLY; Two-Pairwise Pair-GLOBAL; Single-Hop EARLY; Single-Hop GLOBAL |
+| `policy_early` | LOCAL; Directional EARLY; Two-Pairwise EARLY; Single-Hop EARLY |
+| `policy_global` | LOCAL; Directional generic GLOBAL; Two-Pairwise Pair-GLOBAL; Single-Hop GLOBAL |
+
+The output root is metric-layered:
+
+```text
+<analysis-root>/figures/
+├── repair_rate/<comparison>/
+└── imbalance/<comparison>/
+```
+
+For every comparison, the plotters write a combined `Rs=2`/`Rs=3` figure plus
+one single-panel figure for each `Rs` value. Each variant is emitted as PDF,
+SVG, and PNG (nine files per comparison and metric). For example,
+`repair_rate/all_repair_rate/fig_r3_repair_rate.*` and
+`imbalance/all_imbalance/fig_r3_imbalance.*` are the combined exports.
+
+Legend labels use the compact display vocabulary `LOCAL`, `Dir.-EARLY`,
+`Dir.-GREEDY`, `Dir.-GLOBAL`, `PairRow-EARLY`, `2Pair-EARLY`,
+`2Pair-GLOBAL`, `1Hop-EARLY`, and `1Hop-GLOBAL`. Dense `all` views use a
+frameless two-column legend below the axes. The legend must fit inside the
+frozen figure canvas; a three-column legend is not permitted unless it is
+separately verified to fit the same fixed single-column width. Fixed-geometry
+exports retain `bbox_inches=None`, not tight-bounds expansion. Dense views
+reserve lower-canvas space so the legend remains below, rather than overlapping,
+the axes or x-axis label.
+
+Figures directly under a previous `figures/` root are retained only as
+historical artifacts. Future references must use the metric-layered paths
+above. The plotter also fixes the singleton baseline declaration as
+`BASELINE_RECAM = ("local_no_sharing",)`, so it remains a tuple when
+concatenated with the selected policy tuple.
+
 ## 8. 驗證
 
 ```bash
@@ -416,6 +506,7 @@ make test_fault_address_bist
 make test_recam_common_models
 make test_canonical_experiment
 make test_canonical_sweep
+make test_r3_group_plotting
 ```
 
 正式 sweep 前先做小型 smoke run，確認 seed、fault count、CSV version fields 與

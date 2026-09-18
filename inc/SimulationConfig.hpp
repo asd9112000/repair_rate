@@ -22,6 +22,10 @@ enum class FaultCountModel
 {
     FileProvided,
     Uniform,
+    // Independent equal-probability SA assignments for each group fault.
+    // This is the R2 fixed-total multinomial contract, not the historical
+    // deterministic equal-count allocator represented by Uniform.
+    MultinomialUniform,
     ModerateImbalance,
     StrongImbalance,
     Hotspot,
@@ -55,8 +59,49 @@ enum class FaultInformationStorage
 enum class SolutionTakePolicy
 {
     Legacy,
+    // Generic RECAM candidates committed A->B->C->D in their natural
+    // local-capacity / PatternID order.  This is distinct from Early, which
+    // ranks all currently legal candidates to preserve shared resources.
+    LocalFirst,
     Early,
-    GroupCompressed
+    GroupCompressed,
+    GroupNoScratchV2,
+    // Preserves the historical C++ slot order (0, 1, 2, 3).
+    GroupGreedyRtlCanonical,
+    // Group-wide, atomic candidate-tuple search with the compressed-state
+    // objective; separate from the legacy compatibility name above.
+    GroupGlobal,
+    // Exact four-SA search over the frozen directional V2 capacity-slot and
+    // PatternID contract.  This is intentionally distinct from GroupGlobal,
+    // whose candidate universe is the historical generic RECAM contract.
+    DirectionalV2GroupGlobal,
+    // Canonical directional V2 joint oracle.  Candidate order is R,L,RB,B
+    // and any speculative borrow from a future owner creates an exact
+    // release obligation that must be discharged by the completed tuple.
+    DirectionalV2GroupGlobalCanonical,
+    // Frozen directional V2 candidate contract with sequential slot-order
+    // commitment (0, 1, 2, 3).  This is deliberately separate from Early,
+    // which retains the historical generic RECAM candidate contract.
+    DirectionalV2Early,
+    OneByFourTwoPairwiseEarlyV1,
+    OneByFourTwoPairwisePairGlobalV1,
+    OneByFourSingleHopEarlyV1,
+    OneByFourSingleHopGlobalV1,
+    // R1B keeps the same row-only candidate generator as its v1 policies;
+    // only the sequential priority changes from first-legal to
+    // resource-preserving ranked commit.
+    OneByFourTwoPairwiseReleaseAwareEarlyV1,
+    OneByFourSingleHopReleaseAwareEarlyV1
+};
+
+// Numeric ConfigIDs are scoped to an RTL architecture point.  They are debug
+// and replay metadata, not a cross-point capacity identifier.
+enum class ConfigContractVersion
+{
+    GenericRecamCandidateV1,
+    FrozenDate2x2M1,
+    Rs3Cs3M1,
+    HistoricalCppV2SlotMapV1
 };
 
 struct PolicyModifiers
@@ -127,6 +172,13 @@ struct SimulationConfig
     // Legacy preserves the pre-policy group selector exactly.  The explicit
     // policies operate on compressed, pointer-free RECAM solution state.
     SolutionTakePolicy solutionTakePolicy = SolutionTakePolicy::Legacy;
+    // Experiment-facing identity is intentionally separate from the
+    // implementation policy selected above.  The R3 runner supplies these
+    // fields for canonical sweeps; manual invocations remain explicitly
+    // UNSPECIFIED rather than silently claiming canonical membership.
+    std::string canonicalPolicyId = "UNSPECIFIED";
+    bool paperCanonical = false;
+    std::string legacyAliasOf = "";
     AnalysisLatencyParameters latency;
 
     // CAM reuse is the dynamic simulator default. A fixed entry count remains
@@ -143,6 +195,7 @@ const char *toString(GroupLayout layout) noexcept;
 const char *toString(SharingTopology topology) noexcept;
 const char *toString(FaultInformationStorage storage) noexcept;
 const char *toString(SolutionTakePolicy policy) noexcept;
+const char *toString(ConfigContractVersion version) noexcept;
 
 } // namespace dynamic_spare
 

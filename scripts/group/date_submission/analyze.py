@@ -8,12 +8,27 @@ import csv
 import json
 import math
 import os
+import sys
 from collections import defaultdict
 from pathlib import Path
 
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/date-submission-matplotlib")
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+
+ROOT = Path(__file__).resolve().parents[3]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from scripts.paper_style import (
+    annotate_heatmap_cell,
+    apply_paper_style,
+    single_column_heatmap,
+    save_paper_figure,
+    single_column_figure,
+    style_axis,
+    style_heatmap_axis,
+    style_heatmap_colorbar,
+)
 
 
 POLICY_ROWS = {
@@ -28,6 +43,7 @@ STYLE = {
     "directional_m1": ("#0072B2", "s", "-"),
     "directional_m2": ("#D55E00", "^", "-"),
 }
+EXCLUDED_HEATMAP_FAULTS_PER_SUBARRAY = frozenset({2, 3, 4, 12, 13, 14, 15, 16})
 
 
 def parse_args() -> argparse.Namespace:
@@ -79,21 +95,16 @@ def policy_id(row: dict[str, str]) -> str | None:
 
 
 def configure_plot() -> None:
-    plt.rcParams.update({
-        "font.size": 14, "axes.titlesize": 18, "axes.labelsize": 18,
-        "legend.fontsize": 14, "xtick.labelsize": 14, "ytick.labelsize": 14,
-        "lines.linewidth": 1.6, "lines.markersize": 5,
-        "pdf.fonttype": 42, "ps.fonttype": 42,
-    })
+    apply_paper_style()
 
 
 def save_figure(fig, root: Path, stem: str, *, tight_layout: bool = True) -> None:
     root.mkdir(parents=True, exist_ok=True)
     if tight_layout:
         fig.tight_layout()
-    fig.savefig(root / f"{stem}.svg")
-    fig.savefig(root / f"{stem}.pdf")
-    plt.close(fig)
+    save_paper_figure(fig, root / f"{stem}.svg")
+    save_paper_figure(fig, root / f"{stem}.png")
+    save_paper_figure(fig, root / f"{stem}.pdf", close=True)
 
 
 def configured_spares(config: dict) -> list[int]:
@@ -187,20 +198,19 @@ def plot_repair(root: Path, long_rows: list[dict[str, object]], wide_rows: list[
     for spare in spares:
         plots = figure_directory(root, spare, spares)
         selected_long = [row for row in long_rows if row["Rs"] == spare]
-        fig, axis = plt.subplots(figsize=(6.7, 4.2))
+        fig, axis = single_column_figure()
         color, marker, line = STYLE[BASELINE_POLICY]
         axis.plot([row["fault_count"] for row in selected_long],
                   [float(row["repair_rate_percent"]) for row in selected_long],
                   color=color, marker=marker, linestyle=line, label="RECAM / No Sharing")
-        axis.set_title(f"Average Repair Rate vs. Number of Faults per 2×2 Group ({spare_label(spare)})")
         axis.set_xlabel("Number of Faults per 2×2 Group")
         axis.set_ylabel("Average Repair Rate (%)")
         axis.set_ylim(0, 100)
-        axis.grid(True, linestyle=":", alpha=0.65)
-        axis.legend(frameon=False)
+        style_axis(axis, grid=True, grid_axis="y")
+        axis.legend()
         save_figure(fig, plots, figure_stem("fig1_repair_rate_vs_faults_average", spare, spares))
 
-        fig, axis = plt.subplots(figsize=(6.7, 4.2))
+        fig, axis = single_column_figure()
         positions = list(range(1, len(selected_long) + 1))
         seed_rates = [row["seed_repair_rate_percent"] for row in selected_long]
         box = axis.boxplot(seed_rates, positions=positions, widths=0.55, showmeans=True,
@@ -208,24 +218,22 @@ def plot_repair(root: Path, long_rows: list[dict[str, object]], wide_rows: list[
         for patch in box["boxes"]:
             patch.set(facecolor="#BDBDBD", alpha=0.8)
         axis.set_xticks(positions, [row["fault_count"] for row in selected_long])
-        axis.set_title(f"Repair-Rate Distribution across Seeds ({spare_label(spare)})")
         axis.set_xlabel("Number of Faults per 2×2 Group")
         axis.set_ylabel("Repair Rate per Seed (%)")
         axis.set_ylim(0, 100)
-        axis.grid(True, linestyle=":", alpha=0.65)
+        style_axis(axis, grid=True, grid_axis="y")
         save_figure(fig, plots, figure_stem("fig1_repair_rate_vs_faults_box_plot", spare, spares))
 
-        fig, axis = plt.subplots(figsize=(6.7, 4.2))
+        fig, axis = single_column_figure()
         axis.plot([row["fault_count"] for row in selected_long],
                   [float(row["average_spare_utilization_percent"]) for row in selected_long],
                   color=color, marker=marker, linestyle=line, label="RECAM / No Sharing")
-        axis.set_title(f"Spare Utilization of RECAM / No Sharing ({spare_label(spare)})")
         axis.set_xlabel("Number of Faults per 2×2 Group")
         axis.set_ylabel("Average Spare Utilization (%)")
         axis.set_ylim(0, 100)
         axis.set_yticks(range(0, 101, 20))
-        axis.grid(True, linestyle=":", alpha=0.65)
-        axis.legend(frameon=False)
+        style_axis(axis, grid=True, grid_axis="y")
+        axis.legend()
         save_figure(fig, plots, figure_stem("fig4_spare_utilization", spare, spares))
 
 
@@ -233,12 +241,11 @@ def plot_spare_heatmaps(root: Path, long_rows: list[dict[str, object]], wide_row
     if len(spares) < 2:
         return
     faults = [fault for fault in sorted({int(row["fault_count"]) for row in wide_rows})
-              if fault // 4 not in {2, 3, 15, 16}]
+              if fault // 4 not in EXCLUDED_HEATMAP_FAULTS_PER_SUBARRAY]
     heatmap_dir = root / "figures" / "heatmaps"
-    panels = [("no_sharing", "RECAM / No Sharing"), ("directional_m1", "DSS"),
-              ("directional_m2", "Proposed DSS ($m=2)")]
-    fig, axes = plt.subplots(1, 3, figsize=(10.2, 3.4), sharey=True)
-    for axis, (pid, title) in zip(axes, panels):
+    panels = ("no_sharing", "directional_m1", "directional_m2")
+    fig, axes = single_column_heatmap(nrows=1, ncols=3, sharey=True)
+    for axis, pid in zip(axes, panels):
         values = {(int(row["Rs"]), int(row["fault_count"])): float(row["repair_rate_percent"])
                   for row in long_rows if row["policy_id"] == pid}
         matrix = [[values[(spare, fault)] for fault in faults] for spare in spares]
@@ -246,40 +253,37 @@ def plot_spare_heatmaps(root: Path, long_rows: list[dict[str, object]], wide_row
         for row_index, row in enumerate(matrix):
             for column_index, value in enumerate(row):
                 color = "white" if sum(image.cmap(image.norm(value))[:3]) < 1.5 else "black"
-                axis.text(column_index, row_index, f"{value:.1f}", ha="center", va="center",
-                          color=color, fontsize=14)
-        axis.set_title(title)
+                annotate_heatmap_cell(axis, column_index, row_index, f"{value:.1f}", color=color)
         axis.set_xticks(range(len(faults)), [f"{fault / 4:g}" for fault in faults])
-        axis.set_xlabel("Fault count")
+        axis.set_xlabel("Faults / SA")
+        style_heatmap_axis(axis)
     axes[0].set_yticks(range(len(spares)), [spare_label(spare) for spare in spares])
-    axes[0].set_ylabel("Spare line configuration")
-    colorbar = fig.colorbar(image, ax=axes, label="Repair Rate (%)", fraction=0.035, pad=0.05)
-    colorbar.ax.yaxis.labelpad = 6
+    axes[0].set_ylabel("Spare config.")
+    colorbar = fig.colorbar(image, ax=axes, fraction=0.035, pad=0.05)
+    style_heatmap_colorbar(colorbar, label="Repair Rate (%)")
     fig.subplots_adjust(left=0.08, right=0.84, bottom=0.20, top=0.84, wspace=0.20)
     save_figure(fig, heatmap_dir, "heatmap_repair_rate_by_spare", tight_layout=False)
 
     gain_cmap = LinearSegmentedColormap.from_list("white_to_vivid_red", ["#ffffff", "#FF0000"])
     max_gain = max(float(row[field]) for row in wide_rows for field in ("m1_gain_pp", "m2_gain_pp"))
-    for field, title, stem in (
-            ("m1_gain_pp", "DSS gain", "heatmap_dss_gain_by_spare"),
-            ("m2_gain_pp", "Proposed DSS gain", "heatmap_proposed_dss_gain_by_spare")):
-        fig, axis = plt.subplots(figsize=(7.8, 3.8))
+    for field, stem in (
+            ("m1_gain_pp", "heatmap_dss_gain_by_spare"),
+            ("m2_gain_pp", "heatmap_proposed_dss_gain_by_spare")):
+        fig, axis = single_column_heatmap()
         values = {(int(row["Rs"]), int(row["fault_count"])): float(row[field]) for row in wide_rows}
         matrix = [[values[(spare, fault)] for fault in faults] for spare in spares]
         image = axis.imshow(matrix, aspect="auto", vmin=0, vmax=max_gain, cmap=gain_cmap)
         for row_index, row in enumerate(matrix):
             for column_index, value in enumerate(row):
                 color = "white" if sum(image.cmap(image.norm(value))[:3]) < 1.5 else "black"
-                axis.text(column_index, row_index, f"{value:.1f}", ha="center", va="center",
-                          color=color, fontsize=14)
-        axis.set_title(title)
+                annotate_heatmap_cell(axis, column_index, row_index, f"{value:.1f}", color=color)
         axis.set_xticks(range(len(faults)), [f"{fault / 4:g}" for fault in faults])
-        axis.set_xlabel("Fault count")
+        axis.set_xlabel("Faults / SA")
         axis.set_yticks(range(len(spares)), [spare_label(spare) for spare in spares])
-        axis.set_ylabel("Spare line configuration")
-        colorbar = fig.colorbar(image, ax=axis, label="Repair-rate improvement (pp)",
-                                fraction=0.046, pad=0.06)
-        colorbar.ax.yaxis.labelpad = 8
+        axis.set_ylabel("Spare config.")
+        style_heatmap_axis(axis)
+        colorbar = fig.colorbar(image, ax=axis, fraction=0.046, pad=0.06)
+        style_heatmap_colorbar(colorbar, label="DSS - No Sharing repair rate (pp)")
         fig.subplots_adjust(left=0.16, right=0.80, bottom=0.20, top=0.84)
         save_figure(fig, heatmap_dir, stem, tight_layout=False)
 
@@ -324,19 +328,18 @@ def collect_imbalance(root: Path, config: dict) -> list[dict[str, object]]:
 
 def plot_imbalance(root: Path, rows: list[dict[str, object]], spares: list[int]) -> None:
     for spare in spares:
-        fig, axis = plt.subplots(figsize=(6.7, 4.2))
+        fig, axis = single_column_figure()
         selected = sorted((row for row in rows if row["Rs"] == spare),
                           key=lambda row: float(row["coefficient_of_variation"]))
         color, marker, line = STYLE[BASELINE_POLICY]
         axis.plot([row["coefficient_of_variation"] for row in selected],
                   [float(row["repair_rate_percent"]) for row in selected],
                   color=color, marker=marker, linestyle=line, label="RECAM / No Sharing")
-        axis.set_title(f"Average Repair Rate vs. Fault Imbalance ({spare_label(spare)})")
         axis.set_xlabel("Fault-Count Coefficient of Variation (std / mean)")
         axis.set_ylabel("Average Repair Rate (%)")
         axis.set_ylim(0, 100)
-        axis.grid(True, linestyle=":", alpha=0.65)
-        axis.legend(frameon=False, loc="upper right", fontsize=14)
+        style_axis(axis, grid=True, grid_axis="y")
+        axis.legend(loc="upper right")
         save_figure(fig, figure_directory(root, spare, spares),
                     figure_stem("fig3_repair_rate_vs_fault_imbalance", spare, spares))
 
@@ -349,19 +352,18 @@ def plot_hardware_proxy(root: Path, rows: list[dict[str, object]]) -> None:
         item["area"].append(float(row["group_normalized_total_area_proxy"]))
         item["cycles"].append(float(row["bira_cycles_per_fault"]))
         item["p"] = row["P_A"]
-    fig, axis = plt.subplots(figsize=(6.7, 4.2))
+    fig, axis = single_column_figure()
     for (spare, policy), item in sorted(totals.items(), key=lambda pair: float(pair[1]["area"][0])):
         area = sum(item["area"]) / len(item["area"])
         cycles = sum(item["cycles"]) / len(item["cycles"])
         axis.scatter(area, cycles, s=42)
         axis.annotate(f"Rs=Cs={spare}: {policy} (P={item['p']})", (area, cycles),
-                      xytext=(4, 5), textcoords="offset points", fontsize=14)
-    axis.set_title("Architectural SRAM-RECAM Storage–Latency Model (Non-Physical Proxy)")
+                      xytext=(4, 5), textcoords="offset points")
     axis.set_xlabel("Normalized Storage + Comparator Area Proxy (not µm²)")
     axis.set_ylabel("Modeled BIRA Cycles per Fault")
     y_values = [sum(item["cycles"]) / len(item["cycles"]) for item in totals.values()]
     axis.set_ylim(min(y_values) - 0.12, max(y_values) + 0.16)
-    axis.grid(True, linestyle=":", alpha=0.65)
+    style_axis(axis, grid=True)
     save_figure(fig, root / "figures", "supp_hardware_model_tradeoff")
 
 

@@ -3,6 +3,7 @@
 
 #include "RepairResult.hpp"
 #include "SimulationConfig.hpp"
+#include "DynamicRepairSimulator.hpp"
 
 #include <filesystem>
 #include <vector>
@@ -19,6 +20,23 @@ struct SimulationBatch
 class DynamicCsvReporter
 {
 public:
+    static constexpr const char *kPairedCorpusSchemaVersion =
+        "dss_paired_corpus_v1";
+
+    static std::string pairedCorpusId(
+        const SimulationConfig &config,
+        const std::vector<FaultGroup> &groups);
+    static void writePairedCorpus(
+        const std::filesystem::path &path,
+        const SimulationConfig &config,
+        const std::vector<FaultGroup> &groups,
+        bool append = false);
+    static void writePairedPolicyResults(
+        const std::filesystem::path &path,
+        const SimulationConfig &config,
+        const std::vector<FaultGroup> &groups,
+        const std::vector<GroupRepairResult> &runs,
+        bool append = false);
     static void writeAttempts(
         const std::filesystem::path &path,
         const std::vector<SimulationBatch> &batches,

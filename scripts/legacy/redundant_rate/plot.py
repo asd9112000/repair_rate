@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -17,10 +18,17 @@ import seaborn as sns
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+from scripts.paper_style import AXIS_LABEL_SIZE, LEGEND_SIZE, TICK_LABEL_SIZE, apply_paper_style
+
+
 DEFAULT_CSV_FILE = PROJECT_ROOT / "reports/RedundantRate/RedundantRate.csv"
+DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "reports/legacy/redundant_rate"
 REQUIRED_COLUMNS = ("Row", "Column", "Fault", "AverageExtraLines")
 OUTPUT_STEM = "redundant_rate_visualization"
 OUTPUT_DPI = 300
+FONT_SIZE_INCREASE = 16
 
 
 def configure_plot_style() -> None:
@@ -28,18 +36,15 @@ def configure_plot_style() -> None:
     sns.set_theme(
         context="paper",
         style="whitegrid",
-        font="DejaVu Sans",
-        font_scale=1.8,
         rc={
             "axes.edgecolor": "0.25",
             "axes.linewidth": 1.2,
             "grid.color": "0.86",
             "grid.linewidth": 0.8,
             "legend.frameon": False,
-            "pdf.fonttype": 42,
-            "ps.fonttype": 42,
         },
     )
+    apply_paper_style()
 
 
 def load_data(csv_file: Path) -> pd.DataFrame:
@@ -124,13 +129,11 @@ def plot_redundant_rate(df: pd.DataFrame, output_dir: Path) -> None:
             label=str(spare_line),
         )
 
-    ax.set_title(
-        "Remaining Spare Lines vs. Fault Count\n",
-        # r"Equal row/column spare configuration: $R_s = C_s$",
-        pad=10,
+    ax.set_xlabel("Number of Faults", fontsize=AXIS_LABEL_SIZE + FONT_SIZE_INCREASE)
+    ax.set_ylabel(
+        "Remaining Spare Lines", fontsize=AXIS_LABEL_SIZE + FONT_SIZE_INCREASE
     )
-    ax.set_xlabel("Number of Faults")
-    ax.set_ylabel("Remaining Spare Lines")
+    ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE + FONT_SIZE_INCREASE)
     ax.set_xticks(fault_nums)
     ax.set_ylim(bottom=0.0)
     ax.grid(axis="x", visible=False)
@@ -139,6 +142,8 @@ def plot_redundant_rate(df: pd.DataFrame, output_dir: Path) -> None:
         title=r"Spare Lines ($R_s = C_s$)",
         loc="best",
         ncols=1,
+        fontsize=LEGEND_SIZE + FONT_SIZE_INCREASE,
+        title_fontsize=LEGEND_SIZE + FONT_SIZE_INCREASE,
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -167,8 +172,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=None,
-        help="figure output directory (default: directory containing the CSV)",
+        default=DEFAULT_OUTPUT_DIR,
+        help=f"figure output directory (default: {DEFAULT_OUTPUT_DIR})",
     )
     return parser.parse_args()
 
@@ -176,11 +181,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     csv_file = args.csv_file.expanduser().resolve()
-    output_dir = (
-        args.output_dir.expanduser().resolve()
-        if args.output_dir is not None
-        else csv_file.parent
-    )
+    output_dir = args.output_dir.expanduser().resolve()
 
     configure_plot_style()
     df = load_data(csv_file)

@@ -1,8 +1,10 @@
 #include "../inc/DynamicRepairSimulator.hpp"
 #include "../inc/CamRecamModel.hpp"
+#include "../inc/V2GroupNoScratchPolicy.hpp"
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstdint>
 #include <limits>
 #include <map>
@@ -25,7 +27,7 @@ struct CapacityOption
 
     int stage() const noexcept
     {
-        return extraRows + extraColumns;
+        return std::max(0, extraRows) + std::max(0, extraColumns);
     }
 };
 
@@ -55,8 +57,13 @@ struct GroupChoice
     std::uint64_t selectedCycles = 0;
     std::uint64_t candidatesChecked = 0;
     std::uint64_t feasibleCombinations = 0;
+    std::optional<GlobalSearchMetrics> globalSearchMetrics;
     std::array<std::optional<RemainingSpareResources>, kSubarrayCount>
         remainingResourcesAfterTile;
+    std::array<std::optional<int>, kSubarrayCount> configIds;
+    std::array<std::optional<V2GroupAction>, kSubarrayCount> actions;
+    std::optional<std::size_t> failureSubarray;
+    std::vector<GroupRepairResult::V2DecisionTrace> trace;
 };
 
 std::uint64_t checkedAdd(
@@ -367,6 +374,26 @@ std::vector<CapacityOption> capacityOptions(
     return options;
 }
 
+std::vector<CapacityOption> v2CapacityOptions(
+    const SimulationConfig &config,
+    std::size_t subarray)
+{
+    const auto local = localCapacity(config, subarray);
+    if (local.first < 1 || local.second < 1)
+        throw std::invalid_argument("GROUP_NO_SCRATCH_V2 requires positive local row/column capacity");
+    if (subarray == 0 || subarray == 3)
+    {
+        return {{local.first, local.second, 0, 0},
+                {local.first - 1, local.second, -1, 0},
+                {local.first, local.second + 1, 0, 1},
+                {local.first - 1, local.second + 1, -1, 1}};
+    }
+    return {{local.first, local.second, 0, 0},
+            {local.first, local.second - 1, 0, -1},
+            {local.first + 1, local.second, 1, 0},
+            {local.first + 1, local.second - 1, 1, -1}};
+}
+
 std::size_t hybridCapacity(int rows, int columns)
 {
     if (rows == 0 || columns == 0)
@@ -569,6 +596,33 @@ std::vector<CandidatePlan> compressedPlansForSubarray(
     return plans;
 }
 
+// Ledger allocation depends only on a candidate's row/column demand.  For a
+// fixed demand, the frozen GLOBAL ranking always prefers the lowest PatternID
+// and then lowest attempt index, so all other candidates are dominated without
+// changing repairability, final ledger ownership, or selected reconstruction.
+std::vector<CandidatePlan> globalPlansForSubarray(
+    const std::vector<RepairAttemptResult> &attempts)
+{
+    std::map<std::pair<std::size_t, std::size_t>, CandidatePlan> bestByDemand;
+    for (const CandidatePlan &plan : compressedPlansForSubarray(attempts))
+    {
+        const auto key = std::make_pair(plan.usedRows, plan.usedColumns);
+        const auto existing = bestByDemand.find(key);
+        if (existing == bestByDemand.end() ||
+            std::tie(plan.solutionId, plan.attemptVectorIndex) <
+                std::tie(existing->second.solutionId,
+                         existing->second.attemptVectorIndex))
+        {
+            bestByDemand[key] = plan;
+        }
+    }
+    std::vector<CandidatePlan> plans;
+    plans.reserve(bestByDemand.size());
+    for (const auto &entry : bestByDemand)
+        plans.push_back(entry.second);
+    return plans;
+}
+
 bool choiceIsBetter(
     const GroupChoice &candidate,
     const GroupChoice &current)
@@ -768,6 +822,145 @@ GroupChoice findCompressedGroupChoice(
     bool rowOnly,
     const PhysicalResourceLedger &ledger)
 {
+    const auto started = std::chrono::steady_clock::now();
+    std::array<std::vector<CandidatePlan>, kSubarrayCount> plans;
+    GlobalSearchMetrics metrics;
+    metrics.searchNodesVisited = 1; // root
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        plans[subarray] = globalPlansForSubarray(attempts[subarray]);
+        metrics.candidateCounts[subarray] = plans[subarray].size();
+        if (plans[subarray].empty())
+            return {};
+        metrics.rawCartesianProductSize = subarray == 0
+            ? plans[subarray].size()
+            : checkedMultiply(metrics.rawCartesianProductSize,
+                              plans[subarray].size(),
+                              "GLOBAL Cartesian-product size overflow");
+    }
+
+    GroupChoice best;
+    std::array<CandidatePlan, kSubarrayCount> selected;
+    std::uint64_t checked = 0;
+    std::uint64_t feasible = 0;
+    std::array<SpareDemand, kSubarrayCount> demands;
+    const auto visit = [&](const auto &self, std::size_t subarray) -> void
+    {
+        if (subarray == kSubarrayCount)
+        {
+            return;
+        }
+        for (const CandidatePlan &plan : plans[subarray])
+        {
+            ++metrics.searchNodesVisited;
+            selected[subarray] = plan;
+            demands[subarray] = {plan.usedRows, plan.usedColumns};
+            // GLOBAL must test legality with the same A->B->C->D ledger
+            // commit contract used by the corresponding EARLY policies.
+            // allocate() first reserves every SA's owned lines, whereas an
+            // EARLY commitment may already have lent a later SA's shareable
+            // line.  Mixing those allocation orders could make GLOBAL reject
+            // an EARLY-feasible demand tuple, so it is not a valid superset
+            // check.  The committed prefix is monotonic and can safely prune
+            // this exact DFS without changing its candidate objective.
+            LedgerAllocationResult allocation = ledger.allocateSequential(
+                demands, subarray + 1);
+            if (!allocation.success ||
+                allocation.transfers.size() > maximumBorrowCount)
+            {
+                ++metrics.partialAssignmentsPruned;
+                demands[subarray] = {};
+                continue;
+            }
+            if (subarray + 1 < kSubarrayCount)
+            {
+                self(self, subarray + 1);
+                demands[subarray] = {};
+                continue;
+            }
+
+            ++checked;
+            ++metrics.completeAssignmentsChecked;
+            ++feasible;
+            ++metrics.legalCompleteAssignments;
+            if (!metrics.firstFeasibleNodeIndex.has_value())
+                metrics.firstFeasibleNodeIndex = checked;
+            bool middleBranch = false;
+            for (const BorrowTransfer &transfer : allocation.transfers)
+            {
+                if (transfer.dimension != SpareDimension::Row)
+                    continue;
+                if (transfer.donorSubarray < static_cast<int>(transfer.borrowerSubarray))
+                    ++metrics.leftDonorTransfers;
+                else
+                    ++metrics.rightDonorTransfers;
+                middleBranch = middleBranch ||
+                    transfer.borrowerSubarray == 1 || transfer.borrowerSubarray == 2;
+            }
+            if (middleBranch)
+                ++metrics.middleSaDonorChoiceBranches;
+            GroupChoice choice;
+            choice.hasProposal = true;
+            choice.success = true;
+            choice.plans = selected;
+            choice.allocation = std::move(allocation);
+            if (compressedChoiceIsBetter(choice, best, rowOnly))
+                best = std::move(choice);
+            demands[subarray] = {};
+            return;
+        }
+    };
+    visit(visit, 0);
+    best.candidatesChecked = checked;
+    best.feasibleCombinations = feasible;
+    metrics.runtimeMicroseconds = static_cast<std::uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now() - started).count());
+    best.globalSearchMetrics = metrics;
+    return best;
+}
+
+bool pairChoiceIsBetter(
+    const GroupChoice &candidate,
+    const GroupChoice &current,
+    const std::array<std::size_t, 2> &pair)
+{
+    if (!current.success)
+        return true;
+    if (candidate.allocation.borrowedRows() != current.allocation.borrowedRows())
+    {
+        return candidate.allocation.borrowedRows() <
+            current.allocation.borrowedRows();
+    }
+    if (candidate.allocation.usedRows != current.allocation.usedRows)
+        return candidate.allocation.usedRows < current.allocation.usedRows;
+    for (std::size_t subarray : pair)
+    {
+        if (candidate.plans[subarray].solutionId !=
+            current.plans[subarray].solutionId)
+        {
+            return candidate.plans[subarray].solutionId <
+                current.plans[subarray].solutionId;
+        }
+    }
+    for (std::size_t subarray : pair)
+    {
+        if (candidate.plans[subarray].attemptVectorIndex !=
+            current.plans[subarray].attemptVectorIndex)
+        {
+            return candidate.plans[subarray].attemptVectorIndex <
+                current.plans[subarray].attemptVectorIndex;
+        }
+    }
+    return false;
+}
+
+GroupChoice findPairGlobalChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount>
+        &attempts,
+    std::size_t maximumBorrowCount,
+    const PhysicalResourceLedger &ledger)
+{
     std::array<std::vector<CandidatePlan>, kSubarrayCount> plans;
     for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
     {
@@ -776,46 +969,56 @@ GroupChoice findCompressedGroupChoice(
             return {};
     }
 
-    GroupChoice best;
-    std::array<CandidatePlan, kSubarrayCount> selected;
-    std::uint64_t checked = 0;
-    std::uint64_t feasible = 0;
-    const auto visit = [&](const auto &self, std::size_t subarray) -> void
+    GroupChoice result;
+    result.hasProposal = true;
+    for (const std::array<std::size_t, 2> pair :
+         {std::array<std::size_t, 2>{{0, 1}},
+          std::array<std::size_t, 2>{{2, 3}}})
     {
-        if (subarray < kSubarrayCount)
+        GroupChoice pairBest;
+        for (const CandidatePlan &first : plans[pair[0]])
         {
-            for (const CandidatePlan &plan : plans[subarray])
+            for (const CandidatePlan &second : plans[pair[1]])
             {
-                selected[subarray] = plan;
-                self(self, subarray + 1);
+                ++result.candidatesChecked;
+                std::array<SpareDemand, kSubarrayCount> demands{};
+                demands[pair[0]] = {first.usedRows, first.usedColumns};
+                demands[pair[1]] = {second.usedRows, second.usedColumns};
+                const std::size_t committedTiles = pair[1] + 1;
+                LedgerAllocationResult allocation = ledger.allocateSequential(
+                    demands, committedTiles);
+                if (!allocation.success ||
+                    allocation.transfers.size() > maximumBorrowCount)
+                {
+                    continue;
+                }
+                ++result.feasibleCombinations;
+                GroupChoice candidate;
+                candidate.hasProposal = true;
+                candidate.success = true;
+                candidate.plans[pair[0]] = first;
+                candidate.plans[pair[1]] = second;
+                candidate.allocation = std::move(allocation);
+                if (pairChoiceIsBetter(candidate, pairBest, pair))
+                    pairBest = std::move(candidate);
             }
-            return;
         }
-        ++checked;
-        std::array<SpareDemand, kSubarrayCount> demands;
-        for (std::size_t index = 0; index < kSubarrayCount; ++index)
-        {
-            demands[index] = {
-                selected[index].usedRows,
-                selected[index].usedColumns};
-        }
-        LedgerAllocationResult allocation = ledger.allocate(demands);
-        if (!allocation.success ||
-            allocation.transfers.size() > maximumBorrowCount)
-            return;
-        ++feasible;
-        GroupChoice choice;
-        choice.hasProposal = true;
-        choice.success = true;
-        choice.plans = selected;
-        choice.allocation = std::move(allocation);
-        if (compressedChoiceIsBetter(choice, best, rowOnly))
-            best = std::move(choice);
-    };
-    visit(visit, 0);
-    best.candidatesChecked = checked;
-    best.feasibleCombinations = feasible;
-    return best;
+        if (!pairBest.success)
+            return {};
+        result.plans[pair[0]] = pairBest.plans[pair[0]];
+        result.plans[pair[1]] = pairBest.plans[pair[1]];
+    }
+
+    std::array<SpareDemand, kSubarrayCount> demands;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        demands[subarray] = {result.plans[subarray].usedRows,
+                             result.plans[subarray].usedColumns};
+    }
+    result.allocation = ledger.allocateSequential(demands, kSubarrayCount);
+    result.success = result.allocation.success &&
+        result.allocation.transfers.size() <= maximumBorrowCount;
+    return result;
 }
 
 GroupChoice findEarlyChoice(
@@ -890,6 +1093,518 @@ GroupChoice findEarlyChoice(
     return result;
 }
 
+// R1B v1 priority: capacity attempts are local first, then increasing row
+// borrow; within an attempt the retained PatternIDs are ascending.  The first
+// ledger-legal plan commits immediately. For neighbor sharing the ledger's
+// physical owner order resolves a middle SA's left neighbor before right.
+GroupChoice findOneByFourEarlyChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount>
+        &attempts,
+    std::size_t maximumBorrowCount,
+    const PhysicalResourceLedger &ledger)
+{
+    GroupChoice result;
+    result.hasProposal = true;
+    std::array<SpareDemand, kSubarrayCount> committedDemands;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const std::vector<CandidatePlan> plans =
+            compressedPlansForSubarray(attempts[subarray]);
+        bool selected = false;
+        for (const CandidatePlan &plan : plans)
+        {
+            ++result.candidatesChecked;
+            auto demands = committedDemands;
+            demands[subarray] = {plan.usedRows, plan.usedColumns};
+            LedgerAllocationResult allocation = ledger.allocateSequential(
+                demands, subarray + 1);
+            if (!allocation.success ||
+                allocation.transfers.size() > maximumBorrowCount)
+            {
+                continue;
+            }
+            ++result.feasibleCombinations;
+            result.plans[subarray] = plan;
+            committedDemands[subarray] = demands[subarray];
+            result.allocation = std::move(allocation);
+            result.remainingResourcesAfterTile[subarray] =
+                RemainingSpareResources{result.allocation.unusedRows,
+                                        result.allocation.unusedColumns};
+            selected = true;
+            break;
+        }
+        if (!selected)
+        {
+            result.failureSubarray = subarray;
+            return result;
+        }
+    }
+    result.success = true;
+    return result;
+}
+
+std::vector<int> ledgerOwners(const LedgerAllocationResult &allocation)
+{
+    std::vector<int> owners;
+    owners.reserve(allocation.lines.size());
+    for (const PhysicalSpareLine &line : allocation.lines)
+    {
+        owners.push_back(line.assignedSubarray.has_value()
+            ? static_cast<int>(*line.assignedSubarray) : -1);
+    }
+    return owners;
+}
+
+GroupChoice findV2GroupNoScratchChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount> &attempts,
+    std::size_t maximumBorrowCount,
+    const PhysicalResourceLedger &ledger,
+    bool rtlCanonicalPriority,
+    ConfigContractVersion configContract)
+{
+    GroupChoice result;
+    result.hasProposal = true;
+    std::array<SpareDemand, kSubarrayCount> committedDemands;
+
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const auto mappings = rtlCanonicalPriority
+            ? v2RtlGroupRoleSlotMappings(configContract, subarray)
+            : v2RoleSlotMappings(configContract, subarray);
+        const auto plans = compressedPlansForSubarray(attempts[subarray]);
+        const LedgerAllocationResult before =
+            ledger.allocateSequential(committedDemands, subarray);
+        bool selected = false;
+        for (const V2RoleSlotMapping &mapping : mappings)
+        {
+            GroupRepairResult::V2DecisionTrace trace;
+            trace.role = mapping.role;
+            trace.subarray = subarray;
+            trace.roleSlot = mapping.roleSlot;
+            trace.configId = mapping.configId;
+            trace.action = mapping.action;
+            trace.ledgerOwnersBefore = ledgerOwners(before);
+            trace.ledgerOwnersAfter = trace.ledgerOwnersBefore;
+
+            const auto plan = std::find_if(
+                plans.begin(), plans.end(), [&mapping](const CandidatePlan &candidate)
+                {
+                    return candidate.attemptVectorIndex == mapping.roleSlot;
+                });
+            trace.configFeasible = plan != plans.end();
+            if (plan != plans.end())
+            {
+                trace.smallestPatternId = plan->solutionId + 1;
+                trace.requiredRows = plan->usedRows;
+                trace.requiredColumns = plan->usedColumns;
+                auto demands = committedDemands;
+                demands[subarray] = {plan->usedRows, plan->usedColumns};
+                LedgerAllocationResult allocation =
+                    ledger.allocateSequential(demands, subarray + 1);
+                trace.ledgerValid = allocation.success &&
+                    allocation.transfers.size() <= maximumBorrowCount;
+                if (trace.ledgerValid)
+                {
+                    trace.selected = true;
+                    trace.ledgerOwnersAfter = ledgerOwners(allocation);
+                    result.plans[subarray] = *plan;
+                    result.configIds[subarray] = mapping.configId;
+                    result.actions[subarray] = mapping.action;
+                    committedDemands[subarray] = demands[subarray];
+                    result.allocation = std::move(allocation);
+                    result.remainingResourcesAfterTile[subarray] =
+                        RemainingSpareResources{result.allocation.unusedRows,
+                                                result.allocation.unusedColumns};
+                    selected = true;
+                }
+            }
+            ++result.candidatesChecked;
+            result.trace.push_back(std::move(trace));
+            if (selected)
+                break;
+        }
+        if (!selected)
+        {
+            result.failureSubarray = subarray;
+            result.success = false;
+            return result;
+        }
+    }
+    result.success = true;
+    return result;
+}
+
+// Exact group-global search for the frozen directional V2 contract.  Unlike
+// findCompressedGroupChoice(), this deliberately retains every V2 attempt /
+// PatternID candidate: V2 release-slot identity is part of the contract and
+// candidates are not collapsed by their row/column demand.
+GroupChoice findDirectionalV2GroupGlobalChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount> &attempts,
+    std::size_t maximumBorrowCount,
+    const PhysicalResourceLedger &ledger,
+    ConfigContractVersion configContract)
+{
+    const auto started = std::chrono::steady_clock::now();
+    std::array<std::vector<CandidatePlan>, kSubarrayCount> plans;
+    GlobalSearchMetrics metrics;
+    metrics.searchNodesVisited = 1; // root
+    metrics.exhaustiveEnumeration = false;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        plans[subarray] = compressedPlansForSubarray(attempts[subarray]);
+        metrics.candidateCounts[subarray] = plans[subarray].size();
+        if (plans[subarray].empty())
+        {
+            metrics.terminationReason = "EMPTY_V2_LOCAL_CANDIDATE_SET";
+            GroupChoice failure;
+            failure.hasProposal = true;
+            failure.globalSearchMetrics = metrics;
+            failure.failureSubarray = subarray;
+            return failure;
+        }
+        metrics.rawCartesianProductSize = subarray == 0
+            ? plans[subarray].size()
+            : checkedMultiply(metrics.rawCartesianProductSize,
+                              plans[subarray].size(),
+                              "V2 GLOBAL Cartesian-product size overflow");
+    }
+
+    GroupChoice result;
+    result.hasProposal = true;
+    std::array<CandidatePlan, kSubarrayCount> selected;
+    std::array<SpareDemand, kSubarrayCount> demands{};
+    bool stop = false;
+    const auto visit = [&](const auto &self, std::size_t subarray) -> void
+    {
+        if (stop || subarray == kSubarrayCount)
+            return;
+        for (const CandidatePlan &plan : plans[subarray])
+        {
+            if (stop)
+                return;
+            ++metrics.searchNodesVisited;
+            selected[subarray] = plan;
+            demands[subarray] = {plan.usedRows, plan.usedColumns};
+            const LedgerAllocationResult allocation = ledger.allocateSequential(
+                demands, subarray + 1);
+            if (!allocation.success ||
+                allocation.transfers.size() > maximumBorrowCount)
+            {
+                ++metrics.partialAssignmentsPruned;
+                demands[subarray] = {};
+                continue;
+            }
+            if (subarray + 1 != kSubarrayCount)
+            {
+                self(self, subarray + 1);
+                demands[subarray] = {};
+                continue;
+            }
+
+            ++metrics.completeAssignmentsChecked;
+            ++metrics.legalCompleteAssignments;
+            if (!metrics.firstFeasibleNodeIndex.has_value())
+                metrics.firstFeasibleNodeIndex = metrics.completeAssignmentsChecked;
+            result.success = true;
+            result.plans = selected;
+            result.allocation = allocation;
+            result.candidatesChecked = metrics.searchNodesVisited - 1;
+            result.feasibleCombinations = metrics.legalCompleteAssignments;
+            metrics.stoppedAtFirstLegal = true;
+            metrics.terminationReason = "FIRST_LEGAL_COMPLETE_TUPLE";
+            stop = true;
+            demands[subarray] = {};
+            return;
+        }
+    };
+    visit(visit, 0);
+
+    if (!result.success && metrics.terminationReason.empty())
+        metrics.terminationReason = "NO_LEGAL_COMPLETE_TUPLE";
+    metrics.runtimeMicroseconds = static_cast<std::uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now() - started).count());
+    result.globalSearchMetrics = metrics;
+
+    if (!result.success)
+        return result;
+
+    // Capture selected V2 slot/configuration identity and exact sequential
+    // ledger states for replay/debugging.  Slot order is the stable V2 slot
+    // order (0,1,2,3), not numeric ConfigID order.
+    std::array<SpareDemand, kSubarrayCount> committedDemands{};
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const auto mappings = v2RoleSlotMappings(configContract, subarray);
+        const CandidatePlan &plan = result.plans[subarray];
+        if (plan.attemptVectorIndex >= mappings.size())
+            throw std::logic_error("V2 GLOBAL candidate has an invalid role slot");
+        const V2RoleSlotMapping &mapping = mappings[plan.attemptVectorIndex];
+        const LedgerAllocationResult before = ledger.allocateSequential(
+            committedDemands, subarray);
+        committedDemands[subarray] = {plan.usedRows, plan.usedColumns};
+        const LedgerAllocationResult after = ledger.allocateSequential(
+            committedDemands, subarray + 1);
+        if (!after.success || after.transfers.size() > maximumBorrowCount)
+            throw std::logic_error("Selected V2 GLOBAL tuple lost ledger legality");
+
+        GroupRepairResult::V2DecisionTrace trace;
+        trace.role = mapping.role;
+        trace.subarray = subarray;
+        trace.roleSlot = mapping.roleSlot;
+        trace.configId = mapping.configId;
+        trace.action = mapping.action;
+        trace.configFeasible = true;
+        trace.smallestPatternId = plan.solutionId + 1;
+        trace.requiredRows = plan.usedRows;
+        trace.requiredColumns = plan.usedColumns;
+        trace.ledgerValid = true;
+        trace.selected = true;
+        trace.ledgerOwnersBefore = ledgerOwners(before);
+        trace.ledgerOwnersAfter = ledgerOwners(after);
+        result.trace.push_back(std::move(trace));
+        result.configIds[subarray] = mapping.configId;
+        result.actions[subarray] = mapping.action;
+        result.remainingResourcesAfterTile[subarray] =
+            RemainingSpareResources{after.unusedRows, after.unusedColumns};
+    }
+    return result;
+}
+
+struct CanonicalDirectionalState
+{
+    std::uint8_t releasedMask = 0;
+    std::uint8_t usedMask = 0;
+    std::uint8_t releaseRequirementMask = 0;
+    std::size_t borrowCount = 0;
+};
+
+constexpr bool releasesResource(V2GroupAction action) noexcept
+{
+    return action == V2GroupAction::ReleaseOnly ||
+        action == V2GroupAction::ReleaseAndBorrow;
+}
+
+// Resource IDs are the frozen PhysicalResourceLedger directional lines:
+// A_ROW=0, D_ROW=1, B_COL=2, C_COL=3.  The corresponding legal borrower is
+// C, B, A, D.  This preserves the simulator's physical topology authority;
+// the array order is also the deterministic donor order for this topology.
+constexpr std::array<std::size_t, kSubarrayCount> kReleaseResource{{0, 2, 3, 1}};
+constexpr std::array<std::size_t, kSubarrayCount> kBorrowResource{{2, 1, 0, 3}};
+constexpr std::array<std::size_t, kSubarrayCount> kResourceOwner{{0, 3, 1, 2}};
+
+bool advanceCanonicalDirectionalState(
+    CanonicalDirectionalState &state,
+    std::size_t subarray,
+    V2GroupAction action,
+    bool candidateActuallyReleases,
+    bool candidateActuallyBorrows,
+    std::size_t maximumBorrowCount)
+{
+    const std::size_t releaseResource = kReleaseResource[subarray];
+    const std::uint8_t releaseBit = static_cast<std::uint8_t>(1U << releaseResource);
+    const bool explicitRelease = releasesResource(action);
+    if ((state.releaseRequirementMask & releaseBit) != 0 && !explicitRelease)
+        return false;
+    if (candidateActuallyReleases)
+    {
+        state.releasedMask |= releaseBit;
+        if (explicitRelease)
+            state.releaseRequirementMask &= static_cast<std::uint8_t>(~releaseBit);
+    }
+
+    if (!candidateActuallyBorrows)
+        return true;
+    if (state.borrowCount == maximumBorrowCount)
+        return false;
+    const std::size_t donorResource = kBorrowResource[subarray];
+    const std::uint8_t donorBit = static_cast<std::uint8_t>(1U << donorResource);
+    if ((state.usedMask & donorBit) != 0)
+        return false;
+    if ((state.releasedMask & donorBit) == 0)
+    {
+        if (kResourceOwner[donorResource] <= subarray)
+            return false;
+        state.releaseRequirementMask |= donorBit;
+    }
+    state.usedMask |= donorBit;
+    ++state.borrowCount;
+    return true;
+}
+
+std::vector<CandidatePlan> canonicalDirectionalPlansForSubarray(
+    const std::vector<RepairAttemptResult> &attempts,
+    ConfigContractVersion contract,
+    std::size_t subarray)
+{
+    const std::vector<CandidatePlan> raw = compressedPlansForSubarray(attempts);
+    std::vector<CandidatePlan> ordered;
+    for (const V2RoleSlotMapping &mapping :
+         v2RtlGroupRoleSlotMappings(contract, subarray))
+    {
+        for (const CandidatePlan &plan : raw)
+        {
+            if (plan.attemptVectorIndex == mapping.roleSlot)
+                ordered.push_back(plan);
+        }
+    }
+    return ordered;
+}
+
+// Canonical GLOBAL keeps the historical oracle for provenance and implements
+// the hardware-facing tuple contract separately: R,L,RB,B, PatternID ascending,
+// bounded A->B->C->D DFS, and exact future-owner release obligations.
+GroupChoice findDirectionalV2GroupGlobalCanonicalChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount> &attempts,
+    std::size_t maximumBorrowCount,
+    const PhysicalResourceLedger &ledger,
+    ConfigContractVersion configContract)
+{
+    const auto started = std::chrono::steady_clock::now();
+    std::array<std::vector<CandidatePlan>, kSubarrayCount> plans;
+    GlobalSearchMetrics metrics;
+    metrics.searchNodesVisited = 1;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        plans[subarray] = canonicalDirectionalPlansForSubarray(
+            attempts[subarray], configContract, subarray);
+        metrics.candidateCounts[subarray] = plans[subarray].size();
+        if (plans[subarray].empty())
+        {
+            metrics.terminationReason = "EMPTY_V2_LOCAL_CANDIDATE_SET";
+            GroupChoice failure;
+            failure.hasProposal = true;
+            failure.failureSubarray = subarray;
+            failure.globalSearchMetrics = metrics;
+            return failure;
+        }
+        metrics.rawCartesianProductSize = subarray == 0
+            ? plans[subarray].size()
+            : checkedMultiply(metrics.rawCartesianProductSize,
+                              plans[subarray].size(),
+                              "Canonical V2 GLOBAL Cartesian-product overflow");
+    }
+
+    GroupChoice result;
+    result.hasProposal = true;
+    std::array<CandidatePlan, kSubarrayCount> selected;
+    std::array<SpareDemand, kSubarrayCount> demands{};
+    bool stop = false;
+    const auto visit = [&](const auto &self,
+                           std::size_t subarray,
+                           CanonicalDirectionalState state) -> void
+    {
+        if (stop || subarray == kSubarrayCount)
+            return;
+        const auto mappings = v2RoleSlotMappings(configContract, subarray);
+        for (const CandidatePlan &plan : plans[subarray])
+        {
+            if (stop)
+                return;
+            ++metrics.searchNodesVisited;
+            if (plan.attemptVectorIndex >= mappings.size())
+                throw std::logic_error("Canonical GLOBAL role slot is invalid");
+            CanonicalDirectionalState next = state;
+            const V2GroupAction action = mappings[plan.attemptVectorIndex].action;
+            const std::size_t localCapacity =
+                configContract == ConfigContractVersion::FrozenDate2x2M1 ? 2 : 3;
+            const bool actualRelease = subarray == 0 || subarray == 3
+                ? plan.usedRows < localCapacity
+                : plan.usedColumns < localCapacity;
+            const bool actualBorrow = subarray == 0 || subarray == 3
+                ? plan.usedColumns > localCapacity
+                : plan.usedRows > localCapacity;
+            if (!advanceCanonicalDirectionalState(
+                    next, subarray, action, actualRelease, actualBorrow,
+                    maximumBorrowCount))
+            {
+                ++metrics.partialAssignmentsPruned;
+                continue;
+            }
+            selected[subarray] = plan;
+            demands[subarray] = {plan.usedRows, plan.usedColumns};
+            if (subarray + 1 != kSubarrayCount)
+            {
+                self(self, subarray + 1, next);
+                demands[subarray] = {};
+                continue;
+            }
+            ++metrics.completeAssignmentsChecked;
+            if (next.releaseRequirementMask != 0)
+            {
+                ++metrics.partialAssignmentsPruned;
+                demands[subarray] = {};
+                continue;
+            }
+            const LedgerAllocationResult allocation = ledger.allocateSequential(
+                demands, kSubarrayCount);
+            if (!allocation.success ||
+                allocation.transfers.size() > maximumBorrowCount)
+            {
+                ++metrics.partialAssignmentsPruned;
+                demands[subarray] = {};
+                continue;
+            }
+            ++metrics.legalCompleteAssignments;
+            metrics.firstFeasibleNodeIndex = metrics.completeAssignmentsChecked;
+            result.success = true;
+            result.plans = selected;
+            result.allocation = allocation;
+            result.candidatesChecked = metrics.searchNodesVisited - 1;
+            result.feasibleCombinations = metrics.legalCompleteAssignments;
+            metrics.stoppedAtFirstLegal = true;
+            metrics.terminationReason =
+                "FIRST_LEGAL_COMPLETE_TUPLE_WITH_RELEASE_OBLIGATIONS";
+            stop = true;
+            demands[subarray] = {};
+            return;
+        }
+    };
+    visit(visit, 0, CanonicalDirectionalState{});
+
+    if (!result.success && metrics.terminationReason.empty())
+        metrics.terminationReason = "NO_LEGAL_COMPLETE_TUPLE";
+    metrics.runtimeMicroseconds = static_cast<std::uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now() - started).count());
+    result.globalSearchMetrics = metrics;
+    if (!result.success)
+        return result;
+
+    std::array<SpareDemand, kSubarrayCount> committedDemands{};
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const auto mappings = v2RoleSlotMappings(configContract, subarray);
+        const CandidatePlan &plan = result.plans[subarray];
+        const V2RoleSlotMapping &mapping = mappings[plan.attemptVectorIndex];
+        const LedgerAllocationResult before = ledger.allocateSequential(
+            committedDemands, subarray);
+        committedDemands[subarray] = {plan.usedRows, plan.usedColumns};
+        const LedgerAllocationResult after = ledger.allocateSequential(
+            committedDemands, subarray + 1);
+        GroupRepairResult::V2DecisionTrace trace;
+        trace.role = mapping.role;
+        trace.subarray = subarray;
+        trace.roleSlot = mapping.roleSlot;
+        trace.configId = mapping.configId;
+        trace.action = mapping.action;
+        trace.configFeasible = true;
+        trace.smallestPatternId = plan.solutionId + 1;
+        trace.requiredRows = plan.usedRows;
+        trace.requiredColumns = plan.usedColumns;
+        trace.ledgerValid = after.success;
+        trace.selected = true;
+        trace.ledgerOwnersBefore = ledgerOwners(before);
+        trace.ledgerOwnersAfter = ledgerOwners(after);
+        result.trace.push_back(std::move(trace));
+        result.configIds[subarray] = mapping.configId;
+        result.actions[subarray] = mapping.action;
+        result.remainingResourcesAfterTile[subarray] =
+            RemainingSpareResources{after.unusedRows, after.unusedColumns};
+    }
+    return result;
+}
+
 void captureCompressedSelection(
     GroupRepairResult &group,
     const GroupChoice &choice)
@@ -898,6 +1613,17 @@ void captureCompressedSelection(
     group.feasibleCombinationCount = choice.feasibleCombinations;
     group.remainingResourcesAfterTile =
         choice.remainingResourcesAfterTile;
+    group.selectedConfigIds = choice.configIds;
+    group.selectedV2Actions = choice.actions;
+    group.firstFailureSubarray = choice.failureSubarray;
+    group.v2DecisionTrace = choice.trace;
+    group.globalSearchMetrics = choice.globalSearchMetrics;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        if (choice.configIds[subarray].has_value())
+            group.selectedPatternIds[subarray] =
+                choice.plans[subarray].solutionId + 1;
+    }
     if (!choice.success)
     {
         for (std::size_t subarray = 0;
@@ -972,7 +1698,20 @@ void applyAllocation(
     }
     if (!choice.success)
     {
-        if (config.solutionTakePolicy == SolutionTakePolicy::Early)
+        if (config.solutionTakePolicy == SolutionTakePolicy::Early ||
+            config.solutionTakePolicy == SolutionTakePolicy::LocalFirst ||
+            config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
+            config.solutionTakePolicy == SolutionTakePolicy::GroupNoScratchV2 ||
+            config.solutionTakePolicy ==
+                SolutionTakePolicy::GroupGreedyRtlCanonical ||
+            config.solutionTakePolicy ==
+                SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1 ||
+            config.solutionTakePolicy ==
+                SolutionTakePolicy::OneByFourTwoPairwiseReleaseAwareEarlyV1 ||
+            config.solutionTakePolicy ==
+                SolutionTakePolicy::OneByFourSingleHopEarlyV1 ||
+            config.solutionTakePolicy ==
+                SolutionTakePolicy::OneByFourSingleHopReleaseAwareEarlyV1)
         {
             for (std::size_t subarray = 0;
                  subarray < kSubarrayCount; ++subarray)
@@ -996,6 +1735,41 @@ void applyAllocation(
     group.usedColumns = choice.allocation.usedColumns;
     group.unusedPhysicalRows = choice.allocation.unusedRows;
     group.unusedPhysicalColumns = choice.allocation.unusedColumns;
+    group.finalLedgerOwners = ledgerOwners(choice.allocation);
+    for (const BorrowTransfer &transfer : choice.allocation.transfers)
+    {
+        group.selectedBorrowTransfers.push_back({
+            transfer.donorSubarray,
+            transfer.borrowerSubarray,
+            transfer.dimension,
+            transfer.physicalLineId});
+    }
+    for (const PhysicalSpareLine &line : choice.allocation.lines)
+    {
+        if (line.dimension == SpareDimension::Column)
+        {
+            if (line.assignedSubarray.has_value())
+                ++group.localColumnUsed;
+            continue;
+        }
+        if (!line.shareable)
+        {
+            if (line.assignedSubarray.has_value())
+                ++group.localRowUsed;
+        }
+        else if (!line.assignedSubarray.has_value())
+        {
+            ++group.remainingShareableRows;
+        }
+        else if (line.ownerSubarray == static_cast<int>(*line.assignedSubarray))
+        {
+            ++group.ownShareableRowUsed;
+        }
+        else
+        {
+            ++group.borrowedShareableRowUsed;
+        }
+    }
     group.sharing.borrowedRows = choice.allocation.borrowedRows();
     group.sharing.borrowedColumns = choice.allocation.borrowedColumns();
     for (const SpareDemand &lent : choice.allocation.lentBySubarray)
@@ -1018,6 +1792,44 @@ void applyAllocation(
         group.repairSuccess[subarray] = true;
     }
 
+}
+
+bool isTwoPairwisePolicy(SolutionTakePolicy policy) noexcept
+{
+    return policy == SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1 ||
+        policy == SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1 ||
+        policy == SolutionTakePolicy::OneByFourTwoPairwiseReleaseAwareEarlyV1;
+}
+
+bool isSingleHopPolicy(SolutionTakePolicy policy) noexcept
+{
+    return policy == SolutionTakePolicy::OneByFourSingleHopEarlyV1 ||
+        policy == SolutionTakePolicy::OneByFourSingleHopGlobalV1 ||
+        policy == SolutionTakePolicy::OneByFourSingleHopReleaseAwareEarlyV1;
+}
+
+void validateOneByFourPolicy(const SimulationConfig &config)
+{
+    if (isTwoPairwisePolicy(config.solutionTakePolicy) &&
+        (config.layout != GroupLayout::Line1x4 ||
+         (config.topology != SharingTopology::PairSharing &&
+          config.topology != SharingTopology::NoSharing) ||
+         config.sharedColumns != 0))
+    {
+        throw std::invalid_argument(
+            "Two-Pairwise policies require layout=1x4, topology=pair, "
+            "and shared_columns=0");
+    }
+    if (isSingleHopPolicy(config.solutionTakePolicy) &&
+        (config.layout != GroupLayout::Line1x4 ||
+         (config.topology != SharingTopology::NeighborSharing &&
+          config.topology != SharingTopology::NoSharing) ||
+         config.sharedColumns != 0))
+    {
+        throw std::invalid_argument(
+            "Single-Hop policies require layout=1x4, topology=neighbor, "
+            "and shared_columns=0");
+    }
 }
 
 } // namespace
@@ -1045,6 +1857,7 @@ GroupRepairResult DynamicRepairSimulator::run(
     bool retainSelectedRemap) const
 {
     config.validate();
+    validateOneByFourPolicy(config);
     PhysicalResourceLedger ledger(config);
 
     GroupRepairResult group;
@@ -1054,6 +1867,32 @@ GroupRepairResult DynamicRepairSimulator::run(
     group.layout = config.layout;
     group.topology = config.topology;
     group.solutionTakePolicy = config.solutionTakePolicy;
+    group.privateRowCountPerSubarray = static_cast<std::size_t>(
+        config.layout == GroupLayout::Line1x4
+            ? config.spareRows - config.sharedRows : config.spareRows);
+    group.privateColumnCountPerSubarray = static_cast<std::size_t>(
+        config.spareColumns);
+    group.shareableRowCountPerSubarray = static_cast<std::size_t>(
+        config.layout == GroupLayout::Line1x4 ? config.sharedRows : 0);
+    group.totalRowSpareLinesGroup = kSubarrayCount *
+        static_cast<std::size_t>(config.spareRows);
+    group.totalColumnSpareLinesGroup = kSubarrayCount *
+        static_cast<std::size_t>(config.spareColumns);
+    group.totalPhysicalSpareLinesGroup = group.totalRowSpareLinesGroup +
+        group.totalColumnSpareLinesGroup;
+    if (config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
+        config.solutionTakePolicy == SolutionTakePolicy::GroupGreedyRtlCanonical ||
+        config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2GroupGlobal ||
+        config.solutionTakePolicy ==
+            SolutionTakePolicy::DirectionalV2GroupGlobalCanonical)
+    {
+        group.configContractVersion = canonicalV2ConfigContract(config);
+    }
+    else if (config.solutionTakePolicy == SolutionTakePolicy::GroupNoScratchV2)
+    {
+        group.configContractVersion =
+            ConfigContractVersion::HistoricalCppV2SlotMapV1;
+    }
 
     std::array<std::vector<CapacityOption>, kSubarrayCount> options;
     std::array<std::pair<int, int>, kSubarrayCount> provisioned;
@@ -1061,7 +1900,17 @@ GroupRepairResult DynamicRepairSimulator::run(
     for (std::size_t subarray = 0;
          subarray < kSubarrayCount; ++subarray)
     {
-        options[subarray] = capacityOptions(config, subarray);
+        options[subarray] =
+            (config.solutionTakePolicy == SolutionTakePolicy::GroupNoScratchV2 ||
+             config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
+             config.solutionTakePolicy ==
+                 SolutionTakePolicy::GroupGreedyRtlCanonical ||
+             config.solutionTakePolicy ==
+                 SolutionTakePolicy::DirectionalV2GroupGlobal ||
+             config.solutionTakePolicy ==
+                 SolutionTakePolicy::DirectionalV2GroupGlobalCanonical)
+                ? v2CapacityOptions(config, subarray)
+                : capacityOptions(config, subarray);
         provisioned[subarray] = provisionedCapacity(options[subarray]);
         hardwareProvisioning[subarray] = provisioningMetrics(
             options[subarray]);
@@ -1200,9 +2049,38 @@ GroupRepairResult DynamicRepairSimulator::run(
         const bool rowOnly = config.layout == GroupLayout::Line1x4;
         const GroupChoice early = findEarlyChoice(
             group.attemptsBySubarray, maximumBorrowCount, rowOnly, ledger);
-        const GroupChoice compressed = findCompressedGroupChoice(
-            group.attemptsBySubarray, maximumBorrowCount, rowOnly, ledger);
-        if (early.success && !compressed.success)
+        const GroupChoice oneByFourEarly =
+            (isTwoPairwisePolicy(config.solutionTakePolicy) ||
+             isSingleHopPolicy(config.solutionTakePolicy))
+                ? findOneByFourEarlyChoice(
+                      group.attemptsBySubarray, maximumBorrowCount, ledger)
+                : GroupChoice{};
+        const bool compressedChoiceRequired =
+            !isTwoPairwisePolicy(config.solutionTakePolicy) &&
+            !(config.solutionTakePolicy ==
+                  SolutionTakePolicy::OneByFourSingleHopEarlyV1);
+        // Two-Pairwise has a pair-scoped global policy, and Single-Hop EARLY
+        // commits without global search.  Computing the generic four-SA
+        // compressed tuple in either case cannot affect the selected policy;
+        // avoid turning an EARLY preflight into an unreported global sweep.
+        const GroupChoice compressed = compressedChoiceRequired
+            ? findCompressedGroupChoice(
+                  group.attemptsBySubarray, maximumBorrowCount, rowOnly,
+                  ledger)
+            : GroupChoice{};
+        const GroupChoice pairGlobal =
+            config.solutionTakePolicy ==
+                    SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1
+                ? findPairGlobalChoice(
+                      group.attemptsBySubarray, maximumBorrowCount, ledger)
+                : GroupChoice{};
+        // This dominance assertion belongs to the generic 2x2 C1/C3
+        // comparison.  The 1x4 policies have their own versioned EARLY
+        // priorities and pair/single-hop global scopes; comparing them to
+        // the generic selector would reject a legal 1x4 run before its
+        // selected policy is applied.
+        if (config.layout == GroupLayout::Grid2x2 &&
+            early.success && !compressed.success)
         {
             throw std::logic_error(
                 "GROUP_COMPRESSED rejected a feasible EARLY selection");
@@ -1210,15 +2088,81 @@ GroupRepairResult DynamicRepairSimulator::run(
         group.earlySuccess = early.success;
         group.groupCompressedSuccess = compressed.success;
         group.greedyLoss = !early.success && compressed.success;
-        best = config.solutionTakePolicy == SolutionTakePolicy::Early
-            ? early
-            : compressed;
+        const GroupChoice v2 =
+            (config.solutionTakePolicy == SolutionTakePolicy::GroupNoScratchV2 ||
+             config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
+             config.solutionTakePolicy ==
+                 SolutionTakePolicy::GroupGreedyRtlCanonical)
+            ? findV2GroupNoScratchChoice(
+                  group.attemptsBySubarray, maximumBorrowCount, ledger,
+                  config.solutionTakePolicy ==
+                      SolutionTakePolicy::GroupGreedyRtlCanonical,
+                  group.configContractVersion)
+            : GroupChoice{};
+        const GroupChoice v2Global =
+            config.solutionTakePolicy ==
+                    SolutionTakePolicy::DirectionalV2GroupGlobal
+                ? findDirectionalV2GroupGlobalChoice(
+                      group.attemptsBySubarray, maximumBorrowCount, ledger,
+                      group.configContractVersion)
+                : GroupChoice{};
+        const GroupChoice canonicalV2Global =
+            config.solutionTakePolicy ==
+                    SolutionTakePolicy::DirectionalV2GroupGlobalCanonical
+                ? findDirectionalV2GroupGlobalCanonicalChoice(
+                      group.attemptsBySubarray, maximumBorrowCount, ledger,
+                      group.configContractVersion)
+                : GroupChoice{};
+        if (config.solutionTakePolicy == SolutionTakePolicy::Early)
+            best = early;
+        else if (config.solutionTakePolicy == SolutionTakePolicy::LocalFirst)
+            best = findOneByFourEarlyChoice(
+                group.attemptsBySubarray, maximumBorrowCount, ledger);
+        else if (config.solutionTakePolicy == SolutionTakePolicy::GroupNoScratchV2 ||
+                 config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
+                 config.solutionTakePolicy ==
+                 SolutionTakePolicy::GroupGreedyRtlCanonical)
+            best = v2;
+        else if (config.solutionTakePolicy ==
+                 SolutionTakePolicy::DirectionalV2GroupGlobal)
+            best = v2Global;
+        else if (config.solutionTakePolicy ==
+                 SolutionTakePolicy::DirectionalV2GroupGlobalCanonical)
+            best = canonicalV2Global;
+        else if (config.solutionTakePolicy ==
+                 SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1 ||
+                 config.solutionTakePolicy ==
+                     SolutionTakePolicy::OneByFourTwoPairwiseReleaseAwareEarlyV1 ||
+                 config.solutionTakePolicy ==
+                     SolutionTakePolicy::OneByFourSingleHopEarlyV1 ||
+                 config.solutionTakePolicy ==
+                     SolutionTakePolicy::OneByFourSingleHopReleaseAwareEarlyV1)
+            best = (config.solutionTakePolicy ==
+                        SolutionTakePolicy::OneByFourTwoPairwiseReleaseAwareEarlyV1 ||
+                    config.solutionTakePolicy ==
+                        SolutionTakePolicy::OneByFourSingleHopReleaseAwareEarlyV1)
+                ? early
+                : oneByFourEarly;
+        else if (config.solutionTakePolicy ==
+                 SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1)
+            best = pairGlobal;
+        else
+            best = compressed;
         if (!best.success)
         {
             group.solutionSelectionFailureReason =
-                config.solutionTakePolicy == SolutionTakePolicy::Early
-                    ? "NO_FEASIBLE_SOLUTION_AFTER_PRIOR_COMMIT"
-                    : "NO_FEASIBLE_GROUP_COMBINATION";
+                (config.solutionTakePolicy == SolutionTakePolicy::GroupCompressed ||
+                 config.solutionTakePolicy == SolutionTakePolicy::GroupGlobal ||
+                 config.solutionTakePolicy ==
+                     SolutionTakePolicy::DirectionalV2GroupGlobal ||
+                 config.solutionTakePolicy ==
+                     SolutionTakePolicy::DirectionalV2GroupGlobalCanonical ||
+                 config.solutionTakePolicy ==
+                     SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1 ||
+                 config.solutionTakePolicy ==
+                     SolutionTakePolicy::OneByFourSingleHopGlobalV1)
+                    ? "NO_FEASIBLE_GROUP_COMBINATION"
+                    : "NO_FEASIBLE_SOLUTION_AFTER_PRIOR_COMMIT";
         }
         captureCompressedSelection(group, best);
     }

@@ -30,6 +30,29 @@ C++ simulator 由 Makefile 編譯；Python 圖表套件可透過下列指令安�
 python3 -m pip install -r requirements-plot.txt
 ```
 
+## DSS figure standard
+
+All new Python plotters should import [`paper_style.py`](paper_style.py) and
+select one profile before creating figures: `apply_paper_style()` for IEEE/DATE
+or `apply_ppt_style()` for 16:9 slides. Paper constructors provide 3.45 × 2.35
+in single-column, 3.45 × 2.00 in compact single-column, and 7.10 × 3.60 in
+double-column canvases; PPT constructors provide normal (8.0 × 4.5 in), wide
+(10.0 × 4.5 in), and half-slide (5.0 × 3.2 in) canvases. Use
+`save_paper_figure()` or `save_ppt_figure()` to retain tight bounds, editable
+SVG text, vector PDF, and the profile's PNG DPI (600 for paper; 300 for PPT).
+
+Paper typography is 8 pt base/axis labels, 7 pt ticks and legends, and 7–8 pt
+annotations. Keep figure titles out of a single image unless a compact
+multi-panel identifier is necessary; the LaTeX caption carries the explanation.
+
+For a generated PDF, verify the embedding before paper submission:
+
+```bash
+pdffonts path/to/figure.pdf
+```
+
+The output must not list `Type 3`; TrueType/CID TrueType embedding is expected.
+
 ## Script 一覽
 
 | Script | 功能 | 主要輸入 | 主要輸出 |
@@ -37,15 +60,21 @@ python3 -m pip install -r requirements-plot.txt
 | `group/dynamic_spare_sharing/sweep.sh` + `plot_sweep.py` | Dynamic Spare Sharing fault-count × spare-line sweep 與圖表 | CLI、`summary.csv` | `reports/group/dynamic_spare_sharing/<run-id>/` |
 | `group/dynamic_spare_sharing/plot_figure1_repair_rate.py` | 配對 2×2 sweeps 的 Figure 1 repair-rate 圖與 95% Wilson CI | 各 seed 的 `summary.csv` | PNG、PDF、`figure1_plot_data.csv` |
 | `group/dynamic_spare_sharing/generate_table_gallery.sh` + `plot_fault_model_vs_policy.py` | 預設 sweep 與 Fault Model × policy gallery | script 設定、CSV | `tables/`、`curves/`、`table_data/` |
+| `analysis/r3_group/*.py` + `plot/r3_group/plot_group_repair_rate.py` / `plot_fault_imbalance.py` | R3 group derived repair-rate／fault-imbalance comparison views | 指定 analysis root 的 derived CSV | `figures/repair_rate/<comparison>/`、`figures/imbalance/<comparison>/` |
 | `group/sram_recam/sweep.sh` | 4-SA SRAM-RECAM policy comparison | CLI 參數 | `reports/group/sram_recam/` |
 | `device/canonical_four/sweep.py` + `plot.py` | Device B0/B1/B2/B3 sweep 與圖表 | `HierarchicalRECAM`、axes | `canonical_four_sweep.csv`、`runs/`、PNG/PDF |
 | `device/moderate_repair_study/run.py` + `collect.py` + `plot.py` | Scope-separated moderate study | JSON manifest、study root | 合併 CSV、validation、PNG/PDF |
 | `legacy/sharedline/sweep.sh` + `plot_repair_rates.py` | SharedLine repair-rate sweep 與圖表 | 固定迴圈、`repairRates.csv` | `reports/legacy/sharedline/` |
 | `legacy/sharedline_sram/sweep.sh` | SharedLine SRAM sweep；共用 SharedLine plotter | CLI 參數 | `reports/legacy/sharedline_sram/` |
-| `legacy/redundant_rate/sweep.sh` + `plot.py` | RedundantRate sweep 與趨勢圖 | 固定迴圈、CSV | `reports/RedundantRate/` |
+| `legacy/redundant_rate/sweep.sh` + `plot.py` | RedundantRate sweep 與趨勢圖 | 固定迴圈、CSV | 原始 CSV：`reports/RedundantRate/`；圖表：`reports/legacy/redundant_rate/` |
 
 `__pycache__/` 是 Python 自動產生的 bytecode cache，不是需要手動執行或維護的
 script。
+
+R3 derived figures are group-level only. Their five comparison views,
+metric-layered output contract, source CSVs, current non-formal dataset status,
+and group/device separation are defined in
+[`docs/EXPERIMENTS.md`](../docs/EXPERIMENTS.md#71-r3-group-derived-data-figures).
 
 ## 使用方法
 
