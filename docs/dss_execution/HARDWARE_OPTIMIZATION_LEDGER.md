@@ -52,6 +52,17 @@ synthesis boundary.
 | Canonical GLOBAL-NoScratch RS2 core (2026-09-18 completed run) | NORMALIZED_GLOBAL | 2/2 | NOSCRATCH | working tree on `3304c86`; manifest SHA256 `a01832dbbfe578b1ebb07854dff38704b4db0b38afd7144a5eb32f034d6d91c0`; RTL SHA256 `40244bdc77546dc9f1c81c1aecf18c8fb8bb9d1885a8e90813d2ba242a2dd362` | `recam_canonical_rs2_global_noscratch_sources.tcl` | complete candidate/effect map through selected speculative tuple; committed ledger remains downstream | 61,751.290432 / 6,188.00 GE; comb. 26,917.228756; seq. 34,834.061676; 616 seq. cells | 630 architectural bits: 480 candidate/effect, 48 masks, 8 borrow-count snapshots, 24 cursors, 70 control/result | +0.02 ns; 19.87 ns; 41 levels; `depth_q_reg[0]` to `selected_release_q_reg[3]` | min 4 candidate visits; bounded worst-case 2,625,640 visits | 6 directed + 1,000 seeded candidate maps, 0 mismatch; mapped PASS |
 | Canonical GLOBAL-WithScratch | NORMALIZED_GLOBAL | 2/2, 3/3 | WITHSCRATCH | — | — | — | NOT_IMPLEMENTED | 0 reused bits proven | NOT_RUN | — | BLOCKED: CandidateStore scratch contract absent |
 
+## P2-SCRATCH contract audit (2026-09-18)
+
+P2-SCRATCH reviewed existing retained collector, historical candidate, Hybrid,
+pending-repair, FIFO, and simulation-only storage.  No source has a proven
+canonical-GLOBAL ownership handoff, dead-before-search lifetime, legal
+overwrite point, indexed port contract, and production-boundary connection.
+The result is `SCRATCH_CONTRACT_DECISION: BLOCKED_NOT_ENOUGH_EVIDENCE`.
+Normalized GLOBAL-WithScratch remains unimplemented; no area, state-reuse, or
+timing claim is added.  The detailed contract audit is
+`P2_SCRATCH_CONTRACT.md`.
+
 Canonical RS2 EARLY synthesis was started with the accepted methodology, but
 the installed W-2024.09-SP2 executable stopped before analysis/mapping because
 the Design Compiler feature was not enabled (`DCSH-1`).  Therefore area, GE,
