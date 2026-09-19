@@ -33,3 +33,7 @@ previous D-to-A wraparound defect.
 
 SYN-D is correctness-first GROUP_GLOBAL only.  OPT2/OPT3, DC synthesis, and
 new candidate compression are outside this milestone.
+
+**P3-4PT classification note:** the audit proved the existing equal-demand
+canonicalization as COMMON_OPT1 and added separate static OPT0/OPT1 wrappers.
+OPT2/OPT3 and DC synthesis remain outside scope.

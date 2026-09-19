@@ -24,6 +24,13 @@ the captured candidates and is data-dependent; the C++-matched 1,000-case core
 corpus used 555831 total search cycles, rather than defining a fixed per-case
 latency.
 
+**P3-4PT classification note:** the 555831-cycle corpus result and the
+202/150-cycle integrated witnesses are historical equal-demand-collapse
+(current OPT1) observations. They are not OPT0 measurements. The audit's
+separately elaborated exhaustive OPT0 reports 2047022 candidate evaluations
+over the same 1,000-case corpus; neither number is a fixed latency or a PPA
+claim.
+
 Atomic commit consists of one shadow initialization cycle, four A/B/C/D
 staging cycles, and one publish cycle.  The integrated directed tests observed
 202 cycles for a successful group and 150 cycles for an unsuccessful group.

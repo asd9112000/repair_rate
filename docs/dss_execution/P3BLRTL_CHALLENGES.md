@@ -39,3 +39,19 @@ DEFENSE: The DFS holds private prefix ledgers and the atomic commit validates A/
 VERIFICATION_IMPLICATION: The shared C++↔RTL corpus compares selected tuple, lexicographic objective, final owners, boundary adjacency, and no-forwarding behavior; directed atomic tests independently check no partial visibility.
 SCOPE_BOUNDARY: No 2×2 action/effect pruning, OPT2, OPT3, DC synthesis, or timing/area claim is included in this correctness-first baseline.
 ```
+
+```text
+PHASE: P3-4PT-GLOBAL-OPT-AUDIT
+CHALLENGE: Why are different topology-specific optimization keys used for 2×2 and 1×4?
+DEFENSE: The optimization class is identical—semantics-preserving pre-DFS candidate-equivalence collapse—but the downstream resource state differs by topology, so the minimal safe equivalence relation is architecture-specific.
+SYN-B: (explicit_release, actual_release, actual_borrow) fully determines its frozen resource-effect transition at a depth.
+SYN-D: equal (usedRows, usedColumns) fully determines the transition only together with the preserved physical prefix ledger; donor and owner are derived state, not removable key bits.
+```
+
+```text
+PHASE: P3-4PT-GLOBAL-OPT-AUDIT
+CHALLENGE: Why not compare optimized SYN-B against baseline SYN-D?
+DEFENSE: That would confound topology cost with optimization strength; the formal four-point comparison uses the highest common verified optimization class.
+RESULT: Both GLOBAL synthesis points use COMMON_OPT1, with separate static elaborations and no runtime optimization-selection mux.
+SCOPE_BOUNDARY: OPT2/DFS dominance, OPT3/state compression, and DC synthesis were not started by this audit.
+```

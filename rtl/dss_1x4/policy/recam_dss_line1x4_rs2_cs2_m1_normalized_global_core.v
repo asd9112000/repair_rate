@@ -1,10 +1,12 @@
 `default_nettype none
 
-// Correctness-first A->B->C->D GLOBAL search.  The core retains only the
-// C++-canonical representative for each (usedRows, usedColumns) demand, then
-// exhaustively visits the remaining tuple product with a private physical-row
-// ledger at every depth.  No persistent resource state is modified here.
-module recam_dss_line1x4_rs2_cs2_m1_normalized_global_core (
+// Correctness-first A->B->C->D GLOBAL search.  OPT0 visits each valid input
+// candidate.  The compile-time OPT1 option retains the C++-canonical
+// representative for each (usedRows, usedColumns) demand before the same DFS.
+// No persistent resource state is modified here.
+module recam_dss_line1x4_rs2_cs2_m1_normalized_global_core #(
+    parameter integer ENABLE_OPT1_CLASS_COLLAPSE = 0
+) (
     input wire clk_i,
     input wire rst_ni,
     input wire start_i,
@@ -175,25 +177,28 @@ module recam_dss_line1x4_rs2_cs2_m1_normalized_global_core (
             candidate_cols = candidate_cols_q[candidate_index*2 +: 2];
         end
 
-        canonical_candidate = 1'b1;
-        for (previous_index = 0; previous_index < 45; previous_index = previous_index + 1) begin
-            previous_valid = candidate_valid_q[depth_q*45 + previous_index];
-            if (previous_index < 15) begin
-                previous_attempt = 2'd0;
-                previous_pattern = previous_index[3:0];
-            end else if (previous_index < 30) begin
-                previous_attempt = 2'd1;
-                previous_pattern = previous_index[3:0] - 4'd15;
-            end else begin
-                previous_attempt = 2'd2;
-                previous_pattern = previous_index[3:0] - 4'd14;
+        canonical_candidate = ENABLE_OPT1_CLASS_COLLAPSE == 0;
+        if (ENABLE_OPT1_CLASS_COLLAPSE != 0) begin
+            canonical_candidate = 1'b1;
+            for (previous_index = 0; previous_index < 45; previous_index = previous_index + 1) begin
+                previous_valid = candidate_valid_q[depth_q*45 + previous_index];
+                if (previous_index < 15) begin
+                    previous_attempt = 2'd0;
+                    previous_pattern = previous_index[3:0];
+                end else if (previous_index < 30) begin
+                    previous_attempt = 2'd1;
+                    previous_pattern = previous_index[3:0] - 4'd15;
+                end else begin
+                    previous_attempt = 2'd2;
+                    previous_pattern = previous_index[3:0] - 4'd14;
+                end
+                previous_rows = candidate_rows_q[(depth_q*45 + previous_index)*3 +: 3];
+                previous_cols = candidate_cols_q[(depth_q*45 + previous_index)*2 +: 2];
+                if (previous_valid && previous_rows == candidate_rows && previous_cols == candidate_cols &&
+                    (previous_pattern < candidate_pattern ||
+                     (previous_pattern == candidate_pattern && previous_attempt < candidate_attempt)))
+                    canonical_candidate = 1'b0;
             end
-            previous_rows = candidate_rows_q[(depth_q*45 + previous_index)*3 +: 3];
-            previous_cols = candidate_cols_q[(depth_q*45 + previous_index)*2 +: 2];
-            if (previous_valid && previous_rows == candidate_rows && previous_cols == candidate_cols &&
-                (previous_pattern < candidate_pattern ||
-                 (previous_pattern == candidate_pattern && previous_attempt < candidate_attempt)))
-                canonical_candidate = 1'b0;
         end
 
         allocation_before = ledger_stack_q[depth_q*24 +: 24];

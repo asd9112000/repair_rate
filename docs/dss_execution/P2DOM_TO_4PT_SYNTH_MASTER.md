@@ -1,5 +1,10 @@
 # P2DOM to four-point synthesis master
 
+> Historical pre-P3-BL-RTL snapshot. It is retained for the P2DOM planning
+> record, but its blocked 1×4 and boundary statuses are superseded by
+> [P3_4PT_GLOBAL_OPT_AUDIT.md](P3_4PT_GLOBAL_OPT_AUDIT.md), which is the
+> authoritative current four-point GLOBAL optimization decision.
+
 ```text
 P2DOM_OPT_2X2: ACTIVE
 P2DOM_OPT_1X4_SINGLE_HOP: BLOCKED

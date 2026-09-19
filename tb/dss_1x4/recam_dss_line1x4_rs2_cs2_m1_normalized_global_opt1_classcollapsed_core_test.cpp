@@ -1,0 +1,2 @@
+#define GLOBAL_OPT1_CLASSCOLLAPSED_TEST
+#include "recam_dss_line1x4_rs2_cs2_m1_normalized_global_core_test.cpp"

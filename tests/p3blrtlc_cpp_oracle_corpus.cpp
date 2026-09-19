@@ -8,10 +8,14 @@
 #include <array>
 #include <cstdint>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <memory>
+#include <numeric>
 #include <random>
+#include <set>
 #include <stdexcept>
+#include <vector>
 
 namespace {
 constexpr std::size_t kCases = 1000;
@@ -26,6 +30,27 @@ struct AttemptRecord {
     std::array<bool, 6> columnPresent{};
 };
 using Case = std::array<std::array<AttemptRecord, kAttempts>, kSubarrays>;
+
+struct CandidateStatistics {
+    std::vector<std::size_t> rawPerGroup;
+    std::vector<std::size_t> canonicalPerGroup;
+    std::size_t rawTotal = 0;
+    std::size_t canonicalTotal = 0;
+};
+
+std::array<double, 5> summarize(const std::vector<std::size_t> &values) {
+    std::vector<std::size_t> sorted = values;
+    std::sort(sorted.begin(), sorted.end());
+    const std::size_t last = sorted.size() - 1;
+    const std::size_t total = std::accumulate(sorted.begin(), sorted.end(), std::size_t{0});
+    return {{
+        static_cast<double>(total) / sorted.size(),
+        static_cast<double>(sorted[last * 50 / 100]),
+        static_cast<double>(sorted[last * 95 / 100]),
+        static_cast<double>(sorted[last * 99 / 100]),
+        static_cast<double>(sorted.back())
+    }};
+}
 
 std::size_t choose(std::size_t n, std::size_t r) {
     r = std::min(r, n - r);
@@ -209,6 +234,27 @@ void writeCase(
     writeCandidateTable(output, group);
     output << '\n';
 }
+
+void recordCandidateStatistics(
+    CandidateStatistics &statistics,
+    const dynamic_spare::GroupRepairResult &group) {
+    std::size_t raw = 0;
+    std::size_t canonical = 0;
+    for (std::size_t subarray = 0; subarray < kSubarrays; ++subarray) {
+        std::set<std::pair<std::size_t, std::size_t>> demands;
+        for (const auto &attempt : group.attemptsBySubarray[subarray]) {
+            for (const auto &option : attempt.validCandidateOptions) {
+                ++raw;
+                demands.emplace(option.usedRows, option.usedColumns);
+            }
+        }
+        canonical += demands.size();
+    }
+    statistics.rawPerGroup.push_back(raw);
+    statistics.canonicalPerGroup.push_back(canonical);
+    statistics.rawTotal += raw;
+    statistics.canonicalTotal += canonical;
+}
 } // namespace
 
 int main() {
@@ -228,6 +274,7 @@ int main() {
         dynamic_spare::SolutionTakePolicy::OneByFourSingleHopEarlyV1;
     bool earlyGlobalDistinction = false;
     bool earlyFailsGlobal = false;
+    CandidateStatistics candidateStatistics;
     std::ofstream output("tmp/p3blrtlc_cpp_rtl_oracle.txt");
     if (!output)
         throw std::runtime_error("cannot write GLOBAL oracle corpus");
@@ -239,12 +286,27 @@ int main() {
             global.groupRepairSuccess != early.groupRepairSuccess;
         earlyFailsGlobal = earlyFailsGlobal ||
             (!early.groupRepairSuccess && global.groupRepairSuccess);
+        recordCandidateStatistics(candidateStatistics, global);
         writeCase(output, global, ledger);
     }
     if (!earlyGlobalDistinction || !earlyFailsGlobal)
         throw std::runtime_error("GLOBAL corpus lacks an EARLY-fail/GLOBAL-pass witness");
+    const auto rawStatistics = summarize(candidateStatistics.rawPerGroup);
+    const auto canonicalStatistics = summarize(candidateStatistics.canonicalPerGroup);
+    const double reduction = 1.0 - static_cast<double>(candidateStatistics.canonicalTotal) /
+        static_cast<double>(candidateStatistics.rawTotal);
     std::cout << "CPP_RTL_GLOBAL_SHARED_CORPUS=YES\n"
               << "CPP_ORACLE_RANDOM_CASES=" << kCases << '\n'
               << "CPP_ORACLE_SEED=" << kSeed << '\n'
-              << "EARLY_GLOBAL_DISTINCTION_TEST=PASS\n";
+              << "EARLY_GLOBAL_DISTINCTION_TEST=PASS\n"
+              << std::fixed << std::setprecision(3)
+              << "SYN_D_RAW_CANDIDATE_STATS_MEAN_MEDIAN_P95_P99_MAX="
+              << rawStatistics[0] << ',' << rawStatistics[1] << ','
+              << rawStatistics[2] << ',' << rawStatistics[3] << ','
+              << rawStatistics[4] << '\n'
+              << "SYN_D_OPT1_CANDIDATE_STATS_MEAN_MEDIAN_P95_P99_MAX="
+              << canonicalStatistics[0] << ',' << canonicalStatistics[1] << ','
+              << canonicalStatistics[2] << ',' << canonicalStatistics[3] << ','
+              << canonicalStatistics[4] << '\n'
+              << "SYN_D_OPT1_CANDIDATE_REDUCTION_RATIO=" << reduction << '\n';
 }

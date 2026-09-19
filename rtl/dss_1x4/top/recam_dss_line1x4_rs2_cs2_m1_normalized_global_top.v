@@ -6,7 +6,8 @@ module recam_dss_line1x4_rs2_cs2_m1_normalized_global_top #(
     parameter integer ROW_ADDR_W = 9,
     parameter integer COL_ADDR_W = 5,
     parameter integer DIFF_ADDR_W = 9,
-    parameter integer HYBRID_ENTRIES = 10
+    parameter integer HYBRID_ENTRIES = 10,
+    parameter integer ENABLE_OPT1_CLASS_COLLAPSE = 0
 ) (
     input wire clk_i,
     input wire rst_ni,
@@ -143,7 +144,9 @@ module recam_dss_line1x4_rs2_cs2_m1_normalized_global_top #(
         .active_attempt_o(producer_active_attempt)
     );
 
-    recam_dss_line1x4_rs2_cs2_m1_normalized_global_core search (
+    recam_dss_line1x4_rs2_cs2_m1_normalized_global_core #(
+        .ENABLE_OPT1_CLASS_COLLAPSE(ENABLE_OPT1_CLASS_COLLAPSE)
+    ) search (
         .clk_i(clk_i),
         .rst_ni(rst_ni),
         .start_i(search_start_q),

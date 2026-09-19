@@ -47,6 +47,16 @@ struct Result
     std::size_t dominancePrunes = 0;
 };
 
+struct VisitStatistics
+{
+    std::uint64_t aggregate = 0;
+    double mean = 0.0;
+    std::size_t median = 0;
+    std::size_t p95 = 0;
+    std::size_t p99 = 0;
+    std::size_t maximum = 0;
+};
+
 enum class SearchMode
 {
     Exhaustive,
@@ -328,10 +338,14 @@ int main()
                 "a safe audit mode changed repairability or canonical tuple");
         const auto summary = [](const std::vector<std::size_t> &values)
         {
-            std::size_t sum = 0;
-            for (const std::size_t value : values) sum += value;
-            return std::array<std::size_t, 4>{{sum / values.size(), percentile(values, 50, 100),
-                                                percentile(values, 95, 100), percentile(values, 99, 100)}};
+            VisitStatistics statistics;
+            for (const std::size_t value : values) statistics.aggregate += value;
+            statistics.mean = static_cast<double>(statistics.aggregate) / values.size();
+            statistics.median = percentile(values, 50, 100);
+            statistics.p95 = percentile(values, 95, 100);
+            statistics.p99 = percentile(values, 99, 100);
+            statistics.maximum = *std::max_element(values.begin(), values.end());
+            return statistics;
         };
         const auto exhaustive = summary(exhaustiveVisits);
         const auto collapsed = summary(collapsedVisits);
@@ -344,14 +358,20 @@ int main()
                   << "P2DOM_DOMINANCE_MISMATCHES=" << dominanceMismatch << '\n'
                   << "P2DOM_COMBINED_MISMATCHES=" << combinedMismatch << '\n'
                   << "P2DOM_DOMINANCE_PRUNES=" << dominancePrunes << '\n'
-                  << "P2DOM_EXHAUSTIVE_AVG_MEDIAN_P95_P99=" << exhaustive[0] << ',' << exhaustive[1]
-                  << ',' << exhaustive[2] << ',' << exhaustive[3] << '\n'
-                  << "P2DOM_COLLAPSE_AVG_MEDIAN_P95_P99=" << collapsed[0] << ',' << collapsed[1]
-                  << ',' << collapsed[2] << ',' << collapsed[3] << '\n'
-                  << "P2DOM_DOMINANCE_AVG_MEDIAN_P95_P99=" << dominance[0] << ',' << dominance[1]
-                  << ',' << dominance[2] << ',' << dominance[3] << '\n'
-                  << "P2DOM_COMBINED_AVG_MEDIAN_P95_P99=" << combined[0] << ',' << combined[1]
-                  << ',' << combined[2] << ',' << combined[3] << '\n';
+                  << "P2DOM_EXHAUSTIVE_AVG_MEDIAN_P95_P99=" << static_cast<std::size_t>(exhaustive.mean) << ',' << exhaustive.median
+                  << ',' << exhaustive.p95 << ',' << exhaustive.p99 << '\n'
+                  << "P2DOM_COLLAPSE_AVG_MEDIAN_P95_P99=" << static_cast<std::size_t>(collapsed.mean) << ',' << collapsed.median
+                  << ',' << collapsed.p95 << ',' << collapsed.p99 << '\n'
+                  << "P2DOM_DOMINANCE_AVG_MEDIAN_P95_P99=" << static_cast<std::size_t>(dominance.mean) << ',' << dominance.median
+                  << ',' << dominance.p95 << ',' << dominance.p99 << '\n'
+                  << "P2DOM_COMBINED_AVG_MEDIAN_P95_P99=" << static_cast<std::size_t>(combined.mean) << ',' << combined.median
+                  << ',' << combined.p95 << ',' << combined.p99 << '\n'
+                  << "P2DOM_EXHAUSTIVE_VISIT_STATS_AGGREGATE_MEAN_MEDIAN_P95_P99_MAX="
+                  << exhaustive.aggregate << ',' << exhaustive.mean << ',' << exhaustive.median << ','
+                  << exhaustive.p95 << ',' << exhaustive.p99 << ',' << exhaustive.maximum << '\n'
+                  << "P2DOM_COLLAPSE_VISIT_STATS_AGGREGATE_MEAN_MEDIAN_P95_P99_MAX="
+                  << collapsed.aggregate << ',' << collapsed.mean << ',' << collapsed.median << ','
+                  << collapsed.p95 << ',' << collapsed.p99 << ',' << collapsed.maximum << '\n';
     }
     catch (const std::exception &error)
     {

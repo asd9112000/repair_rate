@@ -1,11 +1,14 @@
 #include "Vtb_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_equivalence.h"
 #include "verilated.h"
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
+#include <iomanip>
 #include <iostream>
 #include <random>
 #include <stdexcept>
+#include <vector>
 
 namespace
 {
@@ -157,6 +160,51 @@ CandidateMap randomMap(std::mt19937_64 &random)
     }
     return map;
 }
+
+std::size_t rawCandidateCount(const CandidateMap &map)
+{
+    return std::count(map.valid.begin(), map.valid.end(), true);
+}
+
+std::size_t classCollapsedCandidateCount(const CandidateMap &map)
+{
+    constexpr std::array<int, 4> canonicalActions{{1, 0, 3, 2}};
+    std::size_t count = 0;
+    for (int subarray = 0; subarray < 4; ++subarray) {
+        std::array<bool, 8> represented{};
+        for (const int action : canonicalActions) {
+            for (int pattern = 1; pattern <= 10; ++pattern) {
+                const int index = slot(subarray, action, pattern);
+                if (!map.valid.at(index)) continue;
+                const int key = ((action == 1 || action == 3) ? 4 : 0) |
+                    (map.release.at(index) ? 2 : 0) |
+                    (map.borrow.at(index) ? 1 : 0);
+                if (!represented.at(key)) {
+                    represented.at(key) = true;
+                    ++count;
+                }
+            }
+        }
+    }
+    return count;
+}
+
+std::array<double, 5> summarize(const std::vector<std::size_t> &values)
+{
+    std::vector<std::size_t> sorted = values;
+    std::sort(sorted.begin(), sorted.end());
+    const std::size_t last = sorted.size() - 1;
+    std::size_t total = 0;
+    for (const std::size_t value : sorted)
+        total += value;
+    return {{
+        static_cast<double>(total) / sorted.size(),
+        static_cast<double>(sorted[last * 50 / 100]),
+        static_cast<double>(sorted[last * 95 / 100]),
+        static_cast<double>(sorted[last * 99 / 100]),
+        static_cast<double>(sorted.back())
+    }};
+}
 } // namespace
 
 int main(int argc, char **argv)
@@ -172,12 +220,38 @@ int main(int argc, char **argv)
     mismatches += !run(dut, group172());
     mismatches += !run(dut, effectOnlyCounterexample());
     std::mt19937_64 random(20260918);
-    for (int vector = 0; vector < 1000; ++vector)
-        mismatches += !run(dut, randomMap(random));
+    std::vector<std::size_t> rawCandidateCounts;
+    std::vector<std::size_t> classCollapsedCandidateCounts;
+    std::size_t rawCandidateTotal = 0;
+    std::size_t classCollapsedCandidateTotal = 0;
+    for (int vector = 0; vector < 1000; ++vector) {
+        const CandidateMap map = randomMap(random);
+        const std::size_t raw = rawCandidateCount(map);
+        const std::size_t collapsed = classCollapsedCandidateCount(map);
+        rawCandidateCounts.push_back(raw);
+        classCollapsedCandidateCounts.push_back(collapsed);
+        rawCandidateTotal += raw;
+        classCollapsedCandidateTotal += collapsed;
+        mismatches += !run(dut, map);
+    }
+    const auto rawStatistics = summarize(rawCandidateCounts);
+    const auto classCollapsedStatistics = summarize(classCollapsedCandidateCounts);
+    const double reduction = 1.0 - static_cast<double>(classCollapsedCandidateTotal) /
+        static_cast<double>(rawCandidateTotal);
 
     std::cout << "OPT1_DIRECTED_GROUP172=PASS\n"
               << "OPT1_EFFECT_ONLY_COUNTEREXAMPLE=PASS\n"
               << "OPT1_RANDOM_VECTORS=1000\n"
-              << "OPT1_MISMATCHES=" << mismatches << '\n';
+              << "OPT1_MISMATCHES=" << mismatches << '\n'
+              << std::fixed << std::setprecision(3)
+              << "SYN_B_RAW_CANDIDATE_STATS_MEAN_MEDIAN_P95_P99_MAX="
+              << rawStatistics[0] << ',' << rawStatistics[1] << ','
+              << rawStatistics[2] << ',' << rawStatistics[3] << ','
+              << rawStatistics[4] << '\n'
+              << "SYN_B_OPT1_CANDIDATE_STATS_MEAN_MEDIAN_P95_P99_MAX="
+              << classCollapsedStatistics[0] << ',' << classCollapsedStatistics[1] << ','
+              << classCollapsedStatistics[2] << ',' << classCollapsedStatistics[3] << ','
+              << classCollapsedStatistics[4] << '\n'
+              << "SYN_B_OPT1_CANDIDATE_REDUCTION_RATIO=" << reduction << '\n';
     return mismatches == 0 ? 0 : 1;
 }

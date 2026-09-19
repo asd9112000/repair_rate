@@ -127,3 +127,30 @@ DESIGN_IMPLICATION: Candidate reduction is retained only for equal (usedRows, us
 SYNTHESIS_IMPLICATION: A reusable sequential producer plus captured candidate table avoids analyzer replication while making DFS latency data-dependent.
 PAPER_RELEVANCE: The GLOBAL baseline has an auditable all-or-nothing physical-state boundary distinct from STREAMING_EARLY timing.
 ```
+
+## P3-4PT-F01
+
+```text
+DATE: 2026-09-19
+ARCHITECTURES: GRID2X2_DIRECTIONAL_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL; LINE1X4_SINGLE_HOP_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: SYN-B historical OPT1 maps exactly to the topology-neutral COMMON_OPT1 taxonomy: semantics-preserving pre-DFS candidate-equivalence collapse only.
+SYN-B KEY: (explicit_release, actual_release, actual_borrow), retaining the first R/L/RB/B/PatternID representative.
+SYN-D KEY: (usedRows, usedColumns), retaining the lower (PatternID, attemptIndex) C++ representative.
+FAIRNESS_RESULT: Different keys are valid because both retain only candidates with identical downstream transition semantics; neither adds DFS dominance or state compression.
+FINAL_COMMON_GLOBAL_OPT_LEVEL: OPT1
+FINAL_SYN-B ELABORATION: recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_integrated_top.
+FINAL_SYN-D ELABORATION: recam_dss_line1x4_rs2_cs2_m1_normalized_global_opt1_classcollapsed_top.
+EVIDENCE: P3_4PT_GLOBAL_OPT_AUDIT.md; directed tests and 1,000-case oracle/equivalence corpora.
+```
+
+## P3-4PT-F02
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: LINE1X4_SINGLE_HOP_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: SYN-D equal-demand candidate collapse is semantically safe only when it retains the canonical lower (PatternID, attemptIndex) representative.
+STATE THAT MUST REMAIN EXACT: physical row assignment, owner/origin, lendability, derived donor identity, borrow count, and private prefix ledger.
+NOT_APPLICABLE: The SYN-B three-effect key does not describe SYN-D candidate inputs because borrowing and donor identity are derived from the prefix physical ledger.
+IMPLEMENTATION: Separate compile-time OPT0 and OPT1 elaborations; no runtime optimization selection mux.
+POST_FIX_RESULT: SYN-D OPT0 and OPT1 each report zero shared C++-oracle selected-tuple, objective, final-owner, adjacency, and no-forwarding mismatches across 1,000 cases (seed 20260921).
+```

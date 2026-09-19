@@ -1,11 +1,19 @@
+#if defined(GLOBAL_OPT1_CLASSCOLLAPSED_TEST)
+#include "Vrecam_dss_line1x4_rs2_cs2_m1_normalized_global_opt1_classcollapsed_top.h"
+#else
 #include "Vrecam_dss_line1x4_rs2_cs2_m1_normalized_global_top.h"
+#endif
 #include "verilated.h"
 
 #include <iostream>
 #include <stdexcept>
 
 namespace {
+#if defined(GLOBAL_OPT1_CLASSCOLLAPSED_TEST)
+using Dut = Vrecam_dss_line1x4_rs2_cs2_m1_normalized_global_opt1_classcollapsed_top;
+#else
 using Dut = Vrecam_dss_line1x4_rs2_cs2_m1_normalized_global_top;
+#endif
 
 void tick(Dut &dut) {
     dut.clk_i = 0;
@@ -51,7 +59,7 @@ int run(Dut &dut) {
     dut.start_i = 1;
     tick(dut);
     dut.start_i = 0;
-    for (int cycle = 0; cycle < 10000; ++cycle) {
+    for (int cycle = 0; cycle < 2000000; ++cycle) {
         tick(dut);
         if (dut.done_o)
             return cycle + 1;
@@ -100,7 +108,7 @@ int main(int argc, char **argv) {
         dut.start_i = 1;
         tick(dut);
         dut.start_i = 0;
-        for (int cycle = 0; cycle < 10000 && !dut.done_o; ++cycle) {
+        for (int cycle = 0; cycle < 2000000 && !dut.done_o; ++cycle) {
             if (dut.row_assignment_flat_o != 0x924924U)
                 ++atomic_visibility_errors;
             tick(dut);

@@ -21,6 +21,12 @@ two valid candidates have the same `(usedRows, usedColumns)`, the lower
 `(PatternID, attemptIndex)` is retained.  No 2x2 action/effect pruning or
 other semantic compression is applied.
 
+**P3-4PT classification note:** this closed functional behavior is now exposed
+as the separate SYN-D OPT1 elaboration. The same externally visible semantics
+remain valid; the current OPT0 top instead evaluates every valid candidate.
+The proof, direct OPT0↔OPT1 comparison, and current synthesis selection are in
+`P3_4PT_GLOBAL_OPT_AUDIT.md`.
+
 The shared deterministic C++-to-RTL candidate corpus contains 1,000 cases with
 seed `20260921`.  It compares repairability, selected attempt/pattern tuple,
 objective fields, donors, and final row ownership.  The same corpus requires an

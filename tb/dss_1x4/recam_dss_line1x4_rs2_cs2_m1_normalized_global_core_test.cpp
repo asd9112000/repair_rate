@@ -1,14 +1,27 @@
+#if defined(GLOBAL_OPT1_CLASSCOLLAPSED_TEST)
+#include "Vrecam_dss_line1x4_rs2_cs2_m1_normalized_global_opt1_classcollapsed_core.h"
+#else
 #include "Vrecam_dss_line1x4_rs2_cs2_m1_normalized_global_core.h"
+#endif
 #include "verilated.h"
 
 #include <array>
+#include <algorithm>
 #include <cstdint>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 namespace {
+#if defined(GLOBAL_OPT1_CLASSCOLLAPSED_TEST)
+using Dut = Vrecam_dss_line1x4_rs2_cs2_m1_normalized_global_opt1_classcollapsed_core;
+constexpr const char *kOptLevel = "OPT1";
+#else
 using Dut = Vrecam_dss_line1x4_rs2_cs2_m1_normalized_global_core;
+constexpr const char *kOptLevel = "OPT0";
+#endif
 constexpr int kSubarrays = 4;
 constexpr int kAttempts = 3;
 constexpr int kPatterns = 15;
@@ -83,19 +96,40 @@ int run(Dut &dut, const CandidateMap &map) {
     }
     throw std::runtime_error("GLOBAL core timed out");
 }
+
+std::array<double, 5> summarize(const std::vector<std::uint64_t> &values) {
+    std::vector<std::uint64_t> sorted = values;
+    std::sort(sorted.begin(), sorted.end());
+    const std::size_t last = sorted.size() - 1;
+    std::uint64_t total = 0;
+    for (const std::uint64_t value : sorted)
+        total += value;
+    return {{
+        static_cast<double>(total) / sorted.size(),
+        static_cast<double>(sorted[last * 50 / 100]),
+        static_cast<double>(sorted[last * 95 / 100]),
+        static_cast<double>(sorted[last * 99 / 100]),
+        static_cast<double>(sorted.back())
+    }};
+}
 } // namespace
 
 int main(int argc, char **argv) {
     Verilated::commandArgs(argc, argv);
     Dut dut;
+    std::size_t repairability_mismatches = 0;
     std::size_t objective_mismatches = 0;
     std::size_t selected_tuple_mismatches = 0;
     std::size_t final_owner_mismatches = 0;
     std::size_t adjacency_mismatches = 0;
     std::size_t forwarding_mismatches = 0;
+    std::size_t pattern_tie_mismatches = 0;
+    std::size_t attempt_tie_mismatches = 0;
+    std::size_t canonical_equivalence_mismatches = 0;
     std::size_t oracle_mismatches = 0;
     std::uint64_t total_cycles = 0;
     std::uint64_t total_candidate_visits = 0;
+    std::vector<std::uint64_t> candidate_visits_by_case;
     try {
         CandidateMap early_global_witness{};
         add(early_global_witness, 0, 0, 0, 2, 0);
@@ -125,6 +159,30 @@ int main(int argc, char **argv) {
         if (!dut.group_repairable_o || (donor(dut, 1) & 3U) != 0U ||
             (donor(dut, 2) & 3U) != 3U || rowAssignment(dut, 1) != 1U)
             ++forwarding_mismatches;
+
+        CandidateMap pattern_tie{};
+        add(pattern_tie, 0, 0, 0, 0, 0);
+        add(pattern_tie, 0, 0, 1, 0, 0);
+        add(pattern_tie, 1, 0, 0, 0, 0);
+        add(pattern_tie, 2, 0, 0, 0, 0);
+        add(pattern_tie, 3, 0, 0, 0, 0);
+        run(dut, pattern_tie);
+        if (!dut.group_repairable_o || (dut.selected_pattern_flat_o & 15U) != 1U) {
+            ++pattern_tie_mismatches;
+            ++canonical_equivalence_mismatches;
+        }
+
+        CandidateMap attempt_tie{};
+        add(attempt_tie, 0, 0, 0, 0, 0);
+        add(attempt_tie, 1, 0, 0, 0, 0);
+        add(attempt_tie, 1, 1, 0, 0, 0);
+        add(attempt_tie, 2, 0, 0, 0, 0);
+        add(attempt_tie, 3, 0, 0, 0, 0);
+        run(dut, attempt_tie);
+        if (!dut.group_repairable_o || ((dut.selected_attempt_flat_o >> 2) & 3U) != 0U) {
+            ++attempt_tie_mismatches;
+            ++canonical_equivalence_mismatches;
+        }
 
         if (argc < 2)
             throw std::runtime_error("shared C++ GLOBAL oracle corpus path is required");
@@ -162,7 +220,10 @@ int main(int argc, char **argv) {
                 throw std::runtime_error("truncated shared GLOBAL oracle corpus");
             total_cycles += run(dut, map);
             total_candidate_visits += dut.candidate_evaluations_o;
+            candidate_visits_by_case.push_back(dut.candidate_evaluations_o);
             bool mismatch = unsigned(dut.group_repairable_o) != expected_success;
+            if (unsigned(dut.group_repairable_o) != expected_success)
+                ++repairability_mismatches;
             if (expected_success) {
                 if (unsigned(dut.selected_borrow_count_o) != expected_borrows ||
                     unsigned(dut.selected_used_rows_total_o) != expected_used_rows) {
@@ -204,21 +265,33 @@ int main(int argc, char **argv) {
                 ++oracle_mismatches;
             }
         }
+        const auto visitStatistics = summarize(candidate_visits_by_case);
         std::cout << "CPP_RTL_GLOBAL_SHARED_CORPUS=YES\n"
                   << "CPP_ORACLE_RANDOM_CASES=" << cases << '\n'
                   << "CPP_ORACLE_SEED=" << seed << '\n'
+                  << "REPAIRABILITY_MISMATCHES=" << repairability_mismatches << '\n'
                   << "SELECTED_TUPLE_MISMATCHES=" << selected_tuple_mismatches << '\n'
                   << "OBJECTIVE_MISMATCHES=" << objective_mismatches << '\n'
                   << "FINAL_OWNER_MISMATCHES=" << final_owner_mismatches << '\n'
                   << "GLOBAL_ADJACENCY_MISMATCHES=" << adjacency_mismatches << '\n'
                   << "BORROWED_LINE_FORWARDING_VIOLATIONS=" << forwarding_mismatches << '\n'
+                  << "PATTERNID_EQUAL_DEMAND_TIE_MISMATCHES=" << pattern_tie_mismatches << '\n'
+                  << "ATTEMPT_INDEX_EQUAL_DEMAND_TIE_MISMATCHES=" << attempt_tie_mismatches << '\n'
+                  << "CANONICAL_EQUIVALENCE_MISMATCHES=" << canonical_equivalence_mismatches << '\n'
                   << "CPP_ORACLE_MISMATCHES=" << oracle_mismatches << '\n'
                   << "GLOBAL_CANDIDATE_VISITS=" << total_candidate_visits << '\n'
+                  << std::fixed << std::setprecision(3)
+                  << "SYN_D_" << kOptLevel
+                  << "_VISIT_STATS_AGGREGATE_MEAN_MEDIAN_P95_P99_MAX="
+                  << total_candidate_visits << ',' << visitStatistics[0] << ','
+                  << visitStatistics[1] << ',' << visitStatistics[2] << ','
+                  << visitStatistics[3] << ',' << visitStatistics[4] << '\n'
                   << "GLOBAL_DFS_TOTAL_CYCLES=" << total_cycles << '\n';
     } catch (const std::exception &error) {
         std::cerr << error.what() << '\n';
         return 1;
     }
-    return objective_mismatches || selected_tuple_mismatches || final_owner_mismatches ||
-        adjacency_mismatches || forwarding_mismatches || oracle_mismatches;
+    return repairability_mismatches || objective_mismatches || selected_tuple_mismatches || final_owner_mismatches ||
+        adjacency_mismatches || forwarding_mismatches ||
+        canonical_equivalence_mismatches || oracle_mismatches;
 }
