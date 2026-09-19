@@ -115,3 +115,15 @@ CORRECTED_RTL: rtl/dss_1x4/policy/recam_dss_line1x4_rs2_cs2_m1_normalized_stream
 POST_FIX_RESULT: CPP_ORACLE_MISMATCHES=0; FINAL_OWNER_MISMATCHES=0; FAILURE_POSITION_MISMATCHES=0; END_TO_END_MISMATCHES=0
 EVIDENCE: deterministic shared C++↔RTL 1,000-case oracle corpus and integrated Verilator top test.
 ```
+
+## P3BLRTLC-F01
+
+```text
+DATE: 2026-09-19
+ARCHITECTURE: LINE1X4_SINGLE_HOP_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+FINDING: The C++ GROUP_GLOBAL policy can be reproduced with a four-depth private-ledger DFS and one atomic publish.
+EVIDENCE: shared deterministic 1,000-case C++↔RTL corpus reports zero selected-tuple, objective, final-owner, adjacency, and forwarding mismatches; atomic and integrated tests report zero visibility errors.
+DESIGN_IMPLICATION: Candidate reduction is retained only for equal (usedRows, usedColumns) candidates, resolving the tie with lower (PatternID, attemptIndex), exactly as the C++ policy does.
+SYNTHESIS_IMPLICATION: A reusable sequential producer plus captured candidate table avoids analyzer replication while making DFS latency data-dependent.
+PAPER_RELEVANCE: The GLOBAL baseline has an auditable all-or-nothing physical-state boundary distinct from STREAMING_EARLY timing.
+```

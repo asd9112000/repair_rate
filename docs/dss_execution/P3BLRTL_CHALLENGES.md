@@ -31,3 +31,11 @@ DESIGN_IMPLICATION: For small fixed physical sharing graphs such as LINE1X4_SING
 VERIFICATION_IMPLICATION: Directed adjacency tests alone should include boundary nodes, and end-to-end oracle comparison is valuable because this bug passed earlier local semantic reasoning but was exposed by shared C++↔RTL corpus testing.
 CORRECTED_RTL_REFERENCE: rtl/dss_1x4/policy/recam_dss_line1x4_rs2_cs2_m1_normalized_streaming_early_core.v
 ```
+
+```text
+ARCHITECTURE: LINE1X4_SINGLE_HOP_RS2_CS2_M1_NORMALIZED_GROUP_GLOBAL
+CHALLENGE: A GROUP_GLOBAL search must evaluate the whole A→B→C→D tuple without exposing a successful prefix as committed state.
+DEFENSE: The DFS holds private prefix ledgers and the atomic commit validates A/B/C/D in shadow before one publish edge changes persistent ownership.
+VERIFICATION_IMPLICATION: The shared C++↔RTL corpus compares selected tuple, lexicographic objective, final owners, boundary adjacency, and no-forwarding behavior; directed atomic tests independently check no partial visibility.
+SCOPE_BOUNDARY: No 2×2 action/effect pruning, OPT2, OPT3, DC synthesis, or timing/area claim is included in this correctness-first baseline.
+```

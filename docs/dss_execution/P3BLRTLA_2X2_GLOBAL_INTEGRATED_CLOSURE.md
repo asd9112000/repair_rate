@@ -117,4 +117,28 @@ SYN_A_EARLY_REFERENCE:
 The synthesis readiness statement means the integrated source boundary is
 defined and regression-checked; it does not claim that DC has run.
 
+## Normalized commit-latency convention
+
+**IMPORTANT:** historical `SYN-B COMMIT_CYCLES = 5` excluded initialization,
+whereas historical `SYN-D COMMIT_CYCLES = 6` included it. These raw values must
+not be compared directly. For the currently implemented successful commit
+paths, the canonical transaction-level definition is commit
+initialization/start through the persistent-ledger publish edge:
+
+```text
+SYN_B_LEGACY_COMMIT_CYCLES: 5
+SYN_B_COMMIT_INIT_CYCLES: 1
+SYN_B_COMMIT_APPLY_CYCLES: 4
+SYN_B_COMMIT_PUBLISH_CYCLES: 1
+SYN_B_COMMIT_TOTAL_CYCLES: 6
+SYN_B_PERSISTENT_LEDGER_UPDATE: publish edge
+SYN_B_COMMIT_ACCEPTED: same publish edge
+SYN_B_DONE: one top-control edge after commit acceptance
+SYN_B_COMMIT_ERROR_LATENCY: DATA_DEPENDENT / MAY_TERMINATE_EARLY
+```
+
+SYN-D uses the same normalized six-cycle successful-path structure. Search
+failure does not enter commit, and commit-error latency is not asserted to be
+six cycles.
+
 The follow-on phase is P3-BL-RTL-B (1x4 Single-Hop STREAMING_EARLY) only; it is not started by this closure.

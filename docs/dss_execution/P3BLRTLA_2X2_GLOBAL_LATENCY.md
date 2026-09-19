@@ -15,7 +15,7 @@ The producer has sixteen sequential analyzer capture cycles. SEARCH starts only 
 | Map-ready to search start | registered handoff |
 | GLOBAL search | data-dependent bounded DFS cycles |
 | Search done to commit start | registered handoff |
-| Commit processing after accepted adapter start | 5 fixed cycles: stage A/B/C/D then publish |
+| Commit transaction, start through publish | 6 successful-path cycles: initialization, stage A/B/C/D, then publish |
 | Commit acceptance to done | one registered top observation cycle |
 
 The integrated directed success test reports the measured total below; the all-invalid-C negative case is intentionally search-length dependent for OPT0 and remains a functional, not latency, comparison.
@@ -24,7 +24,19 @@ The integrated directed success test reports the measured total below; the all-i
 CANDIDATE_PRODUCTION_REQUESTS: 16
 CANDIDATE_GENERATION_CYCLES: 16
 GLOBAL_SEARCH_CYCLES: DATA_DEPENDENT
-COMMIT_CYCLES: 5
+COMMIT_CYCLES: 5 (historical processing-only label)
+SYN_B_LEGACY_COMMIT_CYCLES: 5
+SYN_B_LEGACY_DEFINITION: initialization excluded; A+B+C+D shadow application + publish counted
+SYN_B_COMMIT_INIT_CYCLES: 1
+SYN_B_COMMIT_APPLY_CYCLES: 4
+SYN_B_COMMIT_PUBLISH_CYCLES: 1
+SYN_B_COMMIT_TOTAL_CYCLES: 6
+SYN_B_SUCCESSFUL_COMMIT_TOTAL_CYCLES: 6
+SYN_B_COMMIT_ERROR_LATENCY: DATA_DEPENDENT / MAY_TERMINATE_EARLY
+SYN_B_PERSISTENT_LEDGER_UPDATE: publish edge
+SYN_B_COMMIT_ACCEPTED: same publish edge
+SYN_B_DONE: one top-control edge after commit acceptance
+COMMIT_LATENCY_CONVENTION_NORMALIZED: YES
 INTEGRATED_DIRECTED_SUCCESS_CYCLES: 34
 INTEGRATED_DIRECTED_FAILURE_CYCLES: 13192 (C snapshot overflow; OPT0 exhaustive failure path)
 DIRECTED_SUCCESS_TOTAL_END_TO_END_CYCLES: 34
@@ -48,8 +60,9 @@ the next edge in `STATE_SEARCH_WAIT`, then emits its registered
 
 When the commit adapter observes that pulse while idle, it copies the persistent
 ledger into private shadow registers, clears per-commit requirements/count, sets
-`stage_q = A`, and enters `STATE_STAGE`. That is an initialization edge; it is
-not one of the reported five processing cycles. The implemented sequence is:
+`stage_q = A`, and enters `STATE_STAGE`. That is an initialization edge; it was
+not included in the historical five processing cycles. The implemented
+successful sequence is:
 
 | Counted commit cycle | Commit FSM before edge | Operation at edge | Persistent ledger change | `commit_accepted_o` after edge |
 |---:|---|---|---|---|
@@ -59,10 +72,12 @@ not one of the reported five processing cycles. The implemented sequence is:
 | 4 | `STATE_STAGE`, D | Validate/update D in shadow; enter publish | No | 0 |
 | 5 | `STATE_PUBLISH` | Copy shadow released/borrowed/borrower-ID state to persistent ledger | **Yes** | **1** |
 
-Thus `COMMIT_CYCLES = 5` means A + B + C + D + publish. The publish/update
-edge is included. `group_commit_accepted` (`commit_accepted_o`) asserts on the
-same publish edge as the only persistent-ledger update. The top shell observes
-that registered acceptance on one subsequent rising edge in
+Thus the historical `COMMIT_CYCLES = 5` means A + B + C + D + publish. The
+normalized transaction-level value is `SYN_B_COMMIT_TOTAL_CYCLES = 6`, adding
+the initialization edge. The publish/update edge is included in both values.
+`group_commit_accepted` (`commit_accepted_o`) asserts on the same publish edge
+as the only persistent-ledger update. The top shell observes that registered
+acceptance on one subsequent rising edge in
 `STATE_COMMIT_WAIT`, asserts `done_o`, and returns to idle. `done_o` is therefore
 one top-control observation edge later than commit acceptance.
 
@@ -85,12 +100,29 @@ case in `tb_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_int
 | 8 | `STATE_COMMIT_WAIT` | `STATE_IDLE` | Publish shadow to persistent ledger | **Yes** | **1** | 0 |
 | 9 | `STATE_IDLE` | `STATE_IDLE` | Top observes acceptance and publishes result tuple | No further change | 0 | **1** |
 
-For a legal four-SA tuple the five processing cycles are fixed and independent
-of which legal tuple was selected. A search failure does not enter the commit
-FSM: the top sets failed `done_o` directly from `STATE_SEARCH_WAIT`. A forced
-commit error does not have a five-cycle guarantee: non-empty persistent state
-rejects at adapter start, while a stage legality failure terminates on the
-failing stage; neither publishes persistent state.
+For a legal four-SA tuple the normalized six successful commit cycles are fixed
+and independent of which legal tuple was selected. A search failure does not
+enter the commit FSM: the top sets failed `done_o` directly from
+`STATE_SEARCH_WAIT`. A forced commit error does not have a six-cycle guarantee:
+non-empty persistent state rejects at adapter start, while a stage legality
+failure terminates on the failing stage; neither publishes persistent state.
+
+## Cross-architecture commit-latency convention
+
+**IMPORTANT:** the previously reported `SYN-B COMMIT_CYCLES = 5` and `SYN-D
+COMMIT_CYCLES = 6` used different counting conventions and must not be directly
+compared. Under the normalized transaction-level convention, from commit
+initialization/start through the persistent-ledger publish edge:
+
+```text
+SYN-B COMMIT_TOTAL_CYCLES: 6
+SYN-D COMMIT_TOTAL_CYCLES: 6
+SUCCESSFUL_PATH_SHAPE: 1 initialization + 4 per-SA shadow/application + 1 atomic publish
+```
+
+This comparison is only for the currently implemented successful commit paths.
+Commit errors may terminate early and search failure remains outside the commit
+transaction.
 
 ## End-to-end formula and the 34-cycle witness
 
