@@ -32,9 +32,79 @@ FORMAL_SAMPLES = 100_000
 # R3 Canonical Policy Matrix V2: the same fixed-total loads are swept for all
 # supported group sizes.  Existing complete sidecars are reused only after
 # validation.
-POINTS = {2: (8, 12, 16, 20, 24, 28, 32),
-          3: (8, 12, 16, 20, 24, 28, 32),
-          4: (8, 12, 16, 20, 24, 28, 32)}
+# This is the frozen historical R3 point set.  Runtime --f-group-list values
+# deliberately do not modify it: they define a new, explicitly selected run.
+CANONICAL_F_GROUP_LIST = (8, 12, 16, 20, 24, 28, 32)
+POINTS = {2: CANONICAL_F_GROUP_LIST,
+          3: CANONICAL_F_GROUP_LIST,
+          4: CANONICAL_F_GROUP_LIST}
+
+# Policy display/invocation names were introduced before SimulationConfig's
+# normalized implementation IDs.  Keep the aliases frozen here rather than
+# comparing a descriptor's CLI spelling with an emitted display spelling.
+# Each alias below resolves to the exact ID emitted by
+# SimulationConfig::toString(SolutionTakePolicy).  It is intentionally not a
+# permissive string normalizer: an unknown name is never an equivalent policy.
+LEGACY_POLICY_NAME_TO_CANONICAL_POLICY_ID = {
+    "pairwise_row_m1_local_first": "local_first",
+    "directional_m1_local_first": "normalized_local_first",
+    "directional_m1_early": "normalized_streaming_early",
+    "directional_m1_global": "historical_directional_v2_global",
+    "pairwise_row_m1_early": "early",
+    "pairwise_row_m1_global": "group_global",
+    "directional_v2_early": "normalized_local_first",
+    "directional_m1_v2_early": "normalized_local_first",
+    "group": "group_compressed_legacy",
+    "group_compressed": "group_compressed_legacy",
+    "group_greedy_rtl_canonical": "normalized_streaming_early",
+    "group_no_scratch_v2": "normalized_early_deferred",
+    "directional_v2_group_global": "historical_directional_v2_global",
+    "directional_m1_v2_group_global": "historical_directional_v2_global",
+    "historical_directional_v2_global": "historical_directional_v2_global",
+    "directional_v2_group_global_canonical": "normalized_global",
+    "directional_m1_global_canonical": "normalized_global",
+    "two_pairwise_m1_local_first": "one_by_four_two_pairwise_early_v1",
+    "two_pairwise_m1_early": "one_by_four_two_pairwise_release_aware_early_v1",
+    "two_pairwise_m1_pair_global": "one_by_four_two_pairwise_pair_global_v1",
+    "single_hop_m1_local_first": "one_by_four_single_hop_early_v1",
+    "single_hop_m1_early": "one_by_four_single_hop_release_aware_early_v1",
+    "single_hop_m1_global": "one_by_four_single_hop_global_v1",
+    "one_by_four_two_pairwise_early_v1": "one_by_four_two_pairwise_early_v1",
+    "one_by_four_two_pairwise_release_aware_early_v1": "one_by_four_two_pairwise_release_aware_early_v1",
+    "one_by_four_two_pairwise_pair_global_v1": "one_by_four_two_pairwise_pair_global_v1",
+    "one_by_four_single_hop_early_v1": "one_by_four_single_hop_early_v1",
+    "one_by_four_single_hop_release_aware_early_v1": "one_by_four_single_hop_release_aware_early_v1",
+    "one_by_four_single_hop_global_v1": "one_by_four_single_hop_global_v1",
+}
+CANONICAL_IMPLEMENTATION_POLICY_IDS = frozenset({
+    "legacy", "local_first", "early", "group_compressed_legacy",
+    "normalized_early_deferred", "normalized_streaming_early", "group_global",
+    "historical_directional_v2_global", "normalized_global",
+    "normalized_local_first", "one_by_four_two_pairwise_early_v1",
+    "one_by_four_two_pairwise_release_aware_early_v1",
+    "one_by_four_two_pairwise_pair_global_v1", "one_by_four_single_hop_early_v1",
+    "one_by_four_single_hop_release_aware_early_v1",
+    "one_by_four_single_hop_global_v1",
+})
+POLICY_DISPLAY_NAMES = {
+    "local_no_sharing": "LOCAL", "directional_m1_local_first": "Directional V2 LOCAL-FIRST",
+    "directional_m1_early": "Directional V2 EARLY", "directional_m1_global": "Directional V2 GLOBAL",
+    "pairwise_row_m1_local_first": "Pairwise-row LOCAL-FIRST",
+    "pairwise_row_m1_early": "Pairwise-row EARLY", "pairwise_row_m1_global": "Pairwise-row GLOBAL",
+    "single_hop_m1_local_first": "Single-hop LOCAL-FIRST", "single_hop_m1_early": "Single-hop EARLY",
+    "single_hop_m1_global": "Single-hop GLOBAL", "two_pairwise_m1_local_first": "Two-pairwise LOCAL-FIRST",
+    "two_pairwise_m1_early": "Two-pairwise EARLY", "two_pairwise_m1_pair_global": "Two-pairwise PAIR-GLOBAL",
+}
+
+
+def canonical_implementation_policy_id(policy_name: str) -> str:
+    """Resolve an audited legacy policy spelling to its stable emitted ID."""
+    if policy_name in CANONICAL_IMPLEMENTATION_POLICY_IDS:
+        return policy_name
+    try:
+        return LEGACY_POLICY_NAME_TO_CANONICAL_POLICY_ID[policy_name]
+    except KeyError as error:
+        raise ValueError(f"unknown policy implementation ID: {policy_name}") from error
 
 
 def canonical_policies(n: int) -> list[dict[str, Any]]:
@@ -124,6 +194,8 @@ def canonical_policies(n: int) -> list[dict[str, Any]]:
         ]
     if any(int(item["share_row"]) > n for item in policies):
         raise RuntimeError("R3 policy exceeds the selected RS")
+    for policy in policies:
+        policy["display_name"] = POLICY_DISPLAY_NAMES[str(policy["id"])]
     return policies
 
 
@@ -139,19 +211,28 @@ def selected_points(rs: int | None, cs: int | None,
         raise ValueError("R3 group sweep requires --rs and --cs to be equal")
     selected_n = tuple(POINTS) if rs is None else (rs,)
     result: dict[int, tuple[int, ...]] = {}
-    requested = None if f_group_list is None else tuple(
-        int(value) for value in f_group_list.split(",") if value)
-    if requested is not None and not requested:
-        raise ValueError("--f-group-list must contain one or more integers")
+    requested = None if f_group_list is None else parse_f_group_list(f_group_list)
     for n in selected_n:
         if n not in POINTS:
             raise ValueError("R3 supports only RS=CS=2, RS=CS=3, or RS=CS=4")
         values = POINTS[n] if requested is None else requested
-        unsupported = sorted(set(values) - set(POINTS[n]))
-        if unsupported:
-            raise ValueError(f"unsupported R3 F_GROUP point(s) for N={n}: {unsupported}")
         result[n] = tuple(values)
     return result
+
+
+def parse_f_group_list(value: str) -> tuple[int, ...]:
+    """Parse a positive, distinct ordered runtime F_GROUP override."""
+    if not value or any(not item.strip() for item in value.split(",")):
+        raise ValueError("--f-group-list must be a comma-separated list of integers")
+    try:
+        values = tuple(int(item.strip()) for item in value.split(","))
+    except ValueError as error:
+        raise ValueError("--f-group-list must be a comma-separated list of integers") from error
+    if any(item <= 0 for item in values):
+        raise ValueError("--f-group-list values must be positive integers")
+    if len(set(values)) != len(values):
+        raise ValueError("--f-group-list values must be distinct")
+    return values
 
 
 def complete_result_rows(path: Path, samples: int) -> list[dict[str, str]] | None:
@@ -164,6 +245,55 @@ def complete_result_rows(path: Path, samples: int) -> list[dict[str, str]] | Non
     if any(int(row["group_id"]) != index for index, row in enumerate(rows)):
         return None
     return rows
+
+
+def validate_policy_sidecar(rows: list[dict[str, str]], policy: dict[str, Any],
+                            point: dict[str, int], corpus_id: str) -> None:
+    """Validate identity and every semantic/resource field before reuse.
+
+    Legacy implementation spellings are accepted only through the audited
+    mapping above; all other policy, topology, resource-point, and algorithm
+    fields remain exact comparisons.
+    """
+    policy_id = str(policy["id"])
+    expected_implementation = canonical_implementation_policy_id(str(policy["solution"]))
+    required = ("canonical_policy_id", "implementation_policy_id", "policy_id",
+                "solution_policy", "solution_class", "candidate_contract",
+                "priority_class", "search_scope", "backtracking",
+                "paper_canonical", "legacy_alias_of", "layout", "topology", "corpus_id",
+                "share_row", "share_col", "N", "RS", "CS", "F_GROUP", "seed",
+                "corpus_hash")
+    if not rows or any(field not in rows[0] for field in required):
+        raise RuntimeError(f"{policy_id}: sidecar lacks policy semantic metadata")
+    expected = {
+        "canonical_policy_id": policy_id,
+        "solution_class": str(policy["solution_class"]),
+        "candidate_contract": str(policy["candidate_contract"]),
+        "priority_class": str(policy["priority_class"]),
+        "search_scope": str(policy["search_scope"]),
+        "backtracking": str(policy["backtracking"]).lower(),
+        "paper_canonical": str(policy["paper_canonical"]).lower(),
+        "legacy_alias_of": "-",
+        "layout": str(policy["layout"]), "topology": str(policy["topology"]),
+        "share_row": str(policy["share_row"]), "share_col": str(policy["share_col"]),
+        "N": str(point["RS"]), "RS": str(point["RS"]), "CS": str(point["CS"]),
+        "F_GROUP": str(point["F_GROUP"]), "seed": str(point["seed"]),
+    }
+    for row in rows:
+        if row["corpus_id"] != corpus_id:
+            raise RuntimeError(f"{policy_id}: replayed a different corpus")
+        if any(row[field] != value for field, value in expected.items()):
+            raise RuntimeError(f"{policy_id}: sidecar semantic metadata does not match descriptor")
+        implementation_ids = (row["implementation_policy_id"], row["policy_id"],
+                              row["solution_policy"])
+        try:
+            matching_implementation = all(
+                canonical_implementation_policy_id(value) == expected_implementation
+                for value in implementation_ids)
+        except ValueError as error:
+            raise RuntimeError(f"{policy_id}: sidecar implementation policy is unknown") from error
+        if not matching_implementation:
+            raise RuntimeError(f"{policy_id}: sidecar solution policy does not match descriptor")
 
 
 def sha256(path: Path) -> str:
@@ -630,34 +760,12 @@ def main() -> int:
                         run_dir / "paired_policy_results_v1.csv")
                     if len(result_rows) != args.samples:
                         raise RuntimeError(f"{point_name}/{policy_id}: incomplete result rows")
-                    if any(row["corpus_id"] != corpus_id for row in result_rows):
-                        raise RuntimeError(f"{point_name}/{policy_id}: replayed a different corpus")
                     if any(int(row["group_id"]) != index for index, row in enumerate(result_rows)):
                         raise RuntimeError(f"{point_name}/{policy_id}: duplicate or noncontiguous group_id")
-                    if any(row["canonical_policy_id"] != policy_id or
-                           row["implementation_policy_id"] != str(policy["solution"]) or
-                           row["policy_id"] != str(policy["solution"]) or
-                           row["solution_policy"] != str(policy["solution"])
-                           for row in result_rows):
-                        raise RuntimeError(
-                            f"{point_name}/{policy_id}: sidecar solution policy does not match descriptor")
-                    required_semantics = ("solution_class", "candidate_contract",
-                                          "priority_class", "search_scope", "backtracking",
-                                          "paper_canonical", "legacy_alias_of", "layout",
-                                          "share_row", "share_col", "N", "RS", "CS",
-                                          "F_GROUP", "seed", "corpus_hash")
-                    if any(field not in result_rows[0] for field in required_semantics):
-                        raise RuntimeError(
-                            f"{point_name}/{policy_id}: sidecar lacks policy semantic metadata")
-                    if any(
-                            row["solution_class"] != str(policy["solution_class"]) or
-                            row["candidate_contract"] != str(policy["candidate_contract"])
-                            or row["priority_class"] != str(policy["priority_class"])
-                            or row["search_scope"] != str(policy["search_scope"])
-                            or row["backtracking"] != str(policy["backtracking"]).lower()
-                            for row in result_rows):
-                        raise RuntimeError(
-                            f"{point_name}/{policy_id}: sidecar semantic metadata does not match descriptor")
+                    try:
+                        validate_policy_sidecar(result_rows, policy, point, corpus_id)
+                    except RuntimeError as error:
+                        raise RuntimeError(f"{point_name}/{error}") from error
                     expected_physical_lines = 4 * (n + n)
                     if any(value_int(row["total_physical_group"]) != expected_physical_lines
                            for row in result_rows):
