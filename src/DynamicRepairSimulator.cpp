@@ -1,5 +1,6 @@
 #include "../inc/DynamicRepairSimulator.hpp"
 #include "../inc/CamRecamModel.hpp"
+#include "../inc/SharedCollectorRecam.hpp"
 #include "../inc/V2GroupNoScratchPolicy.hpp"
 
 #include <algorithm>
@@ -1927,6 +1928,69 @@ GroupRepairResult DynamicRepairSimulator::run(
     const auto runAttempt = [&](std::size_t subarray,
                                 const CapacityOption &capacity)
     {
+        const bool useSharedCollectorModel =
+            config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early;
+        if (useSharedCollectorModel &&
+            !group.attemptsBySubarray[subarray].empty())
+        {
+            // The first call for this SA produces all four Config projections.
+            // Later scheduling loops retain their legacy shape but must not
+            // recollect the fault stream for an individual Config.
+            return;
+        }
+
+        const auto finalizeAttempt = [&](RepairAttemptResult attempt)
+        {
+            attempt.addressCamEntriesProvisioned = useSharedCollectorModel
+                ? kDirectionalSharedCollectorPivots
+                : hardwareProvisioning[subarray].addressCamEntries;
+            attempt.hybridCamEntriesProvisioned = useSharedCollectorModel
+                ? kDirectionalSharedCollectorHybridEntries
+                : hardwareProvisioning[subarray].hybridCamEntries;
+            attempt.provisionedMatrixCells =
+                hardwareProvisioning[subarray].matrixCells;
+            if (config.hybridCamEntryWidthBits.has_value())
+            {
+                attempt.hybridCamBitsProvisioned = checkedMultiply(
+                    attempt.hybridCamEntriesProvisioned,
+                    *config.hybridCamEntryWidthBits,
+                    "Provisioned Hybrid-CAM bit count overflow");
+            }
+            calculateAttemptLatency(attempt, config);
+            group.attemptsBySubarray[subarray].push_back(std::move(attempt));
+        };
+
+        if (useSharedCollectorModel)
+        {
+            std::vector<RECAMSolverRequest> requests;
+            requests.reserve(options[subarray].size());
+            for (std::size_t optionIndex = 0;
+                 optionIndex < options[subarray].size(); ++optionIndex)
+            {
+                const CapacityOption &option = options[subarray][optionIndex];
+                RECAMSolverRequest request;
+                request.runIndex = runIndex;
+                request.subarrayId = static_cast<int>(subarray);
+                request.availableRows = option.rows;
+                request.availableColumns = option.columns;
+                request.bufferCamEntries = activeBufferEntries;
+                request.provisionedRows = provisioned[subarray].first;
+                request.provisionedColumns = provisioned[subarray].second;
+                request.stage = option.stage();
+                request.attemptIndex = optionIndex;
+                request.hybridCamEntryWidthBits = config.hybridCamEntryWidthBits;
+                request.rowAddressWidthBits = config.rowAddressWidthBits;
+                request.columnAddressWidthBits = config.columnAddressWidthBits;
+                requests.push_back(request);
+            }
+            for (RepairAttemptResult attempt :
+                 solveSharedCollectorConfigSet(faults[subarray], requests))
+            {
+                finalizeAttempt(std::move(attempt));
+            }
+            return;
+        }
+
         RECAMSolverRequest request;
         request.runIndex = runIndex;
         request.subarrayId = static_cast<int>(subarray);
@@ -1946,21 +2010,7 @@ GroupRepairResult DynamicRepairSimulator::run(
             capacity.rows == 0 && capacity.columns == 0
                 ? zeroCapacityAttempt(faults[subarray], request)
                 : solver_->solve(faults[subarray], request);
-        attempt.addressCamEntriesProvisioned =
-            hardwareProvisioning[subarray].addressCamEntries;
-        attempt.hybridCamEntriesProvisioned =
-            hardwareProvisioning[subarray].hybridCamEntries;
-        attempt.provisionedMatrixCells =
-            hardwareProvisioning[subarray].matrixCells;
-        if (config.hybridCamEntryWidthBits.has_value())
-        {
-            attempt.hybridCamBitsProvisioned = checkedMultiply(
-                attempt.hybridCamEntriesProvisioned,
-                *config.hybridCamEntryWidthBits,
-                "Provisioned Hybrid-CAM bit count overflow");
-        }
-        calculateAttemptLatency(attempt, config);
-        group.attemptsBySubarray[subarray].push_back(std::move(attempt));
+        finalizeAttempt(std::move(attempt));
     };
 
     for (std::size_t subarray = 0;

@@ -50,6 +50,7 @@ TEST_SRCS = tests/recam_cam_overflow_test.cpp \
 	tests/solution_take_policy_test.cpp \
 	tests/directional_v2_group_global_test.cpp \
 	tests/final_early_c1_priority_context_and_sa_order_study.cpp \
+	tests/final_early_c1r3_shared_collector_test.cpp \
 	tests/canonical_global_corpus_audit.cpp \
 	tests/directional_multi_config_analyzer_test.cpp \
 	tests/p3_synb_hyp02_phase4f_slot_static_oracle_test.cpp \
@@ -99,6 +100,7 @@ SOLUTION_TAKE_TEST_TARGET = $(TESTDIR)/solution_take_policy_test
 DIRECTIONAL_V2_GROUP_GLOBAL_TEST_TARGET = $(TESTDIR)/directional_v2_group_global_test
 FINAL_EARLY_B2_PRIORITY_AB_TEST_TARGET = $(TESTDIR)/final_early_b2_priority_ab_test
 FINAL_EARLY_C1_STUDY_TEST_TARGET = $(TESTDIR)/final_early_c1_priority_context_and_sa_order_study
+FINAL_EARLY_C1R3_SHARED_COLLECTOR_TEST_TARGET = $(TESTDIR)/final_early_c1r3_shared_collector_test
 DIRECTIONAL_MULTI_CONFIG_TEST_TARGET = $(TESTDIR)/directional_multi_config_analyzer_test
 P3_SYNB_HYP02_PHASE4F_SLOT_STATIC_ORACLE_TEST_TARGET = $(TESTDIR)/p3_synb_hyp02_phase4f_slot_static_oracle_test
 P3_SYNB_HYP02_EXACT_81PATH_PROOF_TEST_TARGET = $(TESTDIR)/p3_synb_hyp02_exact_81path_proof_test
@@ -275,6 +277,12 @@ $(FINAL_EARLY_C1_STUDY_TEST_TARGET): $(TEST_OBJDIR)/final_early_c1_priority_cont
 
 test_final_early_c1_priority_context_and_sa_order_study: $(FINAL_EARLY_C1_STUDY_TEST_TARGET)
 	./$(FINAL_EARLY_C1_STUDY_TEST_TARGET)
+
+$(FINAL_EARLY_C1R3_SHARED_COLLECTOR_TEST_TARGET): $(TEST_OBJDIR)/final_early_c1r3_shared_collector_test.o $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $^ -o $@
+
+test_final_early_c1r3_shared_collector: $(FINAL_EARLY_C1R3_SHARED_COLLECTOR_TEST_TARGET)
+	./$(FINAL_EARLY_C1R3_SHARED_COLLECTOR_TEST_TARGET)
 
 test_directional_v2_global_known_witness: test_directional_v2_group_global
 

@@ -180,6 +180,10 @@ struct RepairAttemptResult
     std::size_t matrixDimension = 0;
     std::size_t activeMatrixCells = 0;
     std::size_t provisionedMatrixCells = 0;
+    // Optional diagnostic snapshot for shared-collector Model-B2 validation.
+    // Entries are row-major logical matrix bits; legacy standalone results
+    // intentionally leave this empty to preserve their existing DTO contract.
+    std::vector<bool> sharedCollectorMatrixBits;
 
     std::uint64_t candidateSolutions = 0;
     std::uint64_t candidateSolutionsEvaluated = 0;
