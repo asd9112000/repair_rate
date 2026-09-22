@@ -23,6 +23,7 @@
 | [dss_execution/00_DSS_EXECUTION_MASTER.md](dss_execution/00_DSS_EXECUTION_MASTER.md) | Current | dss-thesis-execution | 新 DSS thesis execution 的 phase authorization、cross-dependency、evidence 與 entry gates；不取代現有語義權威 |
 | [handoff/MODERATE_REPAIR_STUDY_HANDOFF.md](handoff/MODERATE_REPAIR_STUDY_HANDOFF.md) | Handoff | moderate-study | 特定研究階段的狀態、結果摘要與交接 |
 | [handoff/EXPERIMENT_WORKFLOW_HANDOFF.md](handoff/EXPERIMENT_WORKFLOW_HANDOFF.md) | Handoff | experiment-workflow | C++ core、Python runner、manifest 與 scope-first reports workflow 的交接 |
+| [handoff/DATE2026_HYP02_EARLY_PPA_LAT0_HANDOFF.md](handoff/DATE2026_HYP02_EARLY_PPA_LAT0_HANDOFF.md) | Handoff | date2026-hyp02-hardware | HYP02 EARLY/GROUP matched PPA、語意決策、證據與 LAT0 交接 |
 | [archive/](archive/README.md) | Archive | historical | 已取代規格與歷史設計快照 |
 
 ## 單一真實來源規則
