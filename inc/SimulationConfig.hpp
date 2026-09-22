@@ -79,9 +79,9 @@ enum class SolutionTakePolicy
     // and any speculative borrow from a future owner creates an exact
     // release obligation that must be discharged by the completed tuple.
     DirectionalV2GroupGlobalCanonical,
-    // Frozen directional V2 candidate contract with sequential slot-order
-    // commitment (0, 1, 2, 3).  This is deliberately separate from Early,
-    // which retains the historical generic RECAM candidate contract.
+    // Frozen directional V2 candidate contract with sequential canonical
+    // R,L,RB,B commitment (1, 0, 3, 2). This is deliberately separate from
+    // Early, which retains the historical generic RECAM candidate contract.
     DirectionalV2Early,
     OneByFourTwoPairwiseEarlyV1,
     OneByFourTwoPairwisePairGlobalV1,

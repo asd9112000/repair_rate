@@ -34,7 +34,7 @@ PolicySemantics policySemantics(SolutionTakePolicy policy)
     switch (policy)
     {
         case SolutionTakePolicy::DirectionalV2Early:
-            return {"LOCAL_FIRST", "DIRECTIONAL_V2", "LOCAL_FIRST",
+            return {"EARLY", "DIRECTIONAL_V2", "R_L_RB_B_V2",
                     "SEQUENTIAL_FIRST_LEGAL", false};
         case SolutionTakePolicy::GroupGreedyRtlCanonical:
             // This baseline commits one legal V2 slot per SA.  It never

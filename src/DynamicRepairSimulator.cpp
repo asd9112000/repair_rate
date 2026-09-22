@@ -2096,7 +2096,9 @@ GroupRepairResult DynamicRepairSimulator::run(
             ? findV2GroupNoScratchChoice(
                   group.attemptsBySubarray, maximumBorrowCount, ledger,
                   config.solutionTakePolicy ==
-                      SolutionTakePolicy::GroupGreedyRtlCanonical,
+                          SolutionTakePolicy::GroupGreedyRtlCanonical ||
+                      config.solutionTakePolicy ==
+                          SolutionTakePolicy::DirectionalV2Early,
                   group.configContractVersion)
             : GroupChoice{};
         const GroupChoice v2Global =

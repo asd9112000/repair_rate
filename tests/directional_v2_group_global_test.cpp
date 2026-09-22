@@ -157,6 +157,50 @@ FaultGroup randomEasyGroup(std::uint64_t seed)
     return group;
 }
 
+std::optional<std::size_t> independentCanonicalEarlySlot(
+    const std::array<bool, 4> &slotFeasible)
+{
+    // This is intentionally a literal oracle. It must not use production
+    // mapping/order helpers or the production dispatch condition.
+    constexpr std::array<std::size_t, 4> kPriority{{1, 0, 3, 2}};
+    for (const std::size_t slot : kPriority)
+    {
+        if (slotFeasible[slot])
+            return slot;
+    }
+    return std::nullopt;
+}
+
+void testIndependentCanonicalEarlyPriorityOracle()
+{
+    struct PriorityCase
+    {
+        const char *name;
+        std::array<bool, 4> feasible;
+        std::optional<std::size_t> expected;
+    };
+    const std::array<PriorityCase, 10> cases{{
+        {"R_AND_L", {{true, true, false, false}}, 1},
+        {"L_AND_RB", {{true, false, false, true}}, 0},
+        {"R_AND_RB", {{false, true, false, true}}, 1},
+        {"RB_AND_B", {{false, false, true, true}}, 3},
+        {"ALL", {{true, true, true, true}}, 1},
+        {"ONLY_L", {{true, false, false, false}}, 0},
+        {"ONLY_R", {{false, true, false, false}}, 1},
+        {"ONLY_B", {{false, false, true, false}}, 2},
+        {"ONLY_RB", {{false, false, false, true}}, 3},
+        {"NONE", {{false, false, false, false}}, std::nullopt}}};
+
+    for (const PriorityCase &test : cases)
+    {
+        require(independentCanonicalEarlySlot(test.feasible) == test.expected,
+                std::string("Independent R,L,RB,B priority oracle failed: ") +
+                    test.name);
+    }
+    std::cout << "test_independent_canonical_early_priority_oracle PASS cases="
+              << cases.size() << '\n';
+}
+
 void testDirectionalV2GlobalKnownWitness()
 {
     DynamicRepairSimulator simulator;
@@ -224,8 +268,8 @@ void testDirectionalV2EarlyUsesFrozenContract()
     require(early.configContractVersion == ConfigContractVersion::FrozenDate2x2M1,
             "V2 EARLY did not select the frozen directional V2 contract");
     require(!early.v2DecisionTrace.empty() &&
-                early.v2DecisionTrace.front().roleSlot == 0,
-            "V2 EARLY no longer starts with V2 slot 0");
+                early.v2DecisionTrace.front().roleSlot == 1,
+            "V2 EARLY did not start with canonical R slot 1");
     require(!early.groupRepairSuccess || global.groupRepairSuccess,
             "V2 GLOBAL omitted a passing V2 EARLY candidate");
     std::cout << "test_directional_v2_early_uses_frozen_contract PASS\n";
@@ -256,6 +300,7 @@ void testDirectionalV2GlobalVsBruteforce()
 
 int main()
 {
+    testIndependentCanonicalEarlyPriorityOracle();
     testDirectionalV2GlobalKnownWitness();
     testDirectionalV2GlobalContainsGreedy();
     testDirectionalV2EarlyUsesFrozenContract();
