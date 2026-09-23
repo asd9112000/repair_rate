@@ -2,6 +2,7 @@
 
 | Case | Top | Canonical RTL Commit | Synthesis Record | Area um2 | GE | WNS ns | Status |
 |---|---|---|---|---:|---:|---:|---|
+| 1x4 L1X4_R_GROUP directed row-only | `recam_dss_l1x4_r_static_global_top` | `e15072d0955126ae235802fbc92c1fc6469969ab` | `ed91147` | 96898.032853 | 9710.00 | 0.00 | FINAL; 27 static paths; 20 ns PASS |
 | 2x2 Directional GROUP-GLOBAL NoScratch | `recam_dss_hyp02_static_global_top` | `35a60728642e73f5d2c428d2a345ef8c6817bdaa` | `03046e4` | 106341.682630 | 10656.33 | 0.00 | FINAL HYP02 mother |
 | 2x2 G2X2_R row-only GROUP NoScratch | `recam_dss_g2x2_r_static_global_top` | `766268698c983ce5ddb6fa916e4a65b2183cb0ad` | Track A N=2 checkpoint | 97140.859997 | 9734.33 | 0.00 | PROVISIONAL; SYNTHESIS_COMPLETE; SUMMARY_BOUNDARY_VERIFICATION_DEFERRED |
 | 2x2 Directional HYP02-compatible EARLY NoScratch | `recam_dss_grid2x2_directional_rs2_cs2_m1_hyp02_early_noscratch_top` | `46e1d3a82bf948dc3e357823cbc50869be964023` | DATE2026 Path-C2 closure | 78216.970295 | 7838.00 | +0.01 | FINAL; HYP02_STATIC_81_PATH_CONTRACT |
@@ -17,5 +18,5 @@ existing C++ PhysicalResourceLedger demand model.
 
 ## Planned Cases
 
-Future 1x4 cases are `NOT_YET_FINAL` and are intentionally absent from the
-final-case table.
+Other future cases remain `NOT_YET_FINAL` and are intentionally absent from
+the final-case table.
