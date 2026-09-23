@@ -301,6 +301,32 @@ test_g2x2_r_static_global_lockstep: $(OBJS)
 	$(MAKE) -s -C build/rtl/verilator/recam_dss_g2x2_r_static_global_lockstep -f Vrecam_dss_g2x2_r_static_global_core.mk
 	build/rtl/verilator/recam_dss_g2x2_r_static_global_lockstep/Vrecam_dss_g2x2_r_static_global_core $(LOCKSTEP_VECTORS)
 
+.PHONY: test_l1x4_r_group_v1_functional test_l1x4_r_group_v1_selector test_l1x4_r_group_v1_core test_l1x4_r_group_v1_lockstep
+
+test_l1x4_r_group_v1_selector:
+	scripts/simulation/run_verilator_test.sh recam_dss_l1x4_r_static_selector \
+		rtl/L1X4_R_GROUP_V1/recam_dss_l1x4_r_static_selector.sv \
+		tb/L1X4_R_GROUP_V1/recam_dss_l1x4_r_static_selector_test.cpp
+
+test_l1x4_r_group_v1_core:
+	scripts/simulation/run_verilator_test.sh recam_dss_l1x4_r_static_global_core \
+		rtl/L1X4_R_GROUP_V1/recam_dss_l1x4_r_static_global_core.sv \
+		tb/L1X4_R_GROUP_V1/recam_dss_l1x4_r_static_global_core_test.cpp \
+		rtl/L1X4_R_GROUP_V1/dss_v2_params_pkg.sv \
+		rtl/L1X4_R_GROUP_V1/dss_v2_types_pkg.sv \
+		rtl/L1X4_R_GROUP_V1/dss_v2_group_candidate_store.sv \
+		rtl/L1X4_R_GROUP_V1/dss_v2_group_slot_decode.sv \
+		rtl/L1X4_R_GROUP_V1/recam_dss_l1x4_r_static_selector.sv
+
+test_l1x4_r_group_v1_lockstep: $(OBJS)
+	verilator -Wall -Wno-fatal --cc --exe --top-module recam_dss_l1x4_r_static_global_core --Mdir build/rtl/verilator/l1x4_r_group_v1_lockstep -CFLAGS "-std=c++17 -I$(abspath inc)" rtl/L1X4_R_GROUP_V1/dss_v2_params_pkg.sv rtl/L1X4_R_GROUP_V1/dss_v2_types_pkg.sv rtl/L1X4_R_GROUP_V1/dss_v2_group_candidate_store.sv rtl/L1X4_R_GROUP_V1/dss_v2_group_slot_decode.sv rtl/L1X4_R_GROUP_V1/recam_dss_l1x4_r_static_selector.sv rtl/L1X4_R_GROUP_V1/recam_dss_l1x4_r_static_global_core.sv $(abspath tb/L1X4_R_GROUP_V1/recam_dss_l1x4_r_static_global_lockstep_test.cpp) $(abspath $(OBJS))
+	$(MAKE) -s -C build/rtl/verilator/l1x4_r_group_v1_lockstep -f Vrecam_dss_l1x4_r_static_global_core.mk
+	build/rtl/verilator/l1x4_r_group_v1_lockstep/Vrecam_dss_l1x4_r_static_global_core $(LOCKSTEP_VECTORS)
+
+test_l1x4_r_group_v1_functional: test_l1x4_r_group_v1_selector test_l1x4_r_group_v1_core test_p3_synb_hyp02_exact_81path_proof
+	$(MAKE) test_l1x4_r_group_v1_lockstep LOCKSTEP_VECTORS=10
+	$(MAKE) test_l1x4_r_group_v1_lockstep LOCKSTEP_VECTORS=1000
+
 test_recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch_rtl:
 	scripts/simulation/run_verilator_test.sh recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch_core \
 		rtl/recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch/recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch_core.sv \
