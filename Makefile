@@ -733,3 +733,12 @@ sim_DynamicSpareSharing_SRAM_RECAM: $(DYNAMIC_SRAM_RECAM_TARGET)
 
 00_thesis:
 	@./00_thesis/00_my_thesis/build_thesis.sh
+
+.PHONY: test_sixcase_rc_r_forensic_replay
+SIXCASE_RC_R_FORENSIC_REPLAY_TARGET = $(TESTDIR)/sixcase_rc_r_forensic_replay
+
+$(SIXCASE_RC_R_FORENSIC_REPLAY_TARGET): tests/sixcase_rc_r_forensic_replay.cpp $(OBJS) | $(TESTDIR)
+	$(CXX) $(WARNINGS) $(CXXFLAGS) $(OPTFLAGS) $^ -o $@
+
+test_sixcase_rc_r_forensic_replay: $(SIXCASE_RC_R_FORENSIC_REPLAY_TARGET)
+	./$(SIXCASE_RC_R_FORENSIC_REPLAY_TARGET)
