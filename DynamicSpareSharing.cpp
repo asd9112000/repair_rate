@@ -69,7 +69,7 @@ void printUsage(const char *program)
         << "  --minimum-row-reserve N --minimum-column-reserve N\n"
         << "  --single-dimension\n"
         << "  --max-borrows N\n"
-        << "  --solution-take legacy|local_first|early|normalized_local_first|normalized_streaming_early|normalized_early_deferred|normalized_global|directional_m1_local_first|directional_m1_early|directional_m1_global|pairwise_row_m1_local_first|pairwise_row_m1_early|pairwise_row_m1_global|single_hop_m1_local_first|single_hop_m1_early|single_hop_m1_global|two_pairwise_m1_local_first|two_pairwise_m1_early|two_pairwise_m1_pair_global|directional_v2_early|group_no_scratch_v2|group_greedy_rtl_canonical|group_compressed_legacy|group_global|directional_v2_group_global|directional_v2_group_global_canonical|one_by_four_two_pairwise_early_v1|one_by_four_two_pairwise_pair_global_v1|one_by_four_single_hop_early_v1|one_by_four_single_hop_global_v1\n"
+        << "  --solution-take legacy|local_first|early|normalized_local_first|normalized_streaming_early|normalized_early_deferred|normalized_global|hyp02_static_early|hyp02_static_global|g2x2_r_static_early|g2x2_r_static_global|l1x4_r_static_early|l1x4_r_static_global|directional_m1_local_first|directional_m1_early|directional_m1_global|pairwise_row_m1_local_first|pairwise_row_m1_early|pairwise_row_m1_global|single_hop_m1_local_first|single_hop_m1_early|single_hop_m1_global|two_pairwise_m1_local_first|two_pairwise_m1_early|two_pairwise_m1_pair_global|directional_v2_early|group_no_scratch_v2|group_greedy_rtl_canonical|group_compressed_legacy|group_global|directional_v2_group_global|directional_v2_group_global_canonical|one_by_four_two_pairwise_early_v1|one_by_four_two_pairwise_pair_global_v1|one_by_four_single_hop_early_v1|one_by_four_single_hop_global_v1\n"
         << "  --canonical-policy-id ID --paper-canonical true|false --legacy-alias-of ID\n"
         << "      Historical directional_v2_* aliases remain accepted; new output uses normalized_* labels.\n\n"
         << "Hardware/latency:\n"
@@ -286,6 +286,18 @@ dynamic_spare::SolutionTakePolicy parseSolutionTake(
         value == "directional_v2_group_global_canonical" ||
         value == "directional_m1_global_canonical")
         return dynamic_spare::SolutionTakePolicy::DirectionalV2GroupGlobalCanonical;
+    if (value == "hyp02_static_early")
+        return dynamic_spare::SolutionTakePolicy::Hyp02StaticEarly;
+    if (value == "hyp02_static_global")
+        return dynamic_spare::SolutionTakePolicy::Hyp02StaticGlobal;
+    if (value == "g2x2_r_static_early")
+        return dynamic_spare::SolutionTakePolicy::Grid2x2RowStaticEarly;
+    if (value == "g2x2_r_static_global")
+        return dynamic_spare::SolutionTakePolicy::Grid2x2RowStaticGlobal;
+    if (value == "l1x4_r_static_early")
+        return dynamic_spare::SolutionTakePolicy::Line1x4RowStaticEarly;
+    if (value == "l1x4_r_static_global")
+        return dynamic_spare::SolutionTakePolicy::Line1x4RowStaticGlobal;
     if (value == "one_by_four_two_pairwise_early_v1")
         return dynamic_spare::SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1;
     if (value == "two_pairwise_m1_local_first")
@@ -396,6 +408,10 @@ dynamic_spare::SimulationConfig baselineConfig(
     baseline.modifiers.minimumRowReserve = 0;
     baseline.modifiers.minimumColumnReserve = 0;
     baseline.modifiers.maximumGroupBorrowedSpares = 0;
+    // A no-sharing baseline is a local repair result, independent of the
+    // comparison policy.  This avoids replaying any static-topology contract
+    // after its sharing topology has intentionally been removed.
+    baseline.solutionTakePolicy = dynamic_spare::SolutionTakePolicy::Legacy;
     return baseline;
 }
 

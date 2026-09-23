@@ -50,6 +50,25 @@ def main() -> int:
             continue
         raise AssertionError(f"invalid F_GROUP list accepted: {invalid!r}")
 
+    static_policies = R3.sixcase_static_policies(2)
+    if [item["id"] for item in static_policies] != [
+            "local_no_sharing", "g2x2_rc_early", "g2x2_rc_group",
+            "g2x2_r_early", "g2x2_r_group", "l1x4_r_early",
+            "l1x4_r_group"]:
+        raise AssertionError("sixcase static policy membership changed")
+    try:
+        R3.sixcase_static_policies(3)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("sixcase static preset accepted unsupported N=3")
+    static_policy = next(item for item in static_policies
+                         if item["id"] == "g2x2_rc_group")
+    R3.validate_policy_sidecar([row_for(static_policy, "hyp02_static_global")],
+                               static_policy,
+                               {"RS": 2, "CS": 2, "F_GROUP": 8, "seed": 1},
+                               "corpus")
+
     policy = next(item for item in R3.canonical_policies(2)
                   if item["id"] == "directional_m1_local_first")
     # Old sidecars retained the invocation alias; new producer output uses the

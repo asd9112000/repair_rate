@@ -9,10 +9,10 @@ usage() {
     cat <<'EOF'
 Usage: scripts/run_date2026_repair_sweep.sh --scope group [options]
   --rs N --cs N [--share-m canonical_m1_m2] --groups N --f-group-list LIST
-  --seed N --policies canonical --topologies canonical --output-root PATH
+  --seed N --policies canonical|sixcase_static --topologies canonical|static --output-root PATH
   --preflight | --formal --resume --dry-run
 
-Only the frozen canonical R3 policy/topology preset is currently exposed.
+Use `sixcase_static` with `static` for the N=2 final-archive six-case preflight.
 EOF
 }
 
@@ -31,24 +31,33 @@ while (($#)); do
     esac
 done
 
-[[ "$policies" == "canonical" && "$topologies" == "canonical" ]] || {
-    echo "GROUP_NOT_READY: only --policies canonical --topologies canonical are defined" >&2; exit 2; }
-[[ -z "$share_m" || "$share_m" == "canonical_m1_m2" ]] || {
-    echo "GROUP_NOT_READY: R3 Matrix V2 uses canonical m=1 and m=2 policies; omit --share-m or use canonical_m1_m2" >&2
-    exit 2
-}
+[[ ("$policies" == "canonical" && "$topologies" == "canonical") ||
+   ("$policies" == "sixcase_static" && "$topologies" == "static") ]] || {
+    echo "GROUP_NOT_READY: use canonical/canonical or sixcase_static/static" >&2; exit 2; }
+if [[ "$policies" == "sixcase_static" ]]; then
+    [[ -z "$share_m" || "$share_m" == "static_m1" ]] || {
+        echo "GROUP_NOT_READY: sixcase_static uses fixed m=1 contracts; omit --share-m or use static_m1" >&2; exit 2; }
+else
+    [[ -z "$share_m" || "$share_m" == "canonical_m1_m2" ]] || {
+        echo "GROUP_NOT_READY: R3 Matrix V2 uses canonical m=1 and m=2 policies; omit --share-m or use canonical_m1_m2" >&2; exit 2; }
+fi
 [[ -z "$rs" || -z "$cs" || "$rs" == "$cs" ]] || { echo "--rs and --cs must match" >&2; exit 2; }
+[[ "$policies" != "sixcase_static" || ("$rs" == "2" && "$cs" == "2") ]] || {
+    echo "GROUP_NOT_READY: sixcase_static is N=2-only final-archive evidence" >&2; exit 2; }
 
 if [[ -z "$output_root" ]]; then
     output_root="$root/results/date2026/repair_rate/group/$mode"
 fi
 command=(python3 "$root/scripts/group/r3_formal_group_repair_rate.py" --output-root "$output_root")
+[[ "$policies" == "sixcase_static" ]] && command+=(--policy-preset sixcase_static)
 [[ -n "$groups" ]] && command+=(--samples "$groups")
 [[ -n "$seed" ]] && command+=(--master-seed "$seed")
 [[ -n "$rs" ]] && command+=(--rs "$rs" --cs "$cs")
 [[ -n "$f_groups" ]] && command+=(--f-group-list "$f_groups")
 command+=(--mode "$mode")
-((resume)) && command+=(--resume)
+if ((resume)); then
+    command+=(--resume)
+fi
 if ((dry_run)); then
     cat <<EOF
 scope=group

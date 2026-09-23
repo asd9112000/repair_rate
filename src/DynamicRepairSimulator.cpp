@@ -395,6 +395,36 @@ std::vector<CapacityOption> v2CapacityOptions(
             {local.first + 1, local.second - 1, 1, -1}};
 }
 
+std::vector<CapacityOption> rowCycleCapacityOptions(
+    const SimulationConfig &config,
+    std::size_t subarray)
+{
+    const auto local = localCapacity(config, subarray);
+    if (local.first < 1 || local.second < 1)
+        throw std::invalid_argument("G2X2_R static policy requires positive local capacity");
+    return {{local.first, local.second, 0, 0},
+            {local.first - 1, local.second, -1, 0},
+            {local.first + 1, local.second, 1, 0}};
+}
+
+std::vector<CapacityOption> lineRowCapacityOptions(
+    const SimulationConfig &config,
+    std::size_t subarray)
+{
+    const auto local = localCapacity(config, subarray);
+    if (local.first < 1 || local.second < 1)
+        throw std::invalid_argument("L1X4_R static policy requires positive local capacity");
+    if (subarray == 0)
+        return {{local.first, local.second, 0, 0},
+                {local.first - 1, local.second, -1, 0}};
+    if (subarray == 3)
+        return {{local.first, local.second, 0, 0},
+                {local.first + 1, local.second, 1, 0}};
+    return {{local.first, local.second, 0, 0},
+            {local.first - 1, local.second, -1, 0},
+            {local.first + 1, local.second, 1, 0}};
+}
+
 std::size_t hybridCapacity(int rows, int columns)
 {
     if (rows == 0 || columns == 0)
@@ -1606,6 +1636,319 @@ GroupChoice findDirectionalV2GroupGlobalCanonicalChoice(
     return result;
 }
 
+bool isHyp02StaticPolicy(SolutionTakePolicy policy) noexcept
+{
+    return policy == SolutionTakePolicy::Hyp02StaticEarly ||
+        policy == SolutionTakePolicy::Hyp02StaticGlobal;
+}
+
+bool isGrid2x2RowStaticPolicy(SolutionTakePolicy policy) noexcept
+{
+    return policy == SolutionTakePolicy::Grid2x2RowStaticEarly ||
+        policy == SolutionTakePolicy::Grid2x2RowStaticGlobal;
+}
+
+bool isLine1x4RowStaticPolicy(SolutionTakePolicy policy) noexcept
+{
+    return policy == SolutionTakePolicy::Line1x4RowStaticEarly ||
+        policy == SolutionTakePolicy::Line1x4RowStaticGlobal;
+}
+
+bool hyp02StaticTupleLegal(const std::array<std::size_t, kSubarrayCount> &slots)
+{
+    const bool aRelease = slots[0] == 1 || slots[0] == 3;
+    const bool aBorrow = slots[0] == 2 || slots[0] == 3;
+    const bool bRelease = slots[1] == 1 || slots[1] == 3;
+    const bool bBorrow = slots[1] == 2 || slots[1] == 3;
+    const bool cRelease = slots[2] == 1 || slots[2] == 3;
+    const bool cBorrow = slots[2] == 2 || slots[2] == 3;
+    const bool dRelease = slots[3] == 1 || slots[3] == 3;
+    const bool dBorrow = slots[3] == 2 || slots[3] == 3;
+    return (!cBorrow || aRelease) && (!bBorrow || dRelease) &&
+        (!aBorrow || bRelease) && (!dBorrow || cRelease);
+}
+
+bool hyp02PrefixCompatible(
+    const std::array<std::size_t, kSubarrayCount> &selected,
+    std::size_t prefixLength,
+    std::size_t candidateSlot)
+{
+    for (std::size_t tuple = 0; tuple < 256; ++tuple)
+    {
+        const std::array<std::size_t, kSubarrayCount> slots{{
+            tuple & 0x3U, (tuple >> 2U) & 0x3U,
+            (tuple >> 4U) & 0x3U, (tuple >> 6U) & 0x3U}};
+        if (!hyp02StaticTupleLegal(slots) || slots[prefixLength] != candidateSlot)
+            continue;
+        bool matches = true;
+        for (std::size_t subarray = 0; subarray < prefixLength; ++subarray)
+            matches = matches && slots[subarray] == selected[subarray];
+        if (matches)
+            return true;
+    }
+    return false;
+}
+
+using StaticActionConfigMap =
+    std::array<std::optional<std::size_t>, 4>;
+
+const StaticActionConfigMap kHyp02ActionToConfig{{0, 1, 2, 3}};
+const StaticActionConfigMap kRowCycleActionToConfig{{0, 1, 2, 0}};
+const std::array<StaticActionConfigMap, kSubarrayCount> kLineActionToConfig{{
+    StaticActionConfigMap{{0, 1, std::nullopt, std::nullopt}},
+    StaticActionConfigMap{{0, 1, 2, 0}},
+    StaticActionConfigMap{{0, 1, 2, 0}},
+    StaticActionConfigMap{{0, std::nullopt, 1, std::nullopt}}}};
+
+const CandidatePlan *hyp02PlanForSlot(
+    const std::vector<CandidatePlan> &plans,
+    std::size_t slot,
+    const StaticActionConfigMap &actionToConfig)
+{
+    if (!actionToConfig[slot].has_value())
+        return nullptr;
+    const std::size_t configIndex = *actionToConfig[slot];
+    const CandidatePlan *selected = nullptr;
+    for (const CandidatePlan &plan : plans)
+    {
+        if (plan.attemptVectorIndex != configIndex ||
+            (selected != nullptr &&
+             std::tie(plan.solutionId, plan.attemptVectorIndex) >=
+                 std::tie(selected->solutionId, selected->attemptVectorIndex)))
+            continue;
+        selected = &plan;
+    }
+    return selected;
+}
+
+void captureHyp02Selection(
+    GroupChoice &choice,
+    const std::array<std::size_t, kSubarrayCount> &slots,
+    ConfigContractVersion contract,
+    bool rowOnlyCycle)
+{
+    constexpr std::array<V2GroupAction, 4> actions{{
+        V2GroupAction::Local, V2GroupAction::ReleaseOnly,
+        V2GroupAction::BorrowOnly, V2GroupAction::ReleaseAndBorrow}};
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const V2RoleSlotMapping fallback =
+            v2RoleSlotMappings(contract, subarray).at(slots[subarray]);
+        const char role = subarray == 0 ? 'A' :
+            (subarray == 1 ? 'B' : (subarray == 2 ? 'C' : 'D'));
+        const V2RoleSlotMapping rowMapping{
+            role, slots[subarray], slots[subarray] == 1 ? 1 :
+                (slots[subarray] == 2 ? 2 : 0), actions[slots[subarray]]};
+        const V2RoleSlotMapping &mapping = rowOnlyCycle ? rowMapping : fallback;
+        choice.configIds[subarray] = mapping.configId;
+        choice.actions[subarray] = mapping.action;
+        GroupRepairResult::V2DecisionTrace trace;
+        trace.role = mapping.role;
+        trace.subarray = subarray;
+        trace.roleSlot = mapping.roleSlot;
+        trace.configId = mapping.configId;
+        trace.action = mapping.action;
+        trace.configFeasible = true;
+        trace.smallestPatternId = choice.plans[subarray].solutionId + 1;
+        trace.requiredRows = choice.plans[subarray].usedRows;
+        trace.requiredColumns = choice.plans[subarray].usedColumns;
+        trace.ledgerValid = true;
+        trace.selected = true;
+        choice.trace.push_back(std::move(trace));
+    }
+}
+
+GroupChoice findHyp02StaticEarlyChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount> &attempts,
+    ConfigContractVersion contract,
+    bool rowOnlyCycle,
+    const StaticActionConfigMap &actionToConfig)
+{
+    constexpr std::array<std::size_t, 4> priority{{1, 0, 3, 2}};
+    GroupChoice result;
+    result.hasProposal = true;
+    std::array<std::size_t, kSubarrayCount> slots{};
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const std::vector<CandidatePlan> plans =
+            compressedPlansForSubarray(attempts[subarray]);
+        bool selected = false;
+        for (const std::size_t slot : priority)
+        {
+            ++result.candidatesChecked;
+            const CandidatePlan *plan = hyp02PlanForSlot(plans, slot, actionToConfig);
+            if (plan == nullptr || !hyp02PrefixCompatible(slots, subarray, slot))
+                continue;
+            slots[subarray] = slot;
+            result.plans[subarray] = *plan;
+            selected = true;
+            break;
+        }
+        if (!selected)
+        {
+            result.failureSubarray = subarray;
+            return result;
+        }
+    }
+    result.success = true;
+    result.feasibleCombinations = 1;
+    captureHyp02Selection(result, slots, contract, rowOnlyCycle);
+    return result;
+}
+
+GroupChoice findHyp02StaticGlobalChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount> &attempts,
+    ConfigContractVersion contract,
+    bool rowOnlyCycle,
+    const StaticActionConfigMap &actionToConfig)
+{
+    GroupChoice result;
+    result.hasProposal = true;
+    std::array<std::vector<CandidatePlan>, kSubarrayCount> plans;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+        plans[subarray] = compressedPlansForSubarray(attempts[subarray]);
+    for (std::size_t tuple = 0; tuple < 256; ++tuple)
+    {
+        const std::array<std::size_t, kSubarrayCount> slots{{
+            tuple & 0x3U, (tuple >> 2U) & 0x3U,
+            (tuple >> 4U) & 0x3U, (tuple >> 6U) & 0x3U}};
+        if (!hyp02StaticTupleLegal(slots))
+            continue;
+        ++result.candidatesChecked;
+        bool allValid = true;
+        for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+        {
+            const CandidatePlan *plan = hyp02PlanForSlot(plans[subarray], slots[subarray], actionToConfig);
+            if (plan == nullptr)
+            {
+                allValid = false;
+                break;
+            }
+            result.plans[subarray] = *plan;
+        }
+        if (!allValid)
+            continue;
+        result.success = true;
+        result.feasibleCombinations = 1;
+        captureHyp02Selection(result, slots, contract, rowOnlyCycle);
+        return result;
+    }
+    return result;
+}
+
+bool lineSlotsLegal(const std::array<std::size_t, kSubarrayCount> &slots)
+{
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+        if (!kLineActionToConfig[subarray][slots[subarray]].has_value())
+            return false;
+    const bool aRelease = slots[0] == 1;
+    const bool bRelease = slots[1] == 1 || slots[1] == 3;
+    const bool bBorrow = slots[1] == 2 || slots[1] == 3;
+    const bool cRelease = slots[2] == 1 || slots[2] == 3;
+    const bool cBorrow = slots[2] == 2 || slots[2] == 3;
+    const bool dBorrow = slots[3] == 2;
+    return (!bBorrow || aRelease) && (!cBorrow || bRelease) &&
+        (!dBorrow || cRelease);
+}
+
+bool linePrefixCompatible(
+    const std::array<std::size_t, kSubarrayCount> &selected,
+    std::size_t prefixLength, std::size_t candidateSlot)
+{
+    for (std::size_t tuple = 0; tuple < 256; ++tuple)
+    {
+        const std::array<std::size_t, kSubarrayCount> slots{{
+            tuple & 0x3U, (tuple >> 2U) & 0x3U,
+            (tuple >> 4U) & 0x3U, (tuple >> 6U) & 0x3U}};
+        if (!lineSlotsLegal(slots) || slots[prefixLength] != candidateSlot)
+            continue;
+        bool matches = true;
+        for (std::size_t subarray = 0; subarray < prefixLength; ++subarray)
+            matches = matches && slots[subarray] == selected[subarray];
+        if (matches) return true;
+    }
+    return false;
+}
+
+void captureLineSelection(GroupChoice &choice,
+                          const std::array<std::size_t, kSubarrayCount> &slots)
+{
+    constexpr std::array<V2GroupAction, 4> actions{{
+        V2GroupAction::Local, V2GroupAction::ReleaseOnly,
+        V2GroupAction::BorrowOnly, V2GroupAction::ReleaseAndBorrow}};
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const char role = subarray == 0 ? 'A' :
+            (subarray == 1 ? 'B' : (subarray == 2 ? 'C' : 'D'));
+        const std::size_t slot = slots[subarray];
+        const int configId = slot == 1 ? 1 : (slot == 2 ? 2 : 0);
+        choice.configIds[subarray] = configId;
+        choice.actions[subarray] = actions[slot];
+        GroupRepairResult::V2DecisionTrace trace;
+        trace.role = role; trace.subarray = subarray; trace.roleSlot = slot;
+        trace.configId = configId; trace.action = actions[slot];
+        trace.configFeasible = true; trace.ledgerValid = true; trace.selected = true;
+        trace.smallestPatternId = choice.plans[subarray].solutionId + 1;
+        trace.requiredRows = choice.plans[subarray].usedRows;
+        trace.requiredColumns = choice.plans[subarray].usedColumns;
+        choice.trace.push_back(std::move(trace));
+    }
+}
+
+GroupChoice findLineStaticEarlyChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount> &attempts)
+{
+    constexpr std::array<std::size_t, 4> priority{{1, 0, 3, 2}};
+    GroupChoice result; result.hasProposal = true;
+    std::array<std::size_t, kSubarrayCount> slots{};
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+    {
+        const auto plans = compressedPlansForSubarray(attempts[subarray]);
+        bool selected = false;
+        for (const std::size_t slot : priority)
+        {
+            ++result.candidatesChecked;
+            const CandidatePlan *plan = hyp02PlanForSlot(
+                plans, slot, kLineActionToConfig[subarray]);
+            if (plan == nullptr || !linePrefixCompatible(slots, subarray, slot))
+                continue;
+            slots[subarray] = slot; result.plans[subarray] = *plan;
+            selected = true; break;
+        }
+        if (!selected) { result.failureSubarray = subarray; return result; }
+    }
+    result.success = true; result.feasibleCombinations = 1;
+    captureLineSelection(result, slots); return result;
+}
+
+GroupChoice findLineStaticGlobalChoice(
+    const std::array<std::vector<RepairAttemptResult>, kSubarrayCount> &attempts)
+{
+    GroupChoice result; result.hasProposal = true;
+    std::array<std::vector<CandidatePlan>, kSubarrayCount> plans;
+    for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+        plans[subarray] = compressedPlansForSubarray(attempts[subarray]);
+    for (std::size_t tuple = 0; tuple < 256; ++tuple)
+    {
+        const std::array<std::size_t, kSubarrayCount> slots{{
+            tuple & 0x3U, (tuple >> 2U) & 0x3U,
+            (tuple >> 4U) & 0x3U, (tuple >> 6U) & 0x3U}};
+        if (!lineSlotsLegal(slots)) continue;
+        ++result.candidatesChecked; bool allValid = true;
+        for (std::size_t subarray = 0; subarray < kSubarrayCount; ++subarray)
+        {
+            const CandidatePlan *plan = hyp02PlanForSlot(
+                plans[subarray], slots[subarray], kLineActionToConfig[subarray]);
+            if (plan == nullptr) { allValid = false; break; }
+            result.plans[subarray] = *plan;
+        }
+        if (!allValid) continue;
+        result.success = true; result.feasibleCombinations = 1;
+        captureLineSelection(result, slots); return result;
+    }
+    return result;
+}
+
 void captureCompressedSelection(
     GroupRepairResult &group,
     const GroupChoice &choice)
@@ -1702,6 +2045,8 @@ void applyAllocation(
         if (config.solutionTakePolicy == SolutionTakePolicy::Early ||
             config.solutionTakePolicy == SolutionTakePolicy::LocalFirst ||
             config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
+            config.solutionTakePolicy == SolutionTakePolicy::Hyp02StaticEarly ||
+            config.solutionTakePolicy == SolutionTakePolicy::Line1x4RowStaticEarly ||
             config.solutionTakePolicy == SolutionTakePolicy::GroupNoScratchV2 ||
             config.solutionTakePolicy ==
                 SolutionTakePolicy::GroupGreedyRtlCanonical ||
@@ -1859,6 +2204,26 @@ GroupRepairResult DynamicRepairSimulator::run(
 {
     config.validate();
     validateOneByFourPolicy(config);
+    if (isGrid2x2RowStaticPolicy(config.solutionTakePolicy) &&
+        (config.layout != GroupLayout::Grid2x2 ||
+         config.topology != SharingTopology::Directional ||
+         config.sharedRows != 1 || config.sharedColumns != 0))
+    {
+        throw std::invalid_argument(
+            "G2X2_R static policies require 2x2 directional row-only m=1; got layout=" +
+            std::string(toString(config.layout)) + ", topology=" +
+            std::string(toString(config.topology)) + ", shared_rows=" +
+            std::to_string(config.sharedRows) + ", shared_columns=" +
+            std::to_string(config.sharedColumns));
+    }
+    if (isLine1x4RowStaticPolicy(config.solutionTakePolicy) &&
+        (config.layout != GroupLayout::Line1x4 ||
+         config.topology != SharingTopology::NeighborSharing ||
+         config.sharedRows != 1 || config.sharedColumns != 0))
+    {
+        throw std::invalid_argument(
+            "L1X4_R static policies require 1x4 neighbor row-only m=1");
+    }
     PhysicalResourceLedger ledger(config);
 
     GroupRepairResult group;
@@ -1885,7 +2250,8 @@ GroupRepairResult DynamicRepairSimulator::run(
         config.solutionTakePolicy == SolutionTakePolicy::GroupGreedyRtlCanonical ||
         config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2GroupGlobal ||
         config.solutionTakePolicy ==
-            SolutionTakePolicy::DirectionalV2GroupGlobalCanonical)
+            SolutionTakePolicy::DirectionalV2GroupGlobalCanonical ||
+        isHyp02StaticPolicy(config.solutionTakePolicy))
     {
         group.configContractVersion = canonicalV2ConfigContract(config);
     }
@@ -1901,17 +2267,21 @@ GroupRepairResult DynamicRepairSimulator::run(
     for (std::size_t subarray = 0;
          subarray < kSubarrayCount; ++subarray)
     {
-        options[subarray] =
-            (config.solutionTakePolicy == SolutionTakePolicy::GroupNoScratchV2 ||
-             config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
-             config.solutionTakePolicy ==
-                 SolutionTakePolicy::GroupGreedyRtlCanonical ||
-             config.solutionTakePolicy ==
-                 SolutionTakePolicy::DirectionalV2GroupGlobal ||
-             config.solutionTakePolicy ==
-                 SolutionTakePolicy::DirectionalV2GroupGlobalCanonical)
+        options[subarray] = isLine1x4RowStaticPolicy(config.solutionTakePolicy)
+            ? lineRowCapacityOptions(config, subarray)
+            : (isGrid2x2RowStaticPolicy(config.solutionTakePolicy)
+                ? rowCycleCapacityOptions(config, subarray)
+                : ((config.solutionTakePolicy == SolutionTakePolicy::GroupNoScratchV2 ||
+                config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
+                config.solutionTakePolicy ==
+                    SolutionTakePolicy::GroupGreedyRtlCanonical ||
+                config.solutionTakePolicy ==
+                    SolutionTakePolicy::DirectionalV2GroupGlobal ||
+                config.solutionTakePolicy ==
+                    SolutionTakePolicy::DirectionalV2GroupGlobalCanonical ||
+                isHyp02StaticPolicy(config.solutionTakePolicy))
                 ? v2CapacityOptions(config, subarray)
-                : capacityOptions(config, subarray);
+                : capacityOptions(config, subarray)));
         provisioned[subarray] = provisionedCapacity(options[subarray]);
         hardwareProvisioning[subarray] = provisioningMetrics(
             options[subarray]);
@@ -2165,6 +2535,34 @@ GroupRepairResult DynamicRepairSimulator::run(
                       group.attemptsBySubarray, maximumBorrowCount, ledger,
                       group.configContractVersion)
                 : GroupChoice{};
+        const GroupChoice hyp02StaticEarly =
+            config.solutionTakePolicy == SolutionTakePolicy::Hyp02StaticEarly
+                ? findHyp02StaticEarlyChoice(
+                      group.attemptsBySubarray, group.configContractVersion, false, kHyp02ActionToConfig)
+                : GroupChoice{};
+        const GroupChoice hyp02StaticGlobal =
+            config.solutionTakePolicy == SolutionTakePolicy::Hyp02StaticGlobal
+                ? findHyp02StaticGlobalChoice(
+                      group.attemptsBySubarray, group.configContractVersion, false, kHyp02ActionToConfig)
+                : GroupChoice{};
+        const GroupChoice grid2x2RowStaticEarly =
+            config.solutionTakePolicy == SolutionTakePolicy::Grid2x2RowStaticEarly
+                ? findHyp02StaticEarlyChoice(
+                      group.attemptsBySubarray, group.configContractVersion, true, kRowCycleActionToConfig)
+                : GroupChoice{};
+        const GroupChoice grid2x2RowStaticGlobal =
+            config.solutionTakePolicy == SolutionTakePolicy::Grid2x2RowStaticGlobal
+                ? findHyp02StaticGlobalChoice(
+                      group.attemptsBySubarray, group.configContractVersion, true, kRowCycleActionToConfig)
+                : GroupChoice{};
+        const GroupChoice line1x4RowStaticEarly =
+            config.solutionTakePolicy == SolutionTakePolicy::Line1x4RowStaticEarly
+                ? findLineStaticEarlyChoice(group.attemptsBySubarray)
+                : GroupChoice{};
+        const GroupChoice line1x4RowStaticGlobal =
+            config.solutionTakePolicy == SolutionTakePolicy::Line1x4RowStaticGlobal
+                ? findLineStaticGlobalChoice(group.attemptsBySubarray)
+                : GroupChoice{};
         if (config.solutionTakePolicy == SolutionTakePolicy::Early)
             best = early;
         else if (config.solutionTakePolicy == SolutionTakePolicy::LocalFirst)
@@ -2181,6 +2579,18 @@ GroupRepairResult DynamicRepairSimulator::run(
         else if (config.solutionTakePolicy ==
                  SolutionTakePolicy::DirectionalV2GroupGlobalCanonical)
             best = canonicalV2Global;
+        else if (config.solutionTakePolicy == SolutionTakePolicy::Hyp02StaticEarly)
+            best = hyp02StaticEarly;
+        else if (config.solutionTakePolicy == SolutionTakePolicy::Hyp02StaticGlobal)
+            best = hyp02StaticGlobal;
+        else if (config.solutionTakePolicy == SolutionTakePolicy::Grid2x2RowStaticEarly)
+            best = grid2x2RowStaticEarly;
+        else if (config.solutionTakePolicy == SolutionTakePolicy::Grid2x2RowStaticGlobal)
+            best = grid2x2RowStaticGlobal;
+        else if (config.solutionTakePolicy == SolutionTakePolicy::Line1x4RowStaticEarly)
+            best = line1x4RowStaticEarly;
+        else if (config.solutionTakePolicy == SolutionTakePolicy::Line1x4RowStaticGlobal)
+            best = line1x4RowStaticGlobal;
         else if (config.solutionTakePolicy ==
                  SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1 ||
                  config.solutionTakePolicy ==
@@ -2209,6 +2619,9 @@ GroupRepairResult DynamicRepairSimulator::run(
                      SolutionTakePolicy::DirectionalV2GroupGlobal ||
                  config.solutionTakePolicy ==
                      SolutionTakePolicy::DirectionalV2GroupGlobalCanonical ||
+                 config.solutionTakePolicy == SolutionTakePolicy::Hyp02StaticGlobal ||
+                 config.solutionTakePolicy == SolutionTakePolicy::Grid2x2RowStaticGlobal ||
+                 config.solutionTakePolicy == SolutionTakePolicy::Line1x4RowStaticGlobal ||
                  config.solutionTakePolicy ==
                      SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1 ||
                  config.solutionTakePolicy ==

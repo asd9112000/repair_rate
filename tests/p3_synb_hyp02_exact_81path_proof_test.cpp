@@ -1,10 +1,12 @@
 #include "DynamicRepairSimulator.hpp"
 #include "SimulationConfig.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -120,6 +122,181 @@ bool staticRepairable(const std::array<unsigned int, kSubarrays> &validMap,
     return false;
 }
 
+using ActionConfigMap = std::array<std::array<int, kSlots>, kSubarrays>;
+
+constexpr ActionConfigMap kHyp02ActionConfigs{{
+    {{0, 1, 2, 3}}, {{0, 1, 2, 3}},
+    {{0, 1, 2, 3}}, {{0, 1, 2, 3}}}};
+constexpr ActionConfigMap kRowCycleActionConfigs{{
+    {{0, 1, 2, 0}}, {{0, 1, 2, 0}},
+    {{0, 1, 2, 0}}, {{0, 1, 2, 0}}}};
+constexpr ActionConfigMap kLineActionConfigs{{
+    {{0, 1, -1, -1}}, {{0, 1, 2, 0}},
+    {{0, 1, 2, 0}}, {{0, -1, 1, -1}}}};
+
+bool lineTupleLegal(const std::array<unsigned int, kSubarrays> &slots)
+{
+    const bool allowed = slots[0] < 2U &&
+        (slots[3] == 0U || slots[3] == 2U);
+    const bool bBorrow = slots[1] == 2U || slots[1] == 3U;
+    const bool cBorrow = slots[2] == 2U || slots[2] == 3U;
+    const bool bRelease = slots[1] == 1U || slots[1] == 3U;
+    const bool cRelease = slots[2] == 1U || slots[2] == 3U;
+    return allowed && (!bBorrow || slots[0] == 1U) &&
+        (!cBorrow || bRelease) && (!((slots[3] == 2U)) || cRelease);
+}
+
+struct StaticOracleChoice
+{
+    bool success = false;
+    std::array<unsigned int, kSubarrays> slots{};
+    std::array<std::optional<unsigned int>, kSubarrays> patternIds{};
+};
+
+std::optional<unsigned int> lowestPatternForAction(
+    const GroupRepairResult &result, std::size_t subarray,
+    unsigned int action, const ActionConfigMap &actionConfigs)
+{
+    const int configIndex = actionConfigs[subarray][action];
+    if (configIndex < 0 ||
+        static_cast<std::size_t>(configIndex) >=
+            result.attemptsBySubarray[subarray].size())
+    {
+        return std::nullopt;
+    }
+    const RepairAttemptResult &attempt =
+        result.attemptsBySubarray[subarray][static_cast<std::size_t>(configIndex)];
+    if (!attempt.repairSuccess || !attempt.tileSolutionState.has_value() ||
+        attempt.validCandidateOptions.empty())
+    {
+        return std::nullopt;
+    }
+    unsigned int smallest = attempt.validCandidateOptions.front().candidateIndex + 1U;
+    for (const CandidateRepairOption &option : attempt.validCandidateOptions)
+        smallest = std::min(smallest, static_cast<unsigned int>(option.candidateIndex + 1U));
+    return smallest;
+}
+
+bool prefixCanComplete(
+    const std::array<unsigned int, kSubarrays> &selected,
+    std::size_t prefixLength, unsigned int action,
+    bool (*tupleLegal)(const std::array<unsigned int, kSubarrays> &))
+{
+    for (unsigned int tuple = 0; tuple < kRawTuples; ++tuple)
+    {
+        const auto slots = slotsForTuple(tuple);
+        if (!tupleLegal(slots) || slots[prefixLength] != action)
+            continue;
+        bool matches = true;
+        for (std::size_t subarray = 0; subarray < prefixLength; ++subarray)
+            matches = matches && slots[subarray] == selected[subarray];
+        if (matches)
+            return true;
+    }
+    return false;
+}
+
+StaticOracleChoice staticOracleChoice(
+    const GroupRepairResult &result, const ActionConfigMap &actionConfigs,
+    bool early,
+    bool (*tupleLegal)(const std::array<unsigned int, kSubarrays> &))
+{
+    StaticOracleChoice choice;
+    if (early)
+    {
+        constexpr std::array<unsigned int, kSlots> priority{{1, 0, 3, 2}};
+        for (std::size_t subarray = 0; subarray < kSubarrays; ++subarray)
+        {
+            bool selected = false;
+            for (const unsigned int action : priority)
+            {
+                const auto pattern = lowestPatternForAction(
+                    result, subarray, action, actionConfigs);
+                if (!pattern.has_value() || !prefixCanComplete(
+                        choice.slots, subarray, action, tupleLegal))
+                {
+                    continue;
+                }
+                choice.slots[subarray] = action;
+                choice.patternIds[subarray] = pattern;
+                selected = true;
+                break;
+            }
+            if (!selected)
+                return choice;
+        }
+        choice.success = true;
+        return choice;
+    }
+
+    for (unsigned int tuple = 0; tuple < kRawTuples; ++tuple)
+    {
+        const auto slots = slotsForTuple(tuple);
+        if (!tupleLegal(slots))
+            continue;
+        std::array<std::optional<unsigned int>, kSubarrays> patterns{};
+        bool allValid = true;
+        for (std::size_t subarray = 0; subarray < kSubarrays; ++subarray)
+        {
+            patterns[subarray] = lowestPatternForAction(
+                result, subarray, slots[subarray], actionConfigs);
+            allValid = allValid && patterns[subarray].has_value();
+        }
+        if (!allValid)
+            continue;
+        choice.success = true;
+        choice.slots = slots;
+        choice.patternIds = patterns;
+        return choice;
+    }
+    return choice;
+}
+
+int archiveConfigId(std::size_t subarray, unsigned int action)
+{
+    return kSlotSemantics[subarray][action].configId;
+}
+
+int rowConfigId(std::size_t, unsigned int action)
+{
+    return action == 1U ? 1 : (action == 2U ? 2 : 0);
+}
+
+void requireStaticOracleMatch(
+    const std::string &label, const GroupRepairResult &result,
+    const StaticOracleChoice &expected, const ActionConfigMap &actionConfigs,
+    int (*configId)(std::size_t, unsigned int))
+{
+    require(result.groupRepairSuccess == expected.success,
+            label + " repairability differs from independent action oracle");
+    if (!expected.success)
+        return;
+    for (std::size_t subarray = 0; subarray < kSubarrays; ++subarray)
+    {
+        const unsigned int action = expected.slots[subarray];
+        const std::size_t configIndex = static_cast<std::size_t>(
+            actionConfigs[subarray][action]);
+        require(result.selectedV2Actions[subarray].has_value() &&
+                    *result.selectedV2Actions[subarray] ==
+                        static_cast<V2GroupAction>(action),
+                label + " action differs from independent action oracle");
+        require(result.selectedConfigIds[subarray].has_value() &&
+                    *result.selectedConfigIds[subarray] == configId(subarray, action),
+                label + " ConfigID differs from independent action oracle");
+        require(result.selectedAttemptIndices[subarray].has_value() &&
+                    *result.selectedAttemptIndices[subarray] == configIndex,
+                label + " dense analyzer Config index differs from action map");
+        require(result.selectedPatternIds[subarray].has_value() &&
+                    *result.selectedPatternIds[subarray] ==
+                        *expected.patternIds[subarray],
+                label + " PatternID differs from independent action oracle");
+        require(result.selectedCandidateIndices[subarray].has_value() &&
+                    *result.selectedCandidateIndices[subarray] + 1U ==
+                        *expected.patternIds[subarray],
+                label + " selected candidate index differs from PatternID");
+    }
+}
+
 SimulationConfig canonicalDirectionalConfig()
 {
     SimulationConfig config;
@@ -130,7 +307,7 @@ SimulationConfig canonicalDirectionalConfig()
     config.layout = GroupLayout::Grid2x2;
     config.topology = SharingTopology::Directional;
     config.solutionTakePolicy =
-        SolutionTakePolicy::DirectionalV2GroupGlobalCanonical;
+        SolutionTakePolicy::Hyp02StaticGlobal;
     config.usePaperCamReuseCapacity = true;
     return config;
 }
@@ -373,6 +550,38 @@ CorpusSummary checkAnalyzerCorpus(
     return summary;
 }
 
+void checkStaticPolicyVectorCorpus(
+    const std::string &label, const SimulationConfig &baseConfig,
+    SolutionTakePolicy earlyPolicy, SolutionTakePolicy globalPolicy,
+    const ActionConfigMap &actionConfigs,
+    bool (*tupleLegal)(const std::array<unsigned int, kSubarrays> &),
+    int (*configId)(std::size_t, unsigned int), std::uint64_t firstSeed)
+{
+    DynamicRepairSimulator simulator;
+    for (std::uint64_t offset = 0; offset < 1000; ++offset)
+    {
+        const std::uint64_t seed = firstSeed + offset;
+        const FaultGroup faults = randomGroup(seed);
+        SimulationConfig earlyConfig = baseConfig;
+        earlyConfig.solutionTakePolicy = earlyPolicy;
+        const GroupRepairResult earlyResult = simulator.run(
+            faults, earlyConfig, 20000 + seed, false);
+        requireStaticOracleMatch(
+            label + " EARLY seed=" + std::to_string(seed), earlyResult,
+            staticOracleChoice(earlyResult, actionConfigs, true, tupleLegal),
+            actionConfigs, configId);
+
+        SimulationConfig globalConfig = baseConfig;
+        globalConfig.solutionTakePolicy = globalPolicy;
+        const GroupRepairResult globalResult = simulator.run(
+            faults, globalConfig, 30000 + seed, false);
+        requireStaticOracleMatch(
+            label + " GLOBAL seed=" + std::to_string(seed), globalResult,
+            staticOracleChoice(globalResult, actionConfigs, false, tupleLegal),
+            actionConfigs, configId);
+    }
+}
+
 } // namespace
 
 int main()
@@ -411,6 +620,130 @@ int main()
                 "analyzer corpus did not cover every required sharing category");
         const Walkthrough walkthrough = buildWalkthrough(paths);
 
+        SimulationConfig rowStaticConfig;
+        rowStaticConfig.spareRows = 2;
+        rowStaticConfig.spareColumns = 2;
+        rowStaticConfig.sharedRows = 1;
+        rowStaticConfig.sharedColumns = 0;
+        rowStaticConfig.layout = GroupLayout::Grid2x2;
+        rowStaticConfig.topology = SharingTopology::Directional;
+        checkStaticPolicyVectorCorpus(
+            "HYP02_RC", canonicalDirectionalConfig(),
+            SolutionTakePolicy::Hyp02StaticEarly,
+            SolutionTakePolicy::Hyp02StaticGlobal, kHyp02ActionConfigs,
+            fixedEdgeLegal, archiveConfigId, 1);
+        checkStaticPolicyVectorCorpus(
+            "G2X2_R", rowStaticConfig,
+            SolutionTakePolicy::Grid2x2RowStaticEarly,
+            SolutionTakePolicy::Grid2x2RowStaticGlobal, kRowCycleActionConfigs,
+            fixedEdgeLegal, rowConfigId, 1001);
+
+        SimulationConfig lineStaticConfig;
+        lineStaticConfig.spareRows = 2;
+        lineStaticConfig.spareColumns = 2;
+        lineStaticConfig.sharedRows = 1;
+        lineStaticConfig.sharedColumns = 0;
+        lineStaticConfig.layout = GroupLayout::Line1x4;
+        lineStaticConfig.topology = SharingTopology::NeighborSharing;
+        checkStaticPolicyVectorCorpus(
+            "L1X4_R", lineStaticConfig,
+            SolutionTakePolicy::Line1x4RowStaticEarly,
+            SolutionTakePolicy::Line1x4RowStaticGlobal, kLineActionConfigs,
+            lineTupleLegal, rowConfigId, 2001);
+
+        DynamicRepairSimulator bridgeSimulator;
+        SimulationConfig earlyConfig = canonicalDirectionalConfig();
+        earlyConfig.solutionTakePolicy = SolutionTakePolicy::Hyp02StaticEarly;
+        const GroupRepairResult earlyResult = bridgeSimulator.run(
+            FaultGroup{}, earlyConfig, 9002, false);
+        for (std::size_t subarray = 0; subarray < kSubarrays; ++subarray)
+        {
+            require(earlyResult.selectedAttemptIndices[subarray].has_value() &&
+                        *earlyResult.selectedAttemptIndices[subarray] == 1,
+                    "HYP02 EARLY all-valid priority must select RELEASE");
+        }
+
+        const auto requireCapacityContract = [&](int n)
+        {
+            SimulationConfig config = canonicalDirectionalConfig();
+            config.spareRows = n;
+            config.spareColumns = n;
+            const GroupRepairResult result = bridgeSimulator.run(
+                FaultGroup{}, config, static_cast<std::size_t>(9100 + n), false);
+            for (std::size_t subarray = 0; subarray < kSubarrays; ++subarray)
+            {
+                const bool adRole = subarray == 0 || subarray == 3;
+                const std::array<std::pair<int, int>, kSlots> expected = adRole
+                    ? std::array<std::pair<int, int>, kSlots>{{
+                        {n, n}, {n - 1, n}, {n, n + 1}, {n - 1, n + 1}}}
+                    : std::array<std::pair<int, int>, kSlots>{{
+                        {n, n}, {n, n - 1}, {n + 1, n}, {n + 1, n - 1}}};
+                require(result.attemptsBySubarray[subarray].size() == kSlots,
+                        "HYP02 bridge must expose four role slots");
+                for (std::size_t slot = 0; slot < kSlots; ++slot)
+                {
+                    const RepairAttemptResult &attempt =
+                        result.attemptsBySubarray[subarray][slot];
+                    require(attempt.availableRows == expected[slot].first &&
+                                attempt.availableColumns == expected[slot].second,
+                            "HYP02 bridge capacity differs from archive-derived contract");
+                }
+            }
+        };
+        requireCapacityContract(2);
+        requireCapacityContract(3);
+
+        const auto requireGrid2x2RowCapacity = [&](int n)
+        {
+            SimulationConfig config;
+            config.spareRows = n;
+            config.spareColumns = n;
+            config.sharedRows = 1;
+            config.sharedColumns = 0;
+            config.layout = GroupLayout::Grid2x2;
+            config.topology = SharingTopology::Directional;
+            config.solutionTakePolicy =
+                SolutionTakePolicy::Grid2x2RowStaticGlobal;
+            const GroupRepairResult result = bridgeSimulator.run(
+                FaultGroup{}, config, static_cast<std::size_t>(9200 + n), false);
+            const std::array<std::pair<int, int>, kSlots> expected{{
+                {n, n}, {n - 1, n}, {n + 1, n}, {n, n}}};
+            for (std::size_t subarray = 0; subarray < kSubarrays; ++subarray)
+            {
+                require(result.attemptsBySubarray[subarray].size() == 3,
+                        "G2X2_R must evaluate three dense Config results");
+                for (std::size_t configIndex = 0; configIndex < 3; ++configIndex)
+                {
+                    const RepairAttemptResult &attempt =
+                        result.attemptsBySubarray[subarray][configIndex];
+                    require(attempt.availableRows == expected[configIndex].first &&
+                                attempt.availableColumns == expected[configIndex].second,
+                            "G2X2_R capacity differs from its row-only contract");
+                }
+            }
+        };
+        requireGrid2x2RowCapacity(2);
+        requireGrid2x2RowCapacity(3);
+        requireGrid2x2RowCapacity(4);
+
+        SimulationConfig lineConfig;
+        lineConfig.spareRows = 2; lineConfig.spareColumns = 2;
+        lineConfig.sharedRows = 1; lineConfig.sharedColumns = 0;
+        lineConfig.layout = GroupLayout::Line1x4;
+        lineConfig.topology = SharingTopology::NeighborSharing;
+        lineConfig.solutionTakePolicy = SolutionTakePolicy::Line1x4RowStaticGlobal;
+        const GroupRepairResult lineResult = bridgeSimulator.run(
+            FaultGroup{}, lineConfig, 9300, false);
+        require(lineResult.attemptsBySubarray[0].size() == 2 &&
+                    lineResult.attemptsBySubarray[1].size() == 3 &&
+                    lineResult.attemptsBySubarray[2].size() == 3 &&
+                    lineResult.attemptsBySubarray[3].size() == 2,
+                "L1X4_R dense Config counts do not match endpoint action maps");
+        std::size_t linePaths = 0;
+        for (unsigned int tuple = 0; tuple < kRawTuples; ++tuple)
+            linePaths += lineTupleLegal(slotsForTuple(tuple)) ? 1U : 0U;
+        require(linePaths == 27, "L1X4_R static relation must define 27 paths");
+
         std::cout << "RAW_CONFIG_TUPLES: 256\n"
                   << "LEGAL_STATIC_PATHS: 81\n"
                   << "DUPLICATE_PATHS: " << duplicatePaths << "\n"
@@ -443,7 +776,18 @@ int main()
                   << "WALKTHROUGH_PATTERNIDS_A_B_C_D: "
                   << walkthrough.patternIds[0] << ',' << walkthrough.patternIds[1]
                   << ',' << walkthrough.patternIds[2] << ','
-                  << walkthrough.patternIds[3] << "\n";
+                  << walkthrough.patternIds[3] << "\n"
+                  << "HYP02_STATIC_GROUP_BRIDGE: PASS\n"
+                  << "HYP02_STATIC_EARLY_PRIORITY: PASS\n"
+                  << "HYP02_RC_STATIC_POLICY_VECTOR_ORACLE_CASES: 1000\n"
+                  << "G2X2_R_STATIC_POLICY_VECTOR_ORACLE_CASES: 1000\n"
+                  << "L1X4_R_STATIC_POLICY_VECTOR_ORACLE_CASES: 1000\n"
+                  << "N2_ARCHIVE_REPRODUCTION: PASS\n"
+                  << "N3_CONFIG_REPRODUCTION: PASS\n"
+                  << "G2X2_R_PATH_COUNT: 81\n"
+                  << "G2X2_R_N2_N3_N4_CAPACITY: PASS\n"
+                  << "L1X4_R_PATH_COUNT: " << linePaths << "\n"
+                  << "L1X4_R_SPARSE_ACTION_CONFIG_ADAPTER: PASS\n";
         return 0;
     }
     catch (const std::exception &error)

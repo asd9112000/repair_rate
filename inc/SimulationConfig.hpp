@@ -83,6 +83,16 @@ enum class SolutionTakePolicy
     // R,L,RB,B commitment (1, 0, 3, 2). This is deliberately separate from
     // Early, which retains the historical generic RECAM candidate contract.
     DirectionalV2Early,
+    // Archive-faithful HYP02 policies use frozen directional capacity/action
+    // slots and static four-edge legality, never PhysicalResourceLedger ownership.
+    Hyp02StaticEarly,
+    Hyp02StaticGlobal,
+    // Same archive-directed four-edge graph with every edge sharing rows.
+    Grid2x2RowStaticEarly,
+    Grid2x2RowStaticGlobal,
+    // Directed open A->B->C->D row-sharing chain with sparse endpoint actions.
+    Line1x4RowStaticEarly,
+    Line1x4RowStaticGlobal,
     OneByFourTwoPairwiseEarlyV1,
     OneByFourTwoPairwisePairGlobalV1,
     OneByFourSingleHopEarlyV1,

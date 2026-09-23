@@ -1008,8 +1008,17 @@ Tier2CamFallbackMetrics characterizeTier2CamFallback(
     hierarchicalConfig.validateDramConfig(deviceConfig);
 
     DynamicRepairSimulator analyzer;
-    const SimulationConfig tier0Config = withFunctionalCamCapacity(
+    SimulationConfig tier0Config = withFunctionalCamCapacity(
         withoutSharing(deviceConfig), 0, hierarchicalConfig.dataWordBits);
+    if (tier0Config.solutionTakePolicy == SolutionTakePolicy::Hyp02StaticEarly ||
+        tier0Config.solutionTakePolicy == SolutionTakePolicy::Hyp02StaticGlobal ||
+        tier0Config.solutionTakePolicy == SolutionTakePolicy::Grid2x2RowStaticEarly ||
+        tier0Config.solutionTakePolicy == SolutionTakePolicy::Grid2x2RowStaticGlobal ||
+        tier0Config.solutionTakePolicy == SolutionTakePolicy::Line1x4RowStaticEarly ||
+        tier0Config.solutionTakePolicy == SolutionTakePolicy::Line1x4RowStaticGlobal)
+    {
+        tier0Config.solutionTakePolicy = SolutionTakePolicy::Legacy;
+    }
     GroupRepairResult tier0 = analyzer.run(faults, tier0Config, runIndex);
     const GroupRepairResult *lineAnalysis = &tier0;
 

@@ -47,6 +47,24 @@ PolicySemantics policySemantics(SolutionTakePolicy policy)
         case SolutionTakePolicy::DirectionalV2GroupGlobalCanonical:
             return {"GLOBAL", "DIRECTIONAL_V2", "CANONICAL_R_L_RB_B",
                     "JOINT_COMPLETE_TUPLE_WITH_RELEASE_OBLIGATIONS", true};
+        case SolutionTakePolicy::Hyp02StaticEarly:
+            return {"EARLY", "HYP02_STATIC_81_PATH", "R_L_RB_B",
+                    "SEQUENTIAL_PREFIX_PATH_COMMIT", false};
+        case SolutionTakePolicy::Hyp02StaticGlobal:
+            return {"GROUP", "HYP02_STATIC_81_PATH", "P0_TO_P80_ASCENDING",
+                    "FIRST_LEGAL_STATIC_PATH", true};
+        case SolutionTakePolicy::Grid2x2RowStaticEarly:
+            return {"EARLY", "G2X2_R_STATIC_81_PATH", "R_L_RB_B",
+                    "SEQUENTIAL_PREFIX_PATH_COMMIT", false};
+        case SolutionTakePolicy::Grid2x2RowStaticGlobal:
+            return {"GROUP", "G2X2_R_STATIC_81_PATH", "P0_TO_P80_ASCENDING",
+                    "FIRST_LEGAL_STATIC_PATH", true};
+        case SolutionTakePolicy::Line1x4RowStaticEarly:
+            return {"EARLY", "L1X4_R_STATIC_27_PATH", "R_L_RB_B",
+                    "SEQUENTIAL_PREFIX_PATH_COMMIT", false};
+        case SolutionTakePolicy::Line1x4RowStaticGlobal:
+            return {"GROUP", "L1X4_R_STATIC_27_PATH", "P0_TO_P26_ASCENDING",
+                    "FIRST_LEGAL_STATIC_PATH", true};
         case SolutionTakePolicy::GroupGlobal:
             return {"GLOBAL", "GENERIC_RECAM", "JOINT_ORACLE",
                     "JOINT_GENERIC_GROUP_SEARCH", true};

@@ -80,7 +80,10 @@ CANONICAL_IMPLEMENTATION_POLICY_IDS = frozenset({
     "legacy", "local_first", "early", "group_compressed_legacy",
     "normalized_early_deferred", "normalized_streaming_early", "group_global",
     "historical_directional_v2_global", "normalized_global",
-    "normalized_local_first", "one_by_four_two_pairwise_early_v1",
+    "normalized_local_first", "hyp02_static_early", "hyp02_static_global",
+    "g2x2_r_static_early", "g2x2_r_static_global",
+    "l1x4_r_static_early", "l1x4_r_static_global",
+    "one_by_four_two_pairwise_early_v1",
     "one_by_four_two_pairwise_release_aware_early_v1",
     "one_by_four_two_pairwise_pair_global_v1", "one_by_four_single_hop_early_v1",
     "one_by_four_single_hop_release_aware_early_v1",
@@ -197,6 +200,64 @@ def canonical_policies(n: int) -> list[dict[str, Any]]:
     for policy in policies:
         policy["display_name"] = POLICY_DISPLAY_NAMES[str(policy["id"])]
     return policies
+
+
+def sixcase_static_policies(n: int) -> list[dict[str, Any]]:
+    """Return the N=2 final-archive static-policy preflight matrix.
+
+    The local entry materializes the common corpus; the remaining six entries
+    are the six DATE cases and retain their distinct static contracts.
+    """
+    if n != 2:
+        raise ValueError("sixcase_static preset is limited to N=2 final-archive evidence")
+    policies = [
+        {"id": "local_no_sharing", "layout": "2x2", "topology": "none",
+         "share_row": 0, "share_col": 0, "solution": "legacy",
+         "solution_class": "LOCAL", "candidate_contract": "LOCAL", "priority_class": "LOCAL_ONLY",
+         "search_scope": "LOCAL", "backtracking": False,
+         "paper_canonical": True, "n_support": [2]},
+        {"id": "g2x2_rc_early", "layout": "2x2", "topology": "directional",
+         "share_row": 1, "share_col": 1, "solution": "hyp02_static_early",
+         "solution_class": "EARLY", "candidate_contract": "HYP02_STATIC_81_PATH", "priority_class": "R_L_RB_B",
+         "search_scope": "SEQUENTIAL_PREFIX_PATH_COMMIT", "backtracking": False,
+         "paper_canonical": True, "n_support": [2]},
+        {"id": "g2x2_rc_group", "layout": "2x2", "topology": "directional",
+         "share_row": 1, "share_col": 1, "solution": "hyp02_static_global",
+         "solution_class": "GROUP", "candidate_contract": "HYP02_STATIC_81_PATH", "priority_class": "P0_TO_P80_ASCENDING",
+         "search_scope": "FIRST_LEGAL_STATIC_PATH", "backtracking": True,
+         "paper_canonical": True, "n_support": [2]},
+        {"id": "g2x2_r_early", "layout": "2x2", "topology": "directional",
+         "share_row": 1, "share_col": 0, "solution": "g2x2_r_static_early",
+         "solution_class": "EARLY", "candidate_contract": "G2X2_R_STATIC_81_PATH", "priority_class": "R_L_RB_B",
+         "search_scope": "SEQUENTIAL_PREFIX_PATH_COMMIT", "backtracking": False,
+         "paper_canonical": True, "n_support": [2]},
+        {"id": "g2x2_r_group", "layout": "2x2", "topology": "directional",
+         "share_row": 1, "share_col": 0, "solution": "g2x2_r_static_global",
+         "solution_class": "GROUP", "candidate_contract": "G2X2_R_STATIC_81_PATH", "priority_class": "P0_TO_P80_ASCENDING",
+         "search_scope": "FIRST_LEGAL_STATIC_PATH", "backtracking": True,
+         "paper_canonical": True, "n_support": [2]},
+        {"id": "l1x4_r_early", "layout": "1x4", "topology": "neighbor",
+         "share_row": 1, "share_col": 0, "solution": "l1x4_r_static_early",
+         "solution_class": "EARLY", "candidate_contract": "L1X4_R_STATIC_27_PATH", "priority_class": "R_L_RB_B",
+         "search_scope": "SEQUENTIAL_PREFIX_PATH_COMMIT", "backtracking": False,
+         "paper_canonical": True, "n_support": [2]},
+        {"id": "l1x4_r_group", "layout": "1x4", "topology": "neighbor",
+         "share_row": 1, "share_col": 0, "solution": "l1x4_r_static_global",
+         "solution_class": "GROUP", "candidate_contract": "L1X4_R_STATIC_27_PATH", "priority_class": "P0_TO_P26_ASCENDING",
+         "search_scope": "FIRST_LEGAL_STATIC_PATH", "backtracking": True,
+         "paper_canonical": True, "n_support": [2]},
+    ]
+    for policy in policies:
+        policy["display_name"] = str(policy["id"])
+    return policies
+
+
+def policies_for_preset(n: int, preset: str) -> list[dict[str, Any]]:
+    if preset == "canonical":
+        return canonical_policies(n)
+    if preset == "sixcase_static":
+        return sixcase_static_policies(n)
+    raise ValueError(f"unknown policy preset: {preset}")
 
 
 def point_seed(n: int, f_group: int, master_seed: int) -> int:
@@ -618,6 +679,8 @@ def main() -> int:
     parser.add_argument("--f-group-list")
     parser.add_argument("--mode", choices=("preflight", "formal", "custom"),
                         default="custom")
+    parser.add_argument("--policy-preset", choices=("canonical", "sixcase_static"),
+                        default="canonical")
     parser.add_argument("--resume", action="store_true",
                         help="reuse only complete per-policy sidecars in an existing root")
     args = parser.parse_args()
@@ -627,6 +690,8 @@ def main() -> int:
         raise SystemExit("--samples must be positive")
     try:
         points = selected_points(args.rs, args.cs, args.f_group_list)
+        policy_matrix = {n: policies_for_preset(n, args.policy_preset)
+                         for n in points}
     except ValueError as error:
         raise SystemExit(str(error)) from error
     if output_root.exists() and not args.resume:
@@ -640,7 +705,7 @@ def main() -> int:
         (output_root / name).mkdir(parents=True, exist_ok=args.resume)
     point_count = sum(len(fault_points) for fault_points in points.values())
     expected_evaluations = sum(
-        len(canonical_policies(n)) * len(fault_points) * args.samples
+        len(policy_matrix[n]) * len(fault_points) * args.samples
         for n, fault_points in points.items())
     started_utc = dt.datetime.now(dt.timezone.utc).isoformat()
     manifest = {
@@ -658,6 +723,7 @@ def main() -> int:
         "CS": sorted(points),
         "f_group_points": {str(n): list(values) for n, values in points.items()},
         "share_m": "canonical_m1; directional_m2_legacy_only",
+        "policy_preset": args.policy_preset,
         "mode": args.mode,
         "output_root": str(output_root),
         "runner_identity": str(ROOT / "scripts/run_date2026_repair_sweep.sh"),
@@ -667,7 +733,7 @@ def main() -> int:
                           for n, values in points.items() for f in values},
         "master_seed": args.master_seed,
         "points": points,
-        "policy_matrix": {str(n): canonical_policies(n) for n in points},
+        "policy_matrix": {str(n): policy_matrix[n] for n in points},
         "unsupported_policy_contracts": {
             "N4_DIRECTIONAL_V2_GLOBAL": "UNSUPPORTED: no frozen N4 ConfigID/candidate contract; excluded by per-N canonical membership",
             "directional_m1_group_global": "GENERIC_GROUP_GLOBAL_LEGACY: retained implementation, paper_canonical=false",
@@ -706,7 +772,8 @@ def main() -> int:
                          "seed": point_seed(n, f_group, args.master_seed)}
                 point_raw = output_root / "raw" / point_name
                 point_raw.mkdir(exist_ok=args.resume)
-                source_policy = canonical_policies(n)[0]
+                policies = policy_matrix[n]
+                source_policy = policies[0]
                 local_dir = point_raw / str(source_policy["id"])
                 local_rows = complete_result_rows(
                     local_dir / "paired_policy_results_v1.csv", args.samples)
@@ -746,7 +813,7 @@ def main() -> int:
 
                 rows_by_policy: dict[str, list[dict[str, str]]] = {}
                 successes: dict[str, list[int]] = {}
-                for policy in canonical_policies(n):
+                for policy in policies:
                     policy_id = str(policy["id"])
                     run_dir = point_raw / policy_id
                     existing_rows = complete_result_rows(
@@ -782,7 +849,7 @@ def main() -> int:
                                                "repair_rate": passed / len(indices)})
                 check_global_dominance(point_name, corpus_rows, successes, output_root)
                 paired_rows.extend(paired_aggregate(point, successes))
-                print(f"R3 completed {point_name}: {len(canonical_policies(n)) * args.samples} policy-group evaluations", flush=True)
+                print(f"R3 completed {point_name}: {len(policies) * args.samples} policy-group evaluations", flush=True)
 
         local_rates = {(row["RS"], row["F_GROUP"]): row["repair_rate"]
                        for row in summary_rows if row["policy"] == "local_no_sharing"}

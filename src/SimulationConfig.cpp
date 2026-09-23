@@ -300,6 +300,18 @@ const char *toString(SolutionTakePolicy policy) noexcept
             return "normalized_global";
         case SolutionTakePolicy::DirectionalV2Early:
             return "normalized_local_first";
+        case SolutionTakePolicy::Hyp02StaticEarly:
+            return "hyp02_static_early";
+        case SolutionTakePolicy::Hyp02StaticGlobal:
+            return "hyp02_static_global";
+        case SolutionTakePolicy::Grid2x2RowStaticEarly:
+            return "g2x2_r_static_early";
+        case SolutionTakePolicy::Grid2x2RowStaticGlobal:
+            return "g2x2_r_static_global";
+        case SolutionTakePolicy::Line1x4RowStaticEarly:
+            return "l1x4_r_static_early";
+        case SolutionTakePolicy::Line1x4RowStaticGlobal:
+            return "l1x4_r_static_global";
         case SolutionTakePolicy::OneByFourTwoPairwiseEarlyV1:
             return "one_by_four_two_pairwise_early_v1";
         case SolutionTakePolicy::OneByFourTwoPairwisePairGlobalV1:
