@@ -208,44 +208,44 @@ def sixcase_static_policies(n: int) -> list[dict[str, Any]]:
     The local entry materializes the common corpus; the remaining six entries
     are the six DATE cases and retain their distinct static contracts.
     """
-    if n != 2:
-        raise ValueError("sixcase_static preset is limited to N=2 final-archive evidence")
+    if n not in (2, 3, 4):
+        raise ValueError("sixcase_static preset supports only N=2, N=3, and N=4");
     policies = [
         {"id": "local_no_sharing", "layout": "2x2", "topology": "none",
          "share_row": 0, "share_col": 0, "solution": "legacy",
          "solution_class": "LOCAL", "candidate_contract": "LOCAL", "priority_class": "LOCAL_ONLY",
          "search_scope": "LOCAL", "backtracking": False,
-         "paper_canonical": True, "n_support": [2]},
+         "paper_canonical": True, "n_support": [2, 3, 4]},
         {"id": "g2x2_rc_early", "layout": "2x2", "topology": "directional",
          "share_row": 1, "share_col": 1, "solution": "hyp02_static_early",
          "solution_class": "EARLY", "candidate_contract": "HYP02_STATIC_81_PATH", "priority_class": "R_L_RB_B",
          "search_scope": "SEQUENTIAL_PREFIX_PATH_COMMIT", "backtracking": False,
-         "paper_canonical": True, "n_support": [2]},
+         "paper_canonical": True, "n_support": [2, 3, 4]},
         {"id": "g2x2_rc_group", "layout": "2x2", "topology": "directional",
          "share_row": 1, "share_col": 1, "solution": "hyp02_static_global",
          "solution_class": "GROUP", "candidate_contract": "HYP02_STATIC_81_PATH", "priority_class": "P0_TO_P80_ASCENDING",
          "search_scope": "FIRST_LEGAL_STATIC_PATH", "backtracking": True,
-         "paper_canonical": True, "n_support": [2]},
+         "paper_canonical": True, "n_support": [2, 3, 4]},
         {"id": "g2x2_r_early", "layout": "2x2", "topology": "directional",
          "share_row": 1, "share_col": 0, "solution": "g2x2_r_static_early",
          "solution_class": "EARLY", "candidate_contract": "G2X2_R_STATIC_81_PATH", "priority_class": "R_L_RB_B",
          "search_scope": "SEQUENTIAL_PREFIX_PATH_COMMIT", "backtracking": False,
-         "paper_canonical": True, "n_support": [2]},
+         "paper_canonical": True, "n_support": [2, 3, 4]},
         {"id": "g2x2_r_group", "layout": "2x2", "topology": "directional",
          "share_row": 1, "share_col": 0, "solution": "g2x2_r_static_global",
          "solution_class": "GROUP", "candidate_contract": "G2X2_R_STATIC_81_PATH", "priority_class": "P0_TO_P80_ASCENDING",
          "search_scope": "FIRST_LEGAL_STATIC_PATH", "backtracking": True,
-         "paper_canonical": True, "n_support": [2]},
+         "paper_canonical": True, "n_support": [2, 3, 4]},
         {"id": "l1x4_r_early", "layout": "1x4", "topology": "neighbor",
          "share_row": 1, "share_col": 0, "solution": "l1x4_r_static_early",
          "solution_class": "EARLY", "candidate_contract": "L1X4_R_STATIC_27_PATH", "priority_class": "R_L_RB_B",
          "search_scope": "SEQUENTIAL_PREFIX_PATH_COMMIT", "backtracking": False,
-         "paper_canonical": True, "n_support": [2]},
+         "paper_canonical": True, "n_support": [2, 3, 4]},
         {"id": "l1x4_r_group", "layout": "1x4", "topology": "neighbor",
          "share_row": 1, "share_col": 0, "solution": "l1x4_r_static_global",
          "solution_class": "GROUP", "candidate_contract": "L1X4_R_STATIC_27_PATH", "priority_class": "P0_TO_P26_ASCENDING",
          "search_scope": "FIRST_LEGAL_STATIC_PATH", "backtracking": True,
-         "paper_canonical": True, "n_support": [2]},
+         "paper_canonical": True, "n_support": [2, 3, 4]},
     ]
     for policy in policies:
         policy["display_name"] = str(policy["id"])

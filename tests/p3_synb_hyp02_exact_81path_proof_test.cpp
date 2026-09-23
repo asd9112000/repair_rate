@@ -692,6 +692,7 @@ int main()
         };
         requireCapacityContract(2);
         requireCapacityContract(3);
+        requireCapacityContract(4);
 
         const auto requireGrid2x2RowCapacity = [&](int n)
         {

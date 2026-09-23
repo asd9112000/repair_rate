@@ -2246,12 +2246,21 @@ GroupRepairResult DynamicRepairSimulator::run(
         static_cast<std::size_t>(config.spareColumns);
     group.totalPhysicalSpareLinesGroup = group.totalRowSpareLinesGroup +
         group.totalColumnSpareLinesGroup;
-    if (config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
+    if (isHyp02StaticPolicy(config.solutionTakePolicy))
+    {
+        // Static HYP02 keeps the final archive action/ConfigID identity while
+        // capacity is parameterized by N. It must not inherit the unrelated
+        // N=2/N=3 restriction of the legacy physical-ledger V2 selector.
+        group.configContractVersion =
+            config.spareRows == 3 && config.spareColumns == 3
+                ? ConfigContractVersion::Rs3Cs3M1
+                : ConfigContractVersion::FrozenDate2x2M1;
+    }
+    else if (config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2Early ||
         config.solutionTakePolicy == SolutionTakePolicy::GroupGreedyRtlCanonical ||
         config.solutionTakePolicy == SolutionTakePolicy::DirectionalV2GroupGlobal ||
         config.solutionTakePolicy ==
-            SolutionTakePolicy::DirectionalV2GroupGlobalCanonical ||
-        isHyp02StaticPolicy(config.solutionTakePolicy))
+            SolutionTakePolicy::DirectionalV2GroupGlobalCanonical)
     {
         group.configContractVersion = canonicalV2ConfigContract(config);
     }

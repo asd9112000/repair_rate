@@ -56,12 +56,14 @@ def main() -> int:
             "g2x2_r_early", "g2x2_r_group", "l1x4_r_early",
             "l1x4_r_group"]:
         raise AssertionError("sixcase static policy membership changed")
+    if len(R3.sixcase_static_policies(3)) != 7:
+        raise AssertionError("sixcase static preset lost N=3 membership")
     try:
-        R3.sixcase_static_policies(3)
+        R3.sixcase_static_policies(5)
     except ValueError:
         pass
     else:
-        raise AssertionError("sixcase static preset accepted unsupported N=3")
+        raise AssertionError("sixcase static preset accepted unsupported N=5")
     static_policy = next(item for item in static_policies
                          if item["id"] == "g2x2_rc_group")
     R3.validate_policy_sidecar([row_for(static_policy, "hyp02_static_global")],

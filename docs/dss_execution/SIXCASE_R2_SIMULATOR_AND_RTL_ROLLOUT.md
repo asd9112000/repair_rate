@@ -1,7 +1,7 @@
 # DATE2026 Six-Case R2 Simulator and RTL Rollout
 
 > Phase: `SIXCASE-R2-SIMULATOR-CLOSURE-AND-RTL-ROLLOUT`
-> Status: simulator closure and N=2 common-corpus preflight complete; RTL rollout pending
+> Status: simulator closure complete; full N=2/3/4 common-corpus preflight partial; RTL rollout pending
 > Scope reached: archive provenance, final HYP02 static-path contract, and
 > capacity/action mapping audit
 
@@ -179,7 +179,7 @@ decision above: final archive compatibility is the only active authority.
 ## Required status
 
 ```text
-SIXCASE_R2_STATUS = SIMULATOR_CLOSURE_COMPLETE: N=2 common-corpus preflight passed; RTL rollout pending
+SIXCASE_R2_STATUS = PARTIAL: simulator closure and full N=2 preflight passed; N=3/N=4 preflight pending completion
 R2_MAPPING_CONFLICT = RESOLVED
 AUTHORITATIVE_MAPPING = FINAL_ARCHIVE
 R2_SECTION_12_HANDWRITTEN_MAPPING = SUPERSEDED
@@ -228,7 +228,7 @@ L1X4_R_EARLY_ORACLE_MISMATCHES = 0 across 1000 independent oracle vectors
 L1X4_R_GROUP_ORACLE_MISMATCHES = 0 across 1000 independent oracle vectors
 SAME_CORPUS = PASS: N=2, F_GROUP=8, 1000 groups, seed=20260923; one corpus ID/hash across local source and six static cases
 
-PREFLIGHT_STATUS = PASS: `/tmp/sixcase_static_preflight_1k`, 7000 policy-group evaluations; all six static cases 1000/1000 repairable
+PREFLIGHT_STATUS = PARTIAL: N=2 all F_GROUP=8..48 points complete; N=3/N=4 sharded runs not yet complete
 G2X2_RC_RTL_MODIFIED = NO
 G2X2_R_EARLY_RTL = NOT_STARTED
 G2X2_R_GROUP_RTL = NOT_STARTED
@@ -251,6 +251,6 @@ NEW_PARALLEL_FRAMEWORK_CREATED = NO
 FILES_CREATED = docs/dss_execution/SIXCASE_R2_SIMULATOR_AND_RTL_ROLLOUT.md
 RTL_COMMITS = NONE
 SIMULATOR_COMMITS = 1: Add six-case static simulator closure
-NEXT_BLOCKER = RTL rollout for four new static policies; final G2X2_RC RTL remains immutable
-NEXT_RECOMMENDED_PHASE = commit simulator closure, then begin RTL semantic specs and RTL implementation
+NEXT_BLOCKER = complete N=3/N=4 preflight matrix and RTL rollout for four new static policies; final G2X2_RC RTL remains immutable
+NEXT_RECOMMENDED_PHASE = resume sharded N=3/N=4 preflight; prepare RTL semantic specs in parallel
 ```

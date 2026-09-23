@@ -35,15 +35,15 @@ done
    ("$policies" == "sixcase_static" && "$topologies" == "static") ]] || {
     echo "GROUP_NOT_READY: use canonical/canonical or sixcase_static/static" >&2; exit 2; }
 if [[ "$policies" == "sixcase_static" ]]; then
-    [[ -z "$share_m" || "$share_m" == "static_m1" ]] || {
+    [[ -z "" || "" == "static_m1" || "" == "1" ]] || {
         echo "GROUP_NOT_READY: sixcase_static uses fixed m=1 contracts; omit --share-m or use static_m1" >&2; exit 2; }
 else
     [[ -z "$share_m" || "$share_m" == "canonical_m1_m2" ]] || {
         echo "GROUP_NOT_READY: R3 Matrix V2 uses canonical m=1 and m=2 policies; omit --share-m or use canonical_m1_m2" >&2; exit 2; }
 fi
 [[ -z "$rs" || -z "$cs" || "$rs" == "$cs" ]] || { echo "--rs and --cs must match" >&2; exit 2; }
-[[ "$policies" != "sixcase_static" || ("$rs" == "2" && "$cs" == "2") ]] || {
-    echo "GROUP_NOT_READY: sixcase_static is N=2-only final-archive evidence" >&2; exit 2; }
+[[ "$policies" != "sixcase_static" || ("$rs" =~ ^[234]$ && "$cs" == "$rs") ]] || {
+    echo "GROUP_NOT_READY: sixcase_static supports only RS=CS in {2,3,4}" >&2; exit 2; }
 
 if [[ -z "$output_root" ]]; then
     output_root="$root/results/date2026/repair_rate/group/$mode"
