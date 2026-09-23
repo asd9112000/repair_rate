@@ -254,3 +254,88 @@ SIMULATOR_COMMITS = 1: Add six-case static simulator closure
 NEXT_BLOCKER = complete N=3/N=4 preflight matrix and RTL rollout for four new static policies; final G2X2_RC RTL remains immutable
 NEXT_RECOMMENDED_PHASE = resume sharded N=3/N=4 preflight; prepare RTL semantic specs in parallel
 ```
+
+
+## 2026-09-23 Fasttrack 1K RCA and G2X2_R_GROUP G0
+
+This section supersedes the earlier partial N=3/N=4 preflight status above. The
+completed primary evidence is `tmp/date2026/6case_1k`: N=2/3/4, every
+`F_GROUP=8,12,...,48`, 1,000 groups per point, seven policies, and 77 complete
+policy sidecars per N. It was checked by group-id alignment; no corpus was
+regenerated and no policy was re-executed during paired RCA.
+
+```text
+N2_1K_COMPLETE = YES
+N3_1K_COMPLETE = YES
+N4_1K_COMPLETE = YES
+RC_R_SAME_CORPUS = PASS
+RC_R_EQUAL_TOTAL_PHYSICAL_SPARES = PASS
+RC_STATIC_PATH_COUNT = 81
+R_STATIC_PATH_COUNT = 81
+IMPLEMENTATION_MISMATCH_FOUND = NO
+SIMULATOR_CLEANUP_COMMIT = 816da42
+```
+
+Aggregate SHA-256 values are N2 `92e927cbb6822f8fc20f01547320443c61cf213a8f22adc30105c876a7d3821d`,
+N3 `7ca1cf50ef23ca48016afe39a3bae4e0a65d9ee02701353bc64666b4642a3987`,
+and N4 `9ef00b8718ff5c56a03d155e5446589d89fa80540528075e41baf82bb473679f`.
+The re-aggregated paired-outcome SHA-256 values are N2
+`8194cdd9cc5873d3c26624570ad05d7dd8fee9cb19b26d1ed5bbe3478a43f1cd`,
+N3 `e39326b5aa153e68fcbde195f149e3173d74f67af6779e4c2c19527811e1f3ce`,
+and N4 `7ff927008e778ed13a6ef4c9b1c8b5bbb8a3b80741f4f4495ea57f42d717be34`.
+
+### Paired RC-vs-R result
+
+For GROUP at N=2, the `(RC_ONLY,R_ONLY)` counts are F24 `(11,24)`, F28
+`(9,22)`, F32 `(18,36)`, and F36 `(11,26)`; their exact two-sided paired
+binomial diagnostics are respectively `0.04096`, `0.02945`, `0.01983`, and
+`0.02007`. This is an N=2 transition-region R advantage in this corpus, not a
+universal row-only ordering: N=3 maximum R-minus-RC is `+1.0 pp` (F44), while
+N=4 maximum absolute difference is `0.2 pp` (F40).
+
+The generator defaults are `ROW_ADDRESS_BITS=10`, `COLUMN_ADDRESS_BITS=10`,
+`ROW_DOMAIN_SIZE=1024`, and `COLUMN_DOMAIN_SIZE=1024`.
+`multinomial_uniform` assigns each group fault with probability 1/4 to every
+SA. In mixed spatial mode, a new fault is clustered for 20 percent, shares an
+existing row or column for the next 30 percent with exact 1/2 orientation, and
+is otherwise independently uniform; duplicate cells are resolved by a
+deterministic flat-address scan. No address-space normalization is performed.
+Thus `ROW_COLUMN_GENERATION_SYMMETRIC = YES` at this 1024-by-1024 run.
+The discordant strata do not show a stable excess of row collisions in R_ONLY:
+at N2/F24 R_ONLY has 0.625 row-collision probability versus 0.542 column,
+whereas RC_ONLY has 0.477 versus 0.659; the sign also changes at other F
+points. The supported conclusion is `RESOURCE_TYPE_PLACEMENT` plus static
+capacity/path interaction, not a demonstrated row-address-space bias.
+
+Persisted policy sidecars contain selected ConfigID and PatternID for successful
+groups, but do not retain every failed action-valid map, candidate bitmap, or
+selected static path. Exact first-failure claims for a single losing instance
+therefore cannot be reconstructed from frozen sidecars alone without rerunning
+the analyzer, which is prohibited for this RCA.
+
+### G2X2_R_GROUP semantic-spec gate
+
+The immutable mother archive remains
+`recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch`.
+The derived N=2 target preserves edges `B->A`, `D->B`, `A->C`, `C->D`, all
+ROW; its static selector uses the same ordered 81 tuples (`P0_TO_P80`). The
+fixed action identities are LOCAL=0, RELEASE=1, BORROW=2,
+RELEASE_BORROW=3, mapping for every SA to dense analyzer results
+`{0->0, 1->1, 2->2, 3->0}` and external ConfigIDs `{0,4,2,0}`. The three
+dense configurations are `(2R,2C)`, `(1R,2C)`, `(3R,2C)`.
+
+| Target module class | G2X2_R_GROUP treatment |
+|---|---|
+| `dss_v2_params_pkg`, `dss_v2_types_pkg` | IDENTICAL_TO_TEMPLATE at N=2 widths |
+| shared analyzer | IDENTICAL_TO_TEMPLATE; no analyzer math change |
+| candidate store | WIDTH_ONLY: 12 dense entries x (valid + 4-bit PatternID) = 60 bits; selector aliases RB to local |
+| dense-config decoder | CONFIG_TABLE_ONLY: 0/1/2 -> ConfigID 0/4/2 |
+| static selector | ACTION_MAPPING_ONLY: 81 tuple/order retained; action 3 reads dense 0 |
+| core/top wrapper | WRAPPER_ONLY: collect 12 dense results, then one static decision |
+
+`ARCHITECTURAL_CHANGE = NONE`. There are 4 action slots but 3 analyzer
+config classes; LOCAL and RELEASE_BORROW remain distinct selected actions while
+sharing a single analyzer result. The N=2 PatternID width is 4 bits (at most 10
+candidates for 3R2C); no N=4 K=9 or 126-pattern state is present. The FSM is
+IDLE, 12 COLLECT cycles, and one DECIDE cycle, yielding `done` on the 14th
+clock edge after an accepted start under the template convention.

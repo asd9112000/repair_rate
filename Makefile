@@ -296,6 +296,11 @@ $(FINAL_EARLY_C1R4_STATIC_ACTION_TEST_TARGET): $(TEST_OBJDIR)/final_early_c1r4_s
 test_final_early_c1r4_static_action: $(FINAL_EARLY_C1R4_STATIC_ACTION_TEST_TARGET)
 	./$(FINAL_EARLY_C1R4_STATIC_ACTION_TEST_TARGET)
 
+test_g2x2_r_static_global_lockstep: $(OBJS)
+	verilator -Wall -Wno-fatal --cc --exe --top-module recam_dss_g2x2_r_static_global_core --Mdir build/rtl/verilator/recam_dss_g2x2_r_static_global_lockstep -CFLAGS "-std=c++17 -I$(abspath inc)" dss_final/recam_dss_grid2x2_row_rs2_cs2_m1_static_group_global_noscratch/src/dss_v2_params_pkg.sv dss_final/recam_dss_grid2x2_row_rs2_cs2_m1_static_group_global_noscratch/src/dss_v2_types_pkg.sv dss_final/recam_dss_grid2x2_row_rs2_cs2_m1_static_group_global_noscratch/src/dss_v2_group_candidate_store.sv dss_final/recam_dss_grid2x2_row_rs2_cs2_m1_static_group_global_noscratch/src/dss_v2_group_slot_decode.sv dss_final/recam_dss_grid2x2_row_rs2_cs2_m1_static_group_global_noscratch/src/recam_dss_g2x2_r_static_selector.sv dss_final/recam_dss_grid2x2_row_rs2_cs2_m1_static_group_global_noscratch/src/recam_dss_g2x2_r_static_global_core.sv $(abspath tb/dss_g2x2_r/recam_dss_g2x2_r_static_global_lockstep_test.cpp) $(abspath $(OBJS))
+	$(MAKE) -s -C build/rtl/verilator/recam_dss_g2x2_r_static_global_lockstep -f Vrecam_dss_g2x2_r_static_global_core.mk
+	build/rtl/verilator/recam_dss_g2x2_r_static_global_lockstep/Vrecam_dss_g2x2_r_static_global_core $(LOCKSTEP_VECTORS)
+
 test_recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch_rtl:
 	scripts/simulation/run_verilator_test.sh recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch_core \
 		rtl/recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch/recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch_core.sv \

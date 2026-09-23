@@ -1,0 +1,29 @@
+EVIDENCE_SCOPE: canonical HYP02 exact-81-path proof and selector/core/top RTL regression
+CANONICAL_COMMIT: 35a60728642e73f5d2c428d2a345ef8c6817bdaa
+FUNCTIONAL_REFERENCE: 740a2b777d310d74ded6c50b065e9bff53d788ce
+
+RAW_CONFIG_TUPLES: 256
+LEGAL_STATIC_PATHS: 81
+CSV_PATH_ROWS: 81
+RTL_PATH_TERMS: 81
+RTL_CASE_ITEMS: 81
+PATH_TABLE_RTL_MISMATCHES: 0
+CASE_TABLE_RTL_MISMATCHES: 0
+RTL_VALIDITY_MAPS_CHECKED: 65536
+PRIORITY_SELECTION_MISMATCHES: 0
+SELECTED_PATH_LEGALITY_ERRORS: 0
+CONFIG_DECODE_ERRORS: 0
+PATTERN_READ_ERRORS: 0
+CORE_ATOMIC_COMMIT_ERRORS: 0
+TOP_ALL_LOCAL_SMOKE: PASS
+TOP_OVERFLOW_REJECTION: PASS
+ANALYZER_REFERENCE_MISMATCHES: 0
+CPP_GLOBAL_REPAIRABILITY_MISMATCHES: 0
+
+COMMANDS_EXECUTED:
+make test_p3_synb_hyp02_exact_81path_proof
+make test_p3_synb_hyp02_c_static_global
+
+NOTE: The separate Phase4F static-oracle P1 monotonicity probe is retained as
+historical evidence and has a documented expected nonzero exit due to 60 P1
+counterexamples.  It is not represented here as a passing regression.
