@@ -21,8 +21,8 @@ from typing import Any, Iterable
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 POINT_RE = re.compile(r"^n(?P<rs>\d+)_f(?P<faults>\d+)$")
 
-POLICIES: dict[str, dict[str, str]] = {
-    "local_no_sharing": {"label": "LOCAL", "topology": "none", "solution": "LOCAL"},
+POLICIES: dict[str, dict[str, str | int]] = {
+    "local_no_sharing": {"label": "LOCAL", "architecture_family": "LOCAL", "layout": "2x2", "topology": "none", "resource": "LOCAL", "solution": "LOCAL", "plot_order": 0},
     "directional_m1_local_first": {"label": "Directional V2 LOCAL-FIRST", "topology": "directional", "solution": "LOCAL_FIRST"},
     "directional_m1_early": {"label": "Directional V2 EARLY", "topology": "directional", "solution": "EARLY"},
     "directional_m1_global": {"label": "Directional V2 GLOBAL", "topology": "directional", "solution": "GLOBAL"},
@@ -38,10 +38,27 @@ POLICIES: dict[str, dict[str, str]] = {
     "single_hop_m1_local_first": {"label": "Single-Hop LOCAL-FIRST", "topology": "neighbor", "solution": "LOCAL_FIRST"},
     "single_hop_m1_early": {"label": "Single-Hop EARLY", "topology": "neighbor", "solution": "EARLY"},
     "single_hop_m1_global": {"label": "Single-Hop GLOBAL", "topology": "neighbor", "solution": "GLOBAL"},
+    # DATE2026 six-case static sweep IDs are result-sidecar IDs, not display labels.
+    "g2x2_rc_early": {"label": "G2X2 RC EARLY", "architecture_family": "SIXCASE_STATIC", "layout": "2x2", "topology": "directional", "resource": "RC", "solution": "EARLY", "plot_order": 1},
+    "g2x2_rc_group": {"label": "G2X2 RC GROUP", "architecture_family": "SIXCASE_STATIC", "layout": "2x2", "topology": "directional", "resource": "RC", "solution": "GROUP", "plot_order": 2},
+    "g2x2_r_early": {"label": "G2X2 R EARLY", "architecture_family": "SIXCASE_STATIC", "layout": "2x2", "topology": "directional", "resource": "R", "solution": "EARLY", "plot_order": 3},
+    "g2x2_r_group": {"label": "G2X2 R GROUP", "architecture_family": "SIXCASE_STATIC", "layout": "2x2", "topology": "directional", "resource": "R", "solution": "GROUP", "plot_order": 4},
+    "l1x4_r_early": {"label": "L1X4 R EARLY", "architecture_family": "SIXCASE_STATIC", "layout": "1x4", "topology": "neighbor", "resource": "R", "solution": "EARLY", "plot_order": 5},
+    "l1x4_r_group": {"label": "L1X4 R GROUP", "architecture_family": "SIXCASE_STATIC", "layout": "1x4", "topology": "neighbor", "resource": "R", "solution": "GROUP", "plot_order": 6},
 }
+for _policy_order, _policy_metadata in enumerate(POLICIES.values()):
+    _policy_metadata.setdefault("architecture_family", "R3")
+    _policy_metadata.setdefault("layout", "1x4" if _policy_metadata["topology"] in ("pair", "neighbor") else "2x2")
+    _policy_metadata.setdefault("resource", "R")
+    _policy_metadata.setdefault("plot_order", _policy_order)
+
 # Legacy generic GROUP_GLOBAL is ingested when present for descriptive
 # cross-contract analysis, but it is never mandatory for Matrix V2 gates.
 OPTIONAL_LEGACY_POLICIES = {"directional_m1_group_global"}
+SIXCASE_STATIC_CASE_POLICIES = ("g2x2_rc_early", "g2x2_rc_group", "g2x2_r_early", "g2x2_r_group", "l1x4_r_early", "l1x4_r_group")
+SIXCASE_STATIC_POLICIES = ("local_no_sharing",) + SIXCASE_STATIC_CASE_POLICIES
+LEGACY_POLICIES = tuple(policy for policy in POLICIES if policy not in set(SIXCASE_STATIC_POLICIES))
+POLICY_SETS = {"legacy": LEGACY_POLICIES, "sixcase_static": SIXCASE_STATIC_POLICIES}
 
 COMPARISONS = (
     ("local_vs_directional_local_first", "local_no_sharing", "directional_m1_local_first", "PAIRED_TOPOLOGY_COMPARISON"),
@@ -55,6 +72,13 @@ COMPARISONS = (
     ("two_pairwise_local_first_vs_early", "two_pairwise_m1_local_first", "two_pairwise_m1_early", "SAME_UNIVERSE"),
     ("two_pairwise_early_vs_pair_global", "two_pairwise_m1_early", "two_pairwise_m1_pair_global", "SAME_UNIVERSE"),
     ("two_pairwise_vs_single_hop", "two_pairwise_m1_early", "single_hop_m1_early", "TOPOLOGY_COMPARISON"),
+    ("g2x2_rc_group_vs_g2x2_r_group", "g2x2_rc_group", "g2x2_r_group", "RESOURCE_TYPE_EFFECT"),
+    ("g2x2_rc_early_vs_g2x2_r_early", "g2x2_rc_early", "g2x2_r_early", "RESOURCE_TYPE_EFFECT"),
+    ("g2x2_r_group_vs_l1x4_r_group", "g2x2_r_group", "l1x4_r_group", "TOPOLOGY_EFFECT"),
+    ("g2x2_r_early_vs_l1x4_r_early", "g2x2_r_early", "l1x4_r_early", "TOPOLOGY_EFFECT"),
+    ("g2x2_rc_early_vs_g2x2_rc_group", "g2x2_rc_early", "g2x2_rc_group", "SOLUTION_POLICY_EFFECT"),
+    ("g2x2_r_early_vs_g2x2_r_group", "g2x2_r_early", "g2x2_r_group", "SOLUTION_POLICY_EFFECT"),
+    ("l1x4_r_early_vs_l1x4_r_group", "l1x4_r_early", "l1x4_r_group", "SOLUTION_POLICY_EFFECT"),
 )
 
 FIGURE_TRACEABILITY = {
@@ -119,6 +143,7 @@ class PointData:
     corpus_id: str
     faults: dict[int, tuple[int, int, int, int]]
     results: dict[str, list[dict[str, str]]] = field(default_factory=dict)
+    source_sidecars: dict[str, str] = field(default_factory=dict)
 
     @property
     def groups(self) -> int:
@@ -177,7 +202,14 @@ def _quality(row: list[dict[str, Any]], point: str, policy: str, status: str, de
     row.append({"point": point, "policy": policy, "status": status, "detail": detail})
 
 
-def load_dataset(input_root: Path) -> tuple[list[PointData], list[dict[str, Any]], dict[str, Any]]:
+def policy_ids(policy_set: str) -> tuple[str, ...]:
+    try:
+        return POLICY_SETS[policy_set]
+    except KeyError as error:
+        raise ValueError(f"unknown policy set: {policy_set}") from error
+
+
+def load_dataset(input_root: Path, policy_set: str = "legacy") -> tuple[list[PointData], list[dict[str, Any]], dict[str, Any]]:
     input_root = input_root.resolve()
     corpus_root = input_root / "corpus"
     raw_root = input_root / "raw"
@@ -223,7 +255,7 @@ def load_dataset(input_root: Path) -> tuple[list[PointData], list[dict[str, Any]
         except (OSError, ValueError, KeyError, csv.Error) as error:
             _quality(quality, corpus_dir.name, "*", "ERROR", f"invalid corpus: {error}")
             continue
-        for policy in POLICIES:
+        for policy in policy_ids(policy_set):
             result_path = raw_root / point.name / policy / "paired_policy_results_v1.csv"
             if not result_path.is_file():
                 if policy not in OPTIONAL_LEGACY_POLICIES:
@@ -245,6 +277,7 @@ def load_dataset(input_root: Path) -> tuple[list[PointData], list[dict[str, Any]
                     if int(item["total_physical_group"]) != 8 * point.rs:
                         raise ValueError("physical spare budget mismatch")
                 point.results[policy] = rows
+                point.source_sidecars[policy] = str(result_path)
                 _quality(quality, point.name, policy, "PASS", "schema, same-corpus replay, group IDs, and physical budget verified")
             except (OSError, ValueError, KeyError, csv.Error) as error:
                 _quality(quality, point.name, policy, "ERROR", f"invalid policy sidecar: {error}")
@@ -277,6 +310,7 @@ def load_dataset(input_root: Path) -> tuple[list[PointData], list[dict[str, Any]
         "manifest_present": bool(manifest),
         "manifest_formal": manifest.get("formal"),
         "discovered_points": len(points),
+        "policy_set": policy_set,
     }
     return sorted(points, key=point_sort_key), quality, metadata
 
@@ -284,7 +318,7 @@ def load_dataset(input_root: Path) -> tuple[list[PointData], list[dict[str, Any]
 def inventory_rows(points: list[PointData], metadata: dict[str, Any]) -> list[dict[str, Any]]:
     rows = []
     for point in points:
-        required = [policy for policy in POLICIES if policy not in OPTIONAL_LEGACY_POLICIES]
+        required = [policy for policy in policy_ids(str(metadata["policy_set"])) if policy not in OPTIONAL_LEGACY_POLICIES]
         complete = sum(policy in point.results for policy in required)
         rows.append({
             "dataset_class": metadata["dataset_class"], "point": point.name,

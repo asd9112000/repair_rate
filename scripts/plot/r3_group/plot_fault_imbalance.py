@@ -25,11 +25,13 @@ TOPOLOGY_2_2 = ("directional_m1_local_first", "directional_m1_early",
 TOPOLOGY_1_4 = ("two_pairwise_m1_local_first", "two_pairwise_m1_early", "two_pairwise_m1_pair_global", "single_hop_m1_local_first", "single_hop_m1_early", "single_hop_m1_global")
 POLICY_EARLY = ( "directional_m1_early", "two_pairwise_m1_early", "single_hop_m1_early")
 POLICY_GLOBAL = ("directional_m1_global", "two_pairwise_m1_pair_global", "single_hop_m1_global")
+SIXCASE_STATIC = ("g2x2_rc_early", "g2x2_rc_group", "g2x2_r_early", "g2x2_r_group", "l1x4_r_early", "l1x4_r_group")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis-root", required=True, type=Path)
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
     return parser.parse_args()
 
 
@@ -89,6 +91,10 @@ def main() -> int:
     root = args.analysis_root.resolve()
     rates = pooled(read_csv(root / "data" / "imbalance_summary.csv"))
     figures = root / "figures"
+    if args.policy_set == "sixcase_static":
+        draw(rates, SIXCASE_STATIC, figures / "imbalance" / "sixcase_static" / "fig_sixcase_static_imbalance", "sixcase_static")
+        print(f"Wrote six-case fault-imbalance figures to {figures}")
+        return 0
     # draw(rates, DIRECTIONAL, figures / "fig_r3_directional_fault_imbalance")
     # draw(rates, TOPOLOGY, figures / "fig_r3_topology_fault_imbalance")
     draw(rates, BASELINE_RECAM + TOPOLOGY_2_2 + TOPOLOGY_1_4, figures / "imbalance/" /"all_imbalance/" / "fig_r3_imbalance", "all")

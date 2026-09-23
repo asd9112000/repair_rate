@@ -20,6 +20,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-root", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
     return parser.parse_args()
 
 
@@ -31,7 +32,7 @@ def imbalance(counts: tuple[int, int, int, int]) -> tuple[float, int]:
 
 def main() -> int:
     args = parse_args()
-    points, quality, metadata = load_dataset(args.input_root)
+    points, quality, metadata = load_dataset(args.input_root, args.policy_set)
     output_root = args.output_root.resolve()
     write_gate_artifacts(output_root, points, quality, metadata)
     rows = []
@@ -60,7 +61,8 @@ def main() -> int:
     baseline = {(row["RS"], row["CS"], row["F_GROUP"], row["imbalance_bin"]): row["repair_rate"]
                 for row in rows if row["policy"] == "local_no_sharing"}
     for row in rows:
-        row["gain_vs_local_percentage_points"] = 100.0 * (row["repair_rate"] - baseline[(row["RS"], row["CS"], row["F_GROUP"], row["imbalance_bin"])])
+        local = baseline.get((row["RS"], row["CS"], row["F_GROUP"], row["imbalance_bin"]))
+        row["gain_vs_local_percentage_points"] = math.nan if local is None else 100.0 * (row["repair_rate"] - local)
     fields = ["dataset_class", "RS", "CS", "F_GROUP", "seed", "corpus_id", "policy", "policy_label",
               "topology", "imbalance_bin", "method", "groups", "successes", "failures", "repair_rate",
               "fault_stddev_across_SA_mean", "fault_max_minus_min_mean", "gain_vs_local_percentage_points"]

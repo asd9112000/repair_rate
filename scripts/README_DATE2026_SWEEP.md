@@ -107,6 +107,16 @@ Each group experiment root contains `manifest/`, `corpus/`, `raw/`,
 is retained at `r3_formal_group/` and is not moved while its formal run is
 active.
 
+## DATE2026 six-case post-processing
+
+The frozen group-level six-case sidecars can be analyzed and plotted without rerunning simulation:
+
+```bash
+./scripts/run_date2026_group_postprocess.sh --input-root tmp/date2026/6case_1k --policy-set sixcase_static --n-list 2,3,4 --all
+```
+
+Derived outputs are written outside the input tree under `results/date2026/repair_rate/group/postprocess/sixcase_static/n<N>/`. The wrapper only dispatches the existing R3 analyzers and plotters; it does not alter raw sidecars or mix group results with device-level metrics. Use `--analysis-only` or `--plot-only` for either stage.
+
 ## R3 derived group figures
 
 The R3 analysis/plot stage is downstream of the runner and reads only derived

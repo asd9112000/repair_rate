@@ -33,6 +33,7 @@ COMPARISONS = (
     ("policy_early", POLICY_EARLY, "policy_early_repair_rate_gain", "policy_early_repair_rate_gain"),
     ("policy_global", POLICY_GLOBAL, "policy_global_repair_rate_gain", "policy_global_repair_rate_gain"),
 )
+SIXCASE_STATIC = ("g2x2_rc_early", "g2x2_rc_group", "g2x2_r_early", "g2x2_r_group", "l1x4_r_early", "l1x4_r_group")
 GAIN_METRIC = "gain_vs_local_percentage_points"
 GAIN_YLABEL = "Repair-rate gain vs LOCAL (pp)"
 
@@ -40,6 +41,7 @@ GAIN_YLABEL = "Repair-rate gain vs LOCAL (pp)"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis-root", required=True, type=Path)
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
     return parser.parse_args()
 
 
@@ -84,6 +86,10 @@ def main() -> int:
     root = args.analysis_root.resolve()
     rows = read_csv(root / "data" / "repair_rate_summary.csv")
     figures = root / "figures" / "repair_rate_gain_vs_local"
+    if args.policy_set == "sixcase_static":
+        draw(rows, "sixcase_static", SIXCASE_STATIC, figures / "sixcase_static" / "fig_sixcase_static_repair_rate_gain")
+        print(f"Wrote six-case repair-rate-gain figures to {figures}")
+        return 0
     for comparison, policies, directory, stem in COMPARISONS:
         draw(rows, comparison, policies, figures / directory / stem)
     print(f"Wrote repair-rate-gain figures to {figures}")

@@ -17,6 +17,13 @@ from scripts.plot.r3_group.common import (add_legend, make_single_panel_figure,
                                           style_single_panel)
 
 COMPARISON_STYLE = {
+    "g2x2_rc_group_vs_g2x2_r_group": ("G2X2 RC GROUP vs R GROUP", "#D55E00", "X", "--"),
+    "g2x2_rc_early_vs_g2x2_r_early": ("G2X2 RC EARLY vs R EARLY", "#0072B2", "s", "-"),
+    "g2x2_r_group_vs_l1x4_r_group": ("L1X4 R GROUP vs G2X2 R GROUP", "#6A5ACD", "v", "--"),
+    "g2x2_r_early_vs_l1x4_r_early": ("L1X4 R EARLY vs G2X2 R EARLY", "#009E73", "D", "-."),
+    "g2x2_rc_early_vs_g2x2_rc_group": ("G2X2 RC GROUP over EARLY", "#CC79A7", "P", "--"),
+    "g2x2_r_early_vs_g2x2_r_group": ("G2X2 R GROUP over EARLY", "#56B4E9", "^", "--"),
+    "l1x4_r_early_vs_l1x4_r_group": ("L1X4 R GROUP over EARLY", "#E7298A", "X", "--"),
     "local_vs_directional_early": ("Directional EARLY over LOCAL", "#0072B2", "s", "-"),
     "directional_early_vs_greedy": ("V2 GROUP_GREEDY over V2 EARLY", "#009E73", "D", "-."),
     "directional_greedy_vs_v2_global": ("V2 GROUP_GLOBAL over V2 GROUP_GREEDY", "#D55E00", "X", "--"),
@@ -30,6 +37,7 @@ COMPARISON_STYLE = {
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis-root", required=True, type=Path)
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
     return parser.parse_args()
 
 
@@ -48,6 +56,8 @@ def main() -> int:
     root = args.analysis_root.resolve()
     rows = read_csv(root / "data" / "paired_outcomes.csv")
     output = root / "figures" / "fig_r3_paired_outcomes"
+    if args.policy_set == "sixcase_static":
+        output = root / "figures" / "sixcase_static" / "fig_sixcase_static_paired_outcomes"
     fig, axes = make_two_panel_figure()
     reserve_dense_legend_space(fig)
     for axis, rs in zip(axes, (2, 3)):

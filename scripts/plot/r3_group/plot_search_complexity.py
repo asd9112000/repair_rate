@@ -21,6 +21,7 @@ POLICIES = ("directional_m1_global", "single_hop_m1_global")
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis-root", required=True, type=Path)
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
     return parser.parse_args()
 
 
@@ -42,6 +43,9 @@ def main() -> int:
     root = args.analysis_root.resolve()
     rows = [row for row in read_csv(root / "data" / "search_complexity.csv")
             if row["metric"] == "search_nodes" and row["metric_status"] == "SUPPORTED"]
+    if not rows:
+        print("Search complexity: NOT_APPLICABLE (no supported metrics in this policy set)")
+        return 0
     output = root / "figures" / "fig_r3_search_complexity"
     fig, axes = make_two_panel_figure()
     for axis, rs in zip(axes, (2, 3)):

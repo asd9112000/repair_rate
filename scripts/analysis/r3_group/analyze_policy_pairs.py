@@ -18,12 +18,13 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-root", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    points, quality, metadata = load_dataset(args.input_root)
+    points, quality, metadata = load_dataset(args.input_root, args.policy_set)
     output_root = args.output_root.resolve()
     write_gate_artifacts(output_root, points, quality, metadata)
     rows = []
@@ -50,6 +51,7 @@ def main() -> int:
                 "right_policy": right, "right_policy_label": POLICIES[right]["label"],
                 "groups": point.groups, "A_PASS_B_PASS": both, "A_PASS_B_FAIL": left_only,
                 "A_FAIL_B_PASS": right_only, "A_FAIL_B_FAIL": neither,
+                "BOTH_PASS": both, "A_ONLY": left_only, "B_ONLY": right_only, "BOTH_FAIL": neither,
                 "left_fail_right_pass_rate": right_only / point.groups,
                 "left_fail_right_pass_rate_among_left_failures": (
                     right_only / left_failures if left_failures else 0.0),
@@ -83,8 +85,8 @@ def main() -> int:
                 })
     fields = ["dataset_class", "RS", "CS", "F_GROUP", "seed", "corpus_id", "comparison",
               "comparison_class", "dominance_applicability", "left_policy", "left_policy_label",
-              "right_policy", "right_policy_label", "groups", "A_PASS_B_PASS", "A_PASS_B_FAIL",
-              "A_FAIL_B_PASS", "A_FAIL_B_FAIL", "left_fail_right_pass_rate",
+              "right_policy", "right_policy_label", "groups", "A_PASS_B_PASS", "A_PASS_B_FAIL", "A_FAIL_B_PASS", "A_FAIL_B_FAIL",
+              "BOTH_PASS", "A_ONLY", "B_ONLY", "BOTH_FAIL", "left_fail_right_pass_rate",
               "left_fail_right_pass_rate_among_left_failures"]
     write_csv(output_root / "data" / "paired_outcomes.csv", rows, fields)
     ladder_fields = ["dataset_class", "RS", "CS", "F_GROUP", "seed", "corpus_id",

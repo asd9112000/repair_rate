@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.analysis.r3_group.common import (POLICIES, average, load_dataset, percentile,
+from scripts.analysis.r3_group.common import (POLICIES, average, load_dataset, percentile, policy_ids,
                                                 write_analysis_manifest, write_csv, write_gate_artifacts)
 
 GLOBAL_POLICIES = ("directional_m1_global", "directional_m1_group_global",
@@ -26,6 +26,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-root", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
     return parser.parse_args()
 
 
@@ -37,12 +38,12 @@ def values(rows, metric: str) -> list[float]:
 
 def main() -> int:
     args = parse_args()
-    points, quality, metadata = load_dataset(args.input_root)
+    points, quality, metadata = load_dataset(args.input_root, args.policy_set)
     output_root = args.output_root.resolve()
     write_gate_artifacts(output_root, points, quality, metadata)
     rows = []
     for point in points:
-        for policy in GLOBAL_POLICIES:
+        for policy in (policy_ids(args.policy_set) if args.policy_set == "sixcase_static" else GLOBAL_POLICIES):
             if policy not in point.results:
                 continue
             for metric in METRICS:
@@ -50,7 +51,7 @@ def main() -> int:
                 # Its generic-global CSV columns are fixed zero sentinels, not
                 # a measured zero-cost search, so report the metric as
                 # unsupported instead of putting misleading zeroes on a plot.
-                unsupported = policy == "two_pairwise_m1_pair_global"
+                unsupported = policy == "two_pairwise_m1_pair_global" or args.policy_set == "sixcase_static"
                 metric_values = [] if unsupported else values(point.results[policy], metric)
                 rows.append({
                     "dataset_class": metadata["dataset_class"], "RS": point.rs, "CS": point.cs,
@@ -58,9 +59,8 @@ def main() -> int:
                     "policy": policy, "policy_label": POLICIES[policy]["label"],
                     "topology": POLICIES[policy]["topology"], "metric": metric,
                     "complexity_label": "C++ algorithmic search complexity", "groups": len(metric_values),
-                    "metric_status": "UNSUPPORTED" if unsupported else "SUPPORTED",
-                    "metric_detail": ("Pair-GLOBAL uses a distinct solver; generic GLOBAL CSV search columns are zero sentinels"
-                                      if unsupported else "raw CSV metric"),
+                    "metric_status": ("NOT_APPLICABLE" if args.policy_set == "sixcase_static" else "UNSUPPORTED") if unsupported else "SUPPORTED",
+                    "metric_detail": ("static six-case policies do not expose generic GLOBAL search metrics" if args.policy_set == "sixcase_static" else "Pair-GLOBAL uses a distinct solver; generic GLOBAL CSV search columns are zero sentinels") if unsupported else "raw CSV metric",
                     "mean": average(map(str, metric_values)), "median": percentile(metric_values, 0.5),
                     "p95": percentile(metric_values, 0.95), "p99": percentile(metric_values, 0.99),
                     "max": max(metric_values) if metric_values else float("nan"),

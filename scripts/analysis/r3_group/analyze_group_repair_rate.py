@@ -19,16 +19,17 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-root", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
     return parser.parse_args()
 
 
 def layout_for(policy: str) -> str:
-    return "1x4" if policy.startswith(("two_pairwise", "single_hop")) else "2x2"
+    return str(POLICIES[policy].get("layout", "1x4" if policy.startswith(("two_pairwise", "single_hop")) else "2x2"))
 
 
 def main() -> int:
     args = parse_args()
-    points, quality, metadata = load_dataset(args.input_root)
+    points, quality, metadata = load_dataset(args.input_root, args.policy_set)
     output_root = args.output_root.resolve()
     ensure_output_layout(output_root)
     write_gate_artifacts(output_root, points, quality, metadata)
@@ -42,6 +43,7 @@ def main() -> int:
                 "dataset_class": metadata["dataset_class"], "RS": point.rs, "CS": point.cs,
                 "F_GROUP": point.fault_count, "seed": point.seed, "corpus_id": point.corpus_id,
                 "policy": policy, "policy_label": POLICIES[policy]["label"],
+                "source_sidecar": point.source_sidecars[policy],
                 "layout": layout_for(policy), "topology": POLICIES[policy]["topology"],
                 "solution_class": POLICIES[policy]["solution"], "groups": point.groups,
                 "successes": successes, "failures": failures,
@@ -62,7 +64,7 @@ def main() -> int:
             row["failure_reduction_vs_local"] = (
                 math.nan if local["failure_rate"] == 0 else
                 (local["failure_rate"] - row["failure_rate"]) / local["failure_rate"])
-    fields = ["dataset_class", "RS", "CS", "F_GROUP", "seed", "corpus_id", "policy", "policy_label",
+    fields = ["dataset_class", "RS", "CS", "F_GROUP", "seed", "corpus_id", "policy", "policy_label", "source_sidecar",
               "layout", "topology", "solution_class", "groups", "successes", "failures", "repair_rate",
               "failure_rate", "wilson95_low", "wilson95_high", "absolute_gain_vs_local",
               "gain_vs_local_percentage_points", "failure_reduction_vs_local"]
@@ -70,7 +72,7 @@ def main() -> int:
     failure_rows = [{key: row[key] for key in fields} for row in rows]
     write_csv(output_root / "data" / "failure_rate_summary.csv", failure_rows, fields)
     write_csv(output_root / "tables" / "repair_rate_table.csv", rows, fields)
-    gain_fields = ["dataset_class", "RS", "CS", "F_GROUP", "policy", "policy_label", "groups",
+    gain_fields = ["dataset_class", "RS", "CS", "F_GROUP", "policy", "policy_label", "source_sidecar", "groups",
                    "repair_rate", "failure_rate", "absolute_gain_vs_local",
                    "gain_vs_local_percentage_points", "failure_reduction_vs_local",
                    "wilson95_low", "wilson95_high"]

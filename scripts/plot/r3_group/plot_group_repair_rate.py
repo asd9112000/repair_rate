@@ -29,6 +29,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis-root", required=True, type=Path)
     parser.add_argument("--show-ci", action="store_true")
+    parser.add_argument("--policy-set", choices=("legacy", "sixcase_static"), default="legacy")
+    parser.add_argument("--policies", help="comma-separated policy IDs")
+    parser.add_argument("--include-local", action="store_true")
+    parser.add_argument("--n", type=int, help="render one RS=CS panel")
     return parser.parse_args()
 
 
@@ -72,6 +76,23 @@ def main() -> int:
     root = args.analysis_root.resolve()
     rows = read_csv(root / "data" / "repair_rate_summary.csv")
     figures = root / "figures"
+    if args.policy_set == "sixcase_static":
+        policies = tuple(args.policies.split(",")) if args.policies else ("g2x2_rc_early", "g2x2_rc_group", "g2x2_r_early", "g2x2_r_group", "l1x4_r_early", "l1x4_r_group")
+        if args.include_local:
+            policies = ("local_no_sharing",) + policies
+        n = args.n if args.n is not None else sorted({int(row["RS"]) for row in rows})[0]
+        panel_fig, panel_axis = make_single_panel_figure()
+        draw_curves(panel_axis, rows, policies, "repair_rate", n, args.show_ci)
+        style_single_panel(panel_axis, "Repair rate (%)")
+        selected_f = sorted({int(row["F_GROUP"]) for row in rows if int(row["RS"]) == n})
+        if selected_f:
+            panel_axis.set_xticks(selected_f)
+            panel_axis.set_xlim(selected_f[0] - 1, selected_f[-1] + 1)
+        reserve_dense_legend_space(panel_fig)
+        add_legend(panel_fig, panel_axis, dense=True)
+        save_three_formats(panel_fig, figures / "repair_rate" / "sixcase_static", f"fig_sixcase_static_repair_rate_n{n}")
+        print(f"Wrote six-case repair-rate figure to {figures}")
+        return 0
     draw(rows, BASELINE_RECAM + TOPOLOGY_2_2 + TOPOLOGY_1_4, "repair_rate", "Repair rate (%)", figures / "repair_rate/" /"all_repair_rate/" / "fig_r3_repair_rate", args.show_ci, "all")
     draw(rows, BASELINE_RECAM + TOPOLOGY_2_2, "repair_rate", "Repair rate (%)", figures / "repair_rate/" /"topology_2_2_repair_rate"/ "topology_2_2_repair_rate", args.show_ci, "topology_2_2")
     draw(rows, BASELINE_RECAM + TOPOLOGY_1_4, "repair_rate", "Repair rate (%)", figures / "repair_rate/" /"topology_1_4_repair_rate"/ "topology_1_4_repair_rate", args.show_ci, "topology_1_4")

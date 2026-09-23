@@ -41,6 +41,12 @@ _VISUALS = {
     "single_hop_m1_local_first": ("#6A5ACD", "P", "-"),
     "single_hop_m1_early": ("#5B4BB7", "D", "-."),
     "single_hop_m1_global": ("#E7298A", "X", "--"),
+    "g2x2_rc_early": ("#0072B2", "s", "-"),
+    "g2x2_rc_group": ("#D55E00", "X", "--"),
+    "g2x2_r_early": ("#009E73", "D", "-."),
+    "g2x2_r_group": ("#CC79A7", "P", "--"),
+    "l1x4_r_early": ("#56B4E9", "^", "-"),
+    "l1x4_r_group": ("#6A5ACD", "v", "--"),
 }
 COMPACT_LEGEND_LABELS = {
     "local_no_sharing": "LOCAL",
@@ -57,6 +63,12 @@ COMPACT_LEGEND_LABELS = {
     "single_hop_m1_local_first": "1Hop-LOCAL",
     "single_hop_m1_early": "1Hop-EARLY",
     "single_hop_m1_global": "1Hop-GLOBAL",
+    "g2x2_rc_early": "G2X2 RC EARLY",
+    "g2x2_rc_group": "G2X2 RC GROUP",
+    "g2x2_r_early": "G2X2 R EARLY",
+    "g2x2_r_group": "G2X2 R GROUP",
+    "l1x4_r_early": "L1X4 R EARLY",
+    "l1x4_r_group": "L1X4 R GROUP",
 }
 STYLE = {policy: (COMPACT_LEGEND_LABELS[policy], *visual)
          for policy, visual in _VISUALS.items()}
