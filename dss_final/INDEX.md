@@ -20,3 +20,13 @@ existing C++ PhysicalResourceLedger demand model.
 
 Other future cases remain `NOT_YET_FINAL` and are intentionally absent from
 the final-case table.
+
+## Corrected N2 GROUP current set
+
+| Case | N / RS / CS / m | Address contract | Pivot slots / retained bits | Status |
+|---|---|---|---|---|
+| `G2X2_N2_RC_GROUP_reg` | 2 / 2 / 2 / 1 | row 9, physical column 13, word column 5, hybrid 13 | 5 / 440 | FINAL |
+| `G2X2_N2_R_GROUP_reg` | 2 / 2 / 2 / 1 | row 9, physical column 13, word column 5, hybrid 13 | 5 / 440 | FINAL |
+| `L1X4_N2_R_GROUP_reg` | 2 / 2 / 2 / 1 | row 9, physical column 13, word column 5, hybrid 13 | 5 / 440 | FINAL |
+
+The active corrected GROUP entries above supersede the earlier repair-column hardware boundary. `recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch` and `L1X4_R_GROUP_V1` are SUPERSEDED; the historical G2X2 R GROUP record is likewise SUPERSEDED by `G2X2_N2_R_GROUP_reg`. Their policy evidence remains valid, while physical-address RTL and PPA evidence are superseded.

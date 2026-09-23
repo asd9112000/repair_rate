@@ -55,3 +55,15 @@ these source bytes are identical.
 
 `READABLE_VERILOG_STRICT_GATE: NOT_RUN_ENVIRONMENT_DEPENDENCY` because host
 Python is 3.8 while the tool requires Python >= 3.9. `RTL_FINDING_FROM_STRICT_GATE: NONE`.
+
+## Lifecycle
+
+```text
+LIFECYCLE: SUPERSEDED
+FUNCTIONAL_POLICY_EVIDENCE: VALID
+PHYSICAL_ADDRESS_RTL_EVIDENCE: SUPERSEDED
+PPA_EVIDENCE: SUPERSEDED
+SUPERSEDED_BY: dss_final/L1X4_N2_R_GROUP_reg
+```
+
+The predecessor used the earlier repair-column hardware boundary and/or did not include the complete delayed-GROUP pivot-address retention represented by the corrected N2 GROUP_reg implementation. Historical reports remain unchanged.
