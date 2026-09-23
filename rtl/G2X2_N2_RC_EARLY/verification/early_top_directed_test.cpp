@@ -51,16 +51,25 @@ void runCase(bool overflow)
     dut.start_i = 1;
     tick(dut);
     dut.start_i = 0;
-    for (unsigned cycle = 0; cycle < 16U && dut.done_o == 0U; ++cycle)
+    unsigned streamed_commit_mask = 0;
+    unsigned streamed_config_mask = 0;
+    for (unsigned cycle = 0; cycle < 16U && dut.done_o == 0U; ++cycle) {
+        dut.eval();
+        if (dut.solution_commit_valid_o != 0U) {
+            streamed_commit_mask |= 1U << dut.solution_sa_o;
+            streamed_config_mask |= static_cast<unsigned>(dut.solution_config_o) <<
+                (3U * dut.solution_sa_o);
+        }
         tick(dut);
+    }
     require(dut.done_o != 0U, "top completes within four ranks per SA");
     if (overflow) {
         require(dut.group_repairable_o == 0U, "overflow input must fail");
-        require(dut.sa_commit_valid_o == 0U, "overflow input must not commit");
+        require(streamed_commit_mask == 0U, "overflow input must not commit");
     } else {
         require(dut.group_repairable_o != 0U, "all-local analyzer case repairs");
-        require(dut.sa_commit_valid_o == 0xfU, "all-local case commits all SAs");
-        require(dut.selected_config_flat_o == 0x84cU,
+        require(streamed_commit_mask == 0xfU, "all-local case streams all SAs");
+        require(streamed_config_mask == 0x84cU,
                 "all-valid case follows frozen HYP02 EARLY slot priority");
     }
 }
