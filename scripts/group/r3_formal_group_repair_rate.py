@@ -567,6 +567,13 @@ def paired_aggregate(point: dict[str, Any], successes: dict[str, list[int]]) -> 
         ("single_hop_local_first_vs_early", "single_hop_m1_local_first", "single_hop_m1_early"),
         ("single_hop_early_vs_global", "single_hop_m1_early", "single_hop_m1_global"),
         ("two_pairwise_pair_global_vs_single_hop_global", "two_pairwise_m1_pair_global", "single_hop_m1_global"),
+        ("g2x2_rc_early_vs_g2x2_r_early", "g2x2_rc_early", "g2x2_r_early"),
+        ("g2x2_rc_group_vs_g2x2_r_group", "g2x2_rc_group", "g2x2_r_group"),
+        ("g2x2_r_early_vs_l1x4_r_early", "g2x2_r_early", "l1x4_r_early"),
+        ("g2x2_r_group_vs_l1x4_r_group", "g2x2_r_group", "l1x4_r_group"),
+        ("g2x2_rc_early_vs_g2x2_rc_group", "g2x2_rc_early", "g2x2_rc_group"),
+        ("g2x2_r_early_vs_g2x2_r_group", "g2x2_r_early", "g2x2_r_group"),
+        ("l1x4_r_early_vs_l1x4_r_group", "l1x4_r_early", "l1x4_r_group"),
     )
     output: list[dict[str, Any]] = []
     for name, left_name, right_name in comparisons:

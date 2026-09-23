@@ -12,7 +12,7 @@ Usage: scripts/run_date2026_repair_sweep.sh --scope group [options]
   --seed N --policies canonical|sixcase_static --topologies canonical|static --output-root PATH
   --preflight | --formal --resume --dry-run
 
-Use `sixcase_static` with `static` for the N=2 final-archive six-case preflight.
+Use `sixcase_static` with `static` for N=2, N=3, or N=4 final-archive static sweeps.
 EOF
 }
 
@@ -35,7 +35,7 @@ done
    ("$policies" == "sixcase_static" && "$topologies" == "static") ]] || {
     echo "GROUP_NOT_READY: use canonical/canonical or sixcase_static/static" >&2; exit 2; }
 if [[ "$policies" == "sixcase_static" ]]; then
-    [[ -z "" || "" == "static_m1" || "" == "1" ]] || {
+    [[ -z "$share_m" || "$share_m" == "static_m1" || "$share_m" == "1" ]] || {
         echo "GROUP_NOT_READY: sixcase_static uses fixed m=1 contracts; omit --share-m or use static_m1" >&2; exit 2; }
 else
     [[ -z "$share_m" || "$share_m" == "canonical_m1_m2" ]] || {
