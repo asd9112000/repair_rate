@@ -6,7 +6,7 @@ ConfigID and PatternID select the physical row or column half at commit. Rows
 are explicitly zero-extended to the 13-bit physical-address output width.
 
 No full four-SA pivot-bank retention, candidate store, or GROUP selector is
-instantiated; only committed selected lines persist for the output interface.
+instantiated; no committed solution persists inside the EARLY engine.
 
 ```wavedrom
 { "signal": [

@@ -9,6 +9,6 @@ Status: FUNCTIONAL_FINAL_PENDING_PPA
 - Final output state: selected line only, 20 × (13-bit address + row flag + valid)
 - GROUP 440-bit row+column retention: absent
 
-The current analyzer, selected-address register, and controller have focused
+The current analyzer, selected-address mux, and controller have focused
 Verilator and independent-oracle evidence. Matched DC and archive promotion
 remain pending.

@@ -28,13 +28,14 @@ module recam_dss_l1x4_r_static_early_top #(
     output logic busy_o,
     output logic done_o,
     output logic group_repairable_o,
-    output logic [3:0] sa_commit_valid_o,
-    output logic [11:0] selected_config_flat_o,
-    output logic [15:0] selected_pattern_flat_o,
     output logic [1:0] failure_position_o,
-    output logic [259:0] final_repair_address_flat_o,
-    output logic [19:0] final_repair_is_row_flat_o,
-    output logic [19:0] final_repair_line_valid_flat_o
+    output logic solution_commit_valid_o,
+    output logic [1:0] solution_sa_o,
+    output logic [2:0] solution_config_o,
+    output logic [3:0] solution_pattern_o,
+    output logic [64:0] solution_line_address_flat_o,
+    output logic [4:0] solution_line_is_row_o,
+    output logic [4:0] solution_line_valid_o
 );
     logic [1:0] current_sa;
     logic [2:0] current_config_id;
@@ -49,7 +50,6 @@ module recam_dss_l1x4_r_static_early_top #(
         .rst_ni(rst_ni),
         .start_i(start_i),
         .candidate_valid_i(solution_valid && repairable),
-        .candidate_pattern_id_i(candidate_pattern_id),
         .current_sa_o(current_sa),
         .current_slot_o(),
         .current_config_id_o(current_config_id),
@@ -57,9 +57,6 @@ module recam_dss_l1x4_r_static_early_top #(
         .busy_o(busy_o),
         .done_o(done_o),
         .group_repairable_o(group_repairable_o),
-        .sa_commit_valid_o(sa_commit_valid_o),
-        .selected_config_flat_o(selected_config_flat_o),
-        .selected_pattern_flat_o(selected_pattern_flat_o),
         .failure_position_o(failure_position_o)
     );
 
@@ -91,21 +88,22 @@ module recam_dss_l1x4_r_static_early_top #(
         .repairable_o(repairable),
         .dictionary_overflow_o()
     );
-    dss_early_selected_address_regs #(
+    assign solution_commit_valid_o = selected_commit;
+    assign solution_sa_o = current_sa;
+    assign solution_config_o = current_config_id;
+    assign solution_pattern_o = candidate_pattern_id;
+
+    dss_early_selected_address_mux #(
         .ROW_ADDR_W(ROW_ADDR_W),
         .PHYS_COL_ADDR_W(PHYS_COL_ADDR_W)
-    ) selected_address_regs (
-        .clk_i(clk_i),
-        .rst_ni(rst_ni),
-        .commit_enable_i(selected_commit),
-        .commit_sa_i(current_sa),
+    ) selected_address_mux (
         .selected_config_i(current_config_id),
         .selected_pattern_id_i(candidate_pattern_id),
         .pivot_rows_flat_i(pivot_rows_flat_i),
         .pivot_cols_flat_i(pivot_cols_flat_i),
-        .final_repair_address_flat_o(final_repair_address_flat_o),
-        .final_repair_is_row_flat_o(final_repair_is_row_flat_o),
-        .final_repair_line_valid_flat_o(final_repair_line_valid_flat_o)
+        .solution_line_address_flat_o(solution_line_address_flat_o),
+        .solution_line_is_row_o(solution_line_is_row_o),
+        .solution_line_valid_o(solution_line_valid_o)
     );
 
     /* verilator lint_on PINCONNECTEMPTY */

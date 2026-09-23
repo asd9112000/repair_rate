@@ -24,7 +24,6 @@ struct DutResult {
     bool repairable = false;
     unsigned commits = 0;
     unsigned configs = 0;
-    unsigned patterns = 0;
     unsigned failure = 0;
 };
 
@@ -107,7 +106,6 @@ void reset(Vrecam_dss_g2x2_r_static_early_core &dut)
     dut.rst_ni = 0;
     dut.start_i = 0;
     dut.candidate_valid_i = 0;
-    dut.candidate_pattern_id_i = 0;
     tick(dut);
     dut.rst_ni = 1;
 }
@@ -115,6 +113,8 @@ void reset(Vrecam_dss_g2x2_r_static_early_core &dut)
 DutResult run(const Schedule &schedule)
 {
     Vrecam_dss_g2x2_r_static_early_core dut;
+    unsigned commits = 0;
+    unsigned configs = 0;
     reset(dut);
     dut.start_i = 1;
     tick(dut);
@@ -124,13 +124,15 @@ DutResult run(const Schedule &schedule)
         const unsigned slot = dut.current_slot_o;
         require(sa < 4 && slot < 4, "controller source slot is in range");
         dut.candidate_valid_i = schedule[sa][slot].valid;
-        dut.candidate_pattern_id_i = schedule[sa][slot].pattern;
+        dut.eval();
+        if (dut.selected_commit_o != 0) {
+            commits |= 1U << sa;
+            configs |= static_cast<unsigned>(dut.current_config_id_o) << (3U * sa);
+        }
         tick(dut);
     }
     require(dut.done_o != 0, "controller completes within four ranks per SA");
-    return {dut.group_repairable_o != 0, dut.sa_commit_valid_o,
-            dut.selected_config_flat_o, dut.selected_pattern_flat_o,
-            dut.failure_position_o};
+    return {dut.group_repairable_o != 0, commits, configs, dut.failure_position_o};
 }
 
 void compare(const Schedule &schedule, unsigned &mismatches)
@@ -139,18 +141,15 @@ void compare(const Schedule &schedule, unsigned &mismatches)
     const DutResult actual = run(schedule);
     unsigned expectedCommitMask = 0;
     unsigned expectedConfigs = 0;
-    unsigned expectedPatterns = 0;
     for (unsigned sa = 0; sa < 4; ++sa) {
         if (expected.slots[sa] < 0)
             break;
         expectedCommitMask |= 1U << sa;
         expectedConfigs |= expected.configs[sa] << (3U * sa);
-        expectedPatterns |= expected.patterns[sa] << (4U * sa);
     }
     if (actual.repairable != expected.repairable ||
         actual.commits != expectedCommitMask ||
         actual.configs != expectedConfigs ||
-        actual.patterns != expectedPatterns ||
         actual.failure != expected.failure) {
         ++mismatches;
     }

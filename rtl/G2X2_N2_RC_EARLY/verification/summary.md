@@ -4,7 +4,7 @@
   physical columns 1 and 257 do not alias.
 - Immediate core oracle: 81 legal paths, 65,536 validity maps and 1,000 random
   vectors; zero prefix-legality mismatches.
-- Selected-address register: committed config-2 output preserves physical
+- Streaming selected-address mux: committed config-2 output preserves physical
   columns 1 and 257 independently.
 - Directed top smoke: all-local immediate commit passes; conventional overflow
   rejects without committing.

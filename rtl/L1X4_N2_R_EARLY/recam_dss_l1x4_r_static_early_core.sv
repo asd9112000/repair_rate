@@ -6,7 +6,6 @@ module recam_dss_l1x4_r_static_early_core (
     input  logic rst_ni,
     input  logic start_i,
     input  logic candidate_valid_i,
-    input  logic [3:0] candidate_pattern_id_i,
     output logic [1:0] current_sa_o,
     output logic [1:0] current_slot_o,
     output logic [2:0] current_config_id_o,
@@ -14,9 +13,6 @@ module recam_dss_l1x4_r_static_early_core (
     output logic busy_o,
     output logic done_o,
     output logic group_repairable_o,
-    output logic [3:0] sa_commit_valid_o,
-    output logic [11:0] selected_config_flat_o,
-    output logic [15:0] selected_pattern_flat_o,
     output logic [1:0] failure_position_o
 );
     logic [1:0] sa_q;
@@ -80,9 +76,6 @@ module recam_dss_l1x4_r_static_early_core (
             c_released_q <= 1'b0;
             busy_o <= 1'b0;
             group_repairable_o <= 1'b0;
-            sa_commit_valid_o <= 4'b0000;
-            selected_config_flat_o <= 12'b0;
-            selected_pattern_flat_o <= 16'b0;
             failure_position_o <= 2'd0;
         end else if (start_i && !busy_o) begin
             sa_q <= 2'd0;
@@ -92,35 +85,20 @@ module recam_dss_l1x4_r_static_early_core (
             c_released_q <= 1'b0;
             busy_o <= 1'b1;
             group_repairable_o <= 1'b0;
-            sa_commit_valid_o <= 4'b0000;
-            selected_config_flat_o <= 12'b0;
-            selected_pattern_flat_o <= 16'b0;
             failure_position_o <= 2'd0;
         end else if (busy_o) begin
             if (commit_now) begin
                 case (sa_q)
                     2'd0: begin
-                        sa_commit_valid_o[0] <= 1'b1;
-                        selected_config_flat_o[2:0] <= current_config_id_o;
-                        selected_pattern_flat_o[3:0] <= candidate_pattern_id_i;
                         a_released_q <= slot_releases;
                     end
                     2'd1: begin
-                        sa_commit_valid_o[1] <= 1'b1;
-                        selected_config_flat_o[5:3] <= current_config_id_o;
-                        selected_pattern_flat_o[7:4] <= candidate_pattern_id_i;
                         b_released_q <= slot_releases;
                     end
                     2'd2: begin
-                        sa_commit_valid_o[2] <= 1'b1;
-                        selected_config_flat_o[8:6] <= current_config_id_o;
-                        selected_pattern_flat_o[11:8] <= candidate_pattern_id_i;
                         c_released_q <= slot_releases;
                     end
                     default: begin
-                        sa_commit_valid_o[3] <= 1'b1;
-                        selected_config_flat_o[11:9] <= current_config_id_o;
-                        selected_pattern_flat_o[15:12] <= candidate_pattern_id_i;
                     end
                 endcase
                 if (sa_q == 2'd3) begin
