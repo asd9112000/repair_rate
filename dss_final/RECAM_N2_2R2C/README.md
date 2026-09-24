@@ -10,3 +10,5 @@ before and after synthesis.
 Run `synthesis/run_matched_dc.sh` for the 20 ns TSMC018 slow-corner flow.
 The historical 5-bit baseline is intentionally preserved in `rtl/recam/` and
 is not the canonical matched baseline.
+
+Authoritative lifecycle and architecture records: `dss_final/INDEX.md` and `dss_final/records/N2_ARCHITECTURE_CONTRACT.md`. Final PPA: `dss_final/N2_HARDWARE_SUMMARY.md`.

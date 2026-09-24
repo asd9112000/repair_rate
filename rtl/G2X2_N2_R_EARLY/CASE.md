@@ -4,7 +4,7 @@
 
 
 
-Status: FINAL
+`LIFECYCLE: FINAL`
 
 - Policy: `SolutionTakePolicy::Grid2x2RowStaticEarly`
 - Geometry: RS=CS=2, m=1, four SAs, five pivot slots per SA

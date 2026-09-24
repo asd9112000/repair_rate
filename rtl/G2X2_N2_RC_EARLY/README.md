@@ -1,13 +1,16 @@
-# G2X2 N2 RC EARLY RTL
+# G2X2_N2_RC_EARLY
 
 `CASE_ID: G2X2_N2_RC_EARLY`
+`LIFECYCLE: FINAL`
 
+N2 directional HYP02 EARLY/static implementation with `RS=2`, `CS=2`, `m=1`,
+row address 9, physical repair column 13, logical BIST word column 5, hybrid
+line 13, and five pivot slots per SA. Policy identity:
+`SolutionTakePolicy::Hyp02StaticEarly`.
 
-
-Synthesizable implementation of `Hyp02StaticEarly` with the frozen 13-bit
-physical-column interface. The controller commits each SA immediately in
-`R,L,RB,B` priority. `dss_early_selected_address_regs` is obsolete and absent. `dss_early_selected_address_mux.sv` combinationally emits each selected physical line for the immediate `solution_commit` transaction; no four-SA accumulated final-solution warehouse exists.
-
-Run the local physical and core-oracle checks with
-`scripts/simulation/run_verilator_test.sh` using the source/test pairs in
-`verification/`.
+The architecture performs streaming immediate commit: each SA decision is
+observable through the selected repair-line transaction. Four-SA accumulated
+final-solution storage is absent, as is GROUP-style full-pivot retention.
+Physical-column, 81-path oracle, directed, source-hash, and matched synthesis
+evidence are PASS. Canonical archive: `dss_final/G2X2_N2_RC_EARLY/`; final PPA:
+`dss_final/N2_HARDWARE_SUMMARY.md`; final closure commit: `6351a82`.

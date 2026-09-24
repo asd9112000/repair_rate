@@ -4,7 +4,7 @@
 
 
 
-Status: FINAL
+`LIFECYCLE: FINAL`
 
 - Policy: `SolutionTakePolicy::Line1x4RowStaticEarly`
 - Topology: A -> B -> C -> D, single-hop rows only

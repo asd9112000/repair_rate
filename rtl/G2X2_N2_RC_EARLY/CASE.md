@@ -4,7 +4,7 @@
 
 
 
-Status: FINAL
+`LIFECYCLE: FINAL`
 
 - Policy: `SolutionTakePolicy::Hyp02StaticEarly`
 - Geometry: RS=CS=2, m=1, four SAs, five pivot slots per SA
@@ -14,5 +14,4 @@ Status: FINAL
 - GROUP 440-bit row+column retention: absent
 
 The current analyzer, selected-address mux, and controller have focused
-Verilator and independent-oracle evidence. Matched DC and archive promotion
-remain pending.
+Verilator and independent-oracle evidence. Matched DC synthesis and archive promotion are complete.
