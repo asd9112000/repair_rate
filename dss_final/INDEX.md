@@ -1,32 +1,38 @@
-# DATE2026 DSS Final Hardware Cases
+# DATE2026 N2 final hardware index
 
-| Case | Top | Canonical RTL Commit | Synthesis Record | Area um2 | GE | WNS ns | Status |
-|---|---|---|---|---:|---:|---:|---|
-| 1x4 L1X4_R_GROUP directed row-only | `recam_dss_l1x4_r_static_global_top` | `e15072d0955126ae235802fbc92c1fc6469969ab` | `ed91147` | 96898.032853 | 9710.00 | 0.00 | FINAL; 27 static paths; 20 ns PASS |
-| 2x2 Directional GROUP-GLOBAL NoScratch | `recam_dss_hyp02_static_global_top` | `35a60728642e73f5d2c428d2a345ef8c6817bdaa` | `03046e4` | 106341.682630 | 10656.33 | 0.00 | FINAL HYP02 mother |
-| 2x2 G2X2_R row-only GROUP NoScratch | `recam_dss_g2x2_r_static_global_top` | `766268698c983ce5ddb6fa916e4a65b2183cb0ad` | Track A N=2 checkpoint | 97140.859997 | 9734.33 | 0.00 | PROVISIONAL; SYNTHESIS_COMPLETE; SUMMARY_BOUNDARY_VERIFICATION_DEFERRED |
-| 2x2 Directional HYP02-compatible EARLY NoScratch | `recam_dss_grid2x2_directional_rs2_cs2_m1_hyp02_early_noscratch_top` | `46e1d3a82bf948dc3e357823cbc50869be964023` | DATE2026 Path-C2 closure | 78216.970295 | 7838.00 | +0.01 | FINAL; HYP02_STATIC_81_PATH_CONTRACT |
-| 2x2 Directional corrected Model-B2 EARLY NoScratch | `recam_dss_grid2x2_directional_rs2_cs2_m1_early_noscratch_top` | `7fdaf0ad86700d40588f31735d4eb2513b77478f` | current DATE2026 closure | 200824.749004 | 20124.33 | 0.00 | EXPLORATORY; GROUP_B2_COMPATIBILITY_FAIL |
+## Canonical FINAL packages
 
-## Boundary note
+| Case | Address contract | PPA cell area (µm²) | WNS (ns) | Status |
+|---|---|---:|---:|---|
+| `RECAM_N2_2R2C` | row 9, physical column 13, word column 5, hybrid 13 | 72116.352610 | 0.00 | FINAL |
+| `G2X2_N2_RC_EARLY` | row 9, physical column 13, word column 5, hybrid 13; 5 DSS slots/SA | 102296.779959 | +0.03 | FINAL |
+| `G2X2_N2_RC_GROUP_reg` | row 9, physical column 13, word column 5, hybrid 13; 5 DSS slots/SA | 166140.376634 | +0.02 | FINAL |
+| `G2X2_N2_R_EARLY` | row 9, physical column 13, word column 5, hybrid 13; 5 DSS slots/SA | 99688.882299 | 0.00 | FINAL |
+| `G2X2_N2_R_GROUP_reg` | row 9, physical column 13, word column 5, hybrid 13; 5 DSS slots/SA | 158230.197352 | 0.00 | FINAL |
+| `L1X4_N2_R_EARLY` | row 9, physical column 13, word column 5, hybrid 13; 5 DSS slots/SA | 99695.535153 | 0.00 | FINAL |
+| `L1X4_N2_R_GROUP_reg` | row 9, physical column 13, word column 5, hybrid 13; 5 DSS slots/SA | 154388.205311 | 0.00 | FINAL |
 
-The HYP02-compatible EARLY and GROUP entries are the matched hardware PPA
-pair: one H=7 shared analyzer and the fixed HYP02 81-path abstraction.  The
-Model-B2 EARLY archive remains intact but is intentionally not a matched
-comparator.  Neither HYP02 hardware result establishes equivalence to the
-existing C++ PhysicalResourceLedger demand model.
+Each name above matches its archive directory, `CASE.md`, `README.md`, source
+manifest, and synthesis report identity. See `N2_HARDWARE_SUMMARY.md` for the
+methodology, detailed PPA, and matched ratios.
 
-## Planned Cases
+## Architecture boundary
 
-Other future cases remain `NOT_YET_FINAL` and are intentionally absent from
-the final-case table.
+EARLY is immediate commit with streaming selected repair lines and no four-SA
+accumulated final-solution warehouse. GROUP delays selection and retains a
+440-bit raw pivot-address payload (four SAs × five slots × (9-bit row + 13-bit
+column)); this raw state alone does not explain the GROUP-versus-EARLY PPA
+delta.
 
-## Corrected N2 GROUP current set
+## Historical and superseded packages
 
-| Case | N / RS / CS / m | Address contract | Pivot slots / retained bits | Status |
-|---|---|---|---|---|
-| `G2X2_N2_RC_GROUP_reg` | 2 / 2 / 2 / 1 | row 9, physical column 13, word column 5, hybrid 13 | 5 / 440 | FINAL |
-| `G2X2_N2_R_GROUP_reg` | 2 / 2 / 2 / 1 | row 9, physical column 13, word column 5, hybrid 13 | 5 / 440 | FINAL |
-| `L1X4_N2_R_GROUP_reg` | 2 / 2 / 2 / 1 | row 9, physical column 13, word column 5, hybrid 13 | 5 / 440 | FINAL |
+The entries below are preserved evidence, not current matched N2 packages:
 
-The active corrected GROUP entries above supersede the earlier repair-column hardware boundary. `recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch` and `L1X4_R_GROUP_V1` are SUPERSEDED; the historical G2X2 R GROUP record is likewise SUPERSEDED by `G2X2_N2_R_GROUP_reg`. Their policy evidence remains valid, while physical-address RTL and PPA evidence are superseded.
+- Historical RECAM Phase-3A: policy evidence remains valid; 5-bit physical
+  repair-column RTL and its PPA are `SUPERSEDED_FOR_MATCHED_COMPARISON` by
+  `RECAM_N2_2R2C`.
+- `recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch`,
+  `L1X4_R_GROUP_V1`, and the old G2X2 R GROUP record are superseded by the
+  corresponding corrected physical-column GROUP packages.
+- The historical HYP02 / Model-B2 EARLY packages remain archived for provenance
+  and must not be read as current canonical N2 results.

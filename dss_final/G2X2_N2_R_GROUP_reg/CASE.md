@@ -1,12 +1,16 @@
 # G2X2 N2 R GROUP corrected final archive
 
+`CASE_ID: G2X2_N2_R_GROUP_reg`
+
+
+
 `LIFECYCLE: FINAL`
 
 The policy is the frozen G2X2 row-only GROUP/static-global implementation.
 `ROW_ADDR_W=9`, `PHYS_COL_ADDR_W=13`, `WORD_COL_ADDR_W=5`, and
 `HYBRID_LINE_ADDR_W=13`. Five pivot slots per SA retain 440 address-state bits
 over the four-SA GROUP. Retention is passive during analysis and selection and
-is consumed only during final reconstruction.
+is consumed only during final reconstruction. The 440 bits are raw retained address state; they do not by themselves explain the synthesized GROUP-versus-EARLY area delta.
 
 `src/` is self-contained. Functional and synthesis source hashes match the
 archived source hashes in `synthesis/`.
