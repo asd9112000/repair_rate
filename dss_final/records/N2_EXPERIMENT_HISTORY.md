@@ -24,5 +24,7 @@
 10. **Seven-case closure — final result.** One RECAM plus six DSS packages were
     promoted as the matched N2 FINAL hardware set at commit `6351a82`.
 
+11. **POST-CLOSURE SUPPORTING ABLATION — pre-optimization GROUP evidence.** `G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg` preserves a seven-parallel-analyzer, 3x160 registered-map, OPT1/GLOBAL-DFS composite while applying frozen canonical selection semantics. It passed exact 1000-vector lockstep and matched DC synthesis; it is supporting evidence, not an eighth canonical N2 result.
+
 Pre-storage-audit EARLY reports and historical 5-bit RECAM reports are
 preserved for provenance. They are not canonical PPA inputs.

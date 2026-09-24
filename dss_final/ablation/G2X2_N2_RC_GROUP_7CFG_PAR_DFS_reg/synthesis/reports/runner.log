@@ -1,0 +1,1252 @@
+rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_parallel_config_bank.sv: OK
+rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv: OK
+rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_canonical_path_selector.sv: OK
+rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_group_top.sv: OK
+rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv: OK
+rtl/G2X2_N2_RC_GROUP_reg/dss_group_pivot_address_regs.sv: OK
+rtl/G2X2_N2_RC_GROUP_reg/recam_dss_hyp02_static_selector.sv: OK
+rtl/dss_canonical/policy/global/recam_dss_canonical_global_noscratch_core.v: OK
+rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core.v: OK
+rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit.v: OK
+rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter.v: OK
+set synthesis version: 2024.09-sp2 (default)
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid this.
+
+                           Design Compiler Graphical 
+                                 DC Ultra (TM)
+                                  DFTMAX (TM)
+                              Power Compiler (TM)
+                                 DesignWare (R)
+                                 DC Expert (TM)
+                               Design Vision (TM)
+                               HDL Compiler (TM)
+                               VHDL Compiler (TM)
+                                  DFT Compiler
+                               Design Compiler(R)
+
+               Version W-2024.09-SP2 for linux64 - Nov 28, 2024 
+
+                    Copyright (c) 1988 - 2024 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+Initializing...
+Current time:       Thu Sep 24 10:50:28 2026
+Hostname:           Kaohsiung
+CPU Model:          13th Gen Intel(R) Core(TM) i9-13900
+CPU Details:        Cores = 32 : Sockets = 1 : Cache Size = 36864 KB : Freq = 1.06 GHz
+OS:                 Linux 5.15.0-126-generic
+RAM:                125 GB (Free  13 GB)
+Swap:                 3 GB (Free   0 GB)
+Work Filesystem:    /home mounted to /dev/sda1
+Tmp Filesystem:     / mounted to /dev/nvme0n1p3
+Work Disk:          3666 GB (Free 473 GB)
+Tmp Disk:           1876 GB (Free 718 GB)
+
+CPU Load: 9%, Ram Free: 13 GB, Swap Free: 0 GB, Work Disk Free: 473 GB, Tmp Disk Free: 718 GB
+set design $::env(DESIGN)
+recam_n2_preopt_group_top
+set repo_root $::env(REPO_ROOT)
+/home/asd9112000/repair_rate_date2026_canonical
+set case_dir $::env(RTL_CASE_DIR)
+/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg
+set report_dir $::env(REPORT_DIR)
+/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/synthesis/reports
+set work_dir [file join $report_dir work]
+/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/synthesis/reports/work
+set netlist_dir [file join $report_dir netlist]
+/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/synthesis/reports/netlist
+set library_root /cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC
+/cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC
+set library_db_dir [file join $library_root db]
+/cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db
+file mkdir $report_dir
+file mkdir $work_dir
+file mkdir $netlist_dir
+set_svf [file join $report_dir default.svf]
+1
+set_app_var search_path [list . $library_db_dir /usr/cad/synopsys/synthesis/cur/libraries/syn /usr/cad/synopsys/synthesis/cur/dw]
+. /cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db /usr/cad/synopsys/synthesis/cur/libraries/syn /usr/cad/synopsys/synthesis/cur/dw
+set_app_var target_library [list slow.db]
+slow.db
+set_app_var synthetic_library [list dw_foundation.sldb]
+dw_foundation.sldb
+set_app_var link_library [concat * $target_library $synthetic_library]
+* slow.db dw_foundation.sldb
+define_design_lib WORK -path $work_dir
+1
+set_app_var alib_library_analysis_path $work_dir
+/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/synthesis/reports/work
+set sources [list \
+    [file join $case_dir recam_n2_preopt_parallel_config_bank.sv] \
+    [file join $case_dir recam_n2_preopt_candidate_map_producer.sv] \
+    [file join $case_dir recam_n2_preopt_canonical_path_selector.sv] \
+    [file join $case_dir recam_n2_preopt_group_top.sv] \
+    [file join $repo_root rtl G2X2_N2_RC_GROUP_reg recam_shared_config_analyzer.sv] \
+    [file join $repo_root rtl G2X2_N2_RC_GROUP_reg dss_group_pivot_address_regs.sv] \
+    [file join $repo_root rtl G2X2_N2_RC_GROUP_reg recam_dss_hyp02_static_selector.sv] \
+    [file join $repo_root rtl dss_canonical policy global recam_dss_canonical_global_noscratch_core.v] \
+    [file join $repo_root rtl dss_canonical policy global recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core.v] \
+    [file join $repo_root rtl dss_canonical policy global recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit.v] \
+    [file join $repo_root rtl dss_canonical policy global recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter.v]]
+/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_parallel_config_bank.sv /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_canonical_path_selector.sv /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_group_top.sv /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/dss_group_pivot_address_regs.sv /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_dss_hyp02_static_selector.sv /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_canonical_global_noscratch_core.v /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core.v /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit.v /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter.v
+analyze -format sverilog $sources
+Running PRESTO HDLC
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_parallel_config_bank.sv
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_canonical_path_selector.sv
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_group_top.sv
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/dss_group_pivot_address_regs.sv
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_dss_hyp02_static_selector.sv
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_canonical_global_noscratch_core.v
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core.v
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit.v
+Compiling source file /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter.v
+Presto compilation completed successfully.
+Loading db file '/cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db'
+Loading db file '/usr/cad/synopsys/synthesis/cur/libraries/syn/dw_foundation.sldb'
+1
+elaborate $design
+Loading db file '/usr/cad/synopsys/synthesis/2024.09-sp2/libraries/syn/gtech.db'
+Loading db file '/usr/cad/synopsys/synthesis/2024.09-sp2/libraries/syn/standard.sldb'
+  Loading link library 'slow'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_group_top.sv:70: signed to unsigned conversion occurs. (VER-318)
+
+Statistics for case statements in always block in file
+	'/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_group_top.sv'
+===========================================================
+|    Line    |  full/ parallel  |      block location     |
+===========================================================
+|     75     |    auto/auto     | always block at line 72 |
+===========================================================
+
+Inferred memory devices in process in routine 'recam_n2_preopt_group_top' in file
+	 /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_group_top.sv'.
+======================================================================================
+|      Register Name      |   Type    | Width | Bus | MB |  Set  | Reset | ST | Line |
+======================================================================================
+|  producer_start_q_reg   | Flip-flop |   1   |  N  | N  | None  | None  | N  |  72  |
+|   search_start_q_reg    | Flip-flop |   1   |  N  | N  | None  | None  | N  |  72  |
+|   commit_start_q_reg    | Flip-flop |   1   |  N  | N  | None  | None  | N  |  72  |
+|       done_q_reg        | Flip-flop |   1   |  N  | N  | None  | None  | N  |  72  |
+|     overflow_q_reg      | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  72  |
+|       state_q_reg       | Flip-flop |   3   |  Y  | N  | None  | None  | N  |  72  |
+|    repairable_q_reg     | Flip-flop |   1   |  N  | N  | None  | None  | N  |  72  |
+|   commit_error_q_reg    | Flip-flop |   1   |  N  | N  | None  | None  | N  |  72  |
+|  selected_valid_q_reg   | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  72  |
+|  selected_action_q_reg  | Flip-flop |   8   |  Y  | N  | None  | None  | N  |  72  |
+|  selected_config_q_reg  | Flip-flop |  12   |  Y  | N  | None  | None  | N  |  72  |
+| selected_pattern_q_reg  | Flip-flop |  16   |  Y  | N  | None  | None  | N  |  72  |
+|  selected_donor_q_reg   | Flip-flop |   8   |  Y  | N  | None  | None  | N  |  72  |
+| selected_release_q_reg  | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  72  |
+|  selected_borrow_q_reg  | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  72  |
+|    pivot_valid_q_reg    | Flip-flop |  20   |  Y  | N  | None  | None  | N  |  72  |
+|    pivot_rows_q_reg     | Flip-flop |  180  |  Y  | N  | None  | None  | N  |  72  |
+|    pivot_cols_q_reg     | Flip-flop |  260  |  Y  | N  | None  | None  | N  |  72  |
+|      row_gt1_q_reg      | Flip-flop |  20   |  Y  | N  | None  | None  | N  |  72  |
+|      row_gt2_q_reg      | Flip-flop |  20   |  Y  | N  | None  | None  | N  |  72  |
+|      row_gt3_q_reg      | Flip-flop |  20   |  Y  | N  | None  | None  | N  |  72  |
+|      col_gt1_q_reg      | Flip-flop |  20   |  Y  | N  | None  | None  | N  |  72  |
+|      col_gt2_q_reg      | Flip-flop |  20   |  Y  | N  | None  | None  | N  |  72  |
+|      col_gt3_q_reg      | Flip-flop |  20   |  Y  | N  | None  | None  | N  |  72  |
+|   hybrid_valid_q_reg    | Flip-flop |  28   |  Y  | N  | None  | None  | N  |  72  |
+|  hybrid_pointer_q_reg   | Flip-flop |  84   |  Y  | N  | None  | None  | N  |  72  |
+| hybrid_descriptor_q_reg | Flip-flop |  28   |  Y  | N  | None  | None  | N  |  72  |
+| hybrid_differing_q_reg  | Flip-flop |  364  |  Y  | N  | None  | None  | N  |  72  |
+======================================================================================
+Presto compilation completed successfully. (recam_n2_preopt_group_top)
+Module: recam_n2_preopt_group_top, Ports: 2004, Input: 1091, Output: 913, Inout: 0
+Module: recam_n2_preopt_group_top, Registers: 1153, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_n2_preopt_group_top report end. (ELAB-965)
+Elaborated 1 design.
+Current design is now 'recam_n2_preopt_group_top'.
+Information: Building the design 'recam_n2_preopt_candidate_map_producer' instantiated from design 'recam_n2_preopt_group_top' with
+	the parameters "ROW_ADDR_W=9,PHYS_COL_ADDR_W=13,WORD_COL_ADDR_W=5,HYBRID_LINE_ADDR_W=13,HYBRID_ENTRIES=7". (HDL-193)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv:35: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv:36: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv:44: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv:46: signed to unsigned conversion occurs. (VER-318)
+
+Statistics for case statements in always block in file
+	'/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv'
+===========================================================
+|    Line    |  full/ parallel  |      block location     |
+===========================================================
+|     64     |    auto/auto     | always block at line 61 |
+|     70     |    auto/auto     | always block at line 61 |
+===========================================================
+
+Inferred memory devices in process in routine 'recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7' in file
+	 /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv'.
+======================================================================================
+|      Register Name      |   Type    | Width | Bus | MB |  Set  | Reset | ST | Line |
+======================================================================================
+|       done_q_reg        | Flip-flop |   1   |  N  | N  | None  | None  | N  |  99  |
+| candidate_borrow_q_reg  | Flip-flop |  160  |  Y  | N  | None  | None  | N  |  99  |
+|       state_q_reg       | Flip-flop |   2   |  Y  | N  | None  | None  | N  |  99  |
+|        sa_q_reg         | Flip-flop |   2   |  Y  | N  | None  | None  | N  |  99  |
+|      action_q_reg       | Flip-flop |   2   |  Y  | N  | None  | None  | N  |  99  |
+|  candidate_valid_q_reg  | Flip-flop |  160  |  Y  | N  | None  | None  | N  |  99  |
+| candidate_release_q_reg | Flip-flop |  160  |  Y  | N  | None  | None  | N  |  99  |
+======================================================================================
+Statistics for MUX_OPs
+===================================================================================================================================================================
+|                                                       block name/line                                                         | Inputs | Outputs | # sel inputs |
+===================================================================================================================================================================
+| recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7/47 |   4    |    1    |      2       |
+===================================================================================================================================================================
+Presto compilation completed successfully. (recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+Module: recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7, Ports: 1580, Input: 1091, Output: 489, Inout: 0
+Module: recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7, Registers: 487, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7 report end. (ELAB-965)
+Information: Building the design 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core'. (HDL-193)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core.v:66: signed to unsigned part selection occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core.v:73: signed to unsigned part selection occurs. (VER-318)
+Presto compilation completed successfully. (recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core)
+Module: recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core, Ports: 550, Input: 483, Output: 67, Inout: 0
+Module: recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core report end. (ELAB-965)
+Information: Building the design 'recam_n2_preopt_canonical_path_selector'. (HDL-193)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_canonical_path_selector.sv:48: signed to unsigned part selection occurs. (VER-318)
+Presto compilation completed successfully. (recam_n2_preopt_canonical_path_selector)
+Module: recam_n2_preopt_canonical_path_selector, Ports: 301, Input: 160, Output: 141, Inout: 0
+Module: recam_n2_preopt_canonical_path_selector, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_n2_preopt_canonical_path_selector report end. (ELAB-965)
+Information: Building the design 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit'. (HDL-193)
+
+Statistics for case statements in always block in file
+	'/home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit.v'
+===========================================================
+|    Line    |  full/ parallel  |      block location     |
+===========================================================
+|     63     |    auto/auto     | always block at line 54 |
+===========================================================
+
+Inferred memory devices in process in routine 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit' in file
+	 /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit.v'.
+===========================================================================================
+|        Register Name         |   Type    | Width | Bus | MB |  Set  | Reset | ST | Line |
+===========================================================================================
+|    commit_accepted_q_reg     | Flip-flop |   1   |  N  | N  | None  | None  | N  | 103  |
+|      commit_error_q_reg      | Flip-flop |   1   |  N  | N  | None  | None  | N  | 103  |
+|  shadow_borrow_count_q_reg   | Flip-flop |   2   |  Y  | N  | None  | None  | N  | 103  |
+|         state_q_reg          | Flip-flop |   2   |  Y  | N  | None  | None  | N  | 103  |
+|         stage_q_reg          | Flip-flop |   2   |  Y  | N  | None  | None  | N  | 103  |
+|  persistent_released_q_reg   | Flip-flop |   4   |  Y  | N  | None  | None  | N  | 103  |
+|  persistent_borrowed_q_reg   | Flip-flop |   4   |  Y  | N  | None  | None  | N  | 103  |
+| persistent_borrower_id_q_reg | Flip-flop |   8   |  Y  | N  | None  | None  | N  | 103  |
+|    shadow_released_q_reg     | Flip-flop |   4   |  Y  | N  | None  | None  | N  | 103  |
+|    shadow_borrowed_q_reg     | Flip-flop |   4   |  Y  | N  | None  | None  | N  | 103  |
+|   shadow_borrower_id_q_reg   | Flip-flop |   8   |  Y  | N  | None  | None  | N  | 103  |
+|   shadow_requirement_q_reg   | Flip-flop |   4   |  Y  | N  | None  | None  | N  | 103  |
+===========================================================================================
+Statistics for MUX_OPs
+=======================================================================================================================================
+|                                         block name/line                                           | Inputs | Outputs | # sel inputs |
+=======================================================================================================================================
+| recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit/56 |   4    |    3    |      2       |
+| recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit/77 |   4    |    2    |      2       |
+| recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit/89 |   4    |    2    |      2       |
+=======================================================================================================================================
+Presto compilation completed successfully. (recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit)
+Module: recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit, Ports: 50, Input: 31, Output: 19, Inout: 0
+Module: recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit, Registers: 44, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit report end. (ELAB-965)
+Information: Building the design 'dss_group_pivot_address_regs' instantiated from design 'recam_n2_preopt_group_top' with
+	the parameters "ROW_ADDR_W=9,PHYS_COL_ADDR_W=13". (HDL-193)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/dss_group_pivot_address_regs.sv:133: signed to unsigned conversion occurs. (VER-318)
+
+Statistics for case statements in always block in file
+	'/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/dss_group_pivot_address_regs.sv'
+============================================================
+|    Line    |  full/ parallel  |      block location      |
+============================================================
+|     99     |    auto/auto     | always block at line 91  |
+|     38     |    auto/auto     | always block at line 120 |
+|     39     |    auto/auto     | always block at line 120 |
+|     48     |    auto/auto     | always block at line 120 |
+|     54     |    auto/auto     | always block at line 120 |
+|     67     |    auto/auto     | always block at line 120 |
+|     81     |    auto/auto     | always block at line 120 |
+============================================================
+
+Inferred memory devices in process in routine 'dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13' in file
+	 /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/dss_group_pivot_address_regs.sv'.
+==================================================================================
+|    Register Name    |   Type    | Width | Bus | MB |  Set  | Reset | ST | Line |
+==================================================================================
+|   pivot_row_q_reg   | Flip-flop |  180  |  Y  | N  | None  | None  | N  |  91  |
+|   pivot_col_q_reg   | Flip-flop |  260  |  Y  | N  | None  | None  | N  |  91  |
+==================================================================================
+Presto compilation completed successfully. (dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+Module: dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13, Ports: 447, Input: 147, Output: 300, Inout: 0
+Module: dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13, Registers: 440, Async set/reset: 0, Sync set/reset: 0
+Information: Module dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13 report end. (ELAB-965)
+Information: Building the design 'recam_n2_preopt_parallel_config_bank' instantiated from design 'recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7' with
+	the parameters "ROW_ADDR_W=9,PHYS_COL_ADDR_W=13,WORD_COL_ADDR_W=5,HYBRID_LINE_ADDR_W=13,HYBRID_ENTRIES=7". (HDL-193)
+Presto compilation completed successfully. (recam_n2_preopt_parallel_config_bank_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+Module: recam_n2_preopt_parallel_config_bank_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7, Ports: 377, Input: 272, Output: 105, Inout: 0
+Module: recam_n2_preopt_parallel_config_bank_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_n2_preopt_parallel_config_bank_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7 report end. (ELAB-965)
+Information: Building the design 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter'. (HDL-193)
+
+Statistics for case statements in always block in file
+	'/home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter.v'
+===========================================================
+|    Line    |  full/ parallel  |      block location     |
+===========================================================
+|     22     |    auto/auto     | always block at line 16 |
+===========================================================
+Presto compilation completed successfully. (recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter)
+Module: recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter, Ports: 15, Input: 9, Output: 6, Inout: 0
+Module: recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter report end. (ELAB-965)
+Information: Building the design 'recam_dss_canonical_global_noscratch_core'. (HDL-193)
+
+Statistics for case statements in always block in file
+	'/home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_canonical_global_noscratch_core.v'
+============================================================
+|    Line    |  full/ parallel  |      block location      |
+============================================================
+|    164     |    auto/auto     | always block at line 130 |
+|    170     |    auto/auto     | always block at line 130 |
+|    177     |    auto/auto     | always block at line 130 |
+|    191     |    auto/auto     | always block at line 130 |
+============================================================
+
+Inferred memory devices in process in routine 'recam_dss_canonical_global_noscratch_core' in file
+	 /home/asd9112000/repair_rate_date2026_canonical/rtl/dss_canonical/policy/global/recam_dss_canonical_global_noscratch_core.v'.
+=======================================================================================
+|      Register Name       |   Type    | Width | Bus | MB |  Set  | Reset | ST | Line |
+=======================================================================================
+|       state_q_reg        | Flip-flop |   2   |  Y  | N  | None  | None  | N  |  75  |
+|     final_used_q_reg     | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  83  |
+|       depth_q_reg        | Flip-flop |   2   |  Y  | N  | None  | None  | N  |  83  |
+|       cursor_q_reg       | Flip-flop |  24   |  Y  | N  | None  | None  | N  |  83  |
+|   released_stack_q_reg   | Flip-flop |  16   |  Y  | N  | None  | None  | N  |  83  |
+|     used_stack_q_reg     | Flip-flop |  16   |  Y  | N  | None  | None  | N  |  83  |
+|     req_stack_q_reg      | Flip-flop |  16   |  Y  | N  | None  | None  | N  |  83  |
+| borrow_count_stack_q_reg | Flip-flop |   8   |  Y  | N  | None  | None  | N  |  83  |
+|  candidate_valid_q_reg   | Flip-flop |  160  |  Y  | N  | None  | None  | N  |  83  |
+| candidate_release_q_reg  | Flip-flop |  160  |  Y  | N  | None  | None  | N  |  83  |
+|  candidate_borrow_q_reg  | Flip-flop |  160  |  Y  | N  | None  | None  | N  |  83  |
+|        done_q_reg        | Flip-flop |   1   |  N  | N  | None  | None  | N  |  83  |
+|     repairable_q_reg     | Flip-flop |   1   |  N  | N  | None  | None  | N  |  83  |
+|   selected_valid_q_reg   | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  83  |
+|  selected_action_q_reg   | Flip-flop |   8   |  Y  | N  | None  | None  | N  |  83  |
+|  selected_config_q_reg   | Flip-flop |  12   |  Y  | N  | None  | None  | N  |  83  |
+|  selected_pattern_q_reg  | Flip-flop |  16   |  Y  | N  | None  | None  | N  |  83  |
+|   selected_donor_q_reg   | Flip-flop |   8   |  Y  | N  | None  | None  | N  |  83  |
+|  selected_release_q_reg  | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  83  |
+|  selected_borrow_q_reg   | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  83  |
+|   final_released_q_reg   | Flip-flop |   4   |  Y  | N  | None  | None  | N  |  83  |
+=======================================================================================
+Statistics for MUX_OPs
+===================================================================================
+|               block name/line                 | Inputs | Outputs | # sel inputs |
+===================================================================================
+| recam_dss_canonical_global_noscratch_core/207 |   4    |    1    |      2       |
+| recam_dss_canonical_global_noscratch_core/218 |   4    |    2    |      2       |
+===================================================================================
+Presto compilation completed successfully. (recam_dss_canonical_global_noscratch_core)
+Module: recam_dss_canonical_global_noscratch_core, Ports: 550, Input: 483, Output: 67, Inout: 0
+Module: recam_dss_canonical_global_noscratch_core, Registers: 630, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_dss_canonical_global_noscratch_core report end. (ELAB-965)
+Information: Building the design 'recam_dss_hyp02_static_selector'. (HDL-193)
+
+Statistics for case statements in always block in file
+	'/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_dss_hyp02_static_selector.sv'
+============================================================
+|    Line    |  full/ parallel  |      block location      |
+============================================================
+|    153     |     user/no      | always block at line 147 |
+|    730     |    auto/auto     | always block at line 725 |
+|    736     |    auto/auto     | always block at line 725 |
+|    742     |    auto/auto     | always block at line 725 |
+|    748     |    auto/auto     | always block at line 725 |
+|    761     |    auto/auto     | always block at line 756 |
+|    767     |    auto/auto     | always block at line 756 |
+|    773     |    auto/auto     | always block at line 756 |
+|    779     |    auto/auto     | always block at line 756 |
+============================================================
+Presto compilation completed successfully. (recam_dss_hyp02_static_selector)
+Module: recam_dss_hyp02_static_selector, Ports: 117, Input: 80, Output: 37, Inout: 0
+Module: recam_dss_hyp02_static_selector, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_dss_hyp02_static_selector report end. (ELAB-965)
+Information: Building the design 'recam_shared_config_analyzer' instantiated from design 'recam_n2_preopt_parallel_config_bank_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7' with
+	the parameters "ROW_ADDR_W=9,PHYS_COL_ADDR_W=13,WORD_COL_ADDR_W=5,HYBRID_LINE_ADDR_W=13,HYBRID_ENTRIES=7". (HDL-193)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:147: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:168: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:167: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:202: signed to unsigned part selection occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:199: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:217: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:224: signed to unsigned part selection occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:221: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:239: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:257: signed to unsigned conversion occurs. (VER-318)
+Warning:  /home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv:264: signed to unsigned part selection occurs. (VER-318)
+
+Statistics for case statements in always block in file
+	'/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv'
+============================================================
+|    Line    |  full/ parallel  |      block location      |
+============================================================
+|    123     |    auto/auto     | always block at line 118 |
+|     63     |    auto/auto     | always block at line 118 |
+|    108     |    auto/auto     | always block at line 118 |
+============================================================
+Presto compilation completed successfully. (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+Module: recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7, Ports: 292, Input: 275, Output: 17, Inout: 0
+Module: recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: Module recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7 report end. (ELAB-965)
+1
+if {![link]} { error "Link failed for $design" }
+
+  Linking design 'recam_n2_preopt_group_top'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (11 designs)              /home/asd9112000/repair_rate_date2026_canonical/recam_n2_preopt_group_top.db, etc
+  slow (library)              /cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db
+  dw_foundation.sldb (library) /usr/cad/synopsys/synthesis/cur/libraries/syn/dw_foundation.sldb
+
+uniquify
+Information: Uniquified 7 instances of design 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7'. (OPT-1056)
+1
+set_operating_conditions -library slow slow
+Using operating conditions 'slow' found in library 'slow'.
+1
+set_wire_load_mode top
+1
+set_wire_load_model -library slow -name tsmc18_wl10
+1
+redirect -file [file join $report_dir check_design_before_compile.rpt] {check_design}
+create_clock -name recam_clk -period 20.0 [get_ports clk_i]
+1
+set_input_transition 0.5 [remove_from_collection [all_inputs] [get_ports clk_i]]
+1
+set_input_delay -max 0.0 -clock recam_clk [remove_from_collection [all_inputs] [get_ports clk_i]]
+1
+set_input_delay -min 0.0 -clock recam_clk [remove_from_collection [all_inputs] [get_ports clk_i]]
+1
+set_output_delay -max 0.0 -clock recam_clk [all_outputs]
+1
+set_output_delay -min 0.0 -clock recam_clk [all_outputs]
+1
+set_load 0.05 [all_outputs]
+1
+set_max_transition 3.0 [current_design]
+Current design is 'recam_n2_preopt_group_top'.
+1
+set_max_capacitance 0.15 [current_design]
+Current design is 'recam_n2_preopt_group_top'.
+1
+set_max_fanout 10 [current_design]
+Current design is 'recam_n2_preopt_group_top'.
+1
+compile -map_effort low
+Warning: The compile -map_effort low is obsolete. Setting this variable now defaults to compile -map_effort medium. Please update your script accordingly. (OPT-1303)
+CPU Load: 9%, Ram Free: 12 GB, Swap Free: 0 GB, Work Disk Free: 473 GB, Tmp Disk Free: 718 GB
+Information: Checking out the license 'DesignWare'. (SEC-104)
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | W-2024.09-DWBB_202409.2 |     *     |
+| Licensed DW Building Blocks        | W-2024.09-DWBB_202409.2 |     *     |
+============================================================================
+
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 75696                                  |
+| Number of User Hierarchies                              | 16                                     |
+| Sequential Cell Count                                   | 2754                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 2                                      |
+| Number of VT Class                                      | 0                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 21736                                  |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+====================================================================================================
+
+Information: There are 640 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13'
+Information: Added key list 'DesignWare' to design 'dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13'. (DDB-72)
+  Processing 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit'
+Module: DW01_inc_width2, Ports: 4, Input: 2, Output: 2, Inout: 0
+Module: DW01_inc_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: Added key list 'DesignWare' to design 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit'. (DDB-72)
+  Processing 'recam_dss_hyp02_static_selector'
+  Processing 'recam_n2_preopt_canonical_path_selector'
+  Processing 'recam_dss_canonical_global_noscratch_core'
+Module: DW01_dec_width2, Ports: 4, Input: 2, Output: 2, Inout: 0
+Module: DW01_dec_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW01_inc_width4, Ports: 8, Input: 4, Output: 4, Inout: 0
+Module: DW01_inc_width4, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: Added key list 'DesignWare' to design 'recam_dss_canonical_global_noscratch_core'. (DDB-72)
+Module: DW01_sub_width4, Ports: 14, Input: 9, Output: 5, Inout: 0
+Module: DW01_sub_width4, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Information: The register 'released_stack_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'released_stack_q_reg[2]' is a constant and will be removed. (OPT-1206)
+Information: The register 'released_stack_q_reg[3]' is a constant and will be removed. (OPT-1206)
+Information: The register 'released_stack_q_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'used_stack_q_reg[2]' is a constant and will be removed. (OPT-1206)
+Information: The register 'used_stack_q_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'used_stack_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'req_stack_q_reg[3]' is a constant and will be removed. (OPT-1206)
+Information: The register 'req_stack_q_reg[2]' is a constant and will be removed. (OPT-1206)
+Information: The register 'req_stack_q_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'req_stack_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'borrow_count_stack_q_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'borrow_count_stack_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'used_stack_q_reg[3]' is a constant and will be removed. (OPT-1206)
+  Processing 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core'
+  Processing 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter'
+Information: Added key list 'DesignWare' to design 'recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter'. (DDB-72)
+  Processing 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0'
+Information: Added key list 'DesignWare' to design 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0'. (DDB-72)
+Module: DW01_inc_width3, Ports: 6, Input: 3, Output: 3, Inout: 0
+Module: DW01_inc_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'recam_n2_preopt_parallel_config_bank_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7'
+  Processing 'recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7'
+Information: The register 'state_q_reg[1]' is a constant and will be removed. (OPT-1206)
+  Processing 'recam_n2_preopt_group_top'
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Implementation Selection
+  ----------------------------------
+Module: DW01_inc_width6, Ports: 12, Input: 6, Output: 6, Inout: 0
+Module: DW01_inc_width6, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'recam_dss_canonical_global_noscratch_core_DW01_inc_0_DW01_inc_21'
+  Processing 'recam_dss_canonical_global_noscratch_core_DW01_inc_1_DW01_inc_22'
+  Processing 'recam_dss_canonical_global_noscratch_core_DW01_inc_2_DW01_inc_23'
+Module: DW01_cmp2_width6, Ports: 16, Input: 14, Output: 2, Inout: 0
+Module: DW01_cmp2_width6, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'recam_dss_canonical_global_noscratch_core_DW01_cmp2_0'
+  Mapping 'recam_dss_canonical_global_noscratch_core_DW_cmp_0'
+  Mapping 'recam_dss_canonical_global_noscratch_core_DW_cmp_1'
+  Mapping 'recam_dss_canonical_global_noscratch_core_DW_cmp_2'
+  Mapping 'recam_dss_canonical_global_noscratch_core_DW_cmp_3'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_0'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_1'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_2'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_3'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_4'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_5'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_6'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_7'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_8'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_0_DW_cmp_9'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_0'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_1'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_2'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_3'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_4'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_5'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_6'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_7'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_8'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_1_DW_cmp_9'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_0'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_1'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_2'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_3'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_4'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_5'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_6'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_7'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_8'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_2_DW_cmp_9'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_0'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_1'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_2'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_3'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_4'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_5'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_6'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_7'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_8'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_3_DW_cmp_9'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_0'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_1'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_2'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_3'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_4'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_5'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_6'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_7'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_8'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_4_DW_cmp_9'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_0'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_1'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_2'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_3'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_4'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_5'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_6'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_7'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_8'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_5_DW_cmp_9'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_0'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_1'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_2'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_3'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_4'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_5'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_6'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_7'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_8'
+  Mapping 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_6_DW_cmp_9'
+Module: DW01_add_width8, Ports: 26, Input: 17, Output: 9, Inout: 0
+Module: DW01_add_width8, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW01_NAND2, Ports: 3, Input: 2, Output: 1, Inout: 0
+Module: DW01_NAND2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Building model 'DW01_NAND2'
+  Processing 'DW01_NAND2'
+  Building model 'DW01_add_width8' (rpl)
+  Processing 'DW01_add_width8'
+Module: DW01_add_width2, Ports: 8, Input: 5, Output: 3, Inout: 0
+Module: DW01_add_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Building model 'DW01_add_width2' (rpl)
+  Processing 'DW01_add_width2'
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Building model 'DW01_add_width3' (rpl)
+  Processing 'DW01_add_width3'
+Module: DW01_add_width8, Ports: 26, Input: 17, Output: 9, Inout: 0
+Module: DW01_add_width8, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_DW01_add_0_DW01_add_1'
+  Mapping 'recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_DW_mult_uns_0'
+  Mapping 'recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7_DW_mult_uns_1'
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width3_DW01_add_2'
+Module: DW01_add_width2, Ports: 8, Input: 5, Output: 3, Inout: 0
+Module: DW01_add_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width2_DW01_add_3'
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width3_DW01_add_4'
+Module: DW01_add_width2, Ports: 8, Input: 5, Output: 3, Inout: 0
+Module: DW01_add_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width2_DW01_add_5'
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width3_DW01_add_6'
+Module: DW01_add_width2, Ports: 8, Input: 5, Output: 3, Inout: 0
+Module: DW01_add_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width2_DW01_add_7'
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width3_DW01_add_8'
+Module: DW01_add_width2, Ports: 8, Input: 5, Output: 3, Inout: 0
+Module: DW01_add_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width2_DW01_add_9'
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width3_DW01_add_10'
+Module: DW01_add_width2, Ports: 8, Input: 5, Output: 3, Inout: 0
+Module: DW01_add_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width2_DW01_add_11'
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width3_DW01_add_12'
+Module: DW01_add_width2, Ports: 8, Input: 5, Output: 3, Inout: 0
+Module: DW01_add_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width2_DW01_add_13'
+Module: DW01_add_width3, Ports: 11, Input: 7, Output: 4, Inout: 0
+Module: DW01_add_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width3_DW01_add_14'
+Module: DW01_add_width2, Ports: 8, Input: 5, Output: 3, Inout: 0
+Module: DW01_add_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'DW01_add_width2_DW01_add_15'
+Module: DW01_add_width8, Ports: 26, Input: 17, Output: 9, Inout: 0
+Module: DW01_add_width8, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Processing 'recam_dss_canonical_global_noscratch_core_DW01_add_0_DW01_add_16'
+  Processing 'recam_dss_canonical_global_noscratch_core_DW01_add_1_DW01_add_17'
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+Information: Added key list 'DesignWare' to design 'recam_n2_preopt_candidate_map_producer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7'. (DDB-72)
+                                                                                                     Mapping Optimization (Phase 4)
+  Mapping Optimization (Phase 5)
+  Mapping Optimization (Phase 6)
+  Mapping Optimization (Phase 7)
+  Mapping Optimization (Phase 8)
+  Mapping Optimization (Phase 9)
+  Mapping Optimization (Phase 10)
+  Mapping Optimization (Phase 11)
+  Mapping Optimization (Phase 12)
+  Mapping Optimization (Phase 13)
+  Mapping Optimization (Phase 14)
+  Mapping Optimization (Phase 15)
+  Mapping Optimization (Phase 16)
+  Mapping Optimization (Phase 17)
+  Mapping Optimization (Phase 18)
+  Mapping Optimization (Phase 19)
+  Mapping Optimization (Phase 20)
+  Mapping Optimization (Phase 21)
+  Mapping Optimization (Phase 22)
+  Mapping Optimization (Phase 23)
+  Mapping Optimization (Phase 24)
+  Mapping Optimization (Phase 25)
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:03:54 1435551.2     66.11   55879.3  378201.3                          
+    0:03:54 1435551.2     66.11   55879.3  378201.3                          
+    0:03:54 1524016.8     66.11   55875.8  347454.0                          
+    0:03:54 1637822.9     66.11   55874.4  307772.7                          
+    0:04:13 1936430.5      1.64     745.7  181983.9                          
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:04:13 1936430.5      1.64     745.7  181983.9                          
+    0:04:14 1936430.5      1.64     745.7  181983.9                          
+    0:04:14 1936430.5      1.64     745.7  181983.9                          
+    0:04:15 1936859.6      1.32     500.5  182092.7 producer/candidate_borrow_q_reg[81]/D
+    0:04:16 1936902.9      1.21     460.8  182131.1 producer/candidate_release_q_reg[19]/D
+    0:04:17 1937624.7      1.08     385.2  182243.7 producer/candidate_release_q_reg[19]/D
+    0:04:17 1936427.2      0.99     345.3  182290.3 producer/candidate_release_q_reg[19]/D
+    0:04:17 1935904.9      0.97     333.4  182277.1 producer/candidate_release_q_reg[19]/D
+    0:04:18 1935971.5      0.87     281.4  182411.5 producer/candidate_release_q_reg[19]/D
+    0:04:19 1935665.4      0.86     279.8  182424.5 producer/candidate_release_q_reg[19]/D
+    0:04:19 1935582.3      0.84     264.1  182480.0 producer/candidate_release_q_reg[19]/D
+    0:04:19 1935642.2      0.82     257.1  182503.6 producer/candidate_release_q_reg[19]/D
+    0:04:20 1936503.7      0.76     232.3  182397.3 producer/candidate_release_q_reg[19]/D
+    0:04:20 1936187.7      0.74     227.9  182373.3 producer/candidate_borrow_q_reg[81]/D
+    0:04:20 1936171.1      0.73     224.6  182374.2 producer/candidate_release_q_reg[19]/D
+    0:04:20 1936151.1      0.72     221.8  182374.2 producer/candidate_release_q_reg[19]/D
+    0:04:21 1935988.1      0.71     213.9  182326.0 producer/candidate_release_q_reg[19]/D
+    0:04:21 1935928.2      0.71     212.3  182341.2 producer/candidate_release_q_reg[19]/D
+    0:04:21 1935781.9      0.70     209.2  182216.3 producer/candidate_release_q_reg[19]/D
+    0:04:21 1935505.8      0.70     208.3  182246.6 producer/candidate_release_q_reg[19]/D
+    0:04:21 1935455.9      0.69     203.7  182246.6 producer/candidate_release_q_reg[19]/D
+    0:04:21 1935559.0      0.68     193.5  182285.1 producer/candidate_release_q_reg[19]/D
+    0:04:21 1934920.3      0.68     193.2  182131.4 producer/candidate_release_q_reg[19]/D
+    0:04:21 1934754.0      0.67     191.8  182125.1 producer/candidate_release_q_reg[19]/D
+    0:04:22 1934690.8      0.67     191.7  182114.0 producer/candidate_release_q_reg[19]/D
+    0:04:22 1934680.8      0.66     190.2  182112.3 producer/candidate_release_q_reg[19]/D
+    0:04:22 1934617.6      0.66     186.7  182120.4 producer/candidate_release_q_reg[19]/D
+    0:04:22 1934554.4      0.65     185.2  182104.4 producer/candidate_release_q_reg[19]/D
+    0:04:22 1934431.3      0.64     183.2  182110.4 producer/candidate_release_q_reg[19]/D
+    0:04:22 1934368.1      0.64     180.7  182110.4 producer/candidate_release_q_reg[19]/D
+    0:04:22 1934371.5      0.63     176.8  182140.3 producer/candidate_release_q_reg[19]/D
+    0:04:22 1934298.3      0.63     175.7  182154.0 producer/candidate_release_q_reg[19]/D
+    0:04:23 1934251.7      0.61     172.0  182177.9 producer/candidate_release_q_reg[39]/D
+    0:04:23 1934178.5      0.58     163.3  182180.6 producer/candidate_borrow_q_reg[101]/D
+    0:04:24 1934125.3      0.57     161.1  182180.6 producer/candidate_release_q_reg[37]/D
+    0:04:24 1934601.0      0.54     147.5  182245.2 producer/candidate_borrow_q_reg[81]/D
+    0:04:24 1934843.8      0.52     139.0  182273.3 producer/candidate_borrow_q_reg[81]/D
+    0:04:25 1935060.0      0.45     111.1  182291.7 producer/candidate_borrow_q_reg[81]/D
+    0:04:25 1935638.8      0.42      97.2  182306.5 producer/candidate_borrow_q_reg[81]/D
+    0:04:25 1935835.1      0.41      95.8  182312.1 producer/candidate_borrow_q_reg[81]/D
+    0:04:26 1935954.8      0.39      87.4  182322.9 producer/candidate_borrow_q_reg[81]/D
+    0:04:26 1935845.1      0.37      80.3  182255.3 commit/shadow_borrower_id_q_reg[6]/D
+    0:04:26 1936024.7      0.36      78.5  182221.6 producer/candidate_borrow_q_reg[81]/D
+    0:04:26 1936280.8      0.33      69.6  182267.2 producer/candidate_borrow_q_reg[81]/D
+    0:04:26 1936490.4      0.32      66.8  182294.3 producer/candidate_borrow_q_reg[81]/D
+    0:04:26 1936819.7      0.30      59.0  182337.5 producer/candidate_borrow_q_reg[81]/D
+    0:04:27 1936853.0      0.29      55.1  182337.5 producer/candidate_borrow_q_reg[13]/D
+    0:04:27 1937059.2      0.27      50.7  182346.8 commit/shadow_borrower_id_q_reg[6]/D
+    0:04:28 1937132.4      0.24      45.6  182360.4 producer/candidate_release_q_reg[37]/D
+    0:04:28 1936936.1      0.23      41.5  182353.7 producer/candidate_borrow_q_reg[19]/D
+    0:04:29 1936566.9      0.22      41.2  182353.7 producer/candidate_borrow_q_reg[148]/D
+    0:04:29 1936147.8      0.21      40.6  182333.2 producer/candidate_borrow_q_reg[68]/D
+    0:04:30 1936300.8      0.20      37.3  182333.8 commit/shadow_released_q_reg[0]/D
+    0:04:30 1936011.4      0.20      35.6  182333.8 producer/candidate_release_q_reg[93]/D
+    0:04:31 1935811.8      0.19      33.8  182333.8 producer/candidate_borrow_q_reg[19]/D
+    0:04:31 1935938.2      0.18      30.3  182354.1 producer/candidate_borrow_q_reg[88]/D
+    0:04:32 1935871.7      0.16      26.8  182354.1 producer/candidate_borrow_q_reg[105]/D
+    0:04:32 1936121.2      0.15      27.8  182363.5 producer/candidate_borrow_q_reg[49]/D
+    0:04:32 1936643.4      0.15      26.9  182425.3 producer/candidate_borrow_q_reg[105]/D
+    0:04:33 1936803.1      0.14      25.1  182423.0 producer/candidate_borrow_q_reg[105]/D
+    0:04:33 1936966.1      0.13      21.1  182438.8 producer/candidate_borrow_q_reg[109]/D
+    0:04:33 1937674.6      0.11      16.8  182477.0 commit/shadow_released_q_reg[0]/D
+    0:04:33 1937844.2      0.10      14.6  182453.6 producer/candidate_borrow_q_reg[105]/D
+    0:04:33 1938003.9      0.09      12.7  182440.9 producer/candidate_borrow_q_reg[105]/D
+    0:04:33 1937997.2      0.07       7.9  182402.3 producer/candidate_borrow_q_reg[105]/D
+    0:04:33 1937491.6      0.06       6.1  181962.3 producer/candidate_borrow_q_reg[109]/D
+    0:04:34 1937435.1      0.05       4.5  181908.8 producer/candidate_release_q_reg[113]/D
+    0:04:34 1937724.5      0.04       2.7  181887.9 producer/candidate_release_q_reg[113]/D
+    0:04:34 1937644.6      0.02       1.2  181767.8 producer/candidate_release_q_reg[113]/D
+    0:04:34 1937185.6      0.01       0.5  181708.8 producer/candidate_borrow_q_reg[109]/D
+    0:04:34 1937175.6      0.01       0.2  181724.0 producer/candidate_borrow_q_reg[109]/D
+    0:04:35 1937089.1      0.00       0.0  181708.4 producer/candidate_borrow_q_reg[34]/D
+    0:04:35 1936779.8      0.00      -0.0  181623.3                          
+    0:04:37 1906080.4      0.00      -0.0  181606.3                          
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_fanout)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:04:37 1906080.4      0.00      -0.0  181606.3                          
+    0:04:37 1906499.6      0.00      -0.0  178215.5 search/net336110         
+    0:04:37 1906938.6      0.00      -0.0  174716.1 search/net336108         
+    0:04:37 1907391.0      0.00      -0.0  171095.2 search/net336434         
+    0:04:37 1905651.3      0.00      -0.0  168445.7 search/net336046         
+    0:04:37 1901909.1      0.00      -0.0  164972.3 search/net336208         
+    0:04:37 1898097.1      0.00      -0.0  161517.7 search/net336484         
+    0:04:37 1894541.2      0.00      -0.0  158347.5 search/net336172         
+    0:04:38 1890898.7      0.00      -0.0  155220.0 search/net336104         
+    0:04:38 1887386.1      0.00      -0.0  152155.4 search/net336206         
+    0:04:38 1883973.2      0.00      -0.0  149155.0 search/net336384         
+    0:04:38 1880520.4      0.00      -0.0  146033.1 search/net336014         
+    0:04:38 1877470.1      0.00      -0.0  143429.2 canonical_path_selector/canonical_selector/N384
+    0:04:38 1876399.0      0.00      -0.0  141859.0 producer/parallel_bank/generate_config_lane[3].analyzer/net337731
+    0:04:39 1854338.3      0.00       0.0  140244.5 producer/active_hybrid_differing[47]
+    0:04:39 1854301.7      0.00       0.0  140090.0 producer/active_pivot_cols[63]
+    0:04:40 1854348.3      0.00       0.0  139839.5 search/canonical_global_core/net336780
+    0:04:40 1854411.5      0.00       0.0  138559.9 producer/active_hybrid_differing[42]
+    0:04:40 1851560.7      0.00      -0.0  136222.8 search/net336480         
+    0:04:40 1848716.7      0.00      -0.0  134160.7 search/net336330         
+    0:04:40 1845992.3      0.00      -0.0  131939.8 search/net336292         
+    0:04:40 1843291.3      0.00      -0.0  129760.6 search/net336102         
+    0:04:40 1840626.9      0.00      -0.0  127644.8 search/net336262         
+    0:04:40 1838082.2      0.00      -0.0  125626.8 search/net335902         
+    0:04:40 1835567.4      0.00      -0.0  123898.5 search/net336382         
+    0:04:40 1833169.1      0.00      -0.0  122002.9 commit/net336688         
+    0:04:41 1832696.7      0.00      -0.0  120622.5 producer/parallel_bank/hybrid_differing_flat_i[2]
+    0:04:41 1832749.9      0.00      -0.0  118213.9 producer/parallel_bank/hybrid_differing_flat_i[44]
+    0:04:41 1832793.2      0.00      -0.0  115594.0 producer/parallel_bank/pivot_cols_flat_i[23]
+    0:04:41 1832799.8      0.00      -0.0  114317.3 search/net336442         
+    0:04:41 1832360.8      0.00      -0.0  113633.8 search/net336362         
+    0:04:41 1832550.4      0.16      26.0  113481.4 producer/candidate_borrow_q_reg[109]/D
+    0:04:42 1832773.2      0.07       6.5  113412.2 producer/candidate_borrow_q_reg[45]/D
+    0:04:42 1832979.5      0.01       0.5  113350.0 producer/candidate_borrow_q_reg[45]/D
+    0:04:42 1832251.0      0.00      -0.0  113024.8 search/net336128         
+    0:04:43 1831016.9      0.00      -0.0  111493.2 search/net336328         
+    0:04:43 1829127.5      0.00      -0.0  109861.3 search/net336142         
+    0:04:43 1826772.4      0.00      -0.0  108115.5 search/net336398         
+    0:04:43 1824776.6      0.00      -0.0  106496.3 search/net335916         
+    0:04:43 1823219.8      0.00      -0.0  104915.6 search/net336076         
+    0:04:43 1821104.2      0.00      -0.0  103172.5 search/net336182         
+    0:04:43 1819151.6      0.21      41.5  101437.9 search/net336154         
+    0:04:43 1817761.2      0.21      41.3  100075.1 search/net336282         
+    0:04:43 1817405.3      0.21      41.1   99380.9 search/net336274         
+    0:04:43 1816986.1      0.21      40.8   98700.5 search/net336222         
+    0:04:43 1816567.0      0.21      40.6   98023.5 search/net336134         
+    0:04:43 1816127.9      0.21      40.2   97332.4 search/net336042         
+    0:04:43 1815728.8      0.21      40.1   96643.9 search/net335952         
+    0:04:43 1815416.1      0.21      39.8   95860.9 producer/parallel_bank/generate_config_lane[6].analyzer/net337039
+    0:04:43 1815286.3      0.21      39.8   94852.7 producer/parallel_bank/generate_config_lane[3].analyzer/net337739
+    0:04:43 1814993.6      0.21      39.8   93831.7 producer/parallel_bank/generate_config_lane[1].analyzer/net338000
+    0:04:44 1814980.3      0.12      13.1   93386.1 producer/candidate_borrow_q_reg[109]/D
+    0:04:45 1814883.9      0.02       0.1   93292.6 producer/candidate_borrow_q_reg[109]/D
+    0:04:45 1813553.3      0.00      -0.0   92320.4 search/net336256         
+    0:04:45 1812921.3      0.61     171.2   91134.1 producer/parallel_bank/generate_config_lane[0].analyzer/net336994
+    0:04:45 1812415.7      0.61     171.2   90006.5 producer/parallel_bank/generate_config_lane[1].analyzer/net338138
+    0:04:45 1811471.0      0.61     174.8   88959.8 producer/parallel_bank/generate_config_lane[2].analyzer/net337824
+    0:04:45 1810483.0      0.61     174.8   87844.5 search/net336300         
+    0:04:45 1809511.7      0.61     175.2   86540.8 retention/net336696      
+    0:04:45 1807462.7      0.61     175.2   85033.3 retention/net336714      
+    0:04:45 1805413.6      0.61     175.2   83541.8 retention/net336730      
+    0:04:45 1804831.5      0.61     175.2   82732.3 search/net336290         
+    0:04:45 1804505.5      0.61     175.0   82147.0 producer/parallel_bank/generate_config_lane[6].analyzer/net337175
+    0:04:45 1804385.7      0.61     175.0   81566.9 producer/parallel_bank/generate_config_lane[5].analyzer/net337373
+    0:04:46 1804176.2      0.84     266.0   80939.6 producer/parallel_bank/generate_config_lane[2].analyzer/net337927
+    0:04:46 1804046.4      0.83     264.2   80372.7 producer/parallel_bank/generate_config_lane[1].analyzer/net337981
+    0:04:46 1803710.5      0.83     264.1   79743.7 search/net336502         
+    0:04:46 1803357.9      0.83     263.9   79140.4 search/net336462         
+    0:04:46 1802918.8      0.83     263.5   78722.1 search/net336282         
+    0:04:46 1802586.2      0.57     161.7   78381.3 producer/candidate_borrow_q_reg[45]/D
+    0:04:47 1802350.0      0.47     127.9   78238.5 producer/candidate_borrow_q_reg[109]/D
+    0:04:47 1802416.5      0.44     117.0   78190.7 producer/candidate_borrow_q_reg[45]/D
+    0:04:47 1802552.9      0.40     103.6   78093.4 producer/candidate_borrow_q_reg[45]/D
+    0:04:47 1802702.6      0.38      97.6   78061.6 producer/candidate_borrow_q_reg[45]/D
+    0:04:47 1802832.3      0.34      82.7   78021.8 producer/candidate_release_q_reg[45]/D
+    0:04:48 1802998.6      0.33      80.6   78020.4 producer/candidate_release_q_reg[19]/D
+    0:04:48 1803254.8      0.30      68.3   77959.3 producer/candidate_borrow_q_reg[45]/D
+    0:04:49 1803510.9      0.21      40.0   77772.4 producer/candidate_borrow_q_reg[45]/D
+    0:04:49 1803640.6      0.19      29.9   77658.4 producer/candidate_borrow_q_reg[45]/D
+    0:04:50 1803883.4      0.17      25.8   77443.7 producer/candidate_borrow_q_reg[45]/D
+    0:04:50 1803956.6      0.15      22.6   77327.0 producer/candidate_borrow_q_reg[109]/D
+    0:04:50 1803960.0      0.14      18.5   77274.5 producer/candidate_borrow_q_reg[119]/D
+    0:04:51 1803903.4      0.11      12.5   77224.9 producer/candidate_borrow_q_reg[45]/D
+    0:04:51 1803923.4      0.10       9.1   77213.6 producer/candidate_borrow_q_reg[45]/D
+    0:04:51 1803966.6      0.08       6.8   77211.4 producer/candidate_borrow_q_reg[45]/D
+    0:04:51 1804113.0      0.07       4.8   77137.9 producer/candidate_borrow_q_reg[45]/D
+    0:04:52 1804399.0      0.05       1.8   77129.6 producer/candidate_borrow_q_reg[45]/D
+    0:04:52 1804385.7      0.02       0.4   77122.9 producer/candidate_borrow_q_reg[138]/D
+    0:04:53 1804063.1      0.00      -0.0   77078.7                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:04:53 1804063.1      0.00      -0.0   77078.7                          
+    0:04:53 1804063.1      0.00      -0.0   77078.7                          
+    0:04:54 1675906.9      2.30    1030.0   73309.0                          
+    0:04:56 1588718.6      2.22     963.1   72193.1                          
+    0:04:56 1544218.0      0.90     330.9   71564.0                          
+    0:04:57 1506556.5      0.82     290.5   71352.4                          
+    0:04:57 1484698.7      0.73     250.7   71336.1                          
+    0:04:58 1471845.5      0.73     248.2   71323.8                          
+    0:04:58 1461603.5      0.69     220.9   71308.7                          
+    0:04:59 1452875.1      0.56     166.1   71298.0                          
+    0:04:59 1446688.0      0.56     166.1   71285.6                          
+    0:04:59 1441442.2      0.56     166.1   71281.4                          
+    0:04:59 1437144.5      0.56     166.2   71275.9                          
+    0:05:00 1431669.3      0.56     166.2   71272.1                          
+    0:05:00 1427734.1      0.56     166.3   71272.1                          
+    0:05:00 1422814.4      0.56     166.3   71272.1                          
+    0:05:00 1418443.5      0.56     166.3   71272.1                          
+    0:05:01 1414831.0      0.56     166.3   71272.1                          
+    0:05:01 1410929.2      0.56     166.3   71272.1                          
+    0:05:01 1408115.0      0.56     164.7   71272.1                          
+    0:05:01 1405700.1      0.56     164.7   71272.1                          
+    0:05:02 1403218.6      0.56     164.7   71272.1                          
+    0:05:02 1400564.1      0.56     164.7   71272.1                          
+    0:05:02 1397949.5      0.56     164.7   71272.1                          
+    0:05:02 1395547.9      0.56     165.0   71272.1                          
+    0:05:03 1394024.4      0.56     165.0   71272.1                          
+    0:05:03 1391858.9      0.56     165.0   71272.1                          
+    0:05:03 1390388.6      0.56     165.0   71272.1                          
+    0:05:03 1388512.6      0.56     165.0   71272.1                          
+    0:05:04 1387168.7      0.56     165.0   71272.1                          
+    0:05:04 1385944.6      0.56     165.0   71272.1                          
+    0:05:04 1383988.6      0.56     165.0   71272.1                          
+    0:05:04 1382305.5      0.56     165.0   71272.1                          
+    0:05:04 1380805.3      0.56     165.0   71272.1                          
+    0:05:05 1379408.2      0.56     165.0   71272.1                          
+    0:05:05 1378130.9      0.56     165.0   71272.1                          
+    0:05:05 1376707.2      0.56     165.0   71272.1                          
+    0:05:05 1375845.6      0.56     165.0   71272.1                          
+    0:05:06 1374698.0      0.56     165.0   71272.1                          
+    0:05:06 1373793.2      0.56     165.0   71272.1                          
+    0:05:06 1372196.6      0.56     165.0   71272.1                          
+    0:05:06 1370905.9      0.56     165.0   71272.1                          
+    0:05:06 1369132.9      0.56     165.0   71272.1                          
+    0:05:07 1367689.3      0.56     165.0   71272.1                          
+    0:05:07 1366421.9      0.56     165.0   71272.1                          
+    0:05:07 1365171.2      0.56     165.0   71261.4                          
+    0:05:07 1364396.2      0.56     165.0   71261.4                          
+    0:05:07 1363697.6      0.56     165.0   71261.4                          
+    0:05:08 1362849.4      0.56     165.0   71261.4                          
+    0:05:08 1361755.0      0.56     165.0   71260.7                          
+    0:05:08 1360447.7      0.56     165.0   71260.7                          
+    0:05:08 1359446.5      0.56     165.0   71260.7                          
+    0:05:08 1359093.9      0.56     165.0   71260.7                          
+    0:05:08 1358468.5      0.56     165.0   71260.7                          
+    0:05:09 1358029.4      0.56     165.0   71260.7                          
+    0:05:09 1357513.8      0.56     165.0   71260.7                          
+    0:05:09 1357227.8      0.56     165.0   71260.7                          
+    0:05:09 1356782.0      0.56     165.0   71260.7                          
+    0:05:09 1356459.4      0.56     165.0   71260.7                          
+    0:05:09 1356033.6      0.56     165.0   71260.7                          
+    0:05:10 1355484.7      0.56     165.0   71260.7                          
+    0:05:10 1355148.8      0.56     165.0   71260.7                          
+    0:05:10 1355148.8      0.56     165.0   71260.7                          
+    0:05:10 1355328.4      0.12      13.5   70935.2 producer/candidate_borrow_q_reg[98]/D
+    0:05:10 1355498.0      0.04       1.3   70912.1 producer/candidate_borrow_q_reg[98]/D
+    0:05:11 1355401.6      0.00      -0.0   70909.8                          
+    0:05:15 1033668.8      4.85    2177.5   34348.0                          
+    0:05:16 1013594.0      5.07    2177.4   33735.8                          
+    0:05:16 1005258.0      5.07    2165.6   33500.4                          
+    0:05:16 1003145.8      4.76    2046.6   33471.5                          
+    0:05:16 1002996.1      4.76    2050.1   33471.5                          
+    0:05:16 1002996.1      4.76    2050.1   33471.5                          
+    0:05:16 1002996.1      4.76    2050.1   33471.5                          
+    0:05:16 1002996.1      4.76    2050.1   33471.5                          
+    0:05:17 1004908.8      3.09    1418.4   33355.3 producer/candidate_borrow_q_reg[74]/D
+    0:05:18 1005617.3      2.91    1342.8   33319.5 producer/candidate_borrow_q_reg[74]/D
+    0:05:18 1006312.5      2.82    1293.5   33298.9 producer/candidate_borrow_q_reg[74]/D
+    0:05:18 1007031.0      2.63    1217.9   33286.0 producer/candidate_borrow_q_reg[48]/D
+    0:05:19 1007633.1      2.52    1175.1   33267.3 producer/candidate_release_q_reg[118]/D
+    0:05:20 1010207.7      2.26    1044.4   33224.8 producer/candidate_valid_q_reg[156]/D
+    0:05:21 1012053.9      2.00     919.7   33040.0 producer/candidate_release_q_reg[28]/D
+    0:05:22 1013058.5      1.82     835.2   32911.4 producer/candidate_release_q_reg[28]/D
+    0:05:23 1013301.3      1.73     806.5   32803.4 commit/shadow_borrow_count_q_reg[1]/D
+    0:05:24 1014661.8      1.57     713.1   32728.2 producer/candidate_release_q_reg[14]/D
+    0:05:26 1015809.4      1.40     629.2   32598.7 producer/candidate_release_q_reg[14]/D
+    0:05:27 1016381.5      1.61     696.2   32482.0 producer/candidate_borrow_q_reg[127]/D
+    0:05:27 1016867.2      1.29     581.7   32453.7 producer/candidate_release_q_reg[14]/D
+    0:05:28 1017382.8      1.32     574.2   32443.8 producer/candidate_borrow_q_reg[127]/D
+    0:05:28 1018513.8      1.16     523.7   32419.4 commit/shadow_borrow_count_q_reg[1]/D
+    0:05:29 1019202.3      1.11     498.8   32384.5 producer/candidate_release_q_reg[14]/D
+    0:05:30 1019910.8      1.06     470.1   32350.7 producer/candidate_release_q_reg[14]/D
+    0:05:30 1020609.4      1.02     444.3   32325.4 producer/candidate_valid_q_reg[156]/D
+    0:05:31 1021101.7      0.98     430.7   32296.5 producer/candidate_release_q_reg[14]/D
+    0:05:32 1021760.3      0.95     412.4   32173.6 producer/candidate_valid_q_reg[154]/D
+    0:05:32 1022259.3      0.92     396.5   32155.3 producer/candidate_release_q_reg[14]/D
+    0:05:32 1022545.3      0.91     388.7   32125.4 producer/candidate_release_q_reg[65]/D
+    0:05:34 1029341.2      0.89     379.3   32210.1                          
+    0:05:34 1030122.9      0.87     368.5   32206.0                          
+    0:05:35 1030299.2      0.85     360.3   32187.5                          
+    0:05:35 1030625.2      0.83     348.6   32177.5                          
+    0:05:35 1031134.1      0.99     402.2   32172.8                          
+    0:05:36 1031533.3      0.98     399.9   32139.5                          
+    0:05:36 1031992.3      0.86     361.9   32135.9                          
+    0:05:36 1032138.7      0.80     341.1   32135.4                          
+    0:05:37 1032384.8      0.90     375.8   32055.2                          
+    0:05:37 1032544.5      0.98     398.9   31981.7                          
+    0:05:37 1032567.8      0.78     328.5   31865.4                          
+    0:05:37 1032873.8      0.78     330.0   31851.6                          
+    0:05:37 1033263.0      1.16     488.9   31783.4                          
+    0:05:37 1033732.0      0.93     386.2   31782.1                          
+    0:05:37 1034231.0      0.90     377.2   31717.6                          
+    0:05:37 1034410.6      0.78     329.7   31716.9                          
+    0:05:38 1035012.7      0.75     315.3   31640.9                          
+    0:05:38 1035428.5      1.02     406.4   31574.2                          
+    0:05:38 1035664.7      0.81     335.9   31473.0                          
+    0:05:39 1036263.4      0.73     307.5   31419.0                          
+    0:05:39 1036469.7      0.72     300.1   31416.1                          
+    0:05:39 1036935.4      0.70     291.5   31407.0                          
+    0:05:40 1037421.0      0.69     290.5   31251.2                          
+    0:05:40 1037427.7      0.69     287.7   31248.6                          
+    0:05:40 1037630.6      1.34     525.0   31227.2                          
+    0:05:40 1037920.0      1.47     573.7   31208.1                          
+    0:05:40 1038196.1      1.28     501.0   31208.1                          
+    0:05:40 1038548.7      1.14     448.1   31197.4                          
+    0:05:41 1038851.4      1.09     428.4   31191.5                          
+    0:05:41 1039217.3      0.92     362.4   31191.1                          
+    0:05:41 1039699.6      0.78     322.9   31191.1                          
+    0:05:42 1039932.4      0.72     312.8   31190.6                          
+    0:05:43 1040095.4      0.65     288.1   31186.1                          
+    0:05:43 1040188.6      0.62     274.0   31126.7                          
+    0:05:44 1040358.2      0.61     241.5   31122.7                          
+    0:05:44 1040624.3      0.59     230.8   31113.3                          
+    0:05:44 1040877.1      0.58     228.4   31059.8                          
+    0:05:44 1041169.9      0.58     220.3   31045.6                          
+    0:05:44 1041452.6      0.55     212.1   31045.6                          
+    0:05:44 1041519.1      0.54     208.5   31042.9                          
+    0:05:45 1042201.0      0.54     206.2   31002.7                          
+    0:05:45 1042350.7      0.51     197.8   30976.9                          
+    0:05:46 1042490.4      0.50     191.1   30976.9                          
+    0:05:46 1042603.5      0.49     188.8   30976.9                          
+    0:05:47 1042823.1      0.47     182.0   30964.8                          
+    0:05:47 1043368.6      0.47     180.3   30940.2                          
+    0:05:47 1043811.0      0.47     176.4   30912.7                          
+    0:05:47 1043994.0      0.46     172.6   30793.9                          
+    0:05:47 1044226.8      0.45     168.3   30782.9                          
+    0:05:47 1044589.4      0.44     163.8   30782.6                          
+    0:05:47 1044749.1      0.59     211.0   30776.3                          
+    0:05:48 1045021.8      0.59     213.2   30767.1                          
+    0:05:48 1045391.1      0.42     156.0   30758.5                          
+    0:05:48 1045803.5      0.41     151.8   30750.8                          
+    0:05:48 1046063.0      0.40     148.6   30750.8                          
+    0:05:48 1046199.4      0.40     144.7   30747.8                          
+    0:05:49 1046648.4      0.39     139.4   30656.4                          
+    0:05:49 1047104.2      0.38     133.4   30632.8                          
+    0:05:49 1047300.4      0.37     130.1   30626.6                          
+    0:05:49 1047486.7      0.36     128.3   30616.2                          
+    0:05:50 1047500.0      0.36     127.1   30616.2                          
+    0:05:50 1048035.6      0.35     124.0   30585.5                          
+    0:05:50 1048285.0      0.34     120.8   30585.5                          
+    0:05:50 1048777.3      0.34     117.7   30582.3                          
+    0:05:50 1048940.3      0.33     113.8   30568.8                          
+    0:05:51 1048953.6      0.32     112.4   30553.3                          
+    0:05:51 1049422.7      0.32     110.1   30537.8                          
+    0:05:51 1049678.8      0.31     107.5   30512.5                          
+    0:05:51 1049755.3      0.31     105.6   30503.1                          
+    0:05:51 1050194.4      0.49     162.3   30475.2                          
+    0:05:51 1050124.5      0.36     116.3   30438.3                          
+    0:05:51 1050247.6      0.36     117.4   30428.5                          
+    0:05:52 1050537.0      0.34     109.7   30399.5                          
+    0:05:52 1050766.5      0.68     239.1   30338.7                          
+    0:05:52 1050899.6      0.45     149.1   30322.2                          
+    0:05:52 1050873.0      1.63     593.9   30243.6                          
+    0:05:52 1051149.1      1.20     427.7   30183.9                          
+    0:05:53 1051175.7      1.10     389.0   30092.8                          
+    0:05:53 1051601.5      0.90     312.3   30016.1                          
+    0:05:53 1051767.8      0.67     228.6   29900.5                          
+    0:05:54 1051824.3      0.63     214.0   29900.5                          
+    0:05:55 1051870.9      0.62     209.8   29899.4                          
+    0:05:55 1051884.2      0.61     201.8   29899.3                          
+    0:05:55 1051934.1      0.39     124.1   29899.3                          
+    0:05:55 1052283.4      0.34     102.5   29891.2                          
+    0:05:55 1052925.4      0.32      97.7   29862.7                          
+    0:05:56 1053041.8      0.30      94.7   29862.7                          
+    0:05:56 1053460.9      0.29      91.5   29845.0                          
+    0:05:56 1053570.7      0.28      89.2   29839.3                          
+    0:05:56 1053823.5      0.27      83.8   29819.4                          
+    0:05:56 1053973.2      0.27      78.8   29810.8                          
+    0:05:56 1054405.6      0.25      73.8   29709.6                          
+    0:05:57 1054528.7      0.24      68.5   29702.9                          
+    0:05:57 1054901.2      0.23      65.7   29702.1                          
+    0:05:57 1054897.9      0.51     157.4   29700.4                          
+    0:05:57 1055203.9      0.36     101.9   29700.4                          
+    0:05:57 1055333.7      0.23      64.0   29694.6                          
+    0:05:57 1055563.2      0.22      61.2   29683.9                          
+    0:05:58 1055776.1      0.21      56.4   29608.1                          
+    0:05:58 1056065.5      0.21      54.0   29608.1                          
+    0:05:58 1056517.9      0.20      48.2   29607.3                          
+    0:05:58 1056621.0      0.19      43.8   29598.4                          
+    0:05:58 1056697.5      0.18      41.0   29485.5                          
+    0:05:58 1056847.2      0.29      77.7   29482.8                          
+    0:05:58 1057076.7      0.17      38.3   29481.6                          
+    0:05:58 1057086.7      0.17      39.1   29396.2                          
+    0:05:59 1057276.3      0.16      34.6   29390.1                          
+    0:05:59 1057352.8      0.89     281.3   29306.6                          
+    0:05:59 1057236.4      0.75     229.6   29300.7                          
+    0:05:59 1057455.9      0.59     174.3   29300.7                          
+    0:05:59 1057755.3      1.02     329.6   29206.8                          
+    0:05:59 1058034.7      0.96     312.5   29180.9                          
+    0:06:00 1058420.6      0.88     280.2   29175.8                          
+    0:06:00 1058603.5      0.86     272.3   29175.4                          
+    0:06:00 1058746.6      0.79     244.0   29169.6                          
+    0:06:00 1059238.9      0.74     227.3   29113.1                          
+    0:06:00 1059658.0      0.66     199.5   29106.9                          
+    0:06:00 1059791.1      0.62     189.6   29096.0                          
+    0:06:00 1059907.5      0.59     181.0   29016.3                          
+    0:06:00 1059874.2      0.57     171.5   29016.3                          
+    0:06:00 1060020.6      0.52     154.2   29000.7                          
+    0:06:01 1060266.7      0.56     168.2   28991.7                          
+    0:06:01 1060586.1      0.40     112.2   28969.4                          
+    0:06:01 1060912.0      0.45     128.8   28909.1                          
+    0:06:01 1061018.5      0.33      94.9   28825.2                          
+    0:06:01 1061081.7      0.31      85.0   28808.6                          
+    0:06:02 1061191.5      0.25      64.8   28808.1                          
+    0:06:02 1061374.4      0.25      62.8   28808.0                          
+    0:06:02 1061833.5      0.22      55.4   28807.3                          
+    0:06:02 1062082.9      0.21      51.8   28795.2                          
+    0:06:02 1062302.5      0.20      45.8   28792.5                          
+    0:06:02 1062901.2      0.17      38.7   28784.2                          
+    0:06:02 1062951.1      0.16      36.0   28780.7                          
+    0:06:02 1063060.9      0.15      32.1   28780.7                          
+    0:06:03 1063107.5      0.22      48.4   28776.6                          
+    0:06:03 1063376.9      0.18      34.7   28774.7                          
+    0:06:03 1063496.7      0.14      28.4   28774.7                          
+    0:06:03 1063633.0      0.14      27.6   28711.6                          
+    0:06:03 1063633.0      0.14      25.6   28703.5                          
+    0:06:03 1063656.3      0.30      78.3   28651.3                          
+    0:06:04 1063729.5      0.23      52.9   28650.8                          
+    0:06:04 1063875.9      0.18      38.8   28650.8                          
+    0:06:04 1063892.5      0.16      33.0   28595.3                          
+    0:06:04 1064368.2      0.13      21.5   28594.9                          
+    0:06:04 1064547.8      0.12      17.2   28530.5                          
+    0:06:04 1064893.7      0.40     100.5   28504.3                          
+    0:06:05 1064930.3      0.31      74.5   28464.5                          
+    0:06:05 1065173.2      0.15      22.2   28464.5                          
+    0:06:05 1065426.0      0.24      52.1   28450.6                          
+    0:06:05 1065559.0      0.13      18.0   28442.1                          
+    0:06:06 1065625.6      0.09       9.8   28392.3                          
+    0:06:07 1065835.1      0.07       5.8   28392.1                          
+    0:06:07 1065958.2      0.05       3.8   28392.1                          
+    0:06:07 1066207.7      0.04       2.1   28388.1                          
+    0:06:07 1066171.1      0.03       1.0   28377.5                          
+    0:06:08 1066280.9      0.02       0.6   28372.4                          
+    0:06:08 1066630.1      0.01       0.3   28369.5                          
+    0:06:08 1066696.7      0.01       0.1   28358.2                          
+    0:06:08 1066806.4      0.00      -0.0   28358.2                          
+Loading db file '/cad/std_libraries/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'recam_n2_preopt_group_top' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'search/canonical_global_core/clk_i': 2739 load(s), 1 driver(s)
+CPU Load: 11%, Ram Free: 14 GB, Swap Free: 0 GB, Work Disk Free: 473 GB, Tmp Disk Free: 718 GB
+Information: Total number of MV cells in the design.
+----------------------------------------------------------------------------------------------------
+ MV Cells                                           Total Number                                   
+----------------------------------------------------------------------------------------------------
+ Level Shifter:                                     0                                             
+ Enable Level Shifter:                              0                                             
+ Isolation Cell:                                    0                                             
+ Retention Cell:                                    0                                             
+ Retention Clamp Cell:                              0                                             
+ Switch Cell:                                       0                                             
+ Always-On Cell:                                    0                                             
+ Repeater Cell:                                     0                                             
+
+----------------------------------------------------------------------------------------------------
+Unmapped MV Cells 
+----------------------------------------------------------------------------------------------------
+0 Isolation Cells are unmapped 
+0 Retention Clamp Cells are unmapped 
+----------------------------------------------------------------------------------------------------
+1
+redirect -file [file join $report_dir check_design_after_compile.rpt] {check_design}
+redirect -file [file join $report_dir design.rpt] {report_design}
+redirect -file [file join $report_dir area.rpt] {report_area -hierarchy}
+redirect -file [file join $report_dir hierarchy_area.rpt] {report_area -hierarchy}
+redirect -file [file join $report_dir references.rpt] {report_reference -hierarchy}
+redirect -file [file join $report_dir timing.rpt] {report_timing -delay_type max -max_paths 10 -input_pins}
+redirect -file [file join $report_dir constraints.rpt] {report_constraint -all_violators}
+redirect -file [file join $report_dir qos.rpt] {report_qor}
+redirect -file [file join $report_dir cells.rpt] {report_cell}
+write_file -format verilog -hierarchy -output [file join $netlist_dir ${design}_SYN.v]
+Writing verilog file '/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/synthesis/reports/netlist/recam_n2_preopt_group_top_SYN.v'.
+Warning: Verilog 'assign' or 'tran' statements are written out. (VO-4)
+Warning: Changed wire name selected_release_o[1] to selected_release_o[1]_snps_int_wire in module recam_n2_preopt_canonical_path_selector.  Please use the change_names command to make the correct changes before invoking the verilog writer. (VO-2)
+Warning: Verilog writer has added 2 nets to module recam_n2_preopt_canonical_path_selector using SYNOPSYS_UNCONNECTED_ as prefix.  Please use the change_names command to make the correct changes before invoking the verilog writer.  (VO-11)
+Warning: Verilog writer has added 4 nets to module recam_n2_preopt_group_top using SYNOPSYS_UNCONNECTED_ as prefix.  Please use the change_names command to make the correct changes before invoking the verilog writer.  (VO-11)
+1
+write_file -format ddc -hierarchy -output [file join $netlist_dir ${design}_SYN.ddc]
+Writing ddc file '/home/asd9112000/repair_rate_date2026_canonical/rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/synthesis/reports/netlist/recam_n2_preopt_group_top_SYN.ddc'.
+1
+write_sdc [file join $netlist_dir ${design}_SYN.sdc]
+1
+quit
+
+Memory usage for this session 922 Mbytes.
+Memory usage for this session including child processes 922 Mbytes.
+CPU usage for this session 379 seconds ( 0.11 hours ).
+Elapsed time for this session 380 seconds ( 0.11 hours ).
+
+Thank you...
+rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_parallel_config_bank.sv: OK
+rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_candidate_map_producer.sv: OK
+rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_canonical_path_selector.sv: OK
+rtl/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg/recam_n2_preopt_group_top.sv: OK
+rtl/G2X2_N2_RC_GROUP_reg/recam_shared_config_analyzer.sv: OK
+rtl/G2X2_N2_RC_GROUP_reg/dss_group_pivot_address_regs.sv: OK
+rtl/G2X2_N2_RC_GROUP_reg/recam_dss_hyp02_static_selector.sv: OK
+rtl/dss_canonical/policy/global/recam_dss_canonical_global_noscratch_core.v: OK
+rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_opt1_classcollapsed_core.v: OK
+rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_atomic_group_commit.v: OK
+rtl/dss_canonical/policy/global/recam_dss_grid2x2_directional_rs2_cs2_m1_normalized_group_global_noscratch_candidate_transition_adapter.v: OK
+N2 pre-optimization GROUP matched DC synthesis PASS

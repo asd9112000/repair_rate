@@ -17,6 +17,10 @@ manifest, and synthesis report identity. The common address contract is defined
 in `records/N2_ARCHITECTURE_CONTRACT.md`; final PPA and matched ratios are
 authoritative only in `N2_HARDWARE_SUMMARY.md`.
 
+## SUPPORTING ABLATIONS
+
+- `ablation/G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg` — provenance-backed, seven-parallel-analyzer dense-map/DFS GROUP representation with canonical DATE2026 visible semantics. It is not a canonical eighth N2 case; see `records/N2_OPTIMIZATION_ABLATION.md`.
+
 ## Architecture boundary
 
 EARLY is immediate commit with streaming selected repair lines and no four-SA
