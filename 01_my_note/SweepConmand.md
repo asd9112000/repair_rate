@@ -6,7 +6,7 @@ python3 scripts/group/r3_formal_group_repair_rate.py   --f-group-list 8,12,16,20
 set -euo pipefail
 
 cd /home/asd9112000/repair_rate_date2026_canonical
-root="tmp/date2026/6case_100k"
+root="tmp/date2026/6case_10k"
 faults="8,12,16,20,24,28,32,36,40,44,48"
 
 for n in 2 3 4; do
@@ -16,7 +16,7 @@ for n in 2 3 4; do
   scripts/run_date2026_group_sweep.sh \
     --rs "$n" --cs "$n" \
     --share-m 1 \
-    --groups 100000 \
+    --groups 10000 \
     --f-group-list "$faults" \
     --seed 20260922 \
     --policies sixcase_static \
@@ -29,12 +29,13 @@ done
 # analysis
 ./scripts/analysis_date2026_group_sweep.sh \
   --input-root tmp/date2026/6case_1k \
+  --output-root date2026/6case_1k
   --policy-set sixcase_static \
   --n-list 2,3,4
 
 # plot
 ./scripts/plot_date2026_group_sweep.sh \
-  --analysis-root results/date2026/repair_rate/group/postprocess \
+  --analysis-root results/date2026/6case_1k \
   --policy-set sixcase_static \
   --n-list 2,3,4 \
   --include-local
