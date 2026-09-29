@@ -1,15 +1,20 @@
 # DSS FINAL hardware archive
 
 `dss_final/` is the immutable packaged-results archive for canonical hardware
-cases; development RTL remains under `rtl/`. The current N2 set is the seven
-packages marked `FINAL` in [INDEX.md](INDEX.md). Historical and superseded
-packages remain preserved at top level, but are not current comparators.
+cases; development RTL remains under `rtl/`.
 
-Use [N2_HARDWARE_SUMMARY.md](N2_HARDWARE_SUMMARY.md) for final N2 PPA and
-matched comparisons. Use [records/N2_ARCHITECTURE_CONTRACT.md](records/N2_ARCHITECTURE_CONTRACT.md)
-for address, EARLY, and GROUP semantics; case packages provide `src/`,
-`verification/`, and `synthesis/` evidence.
+For final Continuous-Analysis hardware results, use
+`dss_final/continuous_analysis_live/`. Do not use
+`rtl/*_CONTINUOUS_ANALYSIS_reg` for final matched CA PPA unless it is explicitly
+labelled CA-LIVE. The working RTL family corresponding to the final CA
+implementation is `rtl/*_CONTINUOUS_ANALYSIS_LIVE_STATE_reg`.
 
-Do not use historical 5-bit RECAM PPA as the matched final baseline. Do not use
-pre-storage-audit EARLY PPA as canonical. Every FINAL package is self-contained
-and must not be edited in place.
+| Family | Lifecycle | Use |
+|---|---|---|
+| `NON_CA_CANONICAL` | `VALID_NON_CA_CANONICAL_REFERENCE` | CA-overhead baseline and historical architecture comparison |
+| `CA_SB` | `HISTORICAL_CA_SB_PROTOTYPE` | functional/prototype history only |
+| `CA_LIVE` | `CANONICAL_CA_LIVE` | primary final Continuous-Analysis PPA and latency |
+
+Use [CURRENT_N2_CANONICAL.md](CURRENT_N2_CANONICAL.md) as the first lookup
+target, [INDEX.md](INDEX.md) for package navigation, and
+[N2_HARDWARE_SUMMARY.md](N2_HARDWARE_SUMMARY.md) for family-separated PPA.

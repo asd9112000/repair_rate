@@ -1,25 +1,17 @@
 # N2 verification matrix
 
-`PASS` denotes preserved final evidence. `HISTORICAL` denotes retained evidence
-from the earlier case closure. `N/A` means the test belongs to another
-architecture boundary and was not claimed for that case.
+The existing non-CA archive remains preserved. The following matrix records
+the six CA-LIVE cases without upgrading incomplete historical provenance.
 
-| Coverage | RECAM | RC EARLY | RC GROUP | R EARLY | R GROUP | L1 EARLY | L1 GROUP |
-|---|---|---|---|---|---|---|---|
-| Verilator lint | PASS | PASS | HISTORICAL | PASS | HISTORICAL | PASS | HISTORICAL |
-| Physical `1 != 257` | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
-| Physical-column boundaries | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
-| Low-column old/new equivalence | PASS | N/A | N/A | N/A | N/A | N/A | N/A |
-| Independent validity-map oracle | N/A | PASS | N/A | PASS | N/A | PASS | N/A |
-| Random oracle vectors | N/A | PASS | N/A | PASS | N/A | PASS | N/A |
-| C++ policy lockstep | HISTORICAL | N/A | HISTORICAL | N/A | HISTORICAL | N/A | HISTORICAL |
-| Directed tests | PASS | PASS | HISTORICAL | PASS | HISTORICAL | PASS | HISTORICAL |
-| Working-to-synthesis hash | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
-| Working-to-archive hash | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
-| Archive-to-synthesis hash | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| CA-LIVE case | Functional regression | C++/RTL or oracle verification | Latency evidence | 20 ns synthesis | Provenance |
+|---|---|---|---|---|---|
+| G2X2 RC EARLY | PASS | preserved CA-LIVE evidence | `state_update_to_response` | PASS | FULL |
+| G2X2 RC GROUP | PASS | preserved CA-LIVE evidence | `state_update_to_response` | PASS | FULL |
+| G2X2 R EARLY | PASS | 10,000-vector full-top replay; 0 mismatches | state update to commit | PASS | PARTIAL |
+| G2X2 R GROUP | PASS | 10,000-vector full-top replay; 0 mismatches | final-SA update to solution ready | PASS | PARTIAL |
+| L1X4 R EARLY | PASS | 10,000-vector full-top replay; 0 mismatches | state update to commit | PASS | PARTIAL |
+| L1X4 R GROUP | PASS | 10,000-vector full-top replay; 0 mismatches | final-SA update to solution ready | PASS | PARTIAL |
 
-RECAM-specific evidence includes the 1000-vector low-column comparison and
-historical Phase-3A/3B regressions. EARLY oracle evidence covers 81 legal paths
-for both G2X2 cases and 27 paths for L1X4, each with 65,536 validity maps and
-1,000 random vectors. GROUP retains physical-column and pivot-retention tests;
-this matrix does not claim EARLY-only streaming tests for GROUP.
+`PARTIAL` means `SOURCE_PROVENANCE=PARTIAL` and `SOURCE_HASH_MATCH=UNKNOWN`.
+Closure snapshot hashes prove current copied-source identity only; they do not
+retroactively prove historical synthesis-source identity.

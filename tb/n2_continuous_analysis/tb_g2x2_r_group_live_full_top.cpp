@@ -1,0 +1,9 @@
+#include "Vtb_g2x2_r_group_live_full_top.h"
+#include <cstdint>
+#include <cstdlib>
+#include <iostream>
+static void tick(Vtb_g2x2_r_group_live_full_top& d){d.clk_i=0;d.eval();d.clk_i=1;d.eval();d.clk_i=0;d.eval();}
+static void reset(Vtb_g2x2_r_group_live_full_top& d){d.rst_ni=0;d.canonical_start_i=0;d.state_update_i=0;d.test_done_valid_i=0;d.seeds_i=0;tick(d);tick(d);d.rst_ni=1;}
+static bool same(const Vtb_g2x2_r_group_live_full_top&d){if(d.canonical_repairable_o!=d.live_repairable_o||d.canonical_config_o!=d.live_config_o||d.canonical_pattern_o!=d.live_pattern_o||d.canonical_donor_o!=d.live_donor_o||d.canonical_borrow_o!=d.live_borrow_o||d.canonical_release_o!=d.live_release_o||d.canonical_is_row_o!=d.live_is_row_o||d.canonical_line_valid_o!=d.live_line_valid_o)return false;for(unsigned i=0;i<9;++i)if(d.canonical_address_o[i]!=d.live_address_o[i])return false;return true;}
+static uint32_t next(uint32_t&x){x^=x<<13;x^=x>>17;x^=x<<5;return x;}
+int main(int ac,char**av){unsigned n=ac==2?std::strtoul(av[1],0,10):1000;uint32_t x=0x20260928;Vtb_g2x2_r_group_live_full_top d;for(unsigned v=0;v<n;++v){reset(d);d.seeds_i=next(x);d.canonical_start_i=1;tick(d);d.canonical_start_i=0;for(unsigned i=0;i<24&&!d.canonical_done_o;++i)tick(d);if(!d.canonical_done_o)return 1;for(unsigned sa=0;sa<4;++sa){bool first=v&1;d.state_update_i=1;d.state_sa_i=sa;d.test_done_valid_i=first;d.test_done_sa_i=sa;tick(d);d.state_update_i=0;d.test_done_valid_i=0;for(unsigned i=0;i<8&&((d.live_frozen_o>>sa)&1)==0;++i){if(!first&&!d.live_scan_active_o){d.test_done_valid_i=1;d.test_done_sa_i=sa;}tick(d);d.test_done_valid_i=0;}if(((d.live_frozen_o>>sa)&1)==0)return 1;}for(unsigned i=0;i<4&&!d.live_ready_o;++i)tick(d);if(!d.live_ready_o||!same(d)){std::cerr<<"FIRST_MISMATCH="<<v<<'\n';return 1;}}std::cout<<"G2X2_R_GROUP_FULL_TOP_PASS vectors="<<n<<" mismatches=0 address_lockstep=PASS\n";}

@@ -1,0 +1,9 @@
+#include "Vtb_ca_live_early_directed.h"
+#include <iostream>
+static void tick(Vtb_ca_live_early_directed& d){d.clk_i=0;d.eval();d.clk_i=1;d.eval();d.clk_i=0;d.eval();}
+static void reset(Vtb_ca_live_early_directed& d){d.rst_ni=0;d.state_update_i=0;d.test_done_valid_i=0;d.candidate_valid_i=0;tick(d);tick(d);d.rst_ni=1;}
+static void start(Vtb_ca_live_early_directed& d){d.state_update_i=1;d.state_sa_i=0;tick(d);d.state_update_i=0;}
+static bool preempt(Vtb_ca_live_early_directed&d,unsigned rank){reset(d);start(d);for(unsigned i=0;i<rank;++i){d.candidate_valid_i=0;tick(d);}d.candidate_valid_i=1;d.state_update_i=1;d.test_done_valid_i=1;d.test_done_sa_i=0;d.eval();if(d.solution_commit_o)return false;tick(d);d.state_update_i=0;d.test_done_valid_i=0;d.eval();if(!d.scan_active_o||d.scan_config_o!=4||d.scan_slot_o!=1)return false;tick(d);return !d.solution_commit_o;}
+static bool bist_before(Vtb_ca_live_early_directed&d){reset(d);start(d);d.test_done_valid_i=1;d.test_done_sa_i=0;tick(d);d.test_done_valid_i=0;d.candidate_valid_i=1;d.eval();if(!d.solution_commit_o)return false;tick(d);d.candidate_valid_i=0;d.eval();return !d.solution_commit_o;}
+static bool solution_before(Vtb_ca_live_early_directed&d){reset(d);start(d);d.candidate_valid_i=1;d.eval();if(d.solution_commit_o)return false;tick(d);d.eval();if(d.solution_commit_o||d.scan_active_o)return false;d.test_done_valid_i=1;d.test_done_sa_i=0;d.eval();if(!d.solution_commit_o)return false;tick(d);d.test_done_valid_i=0;d.eval();return !d.solution_commit_o;}
+int main(){Vtb_ca_live_early_directed d;for(unsigned rank=0;rank<3;++rank)if(!preempt(d,rank)){std::cerr<<"PREEMPT_FAIL rank="<<rank+1<<'\n';return 1;}if(!bist_before(d)||!solution_before(d)){std::cerr<<"BIST_ORDER_FAIL\n";return 1;}std::cout<<"CA_LIVE_EARLY_DIRECTED_PASS preemption_ranks=1,2,3 same_edge_old_result_suppressed=PASS fault_update_wins=PASS bist_before=PASS solution_before=PASS no_duplicate_commit=PASS\n";}

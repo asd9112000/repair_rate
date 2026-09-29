@@ -1,30 +1,22 @@
 # N2 experiment history
 
-1. **Historical baseline — modeling evidence.** RECAM used a 5-bit
-   repair-column representation; its 50,877.288438 µm² result remains
-   historical policy evidence.
-2. **Physical-column mismatch — bug/modeling correction.** Physical repair
-   columns were distinguished from the five-bit logical BIST word column.
-3. **Corrected GROUP — architecture implementation.** Three GROUP cases were
-   corrected to 13-bit physical columns without changing their policy.
-4. **Pivot retention — architecture requirement.** GROUP retains all four SA
-   pivot banks: 440 raw row/column address bits.
-5. **Initial corrected EARLY — implementation artifact.** EARLY initially
-   accumulated four selected solutions in a 300-bit output bank.
-6. **Storage-boundary audit — evidence review.** The accumulated bank was
-   identified as unnecessary final-result storage for EARLY.
-7. **Streaming EARLY correction — implementation correction.** `line_address_q`
-   (260 bits), `line_is_row_q` (20 bits), `line_valid_q` (20 bits), and 32
-   completed-result metadata bits were removed; the 300-bit warehouse is not
-   part of final EARLY architecture.
-8. **Streaming EARLY resynthesis — final result.** The three EARLY cases were
-   resynthesized with immediate observable commit transactions.
-9. **Corrected RECAM resynthesis — final result.** `RECAM_N2_2R2C` established
-   the 13-bit physical-column baseline at 72,116.352610 µm².
-10. **Seven-case closure — final result.** One RECAM plus six DSS packages were
-    promoted as the matched N2 FINAL hardware set at commit `6351a82`.
+1. **NON-CA canonical.** Corrected 13-bit physical-column RECAM and six DSS
+   cases established valid non-CA canonical reference hardware.
+2. **CA-StateBank prototype.** CA_SB captured four 272-bit analyzer-input
+   snapshots per SA path.
+3. **State-duplication audit.** The prototype had duplicated analyzer state, a
+   wide selector, and a mismatched PPA boundary.
+4. **CA-LIVE architecture.** Authoritative upstream state drives a single
+   analyzer through the 272-bit live active-SA interface.
+5. **Matched verification.** Functional/oracle or C++/RTL checks, latency
+   replays, and matched 20 ns synthesis evidence were collected.
+6. **Seven-case dataset.** One RECAM baseline plus six CA-LIVE DSS rows were
+   assembled in `seven_case_20ns/`.
+7. **CA-LIVE canonical freeze.** The six verified working RTL roots were
+   byte-copied with closure hashes into `continuous_analysis_live/`.
 
-11. **POST-CLOSURE SUPPORTING ABLATION — pre-optimization GROUP evidence.** `G2X2_N2_RC_GROUP_7CFG_PAR_DFS_reg` preserves a seven-parallel-analyzer, 3x160 registered-map, OPT1/GLOBAL-DFS composite while applying frozen canonical selection semantics. It passed exact 1000-vector lockstep and matched DC synthesis; it is supporting evidence, not an eighth canonical N2 result.
-
-Pre-storage-audit EARLY reports and historical 5-bit RECAM reports are
-preserved for provenance. They are not canonical PPA inputs.
+CA_SB was not adopted because it used four 272-bit duplicated analyzer-input
+snapshots, a wide state selector, and a synthesis-boundary mismatch. CA-LIVE
+was adopted because it uses live upstream authoritative state, one analyzer,
+no duplicate analyzer-state bank, a matched boundary, functional verification,
+and small matched PPA overhead.
