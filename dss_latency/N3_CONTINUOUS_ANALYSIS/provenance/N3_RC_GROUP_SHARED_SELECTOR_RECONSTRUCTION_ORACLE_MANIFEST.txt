@@ -1,0 +1,50 @@
+PHASE=N3-SHARED-ORACLE-LAYER-B-SELECTOR-RECONSTRUCTION
+WORKTREE=/home/asd9112000/repair_rate_date2026_n3
+BRANCH=integration/date2026-n3-ca-live-scaling
+PURPOSE=verification infrastructure only
+
+SOURCE_SHA256:
+a9d404990f7ed51b1ce26a12a0ef0305ee89373048748ae6c84f7977116d7d5c  tb/n3_continuous_analysis/n3_rc_group_selector_oracle.hpp
+704b3b34860016bb1c643c1f0ad892861beecbca47d43d96bac8531f996f29f0  tb/n3_continuous_analysis/n3_rc_group_selector_oracle.cpp
+1d8d59808291c0172582e7ec4713011f0c4c14b2b719dbca359f3b30a78a3476  tb/n3_continuous_analysis/n3_rc_reconstruction_oracle.hpp
+a3ab5bcd859a80d7d00d349031df1ce22606a5960ccb73bb2331a0afcdc708d9  tb/n3_continuous_analysis/n3_rc_reconstruction_oracle.cpp
+ba9e387f01a94b0297390be5e87d9155aa1e770dae2e24458ab0ace2ee1dbfe7  tb/n3_continuous_analysis/tb_n3_rc_group_selector_oracle.cpp
+337801833baea55c57657e207a6484ed58151b796d0b8f14b5bf0d88c6a25819  tb/n3_continuous_analysis/tb_n3_rc_reconstruction_oracle.cpp
+d55cbb1d8a6593644518f3198b5f642782a2ac1b52c257749f69388b524862ff  tb/n3_continuous_analysis/tb_n3_rc_group_full_top.cpp
+8775e42b15bf402f3fc39c1a5bc1a4bb711b71ad2b9c88fa9867d4db1351f8b0  tb/n3_continuous_analysis/tb_n3_rc_group_high_pattern_full_top.cpp
+0fece4bd8ebe0012fa49f59da99062885dcbfcf1bae1b7826dbe0b9cfc466ada  tb/n3_continuous_analysis/tb_n3_rc_group_latency.cpp
+
+PRODUCTION_RTL_SHA256_BEFORE_AND_AFTER:
+d3bfa8037ced18d35d74e497a32187f47956ab4f3afa09aae67bbd570000ce04  rtl/G2X2_N3_RC_GROUP_CONTINUOUS_ANALYSIS_LIVE_STATE_reg/dss_n3_rc_group_candidate_store.sv
+1e544541db806c90261b25099b0bc69fdccbf23a468d4a5a8d4b6557f29fc10b  rtl/G2X2_N3_RC_GROUP_CONTINUOUS_ANALYSIS_LIVE_STATE_reg/dss_n3_rc_group_pivot_address_regs.sv
+0b99e9479891b959ea3dca9cd9d43185d2e730771c41551c80eb76eb675989c0  rtl/G2X2_N3_RC_GROUP_CONTINUOUS_ANALYSIS_LIVE_STATE_reg/dss_n3_rc_group_slot_decode.sv
+0801e20f0c700e476e34f8669a04558008b0c0887b6b3af9ff7c38d4a56536a0  rtl/G2X2_N3_RC_GROUP_CONTINUOUS_ANALYSIS_LIVE_STATE_reg/recam_dss_n3_rc_group_live_state_core.sv
+5343f792a9301275cb438e95ccddd6499b3139892966a1e02e6c5ac914043996  rtl/G2X2_N3_RC_GROUP_CONTINUOUS_ANALYSIS_LIVE_STATE_reg/recam_dss_n3_rc_group_live_state_top.sv
+1fa371be76fb9ce0a659a52ae7a85969b740075ecff754ebdb91f7bc5d94486b  rtl/G2X2_N3_RC_GROUP_CONTINUOUS_ANALYSIS_LIVE_STATE_reg/recam_n3_rc_fixed_mask_analyzer.sv
+3a67b9c7263a5a922ae93df0b6a160e696d9d18f344637aea0107c754a99a4bb  rtl/G2X2_N3_RC_GROUP_CONTINUOUS_ANALYSIS_LIVE_STATE_reg/recam_n3_rc_group_selector.sv
+
+COMPILE_AND_RUN_COMMANDS:
+verilator --cc --sv --top-module recam_n3_rc_group_selector --Mdir /tmp/n3_layer_b_selector <selector.sv> --exe <selector_test.cpp> <selector_oracle.cpp> -CFLAGS -I<tb_dir>
+make -C /tmp/n3_layer_b_selector -f Vrecam_n3_rc_group_selector.mk -j2
+/tmp/n3_layer_b_selector/Vrecam_n3_rc_group_selector
+
+verilator --cc --sv --top-module dss_n3_rc_group_pivot_address_regs --Mdir /tmp/n3_layer_b_reconstruction <pivot_regs.sv> --exe <reconstruction_test.cpp> <analyzer_oracle.cpp> <reconstruction_oracle.cpp> -CFLAGS -I<tb_dir>
+make -C /tmp/n3_layer_b_reconstruction -f Vdss_n3_rc_group_pivot_address_regs.mk -j2
+/tmp/n3_layer_b_reconstruction/Vdss_n3_rc_group_pivot_address_regs
+
+verilator --cc --sv --top-module recam_dss_n3_rc_group_live_state_top --Mdir /tmp/n3_layer_b_full <seven production RTL sources> --exe <full_top.cpp> <three oracle.cpp sources> -CFLAGS -I<tb_dir>
+make -C /tmp/n3_layer_b_full -f Vrecam_dss_n3_rc_group_live_state_top.mk -j2
+/tmp/n3_layer_b_full/Vrecam_dss_n3_rc_group_live_state_top 1000
+/tmp/n3_layer_b_full/Vrecam_dss_n3_rc_group_live_state_top 10000
+
+verilator --cc --sv --top-module recam_dss_n3_rc_group_live_state_top --Mdir /tmp/n3_layer_b_high <seven production RTL sources> --exe <high_pattern_full_top.cpp> <three oracle.cpp sources> -CFLAGS -I<tb_dir>
+make -C /tmp/n3_layer_b_high -f Vrecam_dss_n3_rc_group_live_state_top.mk -j2
+/tmp/n3_layer_b_high/Vrecam_dss_n3_rc_group_live_state_top
+
+DETERMINISTIC_PRE_POST:
+FULL_TOP_1K=PASS/PASS; seed=0x4e335247; mismatches=0; repairable=1000; T0/PatternID1 unchanged
+FULL_TOP_10K=PASS/PASS; seed=0x4e335247; mismatches=0; repairable=10000; T0/PatternID1 unchanged
+HIGH_PATTERN_ARCHIVED/POST=PASS/PASS; seed=0x4e33524f; witness=2474; PatternID=20
+GROUP_ORACLE_SEMANTIC_DRIFT=NONE
+RECONSTRUCTION_ORACLE_SEMANTIC_DRIFT=NONE
+LATENCY_SKELETON=COMPILE_ONLY_NOT_EXECUTED

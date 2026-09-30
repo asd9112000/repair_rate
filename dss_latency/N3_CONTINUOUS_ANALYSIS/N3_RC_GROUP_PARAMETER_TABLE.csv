@@ -1,0 +1,30 @@
+Parameter,N2 value,N3 production value,Historical RS3 reference,Status,Source,Reason,RTL impact
+Topology,G2X2 directional m=1,G2X2 directional m=1,G2X2 directional m=1,UNCHANGED_FROM_N2,N2 frozen CA-LIVE plus RS3 config evidence,Four-SA resource graph unchanged,Reuse controller topology
+SA count,4,4,4,UNCHANGED_FROM_N2,N2 frozen CA-LIVE plus RS3 source,A B C D remain,No change
+RS CS SHARE_M,2 2 1,3 3 1,3 3 1,SCALED_FROM_N2,N2 plus RS3 contract,Capacity changes only,Scale capacity tables
+Configs per role,4,4,4,UNCHANGED_FROM_N2,N2 core plus RS3 config table,Same canonical role slot count,No scan-length change
+Analyzer evaluations per active SA,4,4,4,UNCHANGED_FROM_N2,N2 controller and role slots,One shared analyzer per canonical slot,No control change
+MAX_K,5,7,7,SCALED_FROM_N2,N2 port count plus RS3 config capacity,Maximum R+C changes,Scale pivot count
+Pivot slots,5,7,7,SCALED_FROM_N2,N2 top plus production contract,Maximum active K changes,Scale live and reconstruction pivot arrays
+Hybrid entries,7,17,17,SCALED_FROM_N2,N2 top plus RS3 capacity evidence,Target envelope changes,Scale live analyzer projection only
+Pointer width,3,3,3,UNCHANGED_FROM_N2,N2 and RS3 source,Indices 0 through 6 fit,No width change
+ROW_ADDR_W,9,9,9,UNCHANGED_FROM_N2,N2 frozen top plus production contract,Physical row domain unchanged,No width change
+PHYS_COL_ADDR_W,13,13,historical pivot-coordinate field 5,PRODUCTION_FROZEN,N2 frozen top plus final pre-RTL contract,Capacity scaling does not alter physical column domain,Use 13-bit production pivot column and repair outputs
+WORD_COL_ADDR_W,5,5,5,UNCHANGED_FROM_N2,N2 frozen top plus production contract,Physical word-column domain unchanged,No change
+HYBRID_LINE_ADDR_W,13,13,historical differing-coordinate field 9,PRODUCTION_FROZEN,N2 frozen top plus final pre-RTL contract,Capacity scaling does not alter physical Hybrid-line domain,Use 13-bit production Hybrid differing projection
+Historical RS3 analyzer payload,not applicable,reference only,400,HISTORICAL_REFERENCE,RS3 group top,Recovered field semantics and pattern universe only,Must not define production physical widths
+Production N3 analyzer payload,272,524,400 reference only,PRODUCTION_FROZEN,Final pre-RTL contract,Full physical address fidelity,One combinational live projection into shared analyzer
+PatternID width,4,6,6,SCALED_FROM_N2,N2 store plus RS3 pattern universe,Maximum legal pattern 35,Widen stored and selected PatternID
+Candidate records,16,16,16,UNCHANGED_FROM_N2,N2 and RS3 stores,4 SA x 4 slots,No count change
+Candidate record bits,5,7,7,SCALED_FROM_N2,N2 and RS3 stores,PatternID widens two bits,Widen record
+Candidate store bits,80,112,112,SCALED_FROM_N2,N2 and RS3 stores,16 records x 5 to 7,Widen store
+Candidate ActionID,implicit slot,implicit slot,implicit slot,UNCHANGED_FROM_N2,N2 slot decode plus RS3 table,Role slot defines action,No field added
+Analyzer snapshot bank,none,none,none,PROHIBITED,N2 CA-LIVE template plus final pre-RTL contract,Projection remains live and combinational,No 4x524 snapshot banks or new 524-bit StateBank
+Reconstruction private pivot capture,4x5x(9+13)=440,4x7x(9+13)=616,not defined,MECHANICALLY_DERIVED,N2 dss_group_pivot_address_regs,Only pivot count changes,Scale row and physical-column capture arrays
+Reconstruction selected state,commit4 plus config12 plus pattern16 = 32,commit4 plus config12 plus pattern24 = 40,not defined,MECHANICALLY_DERIVED,N2 frozen core and pivot reconstruction,PatternID only widens,Keep registered selection lifecycle
+Reconstruction retained dependency width,472,656,not defined,MECHANICALLY_DERIVED,N2 frozen top/core/pivot module,Private capture plus selected inputs,Reuse reconstruction architecture
+Final repair address output,4x5x13=260,4x7x13=364,not defined,MECHANICALLY_DERIVED,N2 frozen top,Same physical address domain with count widening,Scale output count only
+Final row identity output,4x5=20,4x7=28,not defined,MECHANICALLY_DERIVED,N2 frozen top,Same semantics with count widening,Scale output count only
+Final line valid output,4x5=20,4x7=28,not defined,MECHANICALLY_DERIVED,N2 frozen top,Same semantics with count widening,Scale output count only
+Production analyzer,shared live analyzer,shared live analyzer,historical runtime nth_pattern reference only,PRODUCTION_FROZEN,Fixed mask equivalence contract,Fixed masks replace runtime pattern enumeration,Verify with 524-bit decision oracle
+CA-LIVE control,N2 frozen policy,N2 frozen policy,non-CA RS3 control reference only,UNCHANGED_FROM_N2,N2 canonical authority,Update wins and four-slot schedule retained,Preserve controller lifecycle
