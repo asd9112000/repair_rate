@@ -1,0 +1,2028 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -input_pins
+        -max_paths 10
+Design : recam_dss_g2x2_r_static_early_live_state_top
+Version: W-2024.09-SP2
+Date   : Tue Sep 29 16:56:12 2026
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[21]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U85/A (NOR2X4)                                     0.00       0.26 f
+  core/U85/Y (NOR2X4)                                     0.19       0.45 r
+  core/scan_config_id_o[2] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.45 r
+  analyzer/config_id_i[2] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.45 r
+  analyzer/U3061/A (INVX8)                                0.00       0.45 r
+  analyzer/U3061/Y (INVX8)                                0.08       0.54 f
+  analyzer/U24/A (INVX8)                                  0.00       0.54 f
+  analyzer/U24/Y (INVX8)                                  0.11       0.64 r
+  analyzer/U2259/A (INVX8)                                0.00       0.64 r
+  analyzer/U2259/Y (INVX8)                                0.09       0.73 f
+  analyzer/U3369/B (NAND2X4)                              0.00       0.73 f
+  analyzer/U3369/Y (NAND2X4)                              0.13       0.86 r
+  analyzer/U2256/A (BUFX20)                               0.00       0.86 r
+  analyzer/U2256/Y (BUFX20)                               0.16       1.02 r
+  analyzer/U2455/A (CLKINVX3)                             0.00       1.02 r
+  analyzer/U2455/Y (CLKINVX3)                             0.21       1.23 f
+  analyzer/U3524/A0N (OAI2BB2X2)                          0.00       1.23 f
+  analyzer/U3524/Y (OAI2BB2X2)                            0.34       1.57 f
+  analyzer/U3032/A (XOR2X2)                               0.00       1.57 f
+  analyzer/U3032/Y (XOR2X2)                               0.32       1.89 f
+  analyzer/U3606/C (NOR3X4)                               0.00       1.89 f
+  analyzer/U3606/Y (NOR3X4)                               0.23       2.12 r
+  analyzer/U3916/A (AND4X4)                               0.00       2.12 r
+  analyzer/U3916/Y (AND4X4)                               0.27       2.39 r
+  analyzer/U2662/B (NAND3X4)                              0.00       2.39 r
+  analyzer/U2662/Y (NAND3X4)                              0.22       2.61 f
+  analyzer/U3963/D (AND4X4)                               0.00       2.61 f
+  analyzer/U3963/Y (AND4X4)                               0.40       3.01 f
+  analyzer/U347/A (BUFX16)                                0.00       3.01 f
+  analyzer/U347/Y (BUFX16)                                0.18       3.20 f
+  analyzer/U4279/S0 (MXI2X4)                              0.00       3.20 f
+  analyzer/U4279/Y (MXI2X4)                               0.20       3.39 r
+  analyzer/U2927/A (XNOR2X4)                              0.00       3.39 r
+  analyzer/U2927/Y (XNOR2X4)                              0.28       3.67 f
+  analyzer/U2926/A (NOR2X4)                               0.00       3.67 f
+  analyzer/U2926/Y (NOR2X4)                               0.11       3.78 r
+  analyzer/U1052/A (NAND4X2)                              0.00       3.78 r
+  analyzer/U1052/Y (NAND4X2)                              0.14       3.92 f
+  analyzer/U4706/D (OR4X4)                                0.00       3.92 f
+  analyzer/U4706/Y (OR4X4)                                0.50       4.42 f
+  analyzer/U3330/A (CLKINVX8)                             0.00       4.42 f
+  analyzer/U3330/Y (CLKINVX8)                             0.08       4.50 r
+  analyzer/U3317/A (AND2X4)                               0.00       4.50 r
+  analyzer/U3317/Y (AND2X4)                               0.16       4.66 r
+  analyzer/U3571/A (NOR2X4)                               0.00       4.66 r
+  analyzer/U3571/Y (NOR2X4)                               0.06       4.73 f
+  analyzer/U4779/B0 (OAI2BB1X4)                           0.00       4.73 f
+  analyzer/U4779/Y (OAI2BB1X4)                            0.13       4.86 r
+  analyzer/U3062/B (NAND2X4)                              0.00       4.86 r
+  analyzer/U3062/Y (NAND2X4)                              0.08       4.94 f
+  analyzer/U4496/A (NOR2X4)                               0.00       4.94 f
+  analyzer/U4496/Y (NOR2X4)                               0.14       5.09 r
+  analyzer/U85/A (BUFX16)                                 0.00       5.09 r
+  analyzer/U85/Y (BUFX16)                                 0.17       5.26 r
+  analyzer/U3156/A (BUFX16)                               0.00       5.26 r
+  analyzer/U3156/Y (BUFX16)                               0.15       5.41 r
+  analyzer/U4533/S0 (MXI2X4)                              0.00       5.41 r
+  analyzer/U4533/Y (MXI2X4)                               0.27       5.68 r
+  analyzer/U3932/B (NAND2X4)                              0.00       5.68 r
+  analyzer/U3932/Y (NAND2X4)                              0.10       5.78 f
+  analyzer/U4189/B (NAND2X4)                              0.00       5.78 f
+  analyzer/U4189/Y (NAND2X4)                              0.17       5.95 r
+  analyzer/U4239/C0 (OAI211X2)                            0.00       5.95 r
+  analyzer/U4239/Y (OAI211X2)                             0.18       6.13 f
+  analyzer/U684/C (NOR4X4)                                0.00       6.13 f
+  analyzer/U684/Y (NOR4X4)                                0.36       6.49 r
+  analyzer/U683/B (NAND4X4)                               0.00       6.49 r
+  analyzer/U683/Y (NAND4X4)                               0.18       6.66 f
+  analyzer/U3960/C (NAND3X4)                              0.00       6.66 f
+  analyzer/U3960/Y (NAND3X4)                              0.26       6.92 r
+  analyzer/U397/A (INVX8)                                 0.00       6.92 r
+  analyzer/U397/Y (INVX8)                                 0.15       7.07 f
+  analyzer/U257/A (INVX3)                                 0.00       7.07 f
+  analyzer/U257/Y (INVX3)                                 0.12       7.19 r
+  analyzer/U467/B (NAND2X4)                               0.00       7.19 r
+  analyzer/U467/Y (NAND2X4)                               0.08       7.27 f
+  analyzer/U468/A (NAND2X4)                               0.00       7.27 f
+  analyzer/U468/Y (NAND2X4)                               0.12       7.39 r
+  analyzer/U469/A (INVX8)                                 0.00       7.39 r
+  analyzer/U469/Y (INVX8)                                 0.05       7.44 f
+  analyzer/U473/A (XOR2X4)                                0.00       7.44 f
+  analyzer/U473/Y (XOR2X4)                                0.20       7.65 f
+  analyzer/U4762/C (AND4X4)                               0.00       7.65 f
+  analyzer/U4762/Y (AND4X4)                               0.25       7.90 f
+  analyzer/U4761/C (NAND4X4)                              0.00       7.90 f
+  analyzer/U4761/Y (NAND4X4)                              0.17       8.07 r
+  analyzer/U105/A (INVX4)                                 0.00       8.07 r
+  analyzer/U105/Y (INVX4)                                 0.05       8.12 f
+  analyzer/U4722/A1N (OAI2BB1X4)                          0.00       8.12 f
+  analyzer/U4722/Y (OAI2BB1X4)                            0.17       8.28 f
+  analyzer/U2999/A (OR4X4)                                0.00       8.28 f
+  analyzer/U2999/Y (OR4X4)                                0.34       8.62 f
+  analyzer/U4750/A (XOR2X4)                               0.00       8.62 f
+  analyzer/U4750/Y (XOR2X4)                               0.37       8.99 r
+  analyzer/U4562/A1N (OAI2BB1X4)                          0.00       8.99 r
+  analyzer/U4562/Y (OAI2BB1X4)                            0.29       9.28 r
+  analyzer/U577/B (NAND3X4)                               0.00       9.28 r
+  analyzer/U577/Y (NAND3X4)                               0.14       9.42 f
+  analyzer/U579/A (CLKINVX8)                              0.00       9.42 f
+  analyzer/U579/Y (CLKINVX8)                              0.07       9.48 r
+  analyzer/U578/A (NAND2X4)                               0.00       9.48 r
+  analyzer/U578/Y (NAND2X4)                               0.13       9.61 f
+  analyzer/U4581/A2 (OAI32X2)                             0.00       9.61 f
+  analyzer/U4581/Y (OAI32X2)                              0.46      10.07 r
+  analyzer/U4823/C (NAND4X4)                              0.00      10.07 r
+  analyzer/U4823/Y (NAND4X4)                              0.19      10.26 f
+  analyzer/U5243/C0 (OAI211X2)                            0.00      10.26 f
+  analyzer/U5243/Y (OAI211X2)                             0.20      10.45 r
+  analyzer/U5246/B0 (OAI221X2)                            0.00      10.45 r
+  analyzer/U5246/Y (OAI221X2)                             0.21      10.66 f
+  analyzer/U4675/A (BUFX12)                               0.00      10.66 f
+  analyzer/U4675/Y (BUFX12)                               0.21      10.88 f
+  analyzer/U239/A (BUFX20)                                0.00      10.88 f
+  analyzer/U239/Y (BUFX20)                                0.13      11.01 f
+  analyzer/U853/A (CLKINVX4)                              0.00      11.01 f
+  analyzer/U853/Y (CLKINVX4)                              0.05      11.06 r
+  analyzer/U3028/B (NAND3XL)                              0.00      11.06 r
+  analyzer/U3028/Y (NAND3XL)                              0.27      11.33 f
+  analyzer/U4816/C (NAND3X4)                              0.00      11.33 f
+  analyzer/U4816/Y (NAND3X4)                              0.36      11.69 r
+  analyzer/U3618/A (MXI2X4)                               0.00      11.69 r
+  analyzer/U3618/Y (MXI2X4)                               0.15      11.84 f
+  analyzer/U436/B (NAND2X4)                               0.00      11.84 f
+  analyzer/U436/Y (NAND2X4)                               0.20      12.05 r
+  analyzer/U82/A (INVX8)                                  0.00      12.05 r
+  analyzer/U82/Y (INVX8)                                  0.05      12.09 f
+  analyzer/U437/A (NAND2X4)                               0.00      12.09 f
+  analyzer/U437/Y (NAND2X4)                               0.13      12.22 r
+  analyzer/U186/A (CLKINVX8)                              0.00      12.22 r
+  analyzer/U186/Y (CLKINVX8)                              0.07      12.29 f
+  analyzer/U4668/A0N (OAI2BB1X4)                          0.00      12.29 f
+  analyzer/U4668/Y (OAI2BB1X4)                            0.22      12.51 f
+  analyzer/U785/B0 (AOI211X2)                             0.00      12.51 f
+  analyzer/U785/Y (AOI211X2)                              0.26      12.77 r
+  analyzer/U3787/A1 (OAI33X2)                             0.00      12.77 r
+  analyzer/U3787/Y (OAI33X2)                              0.27      13.04 f
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      13.04 f
+  U4/A (BUFX12)                                           0.00      13.04 f
+  U4/Y (BUFX12)                                           0.21      13.26 f
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.26 f
+  selected_address_mux/U10/A (BUFX8)                      0.00      13.26 f
+  selected_address_mux/U10/Y (BUFX8)                      0.18      13.43 f
+  selected_address_mux/U140/AN (NAND2BX2)                 0.00      13.43 f
+  selected_address_mux/U140/Y (NAND2BX2)                  0.22      13.65 f
+  selected_address_mux/U44/A (NAND3X4)                    0.00      13.65 f
+  selected_address_mux/U44/Y (NAND3X4)                    0.19      13.84 r
+  selected_address_mux/U43/A (INVX8)                      0.00      13.84 r
+  selected_address_mux/U43/Y (INVX8)                      0.08      13.91 f
+  selected_address_mux/U147/A0 (OAI211X2)                 0.00      13.91 f
+  selected_address_mux/U147/Y (OAI211X2)                  0.29      14.21 r
+  selected_address_mux/U222/A (NAND3X4)                   0.00      14.21 r
+  selected_address_mux/U222/Y (NAND3X4)                   0.16      14.36 f
+  selected_address_mux/U214/A (INVX8)                     0.00      14.36 f
+  selected_address_mux/U214/Y (INVX8)                     0.14      14.51 r
+  selected_address_mux/U189/A (INVX8)                     0.00      14.51 r
+  selected_address_mux/U189/Y (INVX8)                     0.06      14.57 f
+  selected_address_mux/U190/A (INVX8)                     0.00      14.57 f
+  selected_address_mux/U190/Y (INVX8)                     0.10      14.66 r
+  selected_address_mux/U78/B1 (AOI22X2)                   0.00      14.66 r
+  selected_address_mux/U78/Y (AOI22X2)                    0.15      14.82 f
+  selected_address_mux/U286/A (INVX4)                     0.00      14.82 f
+  selected_address_mux/U286/Y (INVX4)                     0.18      15.00 r
+  selected_address_mux/solution_line_address_flat_o[21] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 r
+  solution_line_address_flat_o[21] (out)                  0.00      15.00 r
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[20]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U85/A (NOR2X4)                                     0.00       0.26 f
+  core/U85/Y (NOR2X4)                                     0.19       0.45 r
+  core/scan_config_id_o[2] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.45 r
+  analyzer/config_id_i[2] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.45 r
+  analyzer/U3061/A (INVX8)                                0.00       0.45 r
+  analyzer/U3061/Y (INVX8)                                0.08       0.54 f
+  analyzer/U24/A (INVX8)                                  0.00       0.54 f
+  analyzer/U24/Y (INVX8)                                  0.11       0.64 r
+  analyzer/U2259/A (INVX8)                                0.00       0.64 r
+  analyzer/U2259/Y (INVX8)                                0.09       0.73 f
+  analyzer/U3369/B (NAND2X4)                              0.00       0.73 f
+  analyzer/U3369/Y (NAND2X4)                              0.13       0.86 r
+  analyzer/U2256/A (BUFX20)                               0.00       0.86 r
+  analyzer/U2256/Y (BUFX20)                               0.16       1.02 r
+  analyzer/U2455/A (CLKINVX3)                             0.00       1.02 r
+  analyzer/U2455/Y (CLKINVX3)                             0.21       1.23 f
+  analyzer/U3524/A0N (OAI2BB2X2)                          0.00       1.23 f
+  analyzer/U3524/Y (OAI2BB2X2)                            0.34       1.57 f
+  analyzer/U3032/A (XOR2X2)                               0.00       1.57 f
+  analyzer/U3032/Y (XOR2X2)                               0.32       1.89 f
+  analyzer/U3606/C (NOR3X4)                               0.00       1.89 f
+  analyzer/U3606/Y (NOR3X4)                               0.23       2.12 r
+  analyzer/U3916/A (AND4X4)                               0.00       2.12 r
+  analyzer/U3916/Y (AND4X4)                               0.27       2.39 r
+  analyzer/U2662/B (NAND3X4)                              0.00       2.39 r
+  analyzer/U2662/Y (NAND3X4)                              0.22       2.61 f
+  analyzer/U3963/D (AND4X4)                               0.00       2.61 f
+  analyzer/U3963/Y (AND4X4)                               0.40       3.01 f
+  analyzer/U347/A (BUFX16)                                0.00       3.01 f
+  analyzer/U347/Y (BUFX16)                                0.18       3.20 f
+  analyzer/U4279/S0 (MXI2X4)                              0.00       3.20 f
+  analyzer/U4279/Y (MXI2X4)                               0.20       3.39 r
+  analyzer/U2927/A (XNOR2X4)                              0.00       3.39 r
+  analyzer/U2927/Y (XNOR2X4)                              0.28       3.67 f
+  analyzer/U2926/A (NOR2X4)                               0.00       3.67 f
+  analyzer/U2926/Y (NOR2X4)                               0.11       3.78 r
+  analyzer/U1052/A (NAND4X2)                              0.00       3.78 r
+  analyzer/U1052/Y (NAND4X2)                              0.14       3.92 f
+  analyzer/U4706/D (OR4X4)                                0.00       3.92 f
+  analyzer/U4706/Y (OR4X4)                                0.50       4.42 f
+  analyzer/U3330/A (CLKINVX8)                             0.00       4.42 f
+  analyzer/U3330/Y (CLKINVX8)                             0.08       4.50 r
+  analyzer/U3317/A (AND2X4)                               0.00       4.50 r
+  analyzer/U3317/Y (AND2X4)                               0.16       4.66 r
+  analyzer/U3571/A (NOR2X4)                               0.00       4.66 r
+  analyzer/U3571/Y (NOR2X4)                               0.06       4.73 f
+  analyzer/U4779/B0 (OAI2BB1X4)                           0.00       4.73 f
+  analyzer/U4779/Y (OAI2BB1X4)                            0.13       4.86 r
+  analyzer/U3062/B (NAND2X4)                              0.00       4.86 r
+  analyzer/U3062/Y (NAND2X4)                              0.08       4.94 f
+  analyzer/U4496/A (NOR2X4)                               0.00       4.94 f
+  analyzer/U4496/Y (NOR2X4)                               0.14       5.09 r
+  analyzer/U85/A (BUFX16)                                 0.00       5.09 r
+  analyzer/U85/Y (BUFX16)                                 0.17       5.26 r
+  analyzer/U3156/A (BUFX16)                               0.00       5.26 r
+  analyzer/U3156/Y (BUFX16)                               0.15       5.41 r
+  analyzer/U4533/S0 (MXI2X4)                              0.00       5.41 r
+  analyzer/U4533/Y (MXI2X4)                               0.27       5.68 r
+  analyzer/U3932/B (NAND2X4)                              0.00       5.68 r
+  analyzer/U3932/Y (NAND2X4)                              0.10       5.78 f
+  analyzer/U4189/B (NAND2X4)                              0.00       5.78 f
+  analyzer/U4189/Y (NAND2X4)                              0.17       5.95 r
+  analyzer/U4239/C0 (OAI211X2)                            0.00       5.95 r
+  analyzer/U4239/Y (OAI211X2)                             0.18       6.13 f
+  analyzer/U684/C (NOR4X4)                                0.00       6.13 f
+  analyzer/U684/Y (NOR4X4)                                0.36       6.49 r
+  analyzer/U683/B (NAND4X4)                               0.00       6.49 r
+  analyzer/U683/Y (NAND4X4)                               0.18       6.66 f
+  analyzer/U3960/C (NAND3X4)                              0.00       6.66 f
+  analyzer/U3960/Y (NAND3X4)                              0.26       6.92 r
+  analyzer/U397/A (INVX8)                                 0.00       6.92 r
+  analyzer/U397/Y (INVX8)                                 0.15       7.07 f
+  analyzer/U257/A (INVX3)                                 0.00       7.07 f
+  analyzer/U257/Y (INVX3)                                 0.12       7.19 r
+  analyzer/U467/B (NAND2X4)                               0.00       7.19 r
+  analyzer/U467/Y (NAND2X4)                               0.08       7.27 f
+  analyzer/U468/A (NAND2X4)                               0.00       7.27 f
+  analyzer/U468/Y (NAND2X4)                               0.12       7.39 r
+  analyzer/U469/A (INVX8)                                 0.00       7.39 r
+  analyzer/U469/Y (INVX8)                                 0.05       7.44 f
+  analyzer/U473/A (XOR2X4)                                0.00       7.44 f
+  analyzer/U473/Y (XOR2X4)                                0.20       7.65 f
+  analyzer/U4762/C (AND4X4)                               0.00       7.65 f
+  analyzer/U4762/Y (AND4X4)                               0.25       7.90 f
+  analyzer/U4761/C (NAND4X4)                              0.00       7.90 f
+  analyzer/U4761/Y (NAND4X4)                              0.17       8.07 r
+  analyzer/U105/A (INVX4)                                 0.00       8.07 r
+  analyzer/U105/Y (INVX4)                                 0.05       8.12 f
+  analyzer/U4722/A1N (OAI2BB1X4)                          0.00       8.12 f
+  analyzer/U4722/Y (OAI2BB1X4)                            0.17       8.28 f
+  analyzer/U2999/A (OR4X4)                                0.00       8.28 f
+  analyzer/U2999/Y (OR4X4)                                0.34       8.62 f
+  analyzer/U4750/A (XOR2X4)                               0.00       8.62 f
+  analyzer/U4750/Y (XOR2X4)                               0.37       8.99 r
+  analyzer/U4562/A1N (OAI2BB1X4)                          0.00       8.99 r
+  analyzer/U4562/Y (OAI2BB1X4)                            0.29       9.28 r
+  analyzer/U577/B (NAND3X4)                               0.00       9.28 r
+  analyzer/U577/Y (NAND3X4)                               0.14       9.42 f
+  analyzer/U579/A (CLKINVX8)                              0.00       9.42 f
+  analyzer/U579/Y (CLKINVX8)                              0.07       9.48 r
+  analyzer/U578/A (NAND2X4)                               0.00       9.48 r
+  analyzer/U578/Y (NAND2X4)                               0.13       9.61 f
+  analyzer/U4581/A2 (OAI32X2)                             0.00       9.61 f
+  analyzer/U4581/Y (OAI32X2)                              0.46      10.07 r
+  analyzer/U4823/C (NAND4X4)                              0.00      10.07 r
+  analyzer/U4823/Y (NAND4X4)                              0.19      10.26 f
+  analyzer/U5243/C0 (OAI211X2)                            0.00      10.26 f
+  analyzer/U5243/Y (OAI211X2)                             0.20      10.45 r
+  analyzer/U5246/B0 (OAI221X2)                            0.00      10.45 r
+  analyzer/U5246/Y (OAI221X2)                             0.21      10.66 f
+  analyzer/U4675/A (BUFX12)                               0.00      10.66 f
+  analyzer/U4675/Y (BUFX12)                               0.21      10.88 f
+  analyzer/U239/A (BUFX20)                                0.00      10.88 f
+  analyzer/U239/Y (BUFX20)                                0.13      11.01 f
+  analyzer/U853/A (CLKINVX4)                              0.00      11.01 f
+  analyzer/U853/Y (CLKINVX4)                              0.05      11.06 r
+  analyzer/U3028/B (NAND3XL)                              0.00      11.06 r
+  analyzer/U3028/Y (NAND3XL)                              0.27      11.33 f
+  analyzer/U4816/C (NAND3X4)                              0.00      11.33 f
+  analyzer/U4816/Y (NAND3X4)                              0.36      11.69 r
+  analyzer/U3618/A (MXI2X4)                               0.00      11.69 r
+  analyzer/U3618/Y (MXI2X4)                               0.15      11.84 f
+  analyzer/U436/B (NAND2X4)                               0.00      11.84 f
+  analyzer/U436/Y (NAND2X4)                               0.20      12.05 r
+  analyzer/U82/A (INVX8)                                  0.00      12.05 r
+  analyzer/U82/Y (INVX8)                                  0.05      12.09 f
+  analyzer/U437/A (NAND2X4)                               0.00      12.09 f
+  analyzer/U437/Y (NAND2X4)                               0.13      12.22 r
+  analyzer/U186/A (CLKINVX8)                              0.00      12.22 r
+  analyzer/U186/Y (CLKINVX8)                              0.07      12.29 f
+  analyzer/U4668/A0N (OAI2BB1X4)                          0.00      12.29 f
+  analyzer/U4668/Y (OAI2BB1X4)                            0.22      12.51 f
+  analyzer/U785/B0 (AOI211X2)                             0.00      12.51 f
+  analyzer/U785/Y (AOI211X2)                              0.26      12.77 r
+  analyzer/U3787/A1 (OAI33X2)                             0.00      12.77 r
+  analyzer/U3787/Y (OAI33X2)                              0.27      13.04 f
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      13.04 f
+  U4/A (BUFX12)                                           0.00      13.04 f
+  U4/Y (BUFX12)                                           0.21      13.26 f
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.26 f
+  selected_address_mux/U10/A (BUFX8)                      0.00      13.26 f
+  selected_address_mux/U10/Y (BUFX8)                      0.18      13.43 f
+  selected_address_mux/U140/AN (NAND2BX2)                 0.00      13.43 f
+  selected_address_mux/U140/Y (NAND2BX2)                  0.22      13.65 f
+  selected_address_mux/U44/A (NAND3X4)                    0.00      13.65 f
+  selected_address_mux/U44/Y (NAND3X4)                    0.19      13.84 r
+  selected_address_mux/U43/A (INVX8)                      0.00      13.84 r
+  selected_address_mux/U43/Y (INVX8)                      0.08      13.91 f
+  selected_address_mux/U147/A0 (OAI211X2)                 0.00      13.91 f
+  selected_address_mux/U147/Y (OAI211X2)                  0.29      14.21 r
+  selected_address_mux/U222/A (NAND3X4)                   0.00      14.21 r
+  selected_address_mux/U222/Y (NAND3X4)                   0.16      14.36 f
+  selected_address_mux/U214/A (INVX8)                     0.00      14.36 f
+  selected_address_mux/U214/Y (INVX8)                     0.14      14.51 r
+  selected_address_mux/U189/A (INVX8)                     0.00      14.51 r
+  selected_address_mux/U189/Y (INVX8)                     0.06      14.57 f
+  selected_address_mux/U190/A (INVX8)                     0.00      14.57 f
+  selected_address_mux/U190/Y (INVX8)                     0.10      14.66 r
+  selected_address_mux/U77/B1 (AOI22X2)                   0.00      14.66 r
+  selected_address_mux/U77/Y (AOI22X2)                    0.15      14.82 f
+  selected_address_mux/U277/A (INVX4)                     0.00      14.82 f
+  selected_address_mux/U277/Y (INVX4)                     0.18      15.00 r
+  selected_address_mux/solution_line_address_flat_o[20] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 r
+  solution_line_address_flat_o[20] (out)                  0.00      15.00 r
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[15]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U85/A (NOR2X4)                                     0.00       0.26 f
+  core/U85/Y (NOR2X4)                                     0.19       0.45 r
+  core/scan_config_id_o[2] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.45 r
+  analyzer/config_id_i[2] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.45 r
+  analyzer/U3061/A (INVX8)                                0.00       0.45 r
+  analyzer/U3061/Y (INVX8)                                0.08       0.54 f
+  analyzer/U24/A (INVX8)                                  0.00       0.54 f
+  analyzer/U24/Y (INVX8)                                  0.11       0.64 r
+  analyzer/U2259/A (INVX8)                                0.00       0.64 r
+  analyzer/U2259/Y (INVX8)                                0.09       0.73 f
+  analyzer/U3369/B (NAND2X4)                              0.00       0.73 f
+  analyzer/U3369/Y (NAND2X4)                              0.13       0.86 r
+  analyzer/U2256/A (BUFX20)                               0.00       0.86 r
+  analyzer/U2256/Y (BUFX20)                               0.16       1.02 r
+  analyzer/U2455/A (CLKINVX3)                             0.00       1.02 r
+  analyzer/U2455/Y (CLKINVX3)                             0.21       1.23 f
+  analyzer/U3524/A0N (OAI2BB2X2)                          0.00       1.23 f
+  analyzer/U3524/Y (OAI2BB2X2)                            0.34       1.57 f
+  analyzer/U3032/A (XOR2X2)                               0.00       1.57 f
+  analyzer/U3032/Y (XOR2X2)                               0.32       1.89 f
+  analyzer/U3606/C (NOR3X4)                               0.00       1.89 f
+  analyzer/U3606/Y (NOR3X4)                               0.23       2.12 r
+  analyzer/U3916/A (AND4X4)                               0.00       2.12 r
+  analyzer/U3916/Y (AND4X4)                               0.27       2.39 r
+  analyzer/U2662/B (NAND3X4)                              0.00       2.39 r
+  analyzer/U2662/Y (NAND3X4)                              0.22       2.61 f
+  analyzer/U3963/D (AND4X4)                               0.00       2.61 f
+  analyzer/U3963/Y (AND4X4)                               0.40       3.01 f
+  analyzer/U347/A (BUFX16)                                0.00       3.01 f
+  analyzer/U347/Y (BUFX16)                                0.18       3.20 f
+  analyzer/U4279/S0 (MXI2X4)                              0.00       3.20 f
+  analyzer/U4279/Y (MXI2X4)                               0.20       3.39 r
+  analyzer/U2927/A (XNOR2X4)                              0.00       3.39 r
+  analyzer/U2927/Y (XNOR2X4)                              0.28       3.67 f
+  analyzer/U2926/A (NOR2X4)                               0.00       3.67 f
+  analyzer/U2926/Y (NOR2X4)                               0.11       3.78 r
+  analyzer/U1052/A (NAND4X2)                              0.00       3.78 r
+  analyzer/U1052/Y (NAND4X2)                              0.14       3.92 f
+  analyzer/U4706/D (OR4X4)                                0.00       3.92 f
+  analyzer/U4706/Y (OR4X4)                                0.50       4.42 f
+  analyzer/U3330/A (CLKINVX8)                             0.00       4.42 f
+  analyzer/U3330/Y (CLKINVX8)                             0.08       4.50 r
+  analyzer/U3317/A (AND2X4)                               0.00       4.50 r
+  analyzer/U3317/Y (AND2X4)                               0.16       4.66 r
+  analyzer/U3571/A (NOR2X4)                               0.00       4.66 r
+  analyzer/U3571/Y (NOR2X4)                               0.06       4.73 f
+  analyzer/U4779/B0 (OAI2BB1X4)                           0.00       4.73 f
+  analyzer/U4779/Y (OAI2BB1X4)                            0.13       4.86 r
+  analyzer/U3062/B (NAND2X4)                              0.00       4.86 r
+  analyzer/U3062/Y (NAND2X4)                              0.08       4.94 f
+  analyzer/U4496/A (NOR2X4)                               0.00       4.94 f
+  analyzer/U4496/Y (NOR2X4)                               0.14       5.09 r
+  analyzer/U85/A (BUFX16)                                 0.00       5.09 r
+  analyzer/U85/Y (BUFX16)                                 0.17       5.26 r
+  analyzer/U3156/A (BUFX16)                               0.00       5.26 r
+  analyzer/U3156/Y (BUFX16)                               0.15       5.41 r
+  analyzer/U4533/S0 (MXI2X4)                              0.00       5.41 r
+  analyzer/U4533/Y (MXI2X4)                               0.27       5.68 r
+  analyzer/U3932/B (NAND2X4)                              0.00       5.68 r
+  analyzer/U3932/Y (NAND2X4)                              0.10       5.78 f
+  analyzer/U4189/B (NAND2X4)                              0.00       5.78 f
+  analyzer/U4189/Y (NAND2X4)                              0.17       5.95 r
+  analyzer/U4239/C0 (OAI211X2)                            0.00       5.95 r
+  analyzer/U4239/Y (OAI211X2)                             0.18       6.13 f
+  analyzer/U684/C (NOR4X4)                                0.00       6.13 f
+  analyzer/U684/Y (NOR4X4)                                0.36       6.49 r
+  analyzer/U683/B (NAND4X4)                               0.00       6.49 r
+  analyzer/U683/Y (NAND4X4)                               0.18       6.66 f
+  analyzer/U3960/C (NAND3X4)                              0.00       6.66 f
+  analyzer/U3960/Y (NAND3X4)                              0.26       6.92 r
+  analyzer/U397/A (INVX8)                                 0.00       6.92 r
+  analyzer/U397/Y (INVX8)                                 0.15       7.07 f
+  analyzer/U257/A (INVX3)                                 0.00       7.07 f
+  analyzer/U257/Y (INVX3)                                 0.12       7.19 r
+  analyzer/U467/B (NAND2X4)                               0.00       7.19 r
+  analyzer/U467/Y (NAND2X4)                               0.08       7.27 f
+  analyzer/U468/A (NAND2X4)                               0.00       7.27 f
+  analyzer/U468/Y (NAND2X4)                               0.12       7.39 r
+  analyzer/U469/A (INVX8)                                 0.00       7.39 r
+  analyzer/U469/Y (INVX8)                                 0.05       7.44 f
+  analyzer/U473/A (XOR2X4)                                0.00       7.44 f
+  analyzer/U473/Y (XOR2X4)                                0.20       7.65 f
+  analyzer/U4762/C (AND4X4)                               0.00       7.65 f
+  analyzer/U4762/Y (AND4X4)                               0.25       7.90 f
+  analyzer/U4761/C (NAND4X4)                              0.00       7.90 f
+  analyzer/U4761/Y (NAND4X4)                              0.17       8.07 r
+  analyzer/U105/A (INVX4)                                 0.00       8.07 r
+  analyzer/U105/Y (INVX4)                                 0.05       8.12 f
+  analyzer/U4722/A1N (OAI2BB1X4)                          0.00       8.12 f
+  analyzer/U4722/Y (OAI2BB1X4)                            0.17       8.28 f
+  analyzer/U2999/A (OR4X4)                                0.00       8.28 f
+  analyzer/U2999/Y (OR4X4)                                0.34       8.62 f
+  analyzer/U4750/A (XOR2X4)                               0.00       8.62 f
+  analyzer/U4750/Y (XOR2X4)                               0.37       8.99 r
+  analyzer/U4562/A1N (OAI2BB1X4)                          0.00       8.99 r
+  analyzer/U4562/Y (OAI2BB1X4)                            0.29       9.28 r
+  analyzer/U577/B (NAND3X4)                               0.00       9.28 r
+  analyzer/U577/Y (NAND3X4)                               0.14       9.42 f
+  analyzer/U579/A (CLKINVX8)                              0.00       9.42 f
+  analyzer/U579/Y (CLKINVX8)                              0.07       9.48 r
+  analyzer/U578/A (NAND2X4)                               0.00       9.48 r
+  analyzer/U578/Y (NAND2X4)                               0.13       9.61 f
+  analyzer/U4581/A2 (OAI32X2)                             0.00       9.61 f
+  analyzer/U4581/Y (OAI32X2)                              0.46      10.07 r
+  analyzer/U4823/C (NAND4X4)                              0.00      10.07 r
+  analyzer/U4823/Y (NAND4X4)                              0.19      10.26 f
+  analyzer/U5243/C0 (OAI211X2)                            0.00      10.26 f
+  analyzer/U5243/Y (OAI211X2)                             0.20      10.45 r
+  analyzer/U5246/B0 (OAI221X2)                            0.00      10.45 r
+  analyzer/U5246/Y (OAI221X2)                             0.21      10.66 f
+  analyzer/U4675/A (BUFX12)                               0.00      10.66 f
+  analyzer/U4675/Y (BUFX12)                               0.21      10.88 f
+  analyzer/U239/A (BUFX20)                                0.00      10.88 f
+  analyzer/U239/Y (BUFX20)                                0.13      11.01 f
+  analyzer/U853/A (CLKINVX4)                              0.00      11.01 f
+  analyzer/U853/Y (CLKINVX4)                              0.05      11.06 r
+  analyzer/U3028/B (NAND3XL)                              0.00      11.06 r
+  analyzer/U3028/Y (NAND3XL)                              0.27      11.33 f
+  analyzer/U4816/C (NAND3X4)                              0.00      11.33 f
+  analyzer/U4816/Y (NAND3X4)                              0.36      11.69 r
+  analyzer/U3618/A (MXI2X4)                               0.00      11.69 r
+  analyzer/U3618/Y (MXI2X4)                               0.15      11.84 f
+  analyzer/U436/B (NAND2X4)                               0.00      11.84 f
+  analyzer/U436/Y (NAND2X4)                               0.20      12.05 r
+  analyzer/U82/A (INVX8)                                  0.00      12.05 r
+  analyzer/U82/Y (INVX8)                                  0.05      12.09 f
+  analyzer/U437/A (NAND2X4)                               0.00      12.09 f
+  analyzer/U437/Y (NAND2X4)                               0.13      12.22 r
+  analyzer/U186/A (CLKINVX8)                              0.00      12.22 r
+  analyzer/U186/Y (CLKINVX8)                              0.07      12.29 f
+  analyzer/U4668/A0N (OAI2BB1X4)                          0.00      12.29 f
+  analyzer/U4668/Y (OAI2BB1X4)                            0.22      12.51 f
+  analyzer/U785/B0 (AOI211X2)                             0.00      12.51 f
+  analyzer/U785/Y (AOI211X2)                              0.26      12.77 r
+  analyzer/U3787/A1 (OAI33X2)                             0.00      12.77 r
+  analyzer/U3787/Y (OAI33X2)                              0.27      13.04 f
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      13.04 f
+  U4/A (BUFX12)                                           0.00      13.04 f
+  U4/Y (BUFX12)                                           0.21      13.26 f
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.26 f
+  selected_address_mux/U10/A (BUFX8)                      0.00      13.26 f
+  selected_address_mux/U10/Y (BUFX8)                      0.18      13.43 f
+  selected_address_mux/U140/AN (NAND2BX2)                 0.00      13.43 f
+  selected_address_mux/U140/Y (NAND2BX2)                  0.22      13.65 f
+  selected_address_mux/U44/A (NAND3X4)                    0.00      13.65 f
+  selected_address_mux/U44/Y (NAND3X4)                    0.19      13.84 r
+  selected_address_mux/U43/A (INVX8)                      0.00      13.84 r
+  selected_address_mux/U43/Y (INVX8)                      0.08      13.91 f
+  selected_address_mux/U147/A0 (OAI211X2)                 0.00      13.91 f
+  selected_address_mux/U147/Y (OAI211X2)                  0.29      14.21 r
+  selected_address_mux/U222/A (NAND3X4)                   0.00      14.21 r
+  selected_address_mux/U222/Y (NAND3X4)                   0.16      14.36 f
+  selected_address_mux/U214/A (INVX8)                     0.00      14.36 f
+  selected_address_mux/U214/Y (INVX8)                     0.14      14.51 r
+  selected_address_mux/U189/A (INVX8)                     0.00      14.51 r
+  selected_address_mux/U189/Y (INVX8)                     0.06      14.57 f
+  selected_address_mux/U190/A (INVX8)                     0.00      14.57 f
+  selected_address_mux/U190/Y (INVX8)                     0.10      14.66 r
+  selected_address_mux/U72/B1 (AOI22X2)                   0.00      14.66 r
+  selected_address_mux/U72/Y (AOI22X2)                    0.15      14.82 f
+  selected_address_mux/U251/A (INVX4)                     0.00      14.82 f
+  selected_address_mux/U251/Y (INVX4)                     0.18      15.00 r
+  selected_address_mux/solution_line_address_flat_o[15] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 r
+  solution_line_address_flat_o[15] (out)                  0.00      15.00 r
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[14]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U85/A (NOR2X4)                                     0.00       0.26 f
+  core/U85/Y (NOR2X4)                                     0.19       0.45 r
+  core/scan_config_id_o[2] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.45 r
+  analyzer/config_id_i[2] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.45 r
+  analyzer/U3061/A (INVX8)                                0.00       0.45 r
+  analyzer/U3061/Y (INVX8)                                0.08       0.54 f
+  analyzer/U24/A (INVX8)                                  0.00       0.54 f
+  analyzer/U24/Y (INVX8)                                  0.11       0.64 r
+  analyzer/U2259/A (INVX8)                                0.00       0.64 r
+  analyzer/U2259/Y (INVX8)                                0.09       0.73 f
+  analyzer/U3369/B (NAND2X4)                              0.00       0.73 f
+  analyzer/U3369/Y (NAND2X4)                              0.13       0.86 r
+  analyzer/U2256/A (BUFX20)                               0.00       0.86 r
+  analyzer/U2256/Y (BUFX20)                               0.16       1.02 r
+  analyzer/U2455/A (CLKINVX3)                             0.00       1.02 r
+  analyzer/U2455/Y (CLKINVX3)                             0.21       1.23 f
+  analyzer/U3524/A0N (OAI2BB2X2)                          0.00       1.23 f
+  analyzer/U3524/Y (OAI2BB2X2)                            0.34       1.57 f
+  analyzer/U3032/A (XOR2X2)                               0.00       1.57 f
+  analyzer/U3032/Y (XOR2X2)                               0.32       1.89 f
+  analyzer/U3606/C (NOR3X4)                               0.00       1.89 f
+  analyzer/U3606/Y (NOR3X4)                               0.23       2.12 r
+  analyzer/U3916/A (AND4X4)                               0.00       2.12 r
+  analyzer/U3916/Y (AND4X4)                               0.27       2.39 r
+  analyzer/U2662/B (NAND3X4)                              0.00       2.39 r
+  analyzer/U2662/Y (NAND3X4)                              0.22       2.61 f
+  analyzer/U3963/D (AND4X4)                               0.00       2.61 f
+  analyzer/U3963/Y (AND4X4)                               0.40       3.01 f
+  analyzer/U347/A (BUFX16)                                0.00       3.01 f
+  analyzer/U347/Y (BUFX16)                                0.18       3.20 f
+  analyzer/U4279/S0 (MXI2X4)                              0.00       3.20 f
+  analyzer/U4279/Y (MXI2X4)                               0.20       3.39 r
+  analyzer/U2927/A (XNOR2X4)                              0.00       3.39 r
+  analyzer/U2927/Y (XNOR2X4)                              0.28       3.67 f
+  analyzer/U2926/A (NOR2X4)                               0.00       3.67 f
+  analyzer/U2926/Y (NOR2X4)                               0.11       3.78 r
+  analyzer/U1052/A (NAND4X2)                              0.00       3.78 r
+  analyzer/U1052/Y (NAND4X2)                              0.14       3.92 f
+  analyzer/U4706/D (OR4X4)                                0.00       3.92 f
+  analyzer/U4706/Y (OR4X4)                                0.50       4.42 f
+  analyzer/U3330/A (CLKINVX8)                             0.00       4.42 f
+  analyzer/U3330/Y (CLKINVX8)                             0.08       4.50 r
+  analyzer/U3317/A (AND2X4)                               0.00       4.50 r
+  analyzer/U3317/Y (AND2X4)                               0.16       4.66 r
+  analyzer/U3571/A (NOR2X4)                               0.00       4.66 r
+  analyzer/U3571/Y (NOR2X4)                               0.06       4.73 f
+  analyzer/U4779/B0 (OAI2BB1X4)                           0.00       4.73 f
+  analyzer/U4779/Y (OAI2BB1X4)                            0.13       4.86 r
+  analyzer/U3062/B (NAND2X4)                              0.00       4.86 r
+  analyzer/U3062/Y (NAND2X4)                              0.08       4.94 f
+  analyzer/U4496/A (NOR2X4)                               0.00       4.94 f
+  analyzer/U4496/Y (NOR2X4)                               0.14       5.09 r
+  analyzer/U85/A (BUFX16)                                 0.00       5.09 r
+  analyzer/U85/Y (BUFX16)                                 0.17       5.26 r
+  analyzer/U3156/A (BUFX16)                               0.00       5.26 r
+  analyzer/U3156/Y (BUFX16)                               0.15       5.41 r
+  analyzer/U4533/S0 (MXI2X4)                              0.00       5.41 r
+  analyzer/U4533/Y (MXI2X4)                               0.27       5.68 r
+  analyzer/U3932/B (NAND2X4)                              0.00       5.68 r
+  analyzer/U3932/Y (NAND2X4)                              0.10       5.78 f
+  analyzer/U4189/B (NAND2X4)                              0.00       5.78 f
+  analyzer/U4189/Y (NAND2X4)                              0.17       5.95 r
+  analyzer/U4239/C0 (OAI211X2)                            0.00       5.95 r
+  analyzer/U4239/Y (OAI211X2)                             0.18       6.13 f
+  analyzer/U684/C (NOR4X4)                                0.00       6.13 f
+  analyzer/U684/Y (NOR4X4)                                0.36       6.49 r
+  analyzer/U683/B (NAND4X4)                               0.00       6.49 r
+  analyzer/U683/Y (NAND4X4)                               0.18       6.66 f
+  analyzer/U3960/C (NAND3X4)                              0.00       6.66 f
+  analyzer/U3960/Y (NAND3X4)                              0.26       6.92 r
+  analyzer/U397/A (INVX8)                                 0.00       6.92 r
+  analyzer/U397/Y (INVX8)                                 0.15       7.07 f
+  analyzer/U257/A (INVX3)                                 0.00       7.07 f
+  analyzer/U257/Y (INVX3)                                 0.12       7.19 r
+  analyzer/U467/B (NAND2X4)                               0.00       7.19 r
+  analyzer/U467/Y (NAND2X4)                               0.08       7.27 f
+  analyzer/U468/A (NAND2X4)                               0.00       7.27 f
+  analyzer/U468/Y (NAND2X4)                               0.12       7.39 r
+  analyzer/U469/A (INVX8)                                 0.00       7.39 r
+  analyzer/U469/Y (INVX8)                                 0.05       7.44 f
+  analyzer/U473/A (XOR2X4)                                0.00       7.44 f
+  analyzer/U473/Y (XOR2X4)                                0.20       7.65 f
+  analyzer/U4762/C (AND4X4)                               0.00       7.65 f
+  analyzer/U4762/Y (AND4X4)                               0.25       7.90 f
+  analyzer/U4761/C (NAND4X4)                              0.00       7.90 f
+  analyzer/U4761/Y (NAND4X4)                              0.17       8.07 r
+  analyzer/U105/A (INVX4)                                 0.00       8.07 r
+  analyzer/U105/Y (INVX4)                                 0.05       8.12 f
+  analyzer/U4722/A1N (OAI2BB1X4)                          0.00       8.12 f
+  analyzer/U4722/Y (OAI2BB1X4)                            0.17       8.28 f
+  analyzer/U2999/A (OR4X4)                                0.00       8.28 f
+  analyzer/U2999/Y (OR4X4)                                0.34       8.62 f
+  analyzer/U4750/A (XOR2X4)                               0.00       8.62 f
+  analyzer/U4750/Y (XOR2X4)                               0.37       8.99 r
+  analyzer/U4562/A1N (OAI2BB1X4)                          0.00       8.99 r
+  analyzer/U4562/Y (OAI2BB1X4)                            0.29       9.28 r
+  analyzer/U577/B (NAND3X4)                               0.00       9.28 r
+  analyzer/U577/Y (NAND3X4)                               0.14       9.42 f
+  analyzer/U579/A (CLKINVX8)                              0.00       9.42 f
+  analyzer/U579/Y (CLKINVX8)                              0.07       9.48 r
+  analyzer/U578/A (NAND2X4)                               0.00       9.48 r
+  analyzer/U578/Y (NAND2X4)                               0.13       9.61 f
+  analyzer/U4581/A2 (OAI32X2)                             0.00       9.61 f
+  analyzer/U4581/Y (OAI32X2)                              0.46      10.07 r
+  analyzer/U4823/C (NAND4X4)                              0.00      10.07 r
+  analyzer/U4823/Y (NAND4X4)                              0.19      10.26 f
+  analyzer/U5243/C0 (OAI211X2)                            0.00      10.26 f
+  analyzer/U5243/Y (OAI211X2)                             0.20      10.45 r
+  analyzer/U5246/B0 (OAI221X2)                            0.00      10.45 r
+  analyzer/U5246/Y (OAI221X2)                             0.21      10.66 f
+  analyzer/U4675/A (BUFX12)                               0.00      10.66 f
+  analyzer/U4675/Y (BUFX12)                               0.21      10.88 f
+  analyzer/U239/A (BUFX20)                                0.00      10.88 f
+  analyzer/U239/Y (BUFX20)                                0.13      11.01 f
+  analyzer/U853/A (CLKINVX4)                              0.00      11.01 f
+  analyzer/U853/Y (CLKINVX4)                              0.05      11.06 r
+  analyzer/U3028/B (NAND3XL)                              0.00      11.06 r
+  analyzer/U3028/Y (NAND3XL)                              0.27      11.33 f
+  analyzer/U4816/C (NAND3X4)                              0.00      11.33 f
+  analyzer/U4816/Y (NAND3X4)                              0.36      11.69 r
+  analyzer/U3618/A (MXI2X4)                               0.00      11.69 r
+  analyzer/U3618/Y (MXI2X4)                               0.15      11.84 f
+  analyzer/U436/B (NAND2X4)                               0.00      11.84 f
+  analyzer/U436/Y (NAND2X4)                               0.20      12.05 r
+  analyzer/U82/A (INVX8)                                  0.00      12.05 r
+  analyzer/U82/Y (INVX8)                                  0.05      12.09 f
+  analyzer/U437/A (NAND2X4)                               0.00      12.09 f
+  analyzer/U437/Y (NAND2X4)                               0.13      12.22 r
+  analyzer/U186/A (CLKINVX8)                              0.00      12.22 r
+  analyzer/U186/Y (CLKINVX8)                              0.07      12.29 f
+  analyzer/U4668/A0N (OAI2BB1X4)                          0.00      12.29 f
+  analyzer/U4668/Y (OAI2BB1X4)                            0.22      12.51 f
+  analyzer/U785/B0 (AOI211X2)                             0.00      12.51 f
+  analyzer/U785/Y (AOI211X2)                              0.26      12.77 r
+  analyzer/U3787/A1 (OAI33X2)                             0.00      12.77 r
+  analyzer/U3787/Y (OAI33X2)                              0.27      13.04 f
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      13.04 f
+  U4/A (BUFX12)                                           0.00      13.04 f
+  U4/Y (BUFX12)                                           0.21      13.26 f
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.26 f
+  selected_address_mux/U10/A (BUFX8)                      0.00      13.26 f
+  selected_address_mux/U10/Y (BUFX8)                      0.18      13.43 f
+  selected_address_mux/U140/AN (NAND2BX2)                 0.00      13.43 f
+  selected_address_mux/U140/Y (NAND2BX2)                  0.22      13.65 f
+  selected_address_mux/U44/A (NAND3X4)                    0.00      13.65 f
+  selected_address_mux/U44/Y (NAND3X4)                    0.19      13.84 r
+  selected_address_mux/U43/A (INVX8)                      0.00      13.84 r
+  selected_address_mux/U43/Y (INVX8)                      0.08      13.91 f
+  selected_address_mux/U147/A0 (OAI211X2)                 0.00      13.91 f
+  selected_address_mux/U147/Y (OAI211X2)                  0.29      14.21 r
+  selected_address_mux/U222/A (NAND3X4)                   0.00      14.21 r
+  selected_address_mux/U222/Y (NAND3X4)                   0.16      14.36 f
+  selected_address_mux/U214/A (INVX8)                     0.00      14.36 f
+  selected_address_mux/U214/Y (INVX8)                     0.14      14.51 r
+  selected_address_mux/U189/A (INVX8)                     0.00      14.51 r
+  selected_address_mux/U189/Y (INVX8)                     0.06      14.57 f
+  selected_address_mux/U190/A (INVX8)                     0.00      14.57 f
+  selected_address_mux/U190/Y (INVX8)                     0.10      14.66 r
+  selected_address_mux/U71/B1 (AOI22X2)                   0.00      14.66 r
+  selected_address_mux/U71/Y (AOI22X2)                    0.15      14.82 f
+  selected_address_mux/U250/A (INVX4)                     0.00      14.82 f
+  selected_address_mux/U250/Y (INVX4)                     0.18      15.00 r
+  selected_address_mux/solution_line_address_flat_o[14] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 r
+  solution_line_address_flat_o[14] (out)                  0.00      15.00 r
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[13]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U85/A (NOR2X4)                                     0.00       0.26 f
+  core/U85/Y (NOR2X4)                                     0.19       0.45 r
+  core/scan_config_id_o[2] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.45 r
+  analyzer/config_id_i[2] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.45 r
+  analyzer/U3061/A (INVX8)                                0.00       0.45 r
+  analyzer/U3061/Y (INVX8)                                0.08       0.54 f
+  analyzer/U24/A (INVX8)                                  0.00       0.54 f
+  analyzer/U24/Y (INVX8)                                  0.11       0.64 r
+  analyzer/U2259/A (INVX8)                                0.00       0.64 r
+  analyzer/U2259/Y (INVX8)                                0.09       0.73 f
+  analyzer/U3369/B (NAND2X4)                              0.00       0.73 f
+  analyzer/U3369/Y (NAND2X4)                              0.13       0.86 r
+  analyzer/U2256/A (BUFX20)                               0.00       0.86 r
+  analyzer/U2256/Y (BUFX20)                               0.16       1.02 r
+  analyzer/U2455/A (CLKINVX3)                             0.00       1.02 r
+  analyzer/U2455/Y (CLKINVX3)                             0.21       1.23 f
+  analyzer/U3524/A0N (OAI2BB2X2)                          0.00       1.23 f
+  analyzer/U3524/Y (OAI2BB2X2)                            0.34       1.57 f
+  analyzer/U3032/A (XOR2X2)                               0.00       1.57 f
+  analyzer/U3032/Y (XOR2X2)                               0.32       1.89 f
+  analyzer/U3606/C (NOR3X4)                               0.00       1.89 f
+  analyzer/U3606/Y (NOR3X4)                               0.23       2.12 r
+  analyzer/U3916/A (AND4X4)                               0.00       2.12 r
+  analyzer/U3916/Y (AND4X4)                               0.27       2.39 r
+  analyzer/U2662/B (NAND3X4)                              0.00       2.39 r
+  analyzer/U2662/Y (NAND3X4)                              0.22       2.61 f
+  analyzer/U3963/D (AND4X4)                               0.00       2.61 f
+  analyzer/U3963/Y (AND4X4)                               0.40       3.01 f
+  analyzer/U347/A (BUFX16)                                0.00       3.01 f
+  analyzer/U347/Y (BUFX16)                                0.18       3.20 f
+  analyzer/U4279/S0 (MXI2X4)                              0.00       3.20 f
+  analyzer/U4279/Y (MXI2X4)                               0.20       3.39 r
+  analyzer/U2927/A (XNOR2X4)                              0.00       3.39 r
+  analyzer/U2927/Y (XNOR2X4)                              0.28       3.67 f
+  analyzer/U2926/A (NOR2X4)                               0.00       3.67 f
+  analyzer/U2926/Y (NOR2X4)                               0.11       3.78 r
+  analyzer/U1052/A (NAND4X2)                              0.00       3.78 r
+  analyzer/U1052/Y (NAND4X2)                              0.14       3.92 f
+  analyzer/U4706/D (OR4X4)                                0.00       3.92 f
+  analyzer/U4706/Y (OR4X4)                                0.50       4.42 f
+  analyzer/U3330/A (CLKINVX8)                             0.00       4.42 f
+  analyzer/U3330/Y (CLKINVX8)                             0.08       4.50 r
+  analyzer/U3317/A (AND2X4)                               0.00       4.50 r
+  analyzer/U3317/Y (AND2X4)                               0.16       4.66 r
+  analyzer/U3571/A (NOR2X4)                               0.00       4.66 r
+  analyzer/U3571/Y (NOR2X4)                               0.06       4.73 f
+  analyzer/U4779/B0 (OAI2BB1X4)                           0.00       4.73 f
+  analyzer/U4779/Y (OAI2BB1X4)                            0.13       4.86 r
+  analyzer/U3062/B (NAND2X4)                              0.00       4.86 r
+  analyzer/U3062/Y (NAND2X4)                              0.08       4.94 f
+  analyzer/U4496/A (NOR2X4)                               0.00       4.94 f
+  analyzer/U4496/Y (NOR2X4)                               0.14       5.09 r
+  analyzer/U85/A (BUFX16)                                 0.00       5.09 r
+  analyzer/U85/Y (BUFX16)                                 0.17       5.26 r
+  analyzer/U3156/A (BUFX16)                               0.00       5.26 r
+  analyzer/U3156/Y (BUFX16)                               0.15       5.41 r
+  analyzer/U4533/S0 (MXI2X4)                              0.00       5.41 r
+  analyzer/U4533/Y (MXI2X4)                               0.27       5.68 r
+  analyzer/U3932/B (NAND2X4)                              0.00       5.68 r
+  analyzer/U3932/Y (NAND2X4)                              0.10       5.78 f
+  analyzer/U4189/B (NAND2X4)                              0.00       5.78 f
+  analyzer/U4189/Y (NAND2X4)                              0.17       5.95 r
+  analyzer/U4239/C0 (OAI211X2)                            0.00       5.95 r
+  analyzer/U4239/Y (OAI211X2)                             0.18       6.13 f
+  analyzer/U684/C (NOR4X4)                                0.00       6.13 f
+  analyzer/U684/Y (NOR4X4)                                0.36       6.49 r
+  analyzer/U683/B (NAND4X4)                               0.00       6.49 r
+  analyzer/U683/Y (NAND4X4)                               0.18       6.66 f
+  analyzer/U3960/C (NAND3X4)                              0.00       6.66 f
+  analyzer/U3960/Y (NAND3X4)                              0.26       6.92 r
+  analyzer/U397/A (INVX8)                                 0.00       6.92 r
+  analyzer/U397/Y (INVX8)                                 0.15       7.07 f
+  analyzer/U257/A (INVX3)                                 0.00       7.07 f
+  analyzer/U257/Y (INVX3)                                 0.12       7.19 r
+  analyzer/U467/B (NAND2X4)                               0.00       7.19 r
+  analyzer/U467/Y (NAND2X4)                               0.08       7.27 f
+  analyzer/U468/A (NAND2X4)                               0.00       7.27 f
+  analyzer/U468/Y (NAND2X4)                               0.12       7.39 r
+  analyzer/U469/A (INVX8)                                 0.00       7.39 r
+  analyzer/U469/Y (INVX8)                                 0.05       7.44 f
+  analyzer/U473/A (XOR2X4)                                0.00       7.44 f
+  analyzer/U473/Y (XOR2X4)                                0.20       7.65 f
+  analyzer/U4762/C (AND4X4)                               0.00       7.65 f
+  analyzer/U4762/Y (AND4X4)                               0.25       7.90 f
+  analyzer/U4761/C (NAND4X4)                              0.00       7.90 f
+  analyzer/U4761/Y (NAND4X4)                              0.17       8.07 r
+  analyzer/U105/A (INVX4)                                 0.00       8.07 r
+  analyzer/U105/Y (INVX4)                                 0.05       8.12 f
+  analyzer/U4722/A1N (OAI2BB1X4)                          0.00       8.12 f
+  analyzer/U4722/Y (OAI2BB1X4)                            0.17       8.28 f
+  analyzer/U2999/A (OR4X4)                                0.00       8.28 f
+  analyzer/U2999/Y (OR4X4)                                0.34       8.62 f
+  analyzer/U4750/A (XOR2X4)                               0.00       8.62 f
+  analyzer/U4750/Y (XOR2X4)                               0.37       8.99 r
+  analyzer/U4562/A1N (OAI2BB1X4)                          0.00       8.99 r
+  analyzer/U4562/Y (OAI2BB1X4)                            0.29       9.28 r
+  analyzer/U577/B (NAND3X4)                               0.00       9.28 r
+  analyzer/U577/Y (NAND3X4)                               0.14       9.42 f
+  analyzer/U579/A (CLKINVX8)                              0.00       9.42 f
+  analyzer/U579/Y (CLKINVX8)                              0.07       9.48 r
+  analyzer/U578/A (NAND2X4)                               0.00       9.48 r
+  analyzer/U578/Y (NAND2X4)                               0.13       9.61 f
+  analyzer/U4581/A2 (OAI32X2)                             0.00       9.61 f
+  analyzer/U4581/Y (OAI32X2)                              0.46      10.07 r
+  analyzer/U4823/C (NAND4X4)                              0.00      10.07 r
+  analyzer/U4823/Y (NAND4X4)                              0.19      10.26 f
+  analyzer/U5243/C0 (OAI211X2)                            0.00      10.26 f
+  analyzer/U5243/Y (OAI211X2)                             0.20      10.45 r
+  analyzer/U5246/B0 (OAI221X2)                            0.00      10.45 r
+  analyzer/U5246/Y (OAI221X2)                             0.21      10.66 f
+  analyzer/U4675/A (BUFX12)                               0.00      10.66 f
+  analyzer/U4675/Y (BUFX12)                               0.21      10.88 f
+  analyzer/U239/A (BUFX20)                                0.00      10.88 f
+  analyzer/U239/Y (BUFX20)                                0.13      11.01 f
+  analyzer/U853/A (CLKINVX4)                              0.00      11.01 f
+  analyzer/U853/Y (CLKINVX4)                              0.05      11.06 r
+  analyzer/U3028/B (NAND3XL)                              0.00      11.06 r
+  analyzer/U3028/Y (NAND3XL)                              0.27      11.33 f
+  analyzer/U4816/C (NAND3X4)                              0.00      11.33 f
+  analyzer/U4816/Y (NAND3X4)                              0.36      11.69 r
+  analyzer/U3618/A (MXI2X4)                               0.00      11.69 r
+  analyzer/U3618/Y (MXI2X4)                               0.15      11.84 f
+  analyzer/U436/B (NAND2X4)                               0.00      11.84 f
+  analyzer/U436/Y (NAND2X4)                               0.20      12.05 r
+  analyzer/U82/A (INVX8)                                  0.00      12.05 r
+  analyzer/U82/Y (INVX8)                                  0.05      12.09 f
+  analyzer/U437/A (NAND2X4)                               0.00      12.09 f
+  analyzer/U437/Y (NAND2X4)                               0.13      12.22 r
+  analyzer/U186/A (CLKINVX8)                              0.00      12.22 r
+  analyzer/U186/Y (CLKINVX8)                              0.07      12.29 f
+  analyzer/U4668/A0N (OAI2BB1X4)                          0.00      12.29 f
+  analyzer/U4668/Y (OAI2BB1X4)                            0.22      12.51 f
+  analyzer/U785/B0 (AOI211X2)                             0.00      12.51 f
+  analyzer/U785/Y (AOI211X2)                              0.26      12.77 r
+  analyzer/U3787/A1 (OAI33X2)                             0.00      12.77 r
+  analyzer/U3787/Y (OAI33X2)                              0.27      13.04 f
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      13.04 f
+  U4/A (BUFX12)                                           0.00      13.04 f
+  U4/Y (BUFX12)                                           0.21      13.26 f
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.26 f
+  selected_address_mux/U83/A (BUFX20)                     0.00      13.26 f
+  selected_address_mux/U83/Y (BUFX20)                     0.14      13.40 f
+  selected_address_mux/U120/A (INVX8)                     0.00      13.40 f
+  selected_address_mux/U120/Y (INVX8)                     0.09      13.49 r
+  selected_address_mux/U194/A (INVX8)                     0.00      13.49 r
+  selected_address_mux/U194/Y (INVX8)                     0.06      13.55 f
+  selected_address_mux/U49/B (NAND2X4)                    0.00      13.55 f
+  selected_address_mux/U49/Y (NAND2X4)                    0.11      13.66 r
+  selected_address_mux/U56/A (OR2X2)                      0.00      13.66 r
+  selected_address_mux/U56/Y (OR2X2)                      0.26      13.93 r
+  selected_address_mux/U147/B0 (OAI211X2)                 0.00      13.93 r
+  selected_address_mux/U147/Y (OAI211X2)                  0.18      14.10 f
+  selected_address_mux/U222/A (NAND3X4)                   0.00      14.10 f
+  selected_address_mux/U222/Y (NAND3X4)                   0.21      14.32 r
+  selected_address_mux/U214/A (INVX8)                     0.00      14.32 r
+  selected_address_mux/U214/Y (INVX8)                     0.10      14.41 f
+  selected_address_mux/U211/A (INVX8)                     0.00      14.41 f
+  selected_address_mux/U211/Y (INVX8)                     0.10      14.52 r
+  selected_address_mux/U213/A (INVX8)                     0.00      14.52 r
+  selected_address_mux/U213/Y (INVX8)                     0.06      14.58 f
+  selected_address_mux/U70/B1 (AOI22X2)                   0.00      14.58 f
+  selected_address_mux/U70/Y (AOI22X2)                    0.29      14.87 r
+  selected_address_mux/U249/A (INVX4)                     0.00      14.87 r
+  selected_address_mux/U249/Y (INVX4)                     0.13      15.00 f
+  selected_address_mux/solution_line_address_flat_o[13] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 f
+  solution_line_address_flat_o[13] (out)                  0.00      15.00 f
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[32]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U66/A (NAND2XL)                                    0.00       0.26 f
+  core/U66/Y (NAND2XL)                                    0.29       0.54 r
+  core/U7/A (INVX4)                                       0.00       0.54 r
+  core/U7/Y (INVX4)                                       0.15       0.69 f
+  core/scan_config_id_o[1] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.69 f
+  analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.69 f
+  analyzer/U3763/A (INVX8)                                0.00       0.69 f
+  analyzer/U3763/Y (INVX8)                                0.14       0.83 r
+  analyzer/U1938/A (CLKINVX3)                             0.00       0.83 r
+  analyzer/U1938/Y (CLKINVX3)                             0.21       1.04 f
+  analyzer/U3619/B0 (AOI21X4)                             0.00       1.04 f
+  analyzer/U3619/Y (AOI21X4)                              0.20       1.24 r
+  analyzer/U3709/A0 (AOI21X4)                             0.00       1.24 r
+  analyzer/U3709/Y (AOI21X4)                              0.11       1.35 f
+  analyzer/U4838/B0 (OAI2BB1X4)                           0.00       1.35 f
+  analyzer/U4838/Y (OAI2BB1X4)                            0.21       1.55 r
+  analyzer/U3762/A (INVX8)                                0.00       1.55 r
+  analyzer/U3762/Y (INVX8)                                0.07       1.63 f
+  analyzer/U3355/B0 (OAI2BB1X4)                           0.00       1.63 f
+  analyzer/U3355/Y (OAI2BB1X4)                            0.14       1.77 r
+  analyzer/U3517/B (NAND3X4)                              0.00       1.77 r
+  analyzer/U3517/Y (NAND3X4)                              0.21       1.98 f
+  analyzer/U574/A (INVX8)                                 0.00       1.98 f
+  analyzer/U574/Y (INVX8)                                 0.21       2.19 r
+  analyzer/U313/A (CLKBUFX12)                             0.00       2.19 r
+  analyzer/U313/Y (CLKBUFX12)                             0.20       2.39 r
+  analyzer/U3428/AN (NAND2BX4)                            0.00       2.39 r
+  analyzer/U3428/Y (NAND2BX4)                             0.19       2.58 r
+  analyzer/U3427/A (INVX8)                                0.00       2.58 r
+  analyzer/U3427/Y (INVX8)                                0.07       2.65 f
+  analyzer/U3515/B (OR2X4)                                0.00       2.65 f
+  analyzer/U3515/Y (OR2X4)                                0.26       2.91 f
+  analyzer/U2468/A (CLKINVX3)                             0.00       2.91 f
+  analyzer/U2468/Y (CLKINVX3)                             0.13       3.04 r
+  analyzer/U3296/A (NAND2X4)                              0.00       3.04 r
+  analyzer/U3296/Y (NAND2X4)                              0.08       3.12 f
+  analyzer/U3297/B (NAND2X4)                              0.00       3.12 f
+  analyzer/U3297/Y (NAND2X4)                              0.13       3.25 r
+  analyzer/U3402/A (NAND4X4)                              0.00       3.25 r
+  analyzer/U3402/Y (NAND4X4)                              0.10       3.35 f
+  analyzer/U4661/A (OR3X4)                                0.00       3.35 f
+  analyzer/U4661/Y (OR3X4)                                0.38       3.73 f
+  analyzer/U4791/B (OR2X4)                                0.00       3.73 f
+  analyzer/U4791/Y (OR2X4)                                0.27       4.00 f
+  analyzer/U4719/A (NAND4X4)                              0.00       4.00 f
+  analyzer/U4719/Y (NAND4X4)                              0.16       4.15 r
+  analyzer/U3867/A (INVX8)                                0.00       4.15 r
+  analyzer/U3867/Y (INVX8)                                0.07       4.22 f
+  analyzer/U3866/A (BUFX20)                               0.00       4.22 f
+  analyzer/U3866/Y (BUFX20)                               0.15       4.37 f
+  analyzer/U1136/S0 (MXI2X2)                              0.00       4.37 f
+  analyzer/U1136/Y (MXI2X2)                               0.29       4.66 r
+  analyzer/U4941/A (XOR2X4)                               0.00       4.66 r
+  analyzer/U4941/Y (XOR2X4)                               0.37       5.03 r
+  analyzer/U4177/C (NAND4X4)                              0.00       5.03 r
+  analyzer/U4177/Y (NAND4X4)                              0.14       5.17 f
+  analyzer/U4942/B (NOR2X4)                               0.00       5.17 f
+  analyzer/U4942/Y (NOR2X4)                               0.17       5.33 r
+  analyzer/U4943/B (NAND4BX4)                             0.00       5.33 r
+  analyzer/U4943/Y (NAND4BX4)                             0.20       5.53 f
+  analyzer/U3760/C (NAND3BX4)                             0.00       5.53 f
+  analyzer/U3760/Y (NAND3BX4)                             0.21       5.74 r
+  analyzer/U249/A (INVX8)                                 0.00       5.74 r
+  analyzer/U249/Y (INVX8)                                 0.06       5.81 f
+  analyzer/U2748/S0 (MXI2X4)                              0.00       5.81 f
+  analyzer/U2748/Y (MXI2X4)                               0.19       6.00 r
+  analyzer/U2707/B (NAND2X4)                              0.00       6.00 r
+  analyzer/U2707/Y (NAND2X4)                              0.11       6.10 f
+  analyzer/U3912/A (INVX8)                                0.00       6.10 f
+  analyzer/U3912/Y (INVX8)                                0.13       6.23 r
+  analyzer/U282/A (BUFX20)                                0.00       6.23 r
+  analyzer/U282/Y (BUFX20)                                0.15       6.39 r
+  analyzer/U3047/S0 (MXI2X1)                              0.00       6.39 r
+  analyzer/U3047/Y (MXI2X1)                               0.24       6.63 r
+  analyzer/U2247/A (BUFX4)                                0.00       6.63 r
+  analyzer/U2247/Y (BUFX4)                                0.21       6.84 r
+  analyzer/U2829/A (XOR2X2)                               0.00       6.84 r
+  analyzer/U2829/Y (XOR2X2)                               0.24       7.08 f
+  analyzer/U4020/A (AND3X4)                               0.00       7.08 f
+  analyzer/U4020/Y (AND3X4)                               0.19       7.27 f
+  analyzer/U4018/C (NAND4X4)                              0.00       7.27 f
+  analyzer/U4018/Y (NAND4X4)                              0.21       7.48 r
+  analyzer/U696/C0 (OAI211X2)                             0.00       7.48 r
+  analyzer/U696/Y (OAI211X2)                              0.19       7.66 f
+  analyzer/U3721/B (NOR3X4)                               0.00       7.66 f
+  analyzer/U3721/Y (NOR3X4)                               0.25       7.91 r
+  analyzer/U3014/A (NAND3X4)                              0.00       7.91 r
+  analyzer/U3014/Y (NAND3X4)                              0.12       8.03 f
+  analyzer/U3252/A (NOR2X4)                               0.00       8.03 f
+  analyzer/U3252/Y (NOR2X4)                               0.15       8.18 r
+  analyzer/U4825/A (NAND4X4)                              0.00       8.18 r
+  analyzer/U4825/Y (NAND4X4)                              0.16       8.35 f
+  analyzer/U2738/B (NAND4X4)                              0.00       8.35 f
+  analyzer/U2738/Y (NAND4X4)                              0.21       8.56 r
+  analyzer/U3490/A (INVX8)                                0.00       8.56 r
+  analyzer/U3490/Y (INVX8)                                0.09       8.65 f
+  analyzer/U2137/A (INVX8)                                0.00       8.65 f
+  analyzer/U2137/Y (INVX8)                                0.15       8.80 r
+  analyzer/U657/A (INVX8)                                 0.00       8.80 r
+  analyzer/U657/Y (INVX8)                                 0.10       8.90 f
+  analyzer/U3620/S0 (MXI2X4)                              0.00       8.90 f
+  analyzer/U3620/Y (MXI2X4)                               0.21       9.10 r
+  analyzer/U1058/A (CLKINVX3)                             0.00       9.10 r
+  analyzer/U1058/Y (CLKINVX3)                             0.11       9.21 f
+  analyzer/U1884/A (XOR2X1)                               0.00       9.21 f
+  analyzer/U1884/Y (XOR2X1)                               0.29       9.50 f
+  analyzer/U270/C (AND3X4)                                0.00       9.50 f
+  analyzer/U270/Y (AND3X4)                                0.24       9.73 f
+  analyzer/U183/C (NAND4X4)                               0.00       9.73 f
+  analyzer/U183/Y (NAND4X4)                               0.14       9.88 r
+  analyzer/U4708/A (MXI2X4)                               0.00       9.88 r
+  analyzer/U4708/Y (MXI2X4)                               0.14      10.02 f
+  analyzer/U4827/A (NAND2X4)                              0.00      10.02 f
+  analyzer/U4827/Y (NAND2X4)                              0.20      10.22 r
+  analyzer/U10/C (NAND3X1)                                0.00      10.22 r
+  analyzer/U10/Y (NAND3X1)                                0.20      10.42 f
+  analyzer/U3694/A1 (OAI32X2)                             0.00      10.42 f
+  analyzer/U3694/Y (OAI32X2)                              0.41      10.83 r
+  analyzer/U735/A (BUFX8)                                 0.00      10.83 r
+  analyzer/U735/Y (BUFX8)                                 0.23      11.06 r
+  analyzer/U3724/A (NAND2X4)                              0.00      11.06 r
+  analyzer/U3724/Y (NAND2X4)                              0.16      11.23 f
+  analyzer/U2044/A (INVX4)                                0.00      11.23 f
+  analyzer/U2044/Y (INVX4)                                0.14      11.36 r
+  analyzer/U3970/AN (NAND2BX4)                            0.00      11.36 r
+  analyzer/U3970/Y (NAND2BX4)                             0.21      11.57 r
+  analyzer/U4403/D (NAND4X4)                              0.00      11.57 r
+  analyzer/U4403/Y (NAND4X4)                              0.18      11.76 f
+  analyzer/U3741/AN (NAND2BX4)                            0.00      11.76 f
+  analyzer/U3741/Y (NAND2BX4)                             0.23      11.98 f
+  analyzer/U4169/A (CLKINVX8)                             0.00      11.98 f
+  analyzer/U4169/Y (CLKINVX8)                             0.10      12.08 r
+  analyzer/U4128/B (NAND2X4)                              0.00      12.08 r
+  analyzer/U4128/Y (NAND2X4)                              0.09      12.17 f
+  analyzer/U4130/A (CLKINVX8)                             0.00      12.17 f
+  analyzer/U4130/Y (CLKINVX8)                             0.06      12.23 r
+  analyzer/U4129/A (NAND2X4)                              0.00      12.23 r
+  analyzer/U4129/Y (NAND2X4)                              0.08      12.31 f
+  analyzer/U2112/A (CLKINVX3)                             0.00      12.31 f
+  analyzer/U2112/Y (CLKINVX3)                             0.08      12.40 r
+  analyzer/U2233/C (NAND3X2)                              0.00      12.40 r
+  analyzer/U2233/Y (NAND3X2)                              0.13      12.52 f
+  analyzer/U3787/B1 (OAI33X2)                             0.00      12.52 f
+  analyzer/U3787/Y (OAI33X2)                              0.46      12.98 r
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      12.98 r
+  U4/A (BUFX12)                                           0.00      12.98 r
+  U4/Y (BUFX12)                                           0.22      13.20 r
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.20 r
+  selected_address_mux/U84/A (INVX4)                      0.00      13.20 r
+  selected_address_mux/U84/Y (INVX4)                      0.09      13.29 f
+  selected_address_mux/U126/B1 (OAI33X2)                  0.00      13.29 f
+  selected_address_mux/U126/Y (OAI33X2)                   0.52      13.81 r
+  selected_address_mux/U219/A (INVX8)                     0.00      13.81 r
+  selected_address_mux/U219/Y (INVX8)                     0.13      13.94 f
+  selected_address_mux/U176/A0 (AOI21X4)                  0.00      13.94 f
+  selected_address_mux/U176/Y (AOI21X4)                   0.17      14.11 r
+  selected_address_mux/U292/A0 (OAI211X2)                 0.00      14.11 r
+  selected_address_mux/U292/Y (OAI211X2)                  0.17      14.28 f
+  selected_address_mux/U174/A (BUFX12)                    0.00      14.28 f
+  selected_address_mux/U174/Y (BUFX12)                    0.22      14.49 f
+  selected_address_mux/U178/A0 (AOI22X1)                  0.00      14.49 f
+  selected_address_mux/U178/Y (AOI22X1)                   0.35      14.84 r
+  selected_address_mux/U168/A (INVX4)                     0.00      14.84 r
+  selected_address_mux/U168/Y (INVX4)                     0.15      15.00 f
+  selected_address_mux/solution_line_address_flat_o[32] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 f
+  solution_line_address_flat_o[32] (out)                  0.00      15.00 f
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[29]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U66/A (NAND2XL)                                    0.00       0.26 f
+  core/U66/Y (NAND2XL)                                    0.29       0.54 r
+  core/U7/A (INVX4)                                       0.00       0.54 r
+  core/U7/Y (INVX4)                                       0.15       0.69 f
+  core/scan_config_id_o[1] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.69 f
+  analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.69 f
+  analyzer/U3763/A (INVX8)                                0.00       0.69 f
+  analyzer/U3763/Y (INVX8)                                0.14       0.83 r
+  analyzer/U1938/A (CLKINVX3)                             0.00       0.83 r
+  analyzer/U1938/Y (CLKINVX3)                             0.21       1.04 f
+  analyzer/U3619/B0 (AOI21X4)                             0.00       1.04 f
+  analyzer/U3619/Y (AOI21X4)                              0.20       1.24 r
+  analyzer/U3709/A0 (AOI21X4)                             0.00       1.24 r
+  analyzer/U3709/Y (AOI21X4)                              0.11       1.35 f
+  analyzer/U4838/B0 (OAI2BB1X4)                           0.00       1.35 f
+  analyzer/U4838/Y (OAI2BB1X4)                            0.21       1.55 r
+  analyzer/U3762/A (INVX8)                                0.00       1.55 r
+  analyzer/U3762/Y (INVX8)                                0.07       1.63 f
+  analyzer/U3355/B0 (OAI2BB1X4)                           0.00       1.63 f
+  analyzer/U3355/Y (OAI2BB1X4)                            0.14       1.77 r
+  analyzer/U3517/B (NAND3X4)                              0.00       1.77 r
+  analyzer/U3517/Y (NAND3X4)                              0.21       1.98 f
+  analyzer/U574/A (INVX8)                                 0.00       1.98 f
+  analyzer/U574/Y (INVX8)                                 0.21       2.19 r
+  analyzer/U313/A (CLKBUFX12)                             0.00       2.19 r
+  analyzer/U313/Y (CLKBUFX12)                             0.20       2.39 r
+  analyzer/U3428/AN (NAND2BX4)                            0.00       2.39 r
+  analyzer/U3428/Y (NAND2BX4)                             0.19       2.58 r
+  analyzer/U3427/A (INVX8)                                0.00       2.58 r
+  analyzer/U3427/Y (INVX8)                                0.07       2.65 f
+  analyzer/U3515/B (OR2X4)                                0.00       2.65 f
+  analyzer/U3515/Y (OR2X4)                                0.26       2.91 f
+  analyzer/U2468/A (CLKINVX3)                             0.00       2.91 f
+  analyzer/U2468/Y (CLKINVX3)                             0.13       3.04 r
+  analyzer/U3296/A (NAND2X4)                              0.00       3.04 r
+  analyzer/U3296/Y (NAND2X4)                              0.08       3.12 f
+  analyzer/U3297/B (NAND2X4)                              0.00       3.12 f
+  analyzer/U3297/Y (NAND2X4)                              0.13       3.25 r
+  analyzer/U3402/A (NAND4X4)                              0.00       3.25 r
+  analyzer/U3402/Y (NAND4X4)                              0.10       3.35 f
+  analyzer/U4661/A (OR3X4)                                0.00       3.35 f
+  analyzer/U4661/Y (OR3X4)                                0.38       3.73 f
+  analyzer/U4791/B (OR2X4)                                0.00       3.73 f
+  analyzer/U4791/Y (OR2X4)                                0.27       4.00 f
+  analyzer/U4719/A (NAND4X4)                              0.00       4.00 f
+  analyzer/U4719/Y (NAND4X4)                              0.16       4.15 r
+  analyzer/U3867/A (INVX8)                                0.00       4.15 r
+  analyzer/U3867/Y (INVX8)                                0.07       4.22 f
+  analyzer/U3866/A (BUFX20)                               0.00       4.22 f
+  analyzer/U3866/Y (BUFX20)                               0.15       4.37 f
+  analyzer/U1136/S0 (MXI2X2)                              0.00       4.37 f
+  analyzer/U1136/Y (MXI2X2)                               0.29       4.66 r
+  analyzer/U4941/A (XOR2X4)                               0.00       4.66 r
+  analyzer/U4941/Y (XOR2X4)                               0.37       5.03 r
+  analyzer/U4177/C (NAND4X4)                              0.00       5.03 r
+  analyzer/U4177/Y (NAND4X4)                              0.14       5.17 f
+  analyzer/U4942/B (NOR2X4)                               0.00       5.17 f
+  analyzer/U4942/Y (NOR2X4)                               0.17       5.33 r
+  analyzer/U4943/B (NAND4BX4)                             0.00       5.33 r
+  analyzer/U4943/Y (NAND4BX4)                             0.20       5.53 f
+  analyzer/U3760/C (NAND3BX4)                             0.00       5.53 f
+  analyzer/U3760/Y (NAND3BX4)                             0.21       5.74 r
+  analyzer/U249/A (INVX8)                                 0.00       5.74 r
+  analyzer/U249/Y (INVX8)                                 0.06       5.81 f
+  analyzer/U2748/S0 (MXI2X4)                              0.00       5.81 f
+  analyzer/U2748/Y (MXI2X4)                               0.19       6.00 r
+  analyzer/U2707/B (NAND2X4)                              0.00       6.00 r
+  analyzer/U2707/Y (NAND2X4)                              0.11       6.10 f
+  analyzer/U3912/A (INVX8)                                0.00       6.10 f
+  analyzer/U3912/Y (INVX8)                                0.13       6.23 r
+  analyzer/U282/A (BUFX20)                                0.00       6.23 r
+  analyzer/U282/Y (BUFX20)                                0.15       6.39 r
+  analyzer/U3047/S0 (MXI2X1)                              0.00       6.39 r
+  analyzer/U3047/Y (MXI2X1)                               0.24       6.63 r
+  analyzer/U2247/A (BUFX4)                                0.00       6.63 r
+  analyzer/U2247/Y (BUFX4)                                0.21       6.84 r
+  analyzer/U2829/A (XOR2X2)                               0.00       6.84 r
+  analyzer/U2829/Y (XOR2X2)                               0.24       7.08 f
+  analyzer/U4020/A (AND3X4)                               0.00       7.08 f
+  analyzer/U4020/Y (AND3X4)                               0.19       7.27 f
+  analyzer/U4018/C (NAND4X4)                              0.00       7.27 f
+  analyzer/U4018/Y (NAND4X4)                              0.21       7.48 r
+  analyzer/U696/C0 (OAI211X2)                             0.00       7.48 r
+  analyzer/U696/Y (OAI211X2)                              0.19       7.66 f
+  analyzer/U3721/B (NOR3X4)                               0.00       7.66 f
+  analyzer/U3721/Y (NOR3X4)                               0.25       7.91 r
+  analyzer/U3014/A (NAND3X4)                              0.00       7.91 r
+  analyzer/U3014/Y (NAND3X4)                              0.12       8.03 f
+  analyzer/U3252/A (NOR2X4)                               0.00       8.03 f
+  analyzer/U3252/Y (NOR2X4)                               0.15       8.18 r
+  analyzer/U4825/A (NAND4X4)                              0.00       8.18 r
+  analyzer/U4825/Y (NAND4X4)                              0.16       8.35 f
+  analyzer/U2738/B (NAND4X4)                              0.00       8.35 f
+  analyzer/U2738/Y (NAND4X4)                              0.21       8.56 r
+  analyzer/U3490/A (INVX8)                                0.00       8.56 r
+  analyzer/U3490/Y (INVX8)                                0.09       8.65 f
+  analyzer/U2137/A (INVX8)                                0.00       8.65 f
+  analyzer/U2137/Y (INVX8)                                0.15       8.80 r
+  analyzer/U657/A (INVX8)                                 0.00       8.80 r
+  analyzer/U657/Y (INVX8)                                 0.10       8.90 f
+  analyzer/U3620/S0 (MXI2X4)                              0.00       8.90 f
+  analyzer/U3620/Y (MXI2X4)                               0.21       9.10 r
+  analyzer/U1058/A (CLKINVX3)                             0.00       9.10 r
+  analyzer/U1058/Y (CLKINVX3)                             0.11       9.21 f
+  analyzer/U1884/A (XOR2X1)                               0.00       9.21 f
+  analyzer/U1884/Y (XOR2X1)                               0.29       9.50 f
+  analyzer/U270/C (AND3X4)                                0.00       9.50 f
+  analyzer/U270/Y (AND3X4)                                0.24       9.73 f
+  analyzer/U183/C (NAND4X4)                               0.00       9.73 f
+  analyzer/U183/Y (NAND4X4)                               0.14       9.88 r
+  analyzer/U4708/A (MXI2X4)                               0.00       9.88 r
+  analyzer/U4708/Y (MXI2X4)                               0.14      10.02 f
+  analyzer/U4827/A (NAND2X4)                              0.00      10.02 f
+  analyzer/U4827/Y (NAND2X4)                              0.20      10.22 r
+  analyzer/U10/C (NAND3X1)                                0.00      10.22 r
+  analyzer/U10/Y (NAND3X1)                                0.20      10.42 f
+  analyzer/U3694/A1 (OAI32X2)                             0.00      10.42 f
+  analyzer/U3694/Y (OAI32X2)                              0.41      10.83 r
+  analyzer/U735/A (BUFX8)                                 0.00      10.83 r
+  analyzer/U735/Y (BUFX8)                                 0.23      11.06 r
+  analyzer/U3724/A (NAND2X4)                              0.00      11.06 r
+  analyzer/U3724/Y (NAND2X4)                              0.16      11.23 f
+  analyzer/U2044/A (INVX4)                                0.00      11.23 f
+  analyzer/U2044/Y (INVX4)                                0.14      11.36 r
+  analyzer/U3970/AN (NAND2BX4)                            0.00      11.36 r
+  analyzer/U3970/Y (NAND2BX4)                             0.21      11.57 r
+  analyzer/U4403/D (NAND4X4)                              0.00      11.57 r
+  analyzer/U4403/Y (NAND4X4)                              0.18      11.76 f
+  analyzer/U3741/AN (NAND2BX4)                            0.00      11.76 f
+  analyzer/U3741/Y (NAND2BX4)                             0.23      11.98 f
+  analyzer/U4169/A (CLKINVX8)                             0.00      11.98 f
+  analyzer/U4169/Y (CLKINVX8)                             0.10      12.08 r
+  analyzer/U4128/B (NAND2X4)                              0.00      12.08 r
+  analyzer/U4128/Y (NAND2X4)                              0.09      12.17 f
+  analyzer/U4130/A (CLKINVX8)                             0.00      12.17 f
+  analyzer/U4130/Y (CLKINVX8)                             0.06      12.23 r
+  analyzer/U4129/A (NAND2X4)                              0.00      12.23 r
+  analyzer/U4129/Y (NAND2X4)                              0.08      12.31 f
+  analyzer/U2112/A (CLKINVX3)                             0.00      12.31 f
+  analyzer/U2112/Y (CLKINVX3)                             0.08      12.40 r
+  analyzer/U2233/C (NAND3X2)                              0.00      12.40 r
+  analyzer/U2233/Y (NAND3X2)                              0.13      12.52 f
+  analyzer/U3787/B1 (OAI33X2)                             0.00      12.52 f
+  analyzer/U3787/Y (OAI33X2)                              0.46      12.98 r
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      12.98 r
+  U4/A (BUFX12)                                           0.00      12.98 r
+  U4/Y (BUFX12)                                           0.22      13.20 r
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.20 r
+  selected_address_mux/U84/A (INVX4)                      0.00      13.20 r
+  selected_address_mux/U84/Y (INVX4)                      0.09      13.29 f
+  selected_address_mux/U126/B1 (OAI33X2)                  0.00      13.29 f
+  selected_address_mux/U126/Y (OAI33X2)                   0.52      13.81 r
+  selected_address_mux/U219/A (INVX8)                     0.00      13.81 r
+  selected_address_mux/U219/Y (INVX8)                     0.13      13.94 f
+  selected_address_mux/U176/A0 (AOI21X4)                  0.00      13.94 f
+  selected_address_mux/U176/Y (AOI21X4)                   0.17      14.11 r
+  selected_address_mux/U292/A0 (OAI211X2)                 0.00      14.11 r
+  selected_address_mux/U292/Y (OAI211X2)                  0.17      14.28 f
+  selected_address_mux/U174/A (BUFX12)                    0.00      14.28 f
+  selected_address_mux/U174/Y (BUFX12)                    0.22      14.49 f
+  selected_address_mux/U181/A0 (AOI22X1)                  0.00      14.49 f
+  selected_address_mux/U181/Y (AOI22X1)                   0.35      14.84 r
+  selected_address_mux/U173/A (INVX4)                     0.00      14.84 r
+  selected_address_mux/U173/Y (INVX4)                     0.15      15.00 f
+  selected_address_mux/solution_line_address_flat_o[29] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 f
+  solution_line_address_flat_o[29] (out)                  0.00      15.00 f
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[28]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U66/A (NAND2XL)                                    0.00       0.26 f
+  core/U66/Y (NAND2XL)                                    0.29       0.54 r
+  core/U7/A (INVX4)                                       0.00       0.54 r
+  core/U7/Y (INVX4)                                       0.15       0.69 f
+  core/scan_config_id_o[1] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.69 f
+  analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.69 f
+  analyzer/U3763/A (INVX8)                                0.00       0.69 f
+  analyzer/U3763/Y (INVX8)                                0.14       0.83 r
+  analyzer/U1938/A (CLKINVX3)                             0.00       0.83 r
+  analyzer/U1938/Y (CLKINVX3)                             0.21       1.04 f
+  analyzer/U3619/B0 (AOI21X4)                             0.00       1.04 f
+  analyzer/U3619/Y (AOI21X4)                              0.20       1.24 r
+  analyzer/U3709/A0 (AOI21X4)                             0.00       1.24 r
+  analyzer/U3709/Y (AOI21X4)                              0.11       1.35 f
+  analyzer/U4838/B0 (OAI2BB1X4)                           0.00       1.35 f
+  analyzer/U4838/Y (OAI2BB1X4)                            0.21       1.55 r
+  analyzer/U3762/A (INVX8)                                0.00       1.55 r
+  analyzer/U3762/Y (INVX8)                                0.07       1.63 f
+  analyzer/U3355/B0 (OAI2BB1X4)                           0.00       1.63 f
+  analyzer/U3355/Y (OAI2BB1X4)                            0.14       1.77 r
+  analyzer/U3517/B (NAND3X4)                              0.00       1.77 r
+  analyzer/U3517/Y (NAND3X4)                              0.21       1.98 f
+  analyzer/U574/A (INVX8)                                 0.00       1.98 f
+  analyzer/U574/Y (INVX8)                                 0.21       2.19 r
+  analyzer/U313/A (CLKBUFX12)                             0.00       2.19 r
+  analyzer/U313/Y (CLKBUFX12)                             0.20       2.39 r
+  analyzer/U3428/AN (NAND2BX4)                            0.00       2.39 r
+  analyzer/U3428/Y (NAND2BX4)                             0.19       2.58 r
+  analyzer/U3427/A (INVX8)                                0.00       2.58 r
+  analyzer/U3427/Y (INVX8)                                0.07       2.65 f
+  analyzer/U3515/B (OR2X4)                                0.00       2.65 f
+  analyzer/U3515/Y (OR2X4)                                0.26       2.91 f
+  analyzer/U2468/A (CLKINVX3)                             0.00       2.91 f
+  analyzer/U2468/Y (CLKINVX3)                             0.13       3.04 r
+  analyzer/U3296/A (NAND2X4)                              0.00       3.04 r
+  analyzer/U3296/Y (NAND2X4)                              0.08       3.12 f
+  analyzer/U3297/B (NAND2X4)                              0.00       3.12 f
+  analyzer/U3297/Y (NAND2X4)                              0.13       3.25 r
+  analyzer/U3402/A (NAND4X4)                              0.00       3.25 r
+  analyzer/U3402/Y (NAND4X4)                              0.10       3.35 f
+  analyzer/U4661/A (OR3X4)                                0.00       3.35 f
+  analyzer/U4661/Y (OR3X4)                                0.38       3.73 f
+  analyzer/U4791/B (OR2X4)                                0.00       3.73 f
+  analyzer/U4791/Y (OR2X4)                                0.27       4.00 f
+  analyzer/U4719/A (NAND4X4)                              0.00       4.00 f
+  analyzer/U4719/Y (NAND4X4)                              0.16       4.15 r
+  analyzer/U3867/A (INVX8)                                0.00       4.15 r
+  analyzer/U3867/Y (INVX8)                                0.07       4.22 f
+  analyzer/U3866/A (BUFX20)                               0.00       4.22 f
+  analyzer/U3866/Y (BUFX20)                               0.15       4.37 f
+  analyzer/U1136/S0 (MXI2X2)                              0.00       4.37 f
+  analyzer/U1136/Y (MXI2X2)                               0.29       4.66 r
+  analyzer/U4941/A (XOR2X4)                               0.00       4.66 r
+  analyzer/U4941/Y (XOR2X4)                               0.37       5.03 r
+  analyzer/U4177/C (NAND4X4)                              0.00       5.03 r
+  analyzer/U4177/Y (NAND4X4)                              0.14       5.17 f
+  analyzer/U4942/B (NOR2X4)                               0.00       5.17 f
+  analyzer/U4942/Y (NOR2X4)                               0.17       5.33 r
+  analyzer/U4943/B (NAND4BX4)                             0.00       5.33 r
+  analyzer/U4943/Y (NAND4BX4)                             0.20       5.53 f
+  analyzer/U3760/C (NAND3BX4)                             0.00       5.53 f
+  analyzer/U3760/Y (NAND3BX4)                             0.21       5.74 r
+  analyzer/U249/A (INVX8)                                 0.00       5.74 r
+  analyzer/U249/Y (INVX8)                                 0.06       5.81 f
+  analyzer/U2748/S0 (MXI2X4)                              0.00       5.81 f
+  analyzer/U2748/Y (MXI2X4)                               0.19       6.00 r
+  analyzer/U2707/B (NAND2X4)                              0.00       6.00 r
+  analyzer/U2707/Y (NAND2X4)                              0.11       6.10 f
+  analyzer/U3912/A (INVX8)                                0.00       6.10 f
+  analyzer/U3912/Y (INVX8)                                0.13       6.23 r
+  analyzer/U282/A (BUFX20)                                0.00       6.23 r
+  analyzer/U282/Y (BUFX20)                                0.15       6.39 r
+  analyzer/U3047/S0 (MXI2X1)                              0.00       6.39 r
+  analyzer/U3047/Y (MXI2X1)                               0.24       6.63 r
+  analyzer/U2247/A (BUFX4)                                0.00       6.63 r
+  analyzer/U2247/Y (BUFX4)                                0.21       6.84 r
+  analyzer/U2829/A (XOR2X2)                               0.00       6.84 r
+  analyzer/U2829/Y (XOR2X2)                               0.24       7.08 f
+  analyzer/U4020/A (AND3X4)                               0.00       7.08 f
+  analyzer/U4020/Y (AND3X4)                               0.19       7.27 f
+  analyzer/U4018/C (NAND4X4)                              0.00       7.27 f
+  analyzer/U4018/Y (NAND4X4)                              0.21       7.48 r
+  analyzer/U696/C0 (OAI211X2)                             0.00       7.48 r
+  analyzer/U696/Y (OAI211X2)                              0.19       7.66 f
+  analyzer/U3721/B (NOR3X4)                               0.00       7.66 f
+  analyzer/U3721/Y (NOR3X4)                               0.25       7.91 r
+  analyzer/U3014/A (NAND3X4)                              0.00       7.91 r
+  analyzer/U3014/Y (NAND3X4)                              0.12       8.03 f
+  analyzer/U3252/A (NOR2X4)                               0.00       8.03 f
+  analyzer/U3252/Y (NOR2X4)                               0.15       8.18 r
+  analyzer/U4825/A (NAND4X4)                              0.00       8.18 r
+  analyzer/U4825/Y (NAND4X4)                              0.16       8.35 f
+  analyzer/U2738/B (NAND4X4)                              0.00       8.35 f
+  analyzer/U2738/Y (NAND4X4)                              0.21       8.56 r
+  analyzer/U3490/A (INVX8)                                0.00       8.56 r
+  analyzer/U3490/Y (INVX8)                                0.09       8.65 f
+  analyzer/U2137/A (INVX8)                                0.00       8.65 f
+  analyzer/U2137/Y (INVX8)                                0.15       8.80 r
+  analyzer/U657/A (INVX8)                                 0.00       8.80 r
+  analyzer/U657/Y (INVX8)                                 0.10       8.90 f
+  analyzer/U3620/S0 (MXI2X4)                              0.00       8.90 f
+  analyzer/U3620/Y (MXI2X4)                               0.21       9.10 r
+  analyzer/U1058/A (CLKINVX3)                             0.00       9.10 r
+  analyzer/U1058/Y (CLKINVX3)                             0.11       9.21 f
+  analyzer/U1884/A (XOR2X1)                               0.00       9.21 f
+  analyzer/U1884/Y (XOR2X1)                               0.29       9.50 f
+  analyzer/U270/C (AND3X4)                                0.00       9.50 f
+  analyzer/U270/Y (AND3X4)                                0.24       9.73 f
+  analyzer/U183/C (NAND4X4)                               0.00       9.73 f
+  analyzer/U183/Y (NAND4X4)                               0.14       9.88 r
+  analyzer/U4708/A (MXI2X4)                               0.00       9.88 r
+  analyzer/U4708/Y (MXI2X4)                               0.14      10.02 f
+  analyzer/U4827/A (NAND2X4)                              0.00      10.02 f
+  analyzer/U4827/Y (NAND2X4)                              0.20      10.22 r
+  analyzer/U10/C (NAND3X1)                                0.00      10.22 r
+  analyzer/U10/Y (NAND3X1)                                0.20      10.42 f
+  analyzer/U3694/A1 (OAI32X2)                             0.00      10.42 f
+  analyzer/U3694/Y (OAI32X2)                              0.41      10.83 r
+  analyzer/U735/A (BUFX8)                                 0.00      10.83 r
+  analyzer/U735/Y (BUFX8)                                 0.23      11.06 r
+  analyzer/U3724/A (NAND2X4)                              0.00      11.06 r
+  analyzer/U3724/Y (NAND2X4)                              0.16      11.23 f
+  analyzer/U2044/A (INVX4)                                0.00      11.23 f
+  analyzer/U2044/Y (INVX4)                                0.14      11.36 r
+  analyzer/U3970/AN (NAND2BX4)                            0.00      11.36 r
+  analyzer/U3970/Y (NAND2BX4)                             0.21      11.57 r
+  analyzer/U4403/D (NAND4X4)                              0.00      11.57 r
+  analyzer/U4403/Y (NAND4X4)                              0.18      11.76 f
+  analyzer/U3741/AN (NAND2BX4)                            0.00      11.76 f
+  analyzer/U3741/Y (NAND2BX4)                             0.23      11.98 f
+  analyzer/U4169/A (CLKINVX8)                             0.00      11.98 f
+  analyzer/U4169/Y (CLKINVX8)                             0.10      12.08 r
+  analyzer/U4128/B (NAND2X4)                              0.00      12.08 r
+  analyzer/U4128/Y (NAND2X4)                              0.09      12.17 f
+  analyzer/U4130/A (CLKINVX8)                             0.00      12.17 f
+  analyzer/U4130/Y (CLKINVX8)                             0.06      12.23 r
+  analyzer/U4129/A (NAND2X4)                              0.00      12.23 r
+  analyzer/U4129/Y (NAND2X4)                              0.08      12.31 f
+  analyzer/U2112/A (CLKINVX3)                             0.00      12.31 f
+  analyzer/U2112/Y (CLKINVX3)                             0.08      12.40 r
+  analyzer/U2233/C (NAND3X2)                              0.00      12.40 r
+  analyzer/U2233/Y (NAND3X2)                              0.13      12.52 f
+  analyzer/U3787/B1 (OAI33X2)                             0.00      12.52 f
+  analyzer/U3787/Y (OAI33X2)                              0.46      12.98 r
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      12.98 r
+  U4/A (BUFX12)                                           0.00      12.98 r
+  U4/Y (BUFX12)                                           0.22      13.20 r
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.20 r
+  selected_address_mux/U84/A (INVX4)                      0.00      13.20 r
+  selected_address_mux/U84/Y (INVX4)                      0.09      13.29 f
+  selected_address_mux/U126/B1 (OAI33X2)                  0.00      13.29 f
+  selected_address_mux/U126/Y (OAI33X2)                   0.52      13.81 r
+  selected_address_mux/U219/A (INVX8)                     0.00      13.81 r
+  selected_address_mux/U219/Y (INVX8)                     0.13      13.94 f
+  selected_address_mux/U176/A0 (AOI21X4)                  0.00      13.94 f
+  selected_address_mux/U176/Y (AOI21X4)                   0.17      14.11 r
+  selected_address_mux/U292/A0 (OAI211X2)                 0.00      14.11 r
+  selected_address_mux/U292/Y (OAI211X2)                  0.17      14.28 f
+  selected_address_mux/U174/A (BUFX12)                    0.00      14.28 f
+  selected_address_mux/U174/Y (BUFX12)                    0.22      14.49 f
+  selected_address_mux/U179/A0 (AOI22X1)                  0.00      14.49 f
+  selected_address_mux/U179/Y (AOI22X1)                   0.35      14.84 r
+  selected_address_mux/U172/A (INVX4)                     0.00      14.84 r
+  selected_address_mux/U172/Y (INVX4)                     0.15      15.00 f
+  selected_address_mux/solution_line_address_flat_o[28] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 f
+  solution_line_address_flat_o[28] (out)                  0.00      15.00 f
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[26]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U66/A (NAND2XL)                                    0.00       0.26 f
+  core/U66/Y (NAND2XL)                                    0.29       0.54 r
+  core/U7/A (INVX4)                                       0.00       0.54 r
+  core/U7/Y (INVX4)                                       0.15       0.69 f
+  core/scan_config_id_o[1] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.69 f
+  analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.69 f
+  analyzer/U3763/A (INVX8)                                0.00       0.69 f
+  analyzer/U3763/Y (INVX8)                                0.14       0.83 r
+  analyzer/U1938/A (CLKINVX3)                             0.00       0.83 r
+  analyzer/U1938/Y (CLKINVX3)                             0.21       1.04 f
+  analyzer/U3619/B0 (AOI21X4)                             0.00       1.04 f
+  analyzer/U3619/Y (AOI21X4)                              0.20       1.24 r
+  analyzer/U3709/A0 (AOI21X4)                             0.00       1.24 r
+  analyzer/U3709/Y (AOI21X4)                              0.11       1.35 f
+  analyzer/U4838/B0 (OAI2BB1X4)                           0.00       1.35 f
+  analyzer/U4838/Y (OAI2BB1X4)                            0.21       1.55 r
+  analyzer/U3762/A (INVX8)                                0.00       1.55 r
+  analyzer/U3762/Y (INVX8)                                0.07       1.63 f
+  analyzer/U3355/B0 (OAI2BB1X4)                           0.00       1.63 f
+  analyzer/U3355/Y (OAI2BB1X4)                            0.14       1.77 r
+  analyzer/U3517/B (NAND3X4)                              0.00       1.77 r
+  analyzer/U3517/Y (NAND3X4)                              0.21       1.98 f
+  analyzer/U574/A (INVX8)                                 0.00       1.98 f
+  analyzer/U574/Y (INVX8)                                 0.21       2.19 r
+  analyzer/U313/A (CLKBUFX12)                             0.00       2.19 r
+  analyzer/U313/Y (CLKBUFX12)                             0.20       2.39 r
+  analyzer/U3428/AN (NAND2BX4)                            0.00       2.39 r
+  analyzer/U3428/Y (NAND2BX4)                             0.19       2.58 r
+  analyzer/U3427/A (INVX8)                                0.00       2.58 r
+  analyzer/U3427/Y (INVX8)                                0.07       2.65 f
+  analyzer/U3515/B (OR2X4)                                0.00       2.65 f
+  analyzer/U3515/Y (OR2X4)                                0.26       2.91 f
+  analyzer/U2468/A (CLKINVX3)                             0.00       2.91 f
+  analyzer/U2468/Y (CLKINVX3)                             0.13       3.04 r
+  analyzer/U3296/A (NAND2X4)                              0.00       3.04 r
+  analyzer/U3296/Y (NAND2X4)                              0.08       3.12 f
+  analyzer/U3297/B (NAND2X4)                              0.00       3.12 f
+  analyzer/U3297/Y (NAND2X4)                              0.13       3.25 r
+  analyzer/U3402/A (NAND4X4)                              0.00       3.25 r
+  analyzer/U3402/Y (NAND4X4)                              0.10       3.35 f
+  analyzer/U4661/A (OR3X4)                                0.00       3.35 f
+  analyzer/U4661/Y (OR3X4)                                0.38       3.73 f
+  analyzer/U4791/B (OR2X4)                                0.00       3.73 f
+  analyzer/U4791/Y (OR2X4)                                0.27       4.00 f
+  analyzer/U4719/A (NAND4X4)                              0.00       4.00 f
+  analyzer/U4719/Y (NAND4X4)                              0.16       4.15 r
+  analyzer/U3867/A (INVX8)                                0.00       4.15 r
+  analyzer/U3867/Y (INVX8)                                0.07       4.22 f
+  analyzer/U3866/A (BUFX20)                               0.00       4.22 f
+  analyzer/U3866/Y (BUFX20)                               0.15       4.37 f
+  analyzer/U1136/S0 (MXI2X2)                              0.00       4.37 f
+  analyzer/U1136/Y (MXI2X2)                               0.29       4.66 r
+  analyzer/U4941/A (XOR2X4)                               0.00       4.66 r
+  analyzer/U4941/Y (XOR2X4)                               0.37       5.03 r
+  analyzer/U4177/C (NAND4X4)                              0.00       5.03 r
+  analyzer/U4177/Y (NAND4X4)                              0.14       5.17 f
+  analyzer/U4942/B (NOR2X4)                               0.00       5.17 f
+  analyzer/U4942/Y (NOR2X4)                               0.17       5.33 r
+  analyzer/U4943/B (NAND4BX4)                             0.00       5.33 r
+  analyzer/U4943/Y (NAND4BX4)                             0.20       5.53 f
+  analyzer/U3760/C (NAND3BX4)                             0.00       5.53 f
+  analyzer/U3760/Y (NAND3BX4)                             0.21       5.74 r
+  analyzer/U249/A (INVX8)                                 0.00       5.74 r
+  analyzer/U249/Y (INVX8)                                 0.06       5.81 f
+  analyzer/U2748/S0 (MXI2X4)                              0.00       5.81 f
+  analyzer/U2748/Y (MXI2X4)                               0.19       6.00 r
+  analyzer/U2707/B (NAND2X4)                              0.00       6.00 r
+  analyzer/U2707/Y (NAND2X4)                              0.11       6.10 f
+  analyzer/U3912/A (INVX8)                                0.00       6.10 f
+  analyzer/U3912/Y (INVX8)                                0.13       6.23 r
+  analyzer/U282/A (BUFX20)                                0.00       6.23 r
+  analyzer/U282/Y (BUFX20)                                0.15       6.39 r
+  analyzer/U3047/S0 (MXI2X1)                              0.00       6.39 r
+  analyzer/U3047/Y (MXI2X1)                               0.24       6.63 r
+  analyzer/U2247/A (BUFX4)                                0.00       6.63 r
+  analyzer/U2247/Y (BUFX4)                                0.21       6.84 r
+  analyzer/U2829/A (XOR2X2)                               0.00       6.84 r
+  analyzer/U2829/Y (XOR2X2)                               0.24       7.08 f
+  analyzer/U4020/A (AND3X4)                               0.00       7.08 f
+  analyzer/U4020/Y (AND3X4)                               0.19       7.27 f
+  analyzer/U4018/C (NAND4X4)                              0.00       7.27 f
+  analyzer/U4018/Y (NAND4X4)                              0.21       7.48 r
+  analyzer/U696/C0 (OAI211X2)                             0.00       7.48 r
+  analyzer/U696/Y (OAI211X2)                              0.19       7.66 f
+  analyzer/U3721/B (NOR3X4)                               0.00       7.66 f
+  analyzer/U3721/Y (NOR3X4)                               0.25       7.91 r
+  analyzer/U3014/A (NAND3X4)                              0.00       7.91 r
+  analyzer/U3014/Y (NAND3X4)                              0.12       8.03 f
+  analyzer/U3252/A (NOR2X4)                               0.00       8.03 f
+  analyzer/U3252/Y (NOR2X4)                               0.15       8.18 r
+  analyzer/U4825/A (NAND4X4)                              0.00       8.18 r
+  analyzer/U4825/Y (NAND4X4)                              0.16       8.35 f
+  analyzer/U2738/B (NAND4X4)                              0.00       8.35 f
+  analyzer/U2738/Y (NAND4X4)                              0.21       8.56 r
+  analyzer/U3490/A (INVX8)                                0.00       8.56 r
+  analyzer/U3490/Y (INVX8)                                0.09       8.65 f
+  analyzer/U2137/A (INVX8)                                0.00       8.65 f
+  analyzer/U2137/Y (INVX8)                                0.15       8.80 r
+  analyzer/U657/A (INVX8)                                 0.00       8.80 r
+  analyzer/U657/Y (INVX8)                                 0.10       8.90 f
+  analyzer/U3620/S0 (MXI2X4)                              0.00       8.90 f
+  analyzer/U3620/Y (MXI2X4)                               0.21       9.10 r
+  analyzer/U1058/A (CLKINVX3)                             0.00       9.10 r
+  analyzer/U1058/Y (CLKINVX3)                             0.11       9.21 f
+  analyzer/U1884/A (XOR2X1)                               0.00       9.21 f
+  analyzer/U1884/Y (XOR2X1)                               0.29       9.50 f
+  analyzer/U270/C (AND3X4)                                0.00       9.50 f
+  analyzer/U270/Y (AND3X4)                                0.24       9.73 f
+  analyzer/U183/C (NAND4X4)                               0.00       9.73 f
+  analyzer/U183/Y (NAND4X4)                               0.14       9.88 r
+  analyzer/U4708/A (MXI2X4)                               0.00       9.88 r
+  analyzer/U4708/Y (MXI2X4)                               0.14      10.02 f
+  analyzer/U4827/A (NAND2X4)                              0.00      10.02 f
+  analyzer/U4827/Y (NAND2X4)                              0.20      10.22 r
+  analyzer/U10/C (NAND3X1)                                0.00      10.22 r
+  analyzer/U10/Y (NAND3X1)                                0.20      10.42 f
+  analyzer/U3694/A1 (OAI32X2)                             0.00      10.42 f
+  analyzer/U3694/Y (OAI32X2)                              0.41      10.83 r
+  analyzer/U735/A (BUFX8)                                 0.00      10.83 r
+  analyzer/U735/Y (BUFX8)                                 0.23      11.06 r
+  analyzer/U3724/A (NAND2X4)                              0.00      11.06 r
+  analyzer/U3724/Y (NAND2X4)                              0.16      11.23 f
+  analyzer/U2044/A (INVX4)                                0.00      11.23 f
+  analyzer/U2044/Y (INVX4)                                0.14      11.36 r
+  analyzer/U3970/AN (NAND2BX4)                            0.00      11.36 r
+  analyzer/U3970/Y (NAND2BX4)                             0.21      11.57 r
+  analyzer/U4403/D (NAND4X4)                              0.00      11.57 r
+  analyzer/U4403/Y (NAND4X4)                              0.18      11.76 f
+  analyzer/U3741/AN (NAND2BX4)                            0.00      11.76 f
+  analyzer/U3741/Y (NAND2BX4)                             0.23      11.98 f
+  analyzer/U4169/A (CLKINVX8)                             0.00      11.98 f
+  analyzer/U4169/Y (CLKINVX8)                             0.10      12.08 r
+  analyzer/U4128/B (NAND2X4)                              0.00      12.08 r
+  analyzer/U4128/Y (NAND2X4)                              0.09      12.17 f
+  analyzer/U4130/A (CLKINVX8)                             0.00      12.17 f
+  analyzer/U4130/Y (CLKINVX8)                             0.06      12.23 r
+  analyzer/U4129/A (NAND2X4)                              0.00      12.23 r
+  analyzer/U4129/Y (NAND2X4)                              0.08      12.31 f
+  analyzer/U2112/A (CLKINVX3)                             0.00      12.31 f
+  analyzer/U2112/Y (CLKINVX3)                             0.08      12.40 r
+  analyzer/U2233/C (NAND3X2)                              0.00      12.40 r
+  analyzer/U2233/Y (NAND3X2)                              0.13      12.52 f
+  analyzer/U3787/B1 (OAI33X2)                             0.00      12.52 f
+  analyzer/U3787/Y (OAI33X2)                              0.46      12.98 r
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      12.98 r
+  U4/A (BUFX12)                                           0.00      12.98 r
+  U4/Y (BUFX12)                                           0.22      13.20 r
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.20 r
+  selected_address_mux/U84/A (INVX4)                      0.00      13.20 r
+  selected_address_mux/U84/Y (INVX4)                      0.09      13.29 f
+  selected_address_mux/U126/B1 (OAI33X2)                  0.00      13.29 f
+  selected_address_mux/U126/Y (OAI33X2)                   0.52      13.81 r
+  selected_address_mux/U219/A (INVX8)                     0.00      13.81 r
+  selected_address_mux/U219/Y (INVX8)                     0.13      13.94 f
+  selected_address_mux/U176/A0 (AOI21X4)                  0.00      13.94 f
+  selected_address_mux/U176/Y (AOI21X4)                   0.17      14.11 r
+  selected_address_mux/U292/A0 (OAI211X2)                 0.00      14.11 r
+  selected_address_mux/U292/Y (OAI211X2)                  0.17      14.28 f
+  selected_address_mux/U174/A (BUFX12)                    0.00      14.28 f
+  selected_address_mux/U174/Y (BUFX12)                    0.22      14.49 f
+  selected_address_mux/U180/A0 (AOI22X1)                  0.00      14.49 f
+  selected_address_mux/U180/Y (AOI22X1)                   0.35      14.84 r
+  selected_address_mux/U171/A (INVX4)                     0.00      14.84 r
+  selected_address_mux/U171/Y (INVX4)                     0.15      15.00 f
+  selected_address_mux/solution_line_address_flat_o[26] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 f
+  solution_line_address_flat_o[26] (out)                  0.00      15.00 f
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: core/priority_rank_q_reg[1]
+              (rising edge-triggered flip-flop clocked by recam_clk)
+  Endpoint: solution_line_address_flat_o[9]
+            (output port clocked by recam_clk)
+  Path Group: recam_clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  recam_dss_g2x2_r_static_early_live_state_top
+                     tsmc18_wl10           slow
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock recam_clk (rise edge)                             0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  core/priority_rank_q_reg[1]/CK (DFFHQX4)                0.00       0.00 r
+  core/priority_rank_q_reg[1]/Q (DFFHQX4)                 0.26       0.26 f
+  core/U66/A (NAND2XL)                                    0.00       0.26 f
+  core/U66/Y (NAND2XL)                                    0.29       0.54 r
+  core/U7/A (INVX4)                                       0.00       0.54 r
+  core/U7/Y (INVX4)                                       0.15       0.69 f
+  core/scan_config_id_o[1] (recam_dss_g2x2_r_static_early_live_state_core)
+                                                          0.00       0.69 f
+  analyzer/config_id_i[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00       0.69 f
+  analyzer/U3763/A (INVX8)                                0.00       0.69 f
+  analyzer/U3763/Y (INVX8)                                0.14       0.83 r
+  analyzer/U1938/A (CLKINVX3)                             0.00       0.83 r
+  analyzer/U1938/Y (CLKINVX3)                             0.21       1.04 f
+  analyzer/U3619/B0 (AOI21X4)                             0.00       1.04 f
+  analyzer/U3619/Y (AOI21X4)                              0.20       1.24 r
+  analyzer/U3709/A0 (AOI21X4)                             0.00       1.24 r
+  analyzer/U3709/Y (AOI21X4)                              0.11       1.35 f
+  analyzer/U4838/B0 (OAI2BB1X4)                           0.00       1.35 f
+  analyzer/U4838/Y (OAI2BB1X4)                            0.21       1.55 r
+  analyzer/U3762/A (INVX8)                                0.00       1.55 r
+  analyzer/U3762/Y (INVX8)                                0.07       1.63 f
+  analyzer/U3355/B0 (OAI2BB1X4)                           0.00       1.63 f
+  analyzer/U3355/Y (OAI2BB1X4)                            0.14       1.77 r
+  analyzer/U3517/B (NAND3X4)                              0.00       1.77 r
+  analyzer/U3517/Y (NAND3X4)                              0.21       1.98 f
+  analyzer/U574/A (INVX8)                                 0.00       1.98 f
+  analyzer/U574/Y (INVX8)                                 0.21       2.19 r
+  analyzer/U313/A (CLKBUFX12)                             0.00       2.19 r
+  analyzer/U313/Y (CLKBUFX12)                             0.20       2.39 r
+  analyzer/U3428/AN (NAND2BX4)                            0.00       2.39 r
+  analyzer/U3428/Y (NAND2BX4)                             0.19       2.58 r
+  analyzer/U3427/A (INVX8)                                0.00       2.58 r
+  analyzer/U3427/Y (INVX8)                                0.07       2.65 f
+  analyzer/U3515/B (OR2X4)                                0.00       2.65 f
+  analyzer/U3515/Y (OR2X4)                                0.26       2.91 f
+  analyzer/U2468/A (CLKINVX3)                             0.00       2.91 f
+  analyzer/U2468/Y (CLKINVX3)                             0.13       3.04 r
+  analyzer/U3296/A (NAND2X4)                              0.00       3.04 r
+  analyzer/U3296/Y (NAND2X4)                              0.08       3.12 f
+  analyzer/U3297/B (NAND2X4)                              0.00       3.12 f
+  analyzer/U3297/Y (NAND2X4)                              0.13       3.25 r
+  analyzer/U3402/A (NAND4X4)                              0.00       3.25 r
+  analyzer/U3402/Y (NAND4X4)                              0.10       3.35 f
+  analyzer/U4661/A (OR3X4)                                0.00       3.35 f
+  analyzer/U4661/Y (OR3X4)                                0.38       3.73 f
+  analyzer/U4791/B (OR2X4)                                0.00       3.73 f
+  analyzer/U4791/Y (OR2X4)                                0.27       4.00 f
+  analyzer/U4719/A (NAND4X4)                              0.00       4.00 f
+  analyzer/U4719/Y (NAND4X4)                              0.16       4.15 r
+  analyzer/U3867/A (INVX8)                                0.00       4.15 r
+  analyzer/U3867/Y (INVX8)                                0.07       4.22 f
+  analyzer/U3866/A (BUFX20)                               0.00       4.22 f
+  analyzer/U3866/Y (BUFX20)                               0.15       4.37 f
+  analyzer/U1136/S0 (MXI2X2)                              0.00       4.37 f
+  analyzer/U1136/Y (MXI2X2)                               0.29       4.66 r
+  analyzer/U4941/A (XOR2X4)                               0.00       4.66 r
+  analyzer/U4941/Y (XOR2X4)                               0.37       5.03 r
+  analyzer/U4177/C (NAND4X4)                              0.00       5.03 r
+  analyzer/U4177/Y (NAND4X4)                              0.14       5.17 f
+  analyzer/U4942/B (NOR2X4)                               0.00       5.17 f
+  analyzer/U4942/Y (NOR2X4)                               0.17       5.33 r
+  analyzer/U4943/B (NAND4BX4)                             0.00       5.33 r
+  analyzer/U4943/Y (NAND4BX4)                             0.20       5.53 f
+  analyzer/U3760/C (NAND3BX4)                             0.00       5.53 f
+  analyzer/U3760/Y (NAND3BX4)                             0.21       5.74 r
+  analyzer/U249/A (INVX8)                                 0.00       5.74 r
+  analyzer/U249/Y (INVX8)                                 0.06       5.81 f
+  analyzer/U2748/S0 (MXI2X4)                              0.00       5.81 f
+  analyzer/U2748/Y (MXI2X4)                               0.19       6.00 r
+  analyzer/U2707/B (NAND2X4)                              0.00       6.00 r
+  analyzer/U2707/Y (NAND2X4)                              0.11       6.10 f
+  analyzer/U3912/A (INVX8)                                0.00       6.10 f
+  analyzer/U3912/Y (INVX8)                                0.13       6.23 r
+  analyzer/U282/A (BUFX20)                                0.00       6.23 r
+  analyzer/U282/Y (BUFX20)                                0.15       6.39 r
+  analyzer/U3047/S0 (MXI2X1)                              0.00       6.39 r
+  analyzer/U3047/Y (MXI2X1)                               0.24       6.63 r
+  analyzer/U2247/A (BUFX4)                                0.00       6.63 r
+  analyzer/U2247/Y (BUFX4)                                0.21       6.84 r
+  analyzer/U2829/A (XOR2X2)                               0.00       6.84 r
+  analyzer/U2829/Y (XOR2X2)                               0.24       7.08 f
+  analyzer/U4020/A (AND3X4)                               0.00       7.08 f
+  analyzer/U4020/Y (AND3X4)                               0.19       7.27 f
+  analyzer/U4018/C (NAND4X4)                              0.00       7.27 f
+  analyzer/U4018/Y (NAND4X4)                              0.21       7.48 r
+  analyzer/U696/C0 (OAI211X2)                             0.00       7.48 r
+  analyzer/U696/Y (OAI211X2)                              0.19       7.66 f
+  analyzer/U3721/B (NOR3X4)                               0.00       7.66 f
+  analyzer/U3721/Y (NOR3X4)                               0.25       7.91 r
+  analyzer/U3014/A (NAND3X4)                              0.00       7.91 r
+  analyzer/U3014/Y (NAND3X4)                              0.12       8.03 f
+  analyzer/U3252/A (NOR2X4)                               0.00       8.03 f
+  analyzer/U3252/Y (NOR2X4)                               0.15       8.18 r
+  analyzer/U4825/A (NAND4X4)                              0.00       8.18 r
+  analyzer/U4825/Y (NAND4X4)                              0.16       8.35 f
+  analyzer/U2738/B (NAND4X4)                              0.00       8.35 f
+  analyzer/U2738/Y (NAND4X4)                              0.21       8.56 r
+  analyzer/U3490/A (INVX8)                                0.00       8.56 r
+  analyzer/U3490/Y (INVX8)                                0.09       8.65 f
+  analyzer/U2137/A (INVX8)                                0.00       8.65 f
+  analyzer/U2137/Y (INVX8)                                0.15       8.80 r
+  analyzer/U657/A (INVX8)                                 0.00       8.80 r
+  analyzer/U657/Y (INVX8)                                 0.10       8.90 f
+  analyzer/U3620/S0 (MXI2X4)                              0.00       8.90 f
+  analyzer/U3620/Y (MXI2X4)                               0.21       9.10 r
+  analyzer/U1058/A (CLKINVX3)                             0.00       9.10 r
+  analyzer/U1058/Y (CLKINVX3)                             0.11       9.21 f
+  analyzer/U1884/A (XOR2X1)                               0.00       9.21 f
+  analyzer/U1884/Y (XOR2X1)                               0.29       9.50 f
+  analyzer/U270/C (AND3X4)                                0.00       9.50 f
+  analyzer/U270/Y (AND3X4)                                0.24       9.73 f
+  analyzer/U183/C (NAND4X4)                               0.00       9.73 f
+  analyzer/U183/Y (NAND4X4)                               0.14       9.88 r
+  analyzer/U4708/A (MXI2X4)                               0.00       9.88 r
+  analyzer/U4708/Y (MXI2X4)                               0.14      10.02 f
+  analyzer/U4827/A (NAND2X4)                              0.00      10.02 f
+  analyzer/U4827/Y (NAND2X4)                              0.20      10.22 r
+  analyzer/U10/C (NAND3X1)                                0.00      10.22 r
+  analyzer/U10/Y (NAND3X1)                                0.20      10.42 f
+  analyzer/U3694/A1 (OAI32X2)                             0.00      10.42 f
+  analyzer/U3694/Y (OAI32X2)                              0.41      10.83 r
+  analyzer/U735/A (BUFX8)                                 0.00      10.83 r
+  analyzer/U735/Y (BUFX8)                                 0.23      11.06 r
+  analyzer/U3724/A (NAND2X4)                              0.00      11.06 r
+  analyzer/U3724/Y (NAND2X4)                              0.16      11.23 f
+  analyzer/U2044/A (INVX4)                                0.00      11.23 f
+  analyzer/U2044/Y (INVX4)                                0.14      11.36 r
+  analyzer/U3970/AN (NAND2BX4)                            0.00      11.36 r
+  analyzer/U3970/Y (NAND2BX4)                             0.21      11.57 r
+  analyzer/U4403/D (NAND4X4)                              0.00      11.57 r
+  analyzer/U4403/Y (NAND4X4)                              0.18      11.76 f
+  analyzer/U3741/AN (NAND2BX4)                            0.00      11.76 f
+  analyzer/U3741/Y (NAND2BX4)                             0.23      11.98 f
+  analyzer/U4169/A (CLKINVX8)                             0.00      11.98 f
+  analyzer/U4169/Y (CLKINVX8)                             0.10      12.08 r
+  analyzer/U4128/B (NAND2X4)                              0.00      12.08 r
+  analyzer/U4128/Y (NAND2X4)                              0.09      12.17 f
+  analyzer/U4130/A (CLKINVX8)                             0.00      12.17 f
+  analyzer/U4130/Y (CLKINVX8)                             0.06      12.23 r
+  analyzer/U4129/A (NAND2X4)                              0.00      12.23 r
+  analyzer/U4129/Y (NAND2X4)                              0.08      12.31 f
+  analyzer/U2112/A (CLKINVX3)                             0.00      12.31 f
+  analyzer/U2112/Y (CLKINVX3)                             0.08      12.40 r
+  analyzer/U2233/C (NAND3X2)                              0.00      12.40 r
+  analyzer/U2233/Y (NAND3X2)                              0.13      12.52 f
+  analyzer/U3787/B1 (OAI33X2)                             0.00      12.52 f
+  analyzer/U3787/Y (OAI33X2)                              0.46      12.98 r
+  analyzer/pattern_id_o[1] (recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7)
+                                                          0.00      12.98 r
+  U4/A (BUFX12)                                           0.00      12.98 r
+  U4/Y (BUFX12)                                           0.22      13.20 r
+  selected_address_mux/selected_pattern_id_i[1] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      13.20 r
+  selected_address_mux/U83/A (BUFX20)                     0.00      13.20 r
+  selected_address_mux/U83/Y (BUFX20)                     0.14      13.34 r
+  selected_address_mux/U210/A (INVX8)                     0.00      13.34 r
+  selected_address_mux/U210/Y (INVX8)                     0.05      13.39 f
+  selected_address_mux/U55/B (AND3X2)                     0.00      13.39 f
+  selected_address_mux/U55/Y (AND3X2)                     0.22      13.61 f
+  selected_address_mux/U107/AN (NAND3BX4)                 0.00      13.61 f
+  selected_address_mux/U107/Y (NAND3BX4)                  0.24      13.85 f
+  selected_address_mux/U242/A0 (AOI31X2)                  0.00      13.85 f
+  selected_address_mux/U242/Y (AOI31X2)                   0.23      14.08 r
+  selected_address_mux/U278/AN (NOR3BX4)                  0.00      14.08 r
+  selected_address_mux/U278/Y (NOR3BX4)                   0.35      14.43 r
+  selected_address_mux/U113/A (BUFX12)                    0.00      14.43 r
+  selected_address_mux/U113/Y (BUFX12)                    0.21      14.64 r
+  selected_address_mux/U303/A (AND2X2)                    0.00      14.64 r
+  selected_address_mux/U303/Y (AND2X2)                    0.36      15.00 r
+  selected_address_mux/solution_line_address_flat_o[9] (dss_early_selected_address_mux_ROW_ADDR_W9_PHYS_COL_ADDR_W13)
+                                                          0.00      15.00 r
+  solution_line_address_flat_o[9] (out)                   0.00      15.00 r
+  data arrival time                                                 15.00
+
+  clock recam_clk (rise edge)                            15.00      15.00
+  clock network delay (ideal)                             0.00      15.00
+  output external delay                                   0.00      15.00
+  data required time                                                15.00
+  --------------------------------------------------------------------------
+  data required time                                                15.00
+  data arrival time                                                -15.00
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+1

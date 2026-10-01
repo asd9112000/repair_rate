@@ -1,0 +1,81 @@
+ 
+****************************************
+check_design summary:
+Version:     W-2024.09-SP2
+Date:        Tue Sep 29 16:59:20 2026
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Inputs/Outputs                                                     45
+    Unconnected ports (LINT-28)                                     4
+    Shorted outputs (LINT-31)                                      10
+    Constant outputs (LINT-52)                                     31
+
+Cells                                                               6
+    Connected to power or ground (LINT-32)                          5
+    Nets connected to multiple pins on same cell (LINT-33)          1
+
+Nets                                                                1
+    Unloaded nets (LINT-2)                                          1
+--------------------------------------------------------------------------------
+
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', net 'n5' driven by pin 'core/scan_config_id_o[0]' has no loads. (LINT-2)
+Warning: In design 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7', port 'row_gt1_i[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7', port 'col_gt1_i[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'dss_v2_group_slot_decode', port 'sa_id_i[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'dss_v2_group_slot_decode', port 'sa_id_i[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'recam_shared_config_analyzer_ROW_ADDR_W9_PHYS_COL_ADDR_W13_WORD_COL_ADDR_W5_HYBRID_LINE_ADDR_W13_HYBRID_ENTRIES7', output port 'solution_valid_o' is connected directly to output port 'repairable_o'. (LINT-31)
+Warning: In design 'dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13', output port 'final_repair_line_valid_flat_o[17]' is connected directly to output port 'final_repair_line_valid_flat_o[16]'. (LINT-31)
+Warning: In design 'dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13', output port 'final_repair_line_valid_flat_o[11]' is connected directly to output port 'final_repair_line_valid_flat_o[10]'. (LINT-31)
+Warning: In design 'dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13', output port 'final_repair_line_valid_flat_o[7]' is connected directly to output port 'final_repair_line_valid_flat_o[6]'. (LINT-31)
+Warning: In design 'dss_group_pivot_address_regs_ROW_ADDR_W9_PHYS_COL_ADDR_W13', output port 'final_repair_line_valid_flat_o[2]' is connected directly to output port 'final_repair_line_valid_flat_o[1]'. (LINT-31)
+Warning: In design 'dss_v2_group_slot_decode', output port 'legacy_config_id_o[0]' is connected directly to output port 'config_descriptor_o[col_count][2]'. (LINT-31)
+Warning: In design 'dss_v2_group_slot_decode', output port 'legacy_config_id_o[0]' is connected directly to output port 'config_descriptor_o[row_count][2]'. (LINT-31)
+Warning: In design 'recam_dss_g2x2_r_static_selector', output port 'selected_a_config_id_o[0]' is connected directly to output port 'selected_d_config_id_o[0]'. (LINT-31)
+Warning: In design 'recam_dss_g2x2_r_static_selector', output port 'selected_a_config_id_o[0]' is connected directly to output port 'selected_c_config_id_o[0]'. (LINT-31)
+Warning: In design 'recam_dss_g2x2_r_static_selector', output port 'selected_a_config_id_o[0]' is connected directly to output port 'selected_b_config_id_o[0]'. (LINT-31)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', a pin on submodule 'analyzer' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'config_id_i[0]' is connected to logic 0. 
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', a pin on submodule 'candidate_store' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'read_sa_i[1]' is connected to logic 0. 
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', a pin on submodule 'candidate_store' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'read_sa_i[0]' is connected to logic 0. 
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', a pin on submodule 'candidate_store' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'read_slot_i[1]' is connected to logic 0. 
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', a pin on submodule 'candidate_store' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'read_slot_i[0]' is connected to logic 0. 
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', the same net is connected to more than one pin on submodule 'candidate_store'. (LINT-33)
+   Net '*Logic0*' is connected to pins 'read_sa_i[1]', 'read_sa_i[0]'', 'read_slot_i[1]', 'read_slot_i[0]'.
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'scan_config_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'ledger_released_borrower_o[10]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'ledger_released_borrower_o[9]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'ledger_released_borrower_o[7]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'ledger_released_borrower_o[4]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'selected_donor_flat_o[5]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'selected_donor_flat_o[4]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'selected_donor_flat_o[3]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'selected_donor_flat_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'failure_position_o[1]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_top', output port 'failure_position_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'scan_config_id_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'ledger_released_borrower_o[10]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'ledger_released_borrower_o[9]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'ledger_released_borrower_o[7]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'ledger_released_borrower_o[4]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'selected_donor_flat_o[5]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'selected_donor_flat_o[4]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'selected_donor_flat_o[3]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'selected_donor_flat_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'failure_position_o[1]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_global_live_state_core', output port 'failure_position_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'dss_v2_group_slot_decode', output port 'legacy_config_id_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'dss_v2_group_slot_decode', output port 'config_descriptor_o[row_count][2]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'dss_v2_group_slot_decode', output port 'config_descriptor_o[col_count][2]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'dss_v2_group_slot_decode', output port 'config_descriptor_o[col_count][1]' is connected directly to 'logic 1'. (LINT-52)
+Warning: In design 'dss_v2_group_slot_decode', output port 'config_descriptor_o[col_count][0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_selector', output port 'selected_a_config_id_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_selector', output port 'selected_b_config_id_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_selector', output port 'selected_c_config_id_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'recam_dss_g2x2_r_static_selector', output port 'selected_d_config_id_o[0]' is connected directly to 'logic 0'. (LINT-52)
+1
