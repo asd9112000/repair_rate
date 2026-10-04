@@ -18,3 +18,13 @@ implementation is `rtl/*_CONTINUOUS_ANALYSIS_LIVE_STATE_reg`.
 Use [CURRENT_N2_CANONICAL.md](CURRENT_N2_CANONICAL.md) as the first lookup
 target, [INDEX.md](INDEX.md) for package navigation, and
 [N2_HARDWARE_SUMMARY.md](N2_HARDWARE_SUMMARY.md) for family-separated PPA.
+
+For consolidation navigation, use [STATUS.md](STATUS.md),
+[EVIDENCE_INDEX.md](EVIDENCE_INDEX.md), and
+[BRANCH_PROVENANCE.md](BRANCH_PROVENANCE.md). These files index evidence in
+place; they do not relocate or rewrite packaged results.
+
+The separate group-level R3 repair-rate closure is indexed at
+[`docs/date2026/r3/R3_FINAL_ANALYSIS_REPORT.md`](../docs/date2026/r3/R3_FINAL_ANALYSIS_REPORT.md).
+It is not hardware PPA evidence and its raw sidecars remain outside this
+archive.
